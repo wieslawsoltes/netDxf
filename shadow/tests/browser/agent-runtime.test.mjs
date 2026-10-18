@@ -42,8 +42,17 @@ test('conversation export/import redacts nested credentials and occurrences insi
     messages: [{ text: 'token secret-key in request failure' }], model: 'chosen'
   }), ['secret-key']));
   assert.deepEqual(result, { nested: { keep: 'hello [redacted]' }, messages: [{ text: 'token [redacted] in request failure' }], model: 'chosen' });
-  assert.throws(() => parseSession('[]')); assert.throws(() => parseSession('{broken')); assert.throws(() => parseSession('x'.repeat(16 * 1024 * 1024 + 1)));
+  assert.throws(() => parseSession('[]')); assert.throws(() => parseSession('{broken'));
   assert.equal(redact({ '__proto__': { x: 1 }, constructor: 'unsafe', safe: true }).safe, true);
+});
+
+test('session parsing admits a full 16 MiB workspace and bounds UTF-8 JSON at 24 MiB', () => {
+  const source = JSON.stringify({ files: [{ path: 'large.txt', content: 'x'.repeat(16 * 1024 * 1024), version: 1 }], messages: [{ role: 'user', contents: [{ kind: 'text', text: 'Keep the full workspace' }] }] });
+  assert.equal(parseSession(source), source);
+  assert.throws(() => parseSession(JSON.stringify({ text: 'x'.repeat(24 * 1024 * 1024) })), /24 MiB in UTF-8/);
+  const unicode = JSON.stringify({ text: '🦊'.repeat(6 * 1024 * 1024) });
+  assert(unicode.length < 24 * 1024 * 1024);
+  assert.throws(() => parseSession(unicode), /24 MiB in UTF-8/);
 });
 
 test('tool console accepts object arguments, builds required inputs and never coerces executable text', () => {
@@ -145,15 +154,13 @@ test('companion connection serializes configuration and rejects a turn until the
   native.resolve({ connected: true, toolCount: 5 }); await connecting; assert.equal(f.client.busy, false); f.client.dispose();
 });
 
-test('disconnecting a required inference companion clears its provider and hydrates retained history', async () => {
-  const f = fixture(async method => method === 'AgentCompanionDisconnect' ? { connected: false, providerDisconnected: true }
+test('disconnecting optional native tools retains the browser provider and its history', async () => {
+  const f = fixture(async method => method === 'AgentCompanionDisconnect' ? { connected: false, providerDisconnected: false }
     : method === 'AgentPoll' ? status([], { latestSequence: 1, messages: [{ role: 'user', contents: [{ kind: 'text', text: 'Retained task' }] }] }) : {});
   f.client.configured = true; f.client.config = { provider: 'anthropic', apiKey: 'test-key' }; f.client.transcript.sequence = 45;
-  let notification = '';
-  f.client.addEventListener('providerdisconnected', event => { notification = event.detail.reason; });
   await f.client.companionDisconnect();
-  assert.equal(f.client.configured, false); assert.equal(f.client.config, null); assert.match(notification, /Anthropic/);
-  assert.deepEqual(f.calls.find(call => call[0] === 'AgentPoll'), ['AgentPoll', 0]);
+  assert.equal(f.client.configured, true); assert.equal(f.client.config.provider, 'anthropic');
+  assert.deepEqual(f.calls.find(call => call[0] === 'AgentPoll'), ['AgentPoll', 45]);
   assert.equal(f.client.transcript.items[0].text, 'Retained task'); f.client.dispose();
 });
 

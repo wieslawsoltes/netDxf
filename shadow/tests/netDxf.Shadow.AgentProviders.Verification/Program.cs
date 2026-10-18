@@ -10,7 +10,10 @@ using netDxf.Shadow.Agents.Auth;
 
 var checks = 0;
 foreach (var provider in new[] { "openai", "anthropic", "google", "chatgpt" }) await VerifyProvider(provider);
+foreach (var provider in new[] { "openai", "anthropic", "google", "chatgpt" }) await VerifyProvider(provider, browser: true);
+await VerifyReasoningProvenance();
 await VerifyFailures();
+await VerifyBrowserAnthropic();
 await VerifyAuthentication();
 Console.WriteLine($"PASS: {checks} provider, streaming, tool replay, PKCE, JWT and token-lifecycle checks.");
 
@@ -26,20 +29,24 @@ async Task Throws<T>(Func<Task> action, string name) where T : Exception
     throw new InvalidOperationException("FAIL: " + name);
 }
 
-async Task VerifyProvider(string provider)
+async Task VerifyProvider(string provider, bool browser = false)
 {
-    var requests = new List<(Uri Uri, JsonObject Body, string? Authorization)>();
+    var requests = new List<(Uri Uri, JsonObject Body, string? Authorization, Dictionary<string, string> Headers, bool Streaming, string? Credentials)>();
     using var handler = new TestHandler(async (request, ct) =>
     {
         if (request.Method == HttpMethod.Get) return new(HttpStatusCode.OK);
-        requests.Add((request.RequestUri!, JsonNode.Parse(await request.Content!.ReadAsStringAsync(ct))!.AsObject(), request.Headers.Authorization?.ToString()));
+        request.Options.TryGetValue(new HttpRequestOptionsKey<bool>("WebAssemblyEnableStreamingResponse"), out var streaming);
+        request.Options.TryGetValue(new HttpRequestOptionsKey<IDictionary<string, object>>("WebAssemblyFetchOptions"), out var fetchOptions);
+        requests.Add((request.RequestUri!, JsonNode.Parse(await request.Content!.ReadAsStringAsync(ct))!.AsObject(), request.Headers.Authorization?.ToString(),
+            request.Headers.ToDictionary(header => header.Key, header => string.Join(",", header.Value), StringComparer.OrdinalIgnoreCase),
+            streaming, fetchOptions is not null && fetchOptions.TryGetValue("credentials", out var credentials) ? credentials as string : null));
         var payload = Streams.For(provider, requests.Count == 1);
         if (provider == "chatgpt") payload = payload.Replace("\"name\":\"document_get\"", "\"name\":\"document_get\",\"namespace\":\"shadow\"", StringComparison.Ordinal);
         return new(HttpStatusCode.OK) { Content = new StringContent(payload, Encoding.UTF8, "text/event-stream") };
     });
     using var http = new HttpClient(handler);
     var configuration = new ShadowAgentProviderOptions { Provider = provider, Model = "verification-model", ApiKey = "test-secret", Endpoint = "https://provider.example/v1" };
-    using var client = ShadowAgentProviders.Create(configuration, http);
+    using var client = browser ? ShadowAgentProviders.CreateBrowser(configuration, http) : ShadowAgentProviders.Create(configuration, http);
     var options = new ChatOptions
     {
         ModelId = "verification-model", MaxOutputTokens = 256, Temperature = 0.5f,
@@ -60,11 +67,17 @@ async Task VerifyProvider(string provider)
     Check(requests[1].Body.ToJsonString().Contains("entities", StringComparison.Ordinal), provider + " replays tool output");
     Check(!configuration.ToString().Contains("test-secret", StringComparison.Ordinal), provider + " redacts options");
     Check(!JsonSerializer.Serialize(configuration).Contains("test-secret", StringComparison.Ordinal), provider + " excludes API key from settings JSON");
+    if (browser)
+    {
+        Check(requests.All(request => request.Streaming), provider + " enables browser response streaming");
+        Check(requests.All(request => request.Credentials == "omit"), provider + " browser requests omit cookies");
+    }
     if (provider is "openai" or "chatgpt")
     {
         Check(requests[0].Authorization == "Bearer test-secret", provider + " uses bearer API credential");
         Check(requests[0].Uri.AbsolutePath == "/v1/responses", provider + " uses Responses SDK endpoint");
         Check(requests[0].Body["store"]?.GetValue<bool>() == false, provider + " disables server-side history storage");
+        Check(requests[1].Body.ToJsonString().Contains("encrypted_reasoning_fixture", StringComparison.Ordinal), provider + " retains encrypted reasoning through portable replay");
     }
     if (provider == "chatgpt")
     {
@@ -83,9 +96,166 @@ async Task VerifyProvider(string provider)
         Check(messages.SelectMany(m => m.Contents).OfType<TextReasoningContent>().Any(r => r.ProtectedData == "c2lnbmF0dXJl"), "Gemini preserves thought signature in portable content");
         Check(requests[1].Body.ToJsonString().Contains("c2lnbmF0dXJl", StringComparison.Ordinal), "Gemini restores thought signature after checkpoint");
     }
+    if (provider == "anthropic")
+    {
+        Check(requests.All(request => request.Headers["x-api-key"] == "test-secret"), "Anthropic uses the explicit API credential");
+        Check(requests.All(request => request.Headers["anthropic-version"] == "2023-06-01"), "Anthropic sends the supported API version");
+        Check(messages.SelectMany(message => message.Contents).OfType<TextReasoningContent>().Any(reasoning => reasoning.ProtectedData == "signature_fixture"),
+            "Anthropic preserves streamed thinking signatures in portable content");
+        Check(requests[1].Body.ToJsonString().Contains("signature_fixture", StringComparison.Ordinal), "Anthropic restores thinking signature after checkpoint");
+        if (browser)
+        {
+            Check(requests.All(request => request.Headers["anthropic-dangerous-direct-browser-access"] == "true"), "Anthropic explicitly enables direct browser API access");
+            Check(requests.All(request => !request.Headers.ContainsKey("User-Agent")), "Anthropic browser transport avoids the browser-controlled User-Agent header");
+        }
+    }
     client.Dispose();
     using var alive = await http.GetAsync("https://provider.example/alive");
     Check(alive.IsSuccessStatusCode, provider + " leaves injected HttpClient usable");
+}
+
+async Task VerifyReasoningProvenance()
+{
+    foreach (var source in new[] { "openai", "anthropic", "google", "chatgpt" })
+    {
+        using var sourceHttp = new HttpClient(new TestHandler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+        { Content = new StringContent(Streams.For(source, true), Encoding.UTF8, "text/event-stream") })));
+        using var sourceClient = ShadowAgentProviders.CreateBrowser(new() { Provider = source, ApiKey = "key", Model = "model" }, sourceHttp);
+        var response = await sourceClient.GetResponseAsync([new(ChatRole.User, "Inspect drawing.")]);
+        var history = new List<ChatMessage> { new(ChatRole.User, "visible_user_request") };
+        history.AddRange(response.Messages.Select(message => new ChatMessage(message.Role, message.Contents.Select(CloneContent).ToList())));
+        var reasoning = history.SelectMany(message => message.Contents).OfType<TextReasoningContent>().ToArray();
+        Check(reasoning.Length > 0 && reasoning.All(content => content.AdditionalProperties?[ShadowAgentProviders.ReasoningProviderKey] as string == source),
+            source + " stamps reasoning provenance through streaming aggregation");
+        var signatures = reasoning.Select(content => content.ProtectedData).Where(value => !string.IsNullOrEmpty(value)).Distinct().ToArray();
+        Check(signatures.Length > 0, source + " reasoning fixture supplies protected continuation data");
+        // AdditionalProperties values become JsonElement when the companion's NDJSON bridge
+        // serializes generic content. This must preserve the same provenance as native strings.
+        foreach (var content in reasoning) content.AdditionalProperties![ShadowAgentProviders.ReasoningProviderKey] = JsonSerializer.SerializeToElement(source);
+        foreach (var call in history.SelectMany(message => message.Contents).OfType<FunctionCallContent>().ToArray())
+            history.Add(new(ChatRole.Tool, [new FunctionResultContent(call.CallId, "visible_tool_result")]));
+        history.Add(new(ChatRole.Assistant, "visible_assistant_reply"));
+        foreach (var target in new[] { "openai", "anthropic", "google", "chatgpt", "gemini" })
+        {
+            string? body = null;
+            using var targetHttp = new HttpClient(new TestHandler(async (request, token) =>
+            {
+                body = await request.Content!.ReadAsStringAsync(token);
+                return new(HttpStatusCode.OK) { Content = new StringContent(Streams.For(target == "gemini" ? "google" : target, false), Encoding.UTF8, "text/event-stream") };
+            }));
+            using var targetClient = ShadowAgentProviders.CreateBrowser(new() { Provider = target, ApiKey = "key", Model = "model" }, targetHttp);
+            await targetClient.GetResponseAsync(history);
+            var compatible = source == (target == "gemini" ? "google" : target);
+            Check(body is not null && signatures.All(signature => body.Contains(signature!, StringComparison.Ordinal) == compatible),
+                source + " → " + target + " preserves only compatible provider signatures");
+            Check(body!.Contains("visible_user_request", StringComparison.Ordinal) && body.Contains("visible_assistant_reply", StringComparison.Ordinal)
+                && body.Contains("document_get", StringComparison.Ordinal) && body.Contains("visible_tool_result", StringComparison.Ordinal),
+                source + " → " + target + " retains visible conversation and complete tool pairs");
+        }
+        Check(reasoning.All(content => signatures.Contains(content.ProtectedData) || string.IsNullOrEmpty(content.ProtectedData)),
+            source + " provider switching leaves stored reasoning unchanged");
+    }
+    foreach (var target in new[] { "openai", "anthropic", "google", "chatgpt" })
+    {
+        string? body = null;
+        using var http = new HttpClient(new TestHandler(async (request, token) =>
+        {
+            body = await request.Content!.ReadAsStringAsync(token);
+            return new(HttpStatusCode.OK) { Content = new StringContent(Streams.For(target, false), Encoding.UTF8, "text/event-stream") };
+        }));
+        using var client = ShadowAgentProviders.CreateBrowser(new() { Provider = target, ApiKey = "key", Model = "model" }, http);
+        await client.GetResponseAsync([
+            new(ChatRole.User, "visible_legacy_user"),
+            new(ChatRole.Assistant, [new TextReasoningContent("legacy_reasoning_only") { ProtectedData = "unknown_not_base64_signature" }]),
+            new(ChatRole.Assistant, [new TextReasoningContent("legacy_reasoning_mixed") { ProtectedData = "unknown_signature" }, new TextContent("visible_legacy_reply")]),
+        ]);
+        Check(body is not null && !body.Contains("unknown_", StringComparison.Ordinal) && !body.Contains("legacy_reasoning", StringComparison.Ordinal)
+            && body.Contains("visible_legacy_user", StringComparison.Ordinal) && body.Contains("visible_legacy_reply", StringComparison.Ordinal),
+            target + " safely omits untagged legacy reasoning and empty reasoning-only messages");
+    }
+}
+
+async Task VerifyBrowserAnthropic()
+{
+    var configuration = new ShadowAgentProviderOptions { Provider = "anthropic", ApiKey = "key", Model = "model" };
+    var terminal = "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n";
+    foreach (var browser in new[] { false, true })
+    {
+        using var http = new HttpClient(new TestHandler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+        { Content = new StringContent(Streams.For("anthropic", true).Replace(terminal, "", StringComparison.Ordinal), Encoding.UTF8, "text/event-stream") })));
+        using var client = browser ? ShadowAgentProviders.CreateBrowser(configuration, http) : ShadowAgentProviders.Create(configuration, http);
+        await Throws<ShadowAgentProviderException>(() => client.GetResponseAsync([new(ChatRole.User, "test")]),
+            "Anthropic rejects a truncated stream after stop_reason and tool data before message_stop");
+    }
+    using (var http = new HttpClient(new TestHandler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+    {
+        Content = new StringContent("event: error\ndata: {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\",\"message\":\"Retry later.\"}}\n\n",
+            Encoding.UTF8, "text/event-stream"),
+    }))))
+    using (var client = ShadowAgentProviders.CreateBrowser(configuration, http))
+    {
+        try { await client.GetResponseAsync([new(ChatRole.User, "test")]); throw new InvalidOperationException("Expected SSE error"); }
+        catch (Anthropic.Exceptions.AnthropicSseException error)
+        { Check(ShadowAgentProviders.TryGetTransientFailure(error, out _), "Anthropic browser uses official retryable SSE error parsing"); }
+    }
+    var requests = 0;
+    using (var http = new HttpClient(new TestHandler((_, _) =>
+    {
+        requests++;
+        var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests)
+        { Content = new StringContent("{\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Rate limited.\"}}", Encoding.UTF8, "application/json") };
+        response.Headers.Add("Retry-After", "3");
+        return Task.FromResult(response);
+    })))
+    using (var client = ShadowAgentProviders.CreateBrowser(configuration, http))
+    {
+        try { await client.GetResponseAsync([new(ChatRole.User, "test")]); throw new InvalidOperationException("Expected rate limit"); }
+        catch (Anthropic.Exceptions.AnthropicApiException error)
+        {
+            Check(ShadowAgentProviders.TryGetTransientFailure(error, out var delay) && delay == TimeSpan.FromSeconds(3),
+                "Anthropic browser preserves Retry-After for harness retry policy");
+            Check(requests == 1, "Anthropic browser dispatch never retries beneath the harness");
+        }
+    }
+    using (var http = new HttpClient(new TestHandler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.BadGateway)
+    { Content = new StringContent(new string('x', 128 * 1024)) }))))
+    using (var client = ShadowAgentProviders.CreateBrowser(configuration, http))
+    {
+        try { await client.GetResponseAsync([new(ChatRole.User, "test")]); throw new InvalidOperationException("Expected oversized provider error"); }
+        catch (Anthropic.Exceptions.AnthropicApiException error)
+        { Check(error.ResponseBody.Length < 66 * 1024 && error.ResponseBody.EndsWith("[Provider error body truncated.]", StringComparison.Ordinal), "Anthropic browser bounds HTTP error bodies"); }
+    }
+    var waiting = new WaitingStream();
+    using (var http = new HttpClient(new TestHandler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+    { Content = new StreamContent(waiting) }))))
+    using (var client = ShadowAgentProviders.CreateBrowser(configuration, http))
+    {
+        var sdk = client.GetService<Anthropic.IAnthropicClient>()!;
+        var timed = sdk.WithOptions(options => options with { Timeout = TimeSpan.FromMilliseconds(100) });
+        async Task ReadTimedStreamAsync()
+        {
+            await foreach (var _ in timed.Messages.CreateStreaming(new()
+            {
+                MaxTokens = 256, Model = "model", Messages = [new() { Role = Anthropic.Models.Messages.Role.User, Content = "test" }],
+            }).WithCancellation(CancellationToken.None)) { }
+        }
+        await Throws<OperationCanceledException>(() => ReadTimedStreamAsync().WaitAsync(TimeSpan.FromSeconds(5)),
+            "Anthropic browser SDK timeout remains active while reading the response body");
+        Check(waiting.IsDisposed, "Anthropic browser cancellation disposes its response stream");
+    }
+    var cancelledStream = new WaitingStream();
+    using (var http = new HttpClient(new TestHandler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+    { Content = new StreamContent(cancelledStream) }))))
+    using (var client = ShadowAgentProviders.CreateBrowser(configuration, http))
+    using (var cancellation = new CancellationTokenSource())
+    {
+        var pending = client.GetResponseAsync([new(ChatRole.User, "test")], cancellationToken: cancellation.Token);
+        await cancelledStream.ReadStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        cancellation.Cancel();
+        await Throws<OperationCanceledException>(() => pending.WaitAsync(TimeSpan.FromSeconds(5)),
+            "Anthropic browser user cancellation interrupts a stalled response body");
+        Check(cancelledStream.IsDisposed, "Anthropic browser user cancellation releases response resources");
+    }
 }
 
 AIContent CloneContent(AIContent content) => content switch
@@ -185,9 +355,15 @@ static class Streams
             """{"type":"response.created","sequence_number":0,"response":{"id":"resp_1","created_at":1,"model":"verification-model","status":"in_progress","output":[]}}""",
             """{"type":"response.output_item.added","sequence_number":1,"output_index":0,"item":""" + item + "}",
         };
+        const string reasoning = """{"type":"reasoning","id":"rs_1","summary":[],"encrypted_content":"encrypted_reasoning_fixture"}""";
+        if (tool)
+        {
+            events.Add("""{"type":"response.output_item.added","sequence_number":2,"output_index":1,"item":""" + reasoning + "}");
+            events.Add("""{"type":"response.output_item.done","sequence_number":3,"output_index":1,"item":""" + reasoning + "}");
+        }
         if (!tool) events.Add("""{"type":"response.output_text.delta","sequence_number":2,"item_id":"msg_1","output_index":0,"content_index":0,"delta":"done"}""");
-        events.Add("""{"type":"response.output_item.done","sequence_number":3,"output_index":0,"item":""" + item + "}");
-        events.Add("""{"type":"response.completed","sequence_number":4,"response":{"id":"resp_1","created_at":1,"model":"verification-model","status":"completed","store":false,"output":[""" + item + """],"usage":{"input_tokens":11,"output_tokens":4,"total_tokens":15}}}""");
+        events.Add("""{"type":"response.output_item.done","sequence_number":4,"output_index":0,"item":""" + item + "}");
+        events.Add("""{"type":"response.completed","sequence_number":5,"response":{"id":"resp_1","created_at":1,"model":"verification-model","status":"completed","store":false,"output":[""" + item + (tool ? "," + reasoning : "") + """],"usage":{"input_tokens":11,"output_tokens":4,"total_tokens":15}}}""");
         return string.Concat(events.Select(value => "data: " + value + "\n\n"));
     }
     private static string Anthropic(bool tool)
@@ -195,11 +371,18 @@ static class Streams
         string[] events =
         [
             """{"type":"message_start","message":{"id":"msg_1","type":"message","role":"assistant","model":"verification-model","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":11,"output_tokens":1}}}""",
-            tool ? """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"document_get","input":{}}}"""
+            ..(tool ? new[]
+            {
+                """{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}}""",
+                """{"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"Inspecting the document."}}""",
+                """{"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"signature_fixture"}}""",
+                """{"type":"content_block_stop","index":0}""",
+            } : []),
+            tool ? """{"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"call_1","name":"document_get","input":{}}}"""
                 : """{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}""",
-            tool ? """{"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{}"}}"""
+            tool ? """{"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"{}"}}"""
                 : """{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"done"}}""",
-            """{"type":"content_block_stop","index":0}""",
+            tool ? """{"type":"content_block_stop","index":1}""" : """{"type":"content_block_stop","index":0}""",
             """{"type":"message_delta","delta":{"stop_reason":""" + JsonSerializer.Serialize(tool ? "tool_use" : "end_turn") + ""","stop_sequence":null},"usage":{"output_tokens":4}}""",
             """{"type":"message_stop"}""",
         ];
@@ -213,6 +396,31 @@ static class Streams
 sealed class TestHandler(Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> send) : HttpMessageHandler
 {
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) => send(request, cancellationToken);
+}
+
+sealed class WaitingStream : Stream
+{
+    public bool IsDisposed { get; private set; }
+    public TaskCompletionSource ReadStarted { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    public override bool CanRead => true;
+    public override bool CanSeek => false;
+    public override bool CanWrite => false;
+    public override long Length => throw new NotSupportedException();
+    public override long Position { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+    public override void Flush() => throw new NotSupportedException();
+    public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+    public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+    public override void SetLength(long value) => throw new NotSupportedException();
+    public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    {
+        ReadStarted.TrySetResult();
+        await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+        return 0;
+    }
+    public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
+        await ReadAsync(buffer.AsMemory(offset, count), cancellationToken);
+    protected override void Dispose(bool disposing) { IsDisposed = true; base.Dispose(disposing); }
 }
 
 sealed class AuthServer : HttpMessageHandler

@@ -1,6 +1,6 @@
 # netDxf Shadow Agent Host
 
-This .NET 8 companion connects a GitHub Pages Studio tab to external MCP clients, runs the official Anthropic SDK for browser inference, supports **Sign in with ChatGPT** for ChatGPT plan usage, and can grant the Studio agent access to a local source directory and native build/test commands. The drawing and editor remain in the explicitly connected browser tab.
+This optional .NET 8 companion connects a GitHub Pages Studio tab to desktop HTTP MCP clients, supports **Sign in with ChatGPT** for ChatGPT plan usage, and can grant the Studio agent access to a local source directory and native build/test commands. The browser Studio already runs OpenAI, Anthropic and Google inference, persistent coding files, JavaScript execution and browser MCP without this host. The drawing and editor remain in the explicitly connected browser tab.
 
 ## Start the companion
 
@@ -40,13 +40,13 @@ The own `http://127.0.0.1:<port>` origin is always allowed. Other origins must b
 
 ## Anthropic and official SDK inference
 
-Connect local tools in the Studio's Agent settings, then configure the Anthropic provider with your own API key and model. A native directory or process grant is not required for provider inference. The pinned official Anthropic SDK configures an HTTP feature unavailable on WebAssembly during construction, so it runs in this companion. OpenAI and Google API-key mode can run directly in the browser.
+All three API-key providers run their official .NET SDKs directly in Studio's WebAssembly runtime. Anthropic uses the SDK's public transport interfaces with browser Fetch while retaining its official message services and streaming parser. Attaching or detaching this companion does not affect those direct provider connections. The typed bridge below remains an optional embedding API for applications that choose a native inference transport; no native directory or process grant is required for it.
 
 The browser's `CreateBrowserBridge` client sends a typed `/providers/stream` request with the bridge bearer token and per-request provider configuration. The companion constructs the official SDK and streams Microsoft's `ChatResponseUpdate` JSON in bounded NDJSON frames. Text, protected thinking signatures, tool calls/results, token usage, cancellation and terminal failures survive the connection; tools are executed by the browser harness. The companion does not retain provider API keys or automatically replay inference. Explicit endpoint overrides are validated as HTTPS or HTTP loopback and passed to the official SDK, matching direct provider configuration. The selected endpoint receives the provider credential and request content.
 
 ## ChatGPT plan sign-in
 
-In the Agent panel, connect the companion and choose **Continue with ChatGPT**. Finish the official authorization in the opened window, then return to Studio. Select the ChatGPT provider and a model available to the account. `GET /v1/models` exposes the current account model catalog after sign-in.
+In the Agent panel, configure the companion and choose **Sign in with ChatGPT**. Finish the official authorization in the opened window, then return to Studio and connect the ChatGPT companion. Select a model available to the account. `GET /v1/models` exposes the current account model catalog after sign-in.
 
 The host implements OpenAI's documented public-client flow for open-source local applications. Initial authorization uses the documented `dynamic_agent_client` registration mechanism, an application name and stable `ext_agent_host_id`. The callback returns the issued client ID; subsequent sign-ins reuse that registration. There is no bundled third-party client ID or client secret.
 

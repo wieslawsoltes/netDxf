@@ -25,9 +25,7 @@ public sealed partial class StudioAgentController
                 var previous = companion; companion = candidate;
                 try
                 {
-                    if (OperatingSystem.IsBrowser() && string.Equals(configuration.Provider.Trim(), "anthropic", StringComparison.OrdinalIgnoreCase) && configuration.ApiKey.Length != 0)
-                        ConfigureCore(configuration, force: true);
-                    else InstallTools(documentId);
+                    InstallTools(documentId);
                 }
                 catch { companion = previous; throw; }
                 candidate = null; previous?.Dispose();
@@ -44,10 +42,8 @@ public sealed partial class StudioAgentController
         lock (lifecycle)
         {
             EnsureIdle();
-            var providerDisconnected = OperatingSystem.IsBrowser() && string.Equals(configuration.Provider.Trim(), "anthropic", StringComparison.OrdinalIgnoreCase) && configuration.ApiKey.Length != 0;
-            if (providerDisconnected) ConfigureCore(configuration with { ApiKey = "" }, allowUnavailableDrawing: true, force: true);
             companion?.Dispose(); companion = null; executor.Set(BuildTools(documentId, allowUnavailableDrawing: true));
-            return new { connected = false, providerDisconnected };
+            return new { connected = false, providerDisconnected = false };
         }
     }
 }

@@ -168,12 +168,16 @@ using (var agent = new AgentSession(client, contextTools, full, ownsClient: fals
         var reasoning = new TextReasoningContent("Reasoning " + i)
         {
             ProtectedData = "provider-signature-" + i,
-            AdditionalProperties = new() { ["reasoningItemId"] = "rs_" + i, ["anthropic:redacted_thinking"] = true }
+            AdditionalProperties = new() { ["reasoningItemId"] = "rs_" + i, ["anthropic:redacted_thinking"] = true, ["shadow:reasoning-provider"] = "anthropic" }
         };
         client.EnqueueResponse(reasoning, new FunctionCallContent("inspect-" + i, "inspect", new Dictionary<string, object?>()));
     }
     client.EnqueueResponse(new TextContent("Completed the inspection."));
-    client.EnqueueResponse(new TextContent("The inspection completed. Preserve the current source revision and do not repeat completed edits."));
+    client.Enqueue((input, options, token) =>
+    {
+        Assert(input.All(message => !message.Text.Contains("provider-signature-", StringComparison.Ordinal)), "Compaction forwarded opaque provider signatures to the summarizer.");
+        return ScriptedChatClient.Response([new TextContent("The inspection completed. Preserve the current source revision and do not repeat completed edits.")], token);
+    });
     await agent.RunAsync(originalTask);
     var before = agent.ContextTokens;
     await agent.CompactAsync();
@@ -185,14 +189,16 @@ using (var agent = new AgentSession(client, contextTools, full, ownsClient: fals
     var checkpointJson = McpJson.Parse(checkpoint);
     Assert(checkpointJson.GetProperty("activeTask").GetString() == originalTask && !checkpointJson.GetProperty("messages").EnumerateArray().Any(m => m.GetProperty("role").GetString() == "user"),
         "Compacted checkpoint did not preserve the task independently of removed user messages.");
-    Assert(checkpoint.Contains("provider-signature-6", StringComparison.Ordinal) && checkpoint.Contains("rs_6", StringComparison.Ordinal), "Recent provider reasoning replay data was dropped.");
+    Assert(checkpoint.Contains("provider-signature-6", StringComparison.Ordinal) && checkpoint.Contains("rs_6", StringComparison.Ordinal)
+        && checkpoint.Contains("\"reasoningProvider\":\"anthropic\"", StringComparison.Ordinal), "Recent provider reasoning replay data or provenance was dropped.");
     using var restoredClient = new ScriptedChatClient();
     using var restored = new AgentSession(restoredClient, contextTools, full, ownsClient: false);
     restored.Import(checkpoint);
     restoredClient.Enqueue((input, options, token) =>
     {
         Assert(input.Any(m => m.Role == ChatRole.User && m.Text.Contains(originalTask, StringComparison.Ordinal)), "Resumed model input lost the original compacted task.");
-        Assert(input.SelectMany(m => m.Contents).OfType<TextReasoningContent>().Any(r => r.ProtectedData == "provider-signature-6" && r.AdditionalProperties?["reasoningItemId"] as string == "rs_6"),
+        Assert(input.SelectMany(m => m.Contents).OfType<TextReasoningContent>().Any(r => r.ProtectedData == "provider-signature-6" && r.AdditionalProperties?["reasoningItemId"] as string == "rs_6"
+            && r.AdditionalProperties?["shadow:reasoning-provider"] as string == "anthropic"),
             "Resumed input did not preserve protected reasoning and provider item identities.");
         return ScriptedChatClient.Response([new TextContent("Resumed.")], token);
     });
@@ -203,6 +209,43 @@ using (var agent = new AgentSession(client, contextTools, full, ownsClient: fals
     var stable = restored.Export();
     Throws<ArgumentException>(() => restored.Import(malicious.ToJsonString()), "Checkpoint import permitted an arbitrary system role.");
     Assert(restored.Export() == stable, "Failed checkpoint validation partially replaced session or workspace state.");
+}
+
+// Companion JSON turns generic metadata values into JsonElement; checkpointing must retain service IDs.
+using (var client = new ScriptedChatClient())
+using (var agent = new AgentSession(client, contextTools, full, ownsClient: false))
+{
+    var update = new ChatResponseUpdate(ChatRole.Assistant,
+    [
+        new TextReasoningContent(null)
+        {
+            ProtectedData = "bridge-encrypted-reasoning",
+            AdditionalProperties = new() { ["reasoningItemId"] = "rs_bridge", ["shadow:reasoning-provider"] = "openai" }
+        },
+        new TextContent("Bridge response complete.")
+    ]) { FinishReason = ChatFinishReason.Stop };
+    var frame = JsonSerializer.Deserialize<ShadowAgentBridgeFrame>(
+        JsonSerializer.Serialize(new ShadowAgentBridgeFrame("update", update), ShadowAgentBridgeRequest.JsonOptions),
+        ShadowAgentBridgeRequest.JsonOptions)!;
+    Assert(frame.Update!.Contents.OfType<TextReasoningContent>().Single().AdditionalProperties?["reasoningItemId"] is JsonElement,
+        "The bridge checkpoint fixture did not exercise JSON-shaped provider metadata.");
+    client.EnqueueResponse(frame.Update.Contents.ToArray());
+    await agent.RunAsync("Retain the bridge reasoning for continuation.");
+    var reasoning = agent.Transcript().SelectMany(message => message.Contents).Single(content => content.Kind == "reasoning");
+    Assert(reasoning.ReasoningItemId == "rs_bridge" && reasoning.ReasoningProvider == "openai" && reasoning.ProtectedData == "bridge-encrypted-reasoning",
+        "Bridge reasoning lost its service ID, provenance or encrypted content when exported.");
+    using var restoredClient = new ScriptedChatClient();
+    using var restored = new AgentSession(restoredClient, contextTools, full, ownsClient: false);
+    restored.Import(agent.Export());
+    restoredClient.Enqueue((input, options, token) =>
+    {
+        var replay = input.SelectMany(message => message.Contents).OfType<TextReasoningContent>().Single();
+        Assert(replay.AdditionalProperties?["reasoningItemId"] as string == "rs_bridge"
+            && replay.AdditionalProperties?["shadow:reasoning-provider"] as string == "openai" && replay.ProtectedData == "bridge-encrypted-reasoning",
+            "Resumed bridge input lost the complete provider reasoning identity.");
+        return ScriptedChatClient.Response([new TextContent("Resumed.")], token);
+    });
+    await restored.RunAsync("");
 }
 
 // Large results are available through workspace paging; they are not lost to context truncation.
@@ -234,10 +277,14 @@ workspace.Import(originalFiles);
 Assert(workspace.Read("src/main.cs").Version > firstFile.Version, "Import resurrected a stale CAS version.");
 Throws<InvalidOperationException>(() => workspace.Write("src/main.cs", "stale", firstFile.Version), "A stale pre-import version overwrote restored content.");
 var version = workspace.Read("src/main.cs").Version;
+Throws<ArgumentException>(() => workspace.Write("nul.txt", "binary\0data", 0), "Workspace text writes accepted binary NUL data that cannot be exported.");
+Throws<ArgumentException>(() => workspace.Apply([new("src/main.cs", "changed", version), new("nul.txt", "binary\0data", 0)]), "Workspace text batch accepted binary NUL data.");
+Assert(workspace.Read("src/main.cs").Version == version && workspace.List().Count == 1, "Binary file rejection partially changed the workspace.");
 Throws<InvalidOperationException>(() => workspace.Write("src/main.cs", new string('x', 5000), version), "Workspace capacity limit was not enforced.");
 Assert(workspace.Read("src/main.cs").Version == version && workspace.Read("src/main.cs").Content == "class C {}", "Oversized write was not atomic.");
 
-Console.WriteLine($"Agent verification passed: {checks} checks covering live DXF mutations, provider retries, duplicate calls, approvals, stop/resume, concurrency, compaction, protected reasoning, checkpoint validation and workspace atomicity.");
+checks += await BrowserCodeVerification.RunAsync();
+Console.WriteLine($"Agent verification passed: {checks} checks covering live DXF mutations, provider retries, duplicate calls, approvals, stop/resume, concurrency, compaction, protected reasoning, checkpoint validation, atomic file batches and isolated code transactions.");
 
 sealed class ScriptedChatClient : IChatClient
 {

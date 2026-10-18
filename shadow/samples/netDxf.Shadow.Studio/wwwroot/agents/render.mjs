@@ -28,7 +28,10 @@ export function glyph(name = 'agent') {
     upload: 'M12 16V3M7 8l5-5 5 5M3 16v5h18v-5', pin: 'm8 2 8 2-1 5 3 4-6 1-5 8 2-9-3-4 3-2z',
     check: 'm4 12 5 5L20 6', search: 'M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0m-2 6 6 6',
     key: 'M14 9a5 5 0 1 1-10 0 5 5 0 0 1 10 0m-2 4 8 8m-3-3 3-3m-6 0 3-3',
-    arrow: 'M4 12h16M14 6l6 6-6 6', retry: 'M3 9a9 9 0 1 1 1 8M3 3v7h7'
+    arrow: 'M4 12h16M14 6l6 6-6 6', retry: 'M3 9a9 9 0 1 1 1 8M3 3v7h7',
+    folder: 'M3 5h7l2 3h9v12H3zM3 8h9', archive: 'M3 3h18v5H3zM5 8v13h14V8M9 12h6',
+    play: 'm7 4 14 8-14 8z', trash: 'M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7',
+    storage: 'M4 5c0-4 16-4 16 0s-16 4-16 0v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0'
   };
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('class', 'agent-icon'); svg.setAttribute('aria-hidden', 'true');
@@ -46,6 +49,31 @@ export function field(label, control, help) {
 }
 export function code(value, label = 'JSON') {
   return node('div', { class: 'agent-code' }, [node('div', { class: 'agent-code-label', text: label }), node('pre', {}, [node('code', { text: readable(value) })])]);
+}
+
+/** Execution receipts keep output, failures, return values and committed files individually readable. */
+export function codeExecution(value) {
+  let result = value;
+  try {
+    if (typeof result === 'string') result = JSON.parse(result);
+    if (typeof result?.text === 'string') result = JSON.parse(result.text);
+  } catch { return code(value, 'Browser worker result'); }
+  if (result?.runtime !== 'isolated-javascript-worker') return code(value, 'Browser worker result');
+  const success = result.exitCode === 0 && !result.timedOut;
+  const element = node('div', { class: `agent-execution-result${success ? ' success' : ' failed'}` });
+  element.append(node('div', { class: 'agent-execution-summary' }, [glyph(success ? 'check' : 'stop'),
+    node('strong', { text: result.timedOut ? 'Execution timed out' : success ? 'Execution completed' : `Execution failed · exit ${result.exitCode}` }),
+    node('span', { class: 'grow' }), node('small', { text: Number.isFinite(result.elapsedMilliseconds) ? `${Math.round(result.elapsedMilliseconds).toLocaleString()} ms` : '' })]));
+  if (result.standardOutput) element.append(code(result.standardOutput, 'Console output'));
+  if (result.standardError) element.append(code(result.standardError, 'Console errors'));
+  if (result.result !== undefined && result.result !== null) element.append(code(result.result, 'Return value'));
+  if (result.truncated) element.append(node('p', { class: 'agent-muted', text: 'Console output reached its display budget.' }));
+  const changed = Array.isArray(result.changedFiles) ? result.changedFiles : [], deleted = Array.isArray(result.deletedFiles) ? result.deletedFiles : [];
+  element.append(node('p', { class: 'agent-execution-commit', text: result.committed ? `${changed.length} files saved · ${deleted.length} files deleted` : 'Staged file changes were discarded.' }));
+  if (changed.length || deleted.length) element.append(node('details', {}, [node('summary', { text: 'Workspace changes' }),
+    node('ul', {}, [...changed.slice(0, 512).map(file => node('li', { text: `${file.path} · version ${file.version}` })), ...deleted.slice(0, 512).map(path => node('li', { text: `${path} · deleted` }))])]));
+  element.append(node('details', { class: 'agent-execution-receipt' }, [node('summary', { text: 'Full execution receipt' }), code(result, 'Receipt')]));
+  return element;
 }
 
 function inline(text) {

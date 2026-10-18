@@ -19,10 +19,14 @@ The package provides streaming inference, tool execution, explicit permission mo
 | --- | --- | --- |
 | `openai` | Official Responses SDK and an API key. | Official Responses SDK with a session API key. |
 | `google` / `gemini` | Official Google Gen AI SDK and an API key. | Official Google Gen AI SDK with a session API key. |
-| `anthropic` | Official Anthropic SDK and an API key. | Typed streaming bridge to the local companion, which runs the official SDK. |
+| `anthropic` | Official Anthropic SDK and an API key. | Official SDK message services and `IChatClient` adapter over the package's browser Fetch transport; no companion. |
 | `chatgpt` | Official Responses SDK with a valid Sign in with ChatGPT access token. | Official Responses SDK through the local ChatGPT companion; browser holds only a bridge token. |
 
-The pinned Anthropic SDK eagerly configures `HttpClientHandler.AutomaticDecompression` in its options constructor, a feature unavailable on WebAssembly. Supplying a custom `HttpClient` does not avoid that constructor. The companion keeps the official SDK intact and gives the browser an `IChatClient` stream. OpenAI and Google do not require that companion for their API-key mode, subject to the selected endpoint's browser/CORS support.
+All three API-key providers run in WebAssembly without a companion. Provider endpoints must allow the application's origin through CORS. Requests explicitly enable browser response streaming, use API credentials without cookies and never persist a provider key as part of a checkpoint.
+
+The pinned Anthropic SDK's default desktop client eagerly configures `HttpClientHandler.AutomaticDecompression`, which is unavailable on WebAssembly. The browser adapter implements the SDK's public `IAnthropicClient` and `IAnthropicClientWithRawResponse` transport interfaces. The official SDK still supplies `MessageService`, `MessageServiceWithRawResponse`, typed request bodies, SSE parsing, tool conversion, usage accounting, thinking signatures and `AsIChatClient`. The adapter forwards the SDK's serialized body through `HttpClient`/Fetch and sends Anthropic's explicit `anthropic-dangerous-direct-browser-access: true` header. It uses no private reflection, modified provider assembly or separate JavaScript inference library. The provider verifier exercises this public SDK integration whenever the pinned package changes.
+
+`ShadowAgentProviders.Create(options)` selects browser transport automatically on WebAssembly. `ShadowAgentProviders.CreateBrowser(options, httpClient)` makes the same selection explicitly on any runtime, which lets applications validate browser request behavior using an injected `HttpClient`. The caller retains ownership of an injected client. Responses remain streamed, SDK timeouts cover body reads, cancellation disposes the stream, HTTP error bodies are bounded, and `Retry-After` is passed to the harness. An Anthropic turn completes only after `message_stop`; a connection lost after `stop_reason` still fails the turn.
 
 Official sources: [OpenAI .NET](https://github.com/openai/openai-dotnet), [Anthropic C#](https://github.com/anthropics/anthropic-sdk-csharp), [Google Gen AI .NET](https://github.com/googleapis/dotnet-genai), [Microsoft IChatClient](https://learn.microsoft.com/en-us/dotnet/ai/ichatclient).
 
@@ -110,6 +114,26 @@ Duplicate function-call IDs in one response are removed before execution. Comple
 
 `MemoryAgentWorkspace` is bounded, uses forward-slash relative paths, validates imports before replacing live data and issues fresh versions on import. Its default budget is 512 files and 16 MiB.
 
+### Atomic files and browser code
+
+`MemoryAgentWorkspace` also implements `IAgentTransactionalWorkspace`. Its `Apply` method validates every path, expected version and the final capacity before committing a batch. A null content deletes an existing file; expected version zero creates an absent file. If any edit conflicts, the entire batch leaves the workspace unchanged:
+
+```csharp
+IAgentTransactionalWorkspace files = new MemoryAgentWorkspace();
+files.Apply([
+    new AgentFileChange("input.json", "[2, 3, 5]", ExpectedVersion: 0),
+    new AgentFileChange("sum.js", "return JSON.parse(workspace.read('input.json')).reduce((a,b) => a+b, 0);", ExpectedVersion: 0),
+]);
+```
+
+`IAgentCodeRunner` is a portable host contract for isolated JavaScript execution. It receives an `AgentCodeRequest` containing source, an immutable file snapshot, arguments, a deadline and output budget. It returns an `AgentCodeResult` with logs, exit status, timing, a JSON value and staged `AgentCodeChange` entries. The host supplies its runtime implementation; the package has no browser UI dependency.
+
+`AgentCodeTools.Register(registry, files, runner)` adds the read-only `workspace_runtime` discovery tool and the mutating `workspace_run_javascript` execution tool. The latter accepts exactly one of inline `code` or a workspace `path`, optional string `arguments`, and `timeoutSeconds` from 1 to 120. It validates the complete runtime receipt before committing successful edits with the original file versions. Errors, cancellation, timeout, malformed receipts and version conflicts commit nothing. These tools use the same agent permission and approval policy as drawing edits.
+
+The browser Studio supplies a dedicated worker in an opaque-origin frame. Code uses an async function body with `await`, `return`, `workspace.read/write/delete/list`, `args`, `console`, `assert`, and `WebAssembly`. The worker receives no Studio objects or provider credentials and cannot access the network or page storage. Stopping a run terminates its worker before another execution starts. See the [browser coding guide](../../docs/coding-agents.md) for UI usage, persistent workspaces, project ZIP import/export and reviewed folder writes.
+
+### Native commands
+
 Native applications can explicitly attach a source directory and process capability:
 
 ```csharp
@@ -160,9 +184,9 @@ restoredAgent.Import(checkpointJson);
 await restoredAgent.RunAsync(""); // Continue the retained task.
 ```
 
-Checkpoints are versioned JSON containing session identity, active task, summary, transcript, pins, workspace files and plan. They preserve portable text and tool call/results, provider reasoning signatures/protected data, OpenAI reasoning item IDs and Anthropic redacted-thinking markers. Gemini's adjacent thought-signature content remains ordered correctly. The ChatGPT normalizer restores the app's `shadow` function-call namespace when the current .NET SDK re-encodes portable history.
+Checkpoints are versioned JSON containing session identity, active task, summary, transcript, pins, workspace files and plan. They preserve portable text and tool call/results, provider reasoning signatures/protected data with their `reasoningProvider` origin, OpenAI reasoning item IDs and Anthropic redacted-thinking markers. Gemini's adjacent thought-signature content remains ordered correctly. The ChatGPT normalizer restores the app's `shadow` function-call namespace when the current .NET SDK re-encodes portable history.
 
-Checkpoints exclude provider API keys, OAuth credentials, SDK clients, transport objects, permission options and arbitrary system instructions. The importing host supplies current credentials, instructions, tools and permission policy. Import validates roles, collection budgets, paths and complete call/result pairs before changing the session. Resume against the original provider/model when its protected reasoning is retained. A checkpoint does not serialize the live DXF document or roll back its edits; restore the document independently and inspect fresh revision/file receipts before further changes.
+Checkpoints exclude provider API keys, OAuth credentials, SDK clients, transport objects, permission options and arbitrary system instructions. The importing host supplies current credentials, instructions, tools and permission policy. Import validates roles, collection budgets, paths and complete call/result pairs before changing the session. Provider clients replay reasoning only when its recorded origin matches the selected provider; Google/Gemini aliases share an origin, while OpenAI API and ChatGPT subscription sessions remain distinct. Switching providers keeps visible conversation and tool call/result pairs but omits incompatible reasoning from inference. Untagged reasoning in legacy checkpoints is also omitted because its opaque signatures cannot be attributed safely. The stored checkpoint is preserved, so returning to its original provider can reuse tagged continuation data. A checkpoint does not serialize the live DXF document or roll back its edits; restore the document independently and inspect fresh revision/file receipts before further changes.
 
 Transcript and workspace content may contain user data or secrets that a user/tool deliberately included. The optional session `redactor` is applied to events and exported text; hosts should redact their known session credentials and choose their own persistence policy. The package does not write checkpoints, API keys or OAuth tokens to disk automatically.
 

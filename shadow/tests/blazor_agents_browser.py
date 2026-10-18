@@ -8,7 +8,7 @@ No API key, OAuth account, CAD server or development host is required.
 from __future__ import annotations
 import argparse
 from collections import deque
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
@@ -22,6 +22,8 @@ import traceback
 from urllib.request import Request, urlopen
 from playwright.sync_api import sync_playwright, expect
 from blazor_studio_browser import static_host
+from browser_folder_checks import verify_browser_folder
+from browser_storage_checks import verify_browser_recovery_storage
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / 'artifacts/blazor-agents'
@@ -48,22 +50,32 @@ def openai_stream(text='Complete.', tool=None, call_id='call_browser'):
     return ''.join('data: ' + json.dumps(value) + '\n\n' for value in values)
 
 
-def anthropic_stream():
+def anthropic_stream(tool=None):
+    block_index = 1 if tool else 0
     values = [
         {'type': 'message_start', 'message': {'id': 'msg_browser', 'type': 'message', 'role': 'assistant',
          'model': 'verification-model', 'content': [], 'stop_reason': None, 'stop_sequence': None,
          'usage': {'input_tokens': 200, 'output_tokens': 1}}},
-        {'type': 'content_block_start', 'index': 0, 'content_block': {'type': 'text', 'text': ''}},
-        {'type': 'content_block_delta', 'index': 0, 'delta': {'type': 'text_delta', 'text': 'Anthropic browser SDK complete.'}},
-        {'type': 'content_block_stop', 'index': 0},
-        {'type': 'message_delta', 'delta': {'stop_reason': 'end_turn', 'stop_sequence': None}, 'usage': {'output_tokens': 10}},
+        *([
+            {'type': 'content_block_start', 'index': 0, 'content_block': {'type': 'thinking', 'thinking': '', 'signature': ''}},
+            {'type': 'content_block_delta', 'index': 0, 'delta': {'type': 'thinking_delta', 'thinking': 'Checking the workspace.'}},
+            {'type': 'content_block_delta', 'index': 0, 'delta': {'type': 'signature_delta', 'signature': 'signature_fixture'}},
+            {'type': 'content_block_stop', 'index': 0},
+        ] if tool else []),
+        {'type': 'content_block_start', 'index': block_index, 'content_block':
+            {'type': 'tool_use', 'id': 'anthropic_browser_call', 'name': tool[0], 'input': {}} if tool else {'type': 'text', 'text': ''}},
+        {'type': 'content_block_delta', 'index': block_index, 'delta':
+            {'type': 'input_json_delta', 'partial_json': json.dumps(tool[1])} if tool else {'type': 'text_delta', 'text': 'Anthropic browser SDK complete.'}},
+        {'type': 'content_block_stop', 'index': block_index},
+        {'type': 'message_delta', 'delta': {'stop_reason': 'tool_use' if tool else 'end_turn', 'stop_sequence': None}, 'usage': {'output_tokens': 10}},
         {'type': 'message_stop'},
     ]
     return ''.join('event: ' + value['type'] + '\ndata: ' + json.dumps(value) + '\n\n' for value in values)
 
 
-def google_stream():
+def google_stream(tool=None):
     return 'data: ' + json.dumps({'candidates': [{'index': 0, 'content': {'role': 'model', 'parts': [
+        {'functionCall': {'name': tool[0], 'args': tool[1]}, 'thoughtSignature': 'c2lnbmF0dXJl'} if tool else
         {'text': 'Google browser SDK complete.'}]}, 'finishReason': 'STOP'}],
         'modelVersion': 'verification-model', 'responseId': 'google_browser',
         'usageMetadata': {'promptTokenCount': 200, 'candidatesTokenCount': 10, 'totalTokenCount': 210}}) + '\n\n'
@@ -112,11 +124,12 @@ def companion_fixture(origin, executable):
             log.close(); upstream.shutdown(); upstream.server_close(); thread.join(timeout=5)
 
 
-def verify(base, mount, browser, passed, companion, upstream, native_workspace, upstream_requests):
+def verify(base, mount, browser, passed, companion=None, upstream=None, native_workspace=None, upstream_requests=None):
     context = browser.new_context(viewport={'width': 1600, 'height': 1000}, accept_downloads=True)
     page = context.new_page(); page.set_default_timeout(30000)
-    errors, requests, replies = [], [], deque()
+    errors, requests, replies, network = [], [], deque(), []
     page.on('pageerror', lambda error: errors.append(str(error)))
+    page.on('request', lambda request: network.append(request.url))
     tag = 'root' if mount == '/' else 'subpath'
 
     def check(name, value=True):
@@ -255,33 +268,194 @@ def verify(base, mount, browser, passed, companion, upstream, native_workspace, 
         check('portable checkpoint restores transcript, files and pinned context',
               invoke('AgentPoll', 0)['pins'][0]['id'] == pin['id'] and invoke('AgentWorkspaceRead', 'review.txt')['content'] == 'Approved content')
 
-        configure('google', 'readOnly')
-        replies.append(google_stream()); send('Verify Google uses the browser agent session.')
+        configure('google', 'fullAccess')
+        replies.extend([google_stream(('workspace_write', {'path': 'google.txt', 'content': 'Google browser tool call', 'expectedVersion': 0})), google_stream()])
+        send('Verify Google uses the browser agent session and writes a workspace file.')
         expect(page.get_by_role('log', name='Agent conversation and tool activity')).to_contain_text('Google browser SDK complete.')
         check('official Google SDK streams in real WebAssembly', wait_idle()['status'] == 'completed')
+        check('Google tool calls and thought signatures survive browser continuation', invoke('AgentWorkspaceRead', 'google.txt')['content'] == 'Google browser tool call'
+              and 'c2lnbmF0dXJl' in json.dumps(requests[-1]['body']) and 'functionResponse' in json.dumps(requests[-1]['body']))
 
-        page.get_by_role('tab', name='Settings', exact=True).click()
-        page.get_by_label('External MCP companion endpoint', exact=True).fill(companion)
-        page.get_by_label('External MCP companion access token', exact=True).fill(BRIDGE_TOKEN)
-        page.get_by_role('button', name='Connect local tools', exact=True).click()
-        expect(page.locator('.agent-external-mcp .agent-auth-status')).to_contain_text('native tools')
-        check('browser attaches an authenticated native workspace', 'companion_workspace_read' in {t['name'] for t in invoke('AgentMcpTools')})
-        native = call('companion_workspace_read', {'path': 'hello.cs'})
-        check('browser reads real companion source files', native['content'] == '// Native project\n')
-        configure('openai', 'fullAccess')
-        call('companion_workspace_write', {'path': f'{tag}.txt', 'content': 'Native browser write', 'expectedVersion': 0})
-        check('browser commits versioned native file changes', (native_workspace / f'{tag}.txt').read_text() == 'Native browser write')
-        executed = call('companion_workspace_execute', {'executable': 'dotnet', 'arguments': ['--version'], 'timeoutSeconds': 20})
-        check('browser can execute the explicitly enabled native process tool', executed['exitCode'] == 0 and executed['standardOutput'].strip())
-        requests_before = len(upstream_requests)
-        configure('anthropic', 'readOnly', upstream)
-        send('Verify Anthropic uses its official SDK through the local companion.')
+        configure('anthropic', 'fullAccess')
+        requests_before = len(requests)
+        replies.extend(['rate_limit', anthropic_stream(('workspace_write', {'path': 'anthropic.txt', 'content': 'Direct official SDK', 'expectedVersion': 0})), anthropic_stream()])
+        send('Use the official Anthropic SDK directly in the browser, create a file, and finish.')
         expect(page.get_by_role('log', name='Agent conversation and tool activity')).to_contain_text('Anthropic browser SDK complete.')
-        check('official Anthropic SDK streams through the companion into the WASM harness', wait_idle()['status'] == 'completed' and len(upstream_requests) == requests_before + 1)
-        check('companion token is absent from checkpoint, public UI and browser storage',
-              BRIDGE_TOKEN not in invoke('AgentExport') and BRIDGE_TOKEN not in json.dumps(call('studio_ui_inspect'))
-              and page.evaluate('(key) => !JSON.stringify({...localStorage,...sessionStorage}).includes(key)', BRIDGE_TOKEN))
+        check('official Anthropic SDK streams and retries directly in real WebAssembly', wait_idle()['status'] == 'completed' and len(requests) == requests_before + 3)
+        check('Anthropic tool calls execute and return their result without a companion', invoke('AgentWorkspaceRead', 'anthropic.txt')['content'] == 'Direct official SDK'
+              and any(block.get('type') == 'tool_result' for message in requests[-1]['body']['messages'] for block in message.get('content', []) if isinstance(block, dict)))
+        check('Anthropic browser transport supplies official direct-access headers', requests[-1]['headers'].get('anthropic-dangerous-direct-browser-access') == 'true'
+              and requests[-1]['headers'].get('x-api-key') == KEY)
+        check('Anthropic thinking signatures survive browser tool continuation', 'signature_fixture' in json.dumps(requests[-1]['body']))
+        check('switching providers omits incompatible Google reasoning signatures from Anthropic requests',
+              all('c2lnbmF0dXJl' not in json.dumps(request['body']) for request in requests[requests_before:]))
+        configure('google', 'fullAccess')
+        requests_before_google = len(requests)
+        replies.append(google_stream())
+        send('Continue this mixed-provider workspace using Google.')
+        deadline = time.monotonic() + 30
+        while len(requests) == requests_before_google:
+            if time.monotonic() > deadline: raise AssertionError('Google provider switch did not make an inference request.')
+            page.wait_for_timeout(50)
+        check('switching back to Google preserves its signatures and omits incompatible Anthropic thinking',
+              wait_idle()['status'] == 'completed' and 'signature_fixture' not in json.dumps(requests[-1]['body'])
+              and 'c2lnbmF0dXJl' in json.dumps(requests[-1]['body']))
+        check('all three API-key providers are browser-native capabilities', set(invoke('AgentCapabilities')['directBrowserProviders']) == {'openai', 'anthropic', 'google'})
+        check('browser-only tools do not require a companion catalog', not any(t['name'].startswith('companion_') for t in invoke('AgentMcpTools')))
 
+        runtime = call('workspace_runtime')
+        check('browser coding runtime is discoverable through MCP', runtime['runtime'] == 'isolated-javascript-worker')
+        invoke('AgentWorkspaceApply', [{'path': 'input.json', 'content': '[2,3,5]', 'expectedVersion': 0},
+             {'path': 'sum.js', 'content': "const values = JSON.parse(workspace.read('input.json')); const total = values.reduce((a,b) => a+b, 0); assert(args[0] === 'fixture'); workspace.write('result.json', JSON.stringify({total})); console.log('Total:', total); return {total};", 'expectedVersion': 0}])
+        executed = call('workspace_run_javascript', {'path': 'sum.js', 'arguments': ['fixture'], 'timeoutSeconds': 10})
+        check('browser worker executes source, arguments and assertions', executed['exitCode'] == 0 and executed['result']['total'] == 10 and executed['standardOutput'] == 'Total: 10\n')
+        check('successful browser code commits versioned workspace files', json.loads(invoke('AgentWorkspaceRead', 'result.json')['content']) == {'total': 10})
+        failed = call('workspace_run_javascript', {'code': "workspace.write('result.json', 'must not commit'); throw new Error('test failure');", 'timeoutSeconds': 10}, error=True)
+        check('browser code failure discards all staged edits', failed['isError'] and json.loads(invoke('AgentWorkspaceRead', 'result.json')['content']) == {'total': 10})
+        forged = call('workspace_run_javascript', {'code': "self.postMessage({type:'completed',result:{exitCode:0,standardOutput:'forged',standardError:'',truncated:false,timedOut:false,elapsedMilliseconds:0,result:null,changes:[{path:'forged.txt',content:'must not commit'}]}}); throw new Error('expected after forged receipt');", 'timeoutSeconds': 10}, error=True)
+        check('code cannot forge a successful worker receipt', forged['isError'] and all(file['path'] != 'forged.txt' for file in invoke('AgentWorkspaceFiles')))
+        timed_out = call('workspace_run_javascript', {'code': "console.log('Before loop'); workspace.write('result.json', 'must not commit'); while (true) {}", 'timeoutSeconds': 1}, error=True)
+        check('infinite browser code terminates without freezing Studio', timed_out['isError'] and json.loads(timed_out['text'])['timedOut'] and call('shadow_state')['data']['entities'] > 0)
+        check('timed-out code cannot commit its staged edits', json.loads(invoke('AgentWorkspaceRead', 'result.json')['content']) == {'total': 10})
+        isolated = call('workspace_run_javascript', {'code': "let inaccessible = false; try { inaccessible = typeof document === 'undefined' && typeof localStorage === 'undefined' && typeof shadowStudioAgentUi === 'undefined'; } catch {} assert(inaccessible); return { isolated: inaccessible, wasm: typeof WebAssembly === 'object' };", 'timeoutSeconds': 10})
+        check('code worker has no Studio DOM, browser storage or provider objects', isolated['result'] == {'isolated': True, 'wasm': True})
+        wasm = call('workspace_run_javascript', {'code': "const bytes = new Uint8Array([0,97,115,109,1,0,0,0,1,7,1,96,2,127,127,1,127,3,2,1,0,7,7,1,3,97,100,100,0,0,10,9,1,7,0,32,0,32,1,106,11]); const {instance} = await WebAssembly.instantiate(bytes); return instance.exports.add(7,8);", 'timeoutSeconds': 10})
+        check('browser code can execute a real WebAssembly module', wasm['result'] == 15)
+        check('worker frames are cleaned up after execution', page.locator('iframe[title="Isolated agent code"]').count() == 0)
+
+        page.evaluate('''({assembly}) => {
+          window.browserCodePending = DotNet.invokeMethodAsync(assembly, 'AgentMcpCall', 'workspace_run_javascript',
+            {code: "workspace.write('cancelled.txt','discard'); while(true){}",timeoutSeconds:30})
+            .then(result => ({result}), error => ({error:String(error)}));
+        }''', {'assembly': ASSEMBLY})
+        page.locator('iframe[title="Isolated agent code"]').wait_for(state='attached')
+        invoke('AgentCancel')
+        cancelled = page.evaluate('() => window.browserCodePending')
+        check('agent cancellation stops an active browser worker and discards edits',
+              (cancelled.get('error') or cancelled.get('result', {}).get('isError'))
+              and all(file['path'] != 'cancelled.txt' for file in invoke('AgentWorkspaceFiles')))
+        page.locator('iframe[title="Isolated agent code"]').wait_for(state='detached')
+        wait_idle()
+
+        page.get_by_role('tab', name='MCP', exact=True).click()
+        check('browser MCP access requires an explicit UI grant', page.evaluate('() => typeof shadowStudioBrowserMcp === "undefined"'))
+        page.get_by_role('button', name='Enable browser MCP', exact=True).click()
+        page.wait_for_function('() => !!globalThis.shadowStudioBrowserMcp?.status().enabled')
+        protocol = page.evaluate('''async () => {
+          const connection = await shadowStudioBrowserMcp.createConnection(), port = connection.port;
+          const pending = new Map();
+          port.onmessage = event => { const callback = pending.get(event.data.id); if(callback) { pending.delete(event.data.id); callback(event.data); } };
+          port.start();
+          const send = message => new Promise(resolve => { pending.set(message.id,resolve); port.postMessage(message); });
+          const initialized = await send({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2025-11-25',capabilities:{},clientInfo:{name:'browser-verification',version:'1.0'}}});
+          port.postMessage({jsonrpc:'2.0',method:'notifications/initialized'});
+          const listed = await send({jsonrpc:'2.0',id:2,method:'tools/list',params:{}});
+          const change = {jsonrpc:'2.0',id:3,method:'tools/call',params:{name:'workspace_write',arguments:{path:'browser-mcp.txt',content:'Official MCP over MessagePort',expectedVersion:0}}};
+          const written = await send(change), duplicate = await send(change);
+          const collision = await send({...change,params:{...change.params,arguments:{...change.params.arguments,content:'must not execute'}}});
+          await connection.close(); port.close();
+          return {initialized,listed,written,duplicate,collision};
+        }''')
+        check('official MCP initialization and tool discovery run over a browser MessagePort',
+              'result' in protocol['initialized'] and any(tool['name'] == 'shadow_read' for tool in protocol['listed']['result']['tools']))
+        check('browser MCP executes the same versioned tools without a server',
+              not protocol['written']['result'].get('isError') and invoke('AgentWorkspaceRead', 'browser-mcp.txt')['content'] == 'Official MCP over MessagePort')
+        check('duplicate browser MCP requests replay receipts without repeating writes', protocol['written'] == protocol['duplicate'] and 'error' in protocol['collision'])
+        page.get_by_role('button', name='Disable browser MCP', exact=True).click()
+        page.wait_for_function('() => typeof shadowStudioBrowserMcp === "undefined"')
+        check('disabling browser MCP revokes the page capability', True)
+
+        # Exercise real file-picker uploads and downloaded portable ZIP bytes.
+        page.get_by_role('tab', name='Files', exact=True).click()
+        page.get_by_text('Project import, export & folder access', exact=True).click()
+        page.get_by_label('Import workspace text files', exact=True).set_input_files([
+            {'name': 'uploaded.txt', 'mimeType': 'text/plain', 'buffer': b'Imported through browser picker\n'},
+            {'name': 'check.js', 'mimeType': 'text/javascript', 'buffer': b"assert(workspace.read('uploaded.txt').includes('browser')); return 42;"}])
+        expect(page.get_by_role('button', name='Apply selected files', exact=True)).to_be_enabled()
+        page.get_by_role('button', name='Apply selected files', exact=True).click()
+        expect(page.locator('.agent-alert')).to_contain_text('Imported 2 files')
+        check('browser file import applies reviewed files atomically', invoke('AgentWorkspaceRead', 'uploaded.txt')['content'] == 'Imported through browser picker\n')
+        with page.expect_download() as download:
+            page.get_by_role('button', name='Download ZIP', exact=True).click()
+        downloaded = Path(download.value.path()).read_bytes()
+        import io, zipfile
+        with zipfile.ZipFile(io.BytesIO(downloaded)) as archive:
+            check('downloaded ZIP contains the complete real browser workspace', archive.read('uploaded.txt') == b'Imported through browser picker\n' and 'sum.js' in archive.namelist())
+        compressed = io.BytesIO()
+        with zipfile.ZipFile(compressed, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr('zipped/nested.txt', 'Compressed UTF-8: zażółć\n')
+        page.get_by_label('Import workspace ZIP or bundle', exact=True).set_input_files({'name': 'project.zip', 'mimeType': 'application/zip', 'buffer': compressed.getvalue()})
+        expect(page.get_by_role('button', name='Apply selected files', exact=True)).to_be_enabled()
+        page.get_by_role('button', name='Apply selected files', exact=True).click()
+        expect(page.locator('.agent-alert')).to_contain_text('Imported 1 file')
+        check('browser imports a compressed UTF-8 ZIP through the real picker', invoke('AgentWorkspaceRead', 'zipped/nested.txt')['content'] == 'Compressed UTF-8: zażółć\n')
+
+        folder = verify_browser_folder(page)
+        check('real browser folder handles read text files and skip generated directories',
+              folder['realFileHandles'] and folder['importedTextFiles'] == 2 and folder['skippedGeneratedDirectories'] == 1)
+        check('folder publishing rejects external changes before writing any selected file',
+              folder['externalChangeRejected'] and folder['noPartialWritesBeforeValidation'] and folder['reviewDetectsExternalConflict'])
+        check('reviewed browser folder changes persist through real writable file streams',
+              folder['savedContents'] and sorted(folder['savedPaths']) == ['new.md', 'src/check.mjs'])
+
+        recovery = verify_browser_recovery_storage(page)
+        check('browser recovery migrates existing checkpoints without losing drafts or storing credentials',
+              recovery['schemaVersion'] == 2 and recovery['migratedCheckpointUnchanged'] and recovery['credentialsAbsent'])
+        check('saved-workspace listing and pruning read only compact metadata',
+              recovery['metadataAllowlisted'] and recovery['fullCheckpointReadsForListAndSave'] == 0)
+        check('browser recovery transactions preserve prior data after quota and deletion failures',
+              recovery['failedSaveRolledBack'] and recovery['failedReplacementPreservedPrevious'] and recovery['failedDeleteRolledBack'])
+        check('browser recovery enforces file-count and byte retention atomically',
+              recovery['countRetention'] == 10 and recovery['byteRetention'] <= 64 * 1024 * 1024
+              and recovery['metadataAndCheckpointsAgree'] and recovery['deleteRemovesBoth'])
+
+        # Save an idle checkpoint, inspect real IndexedDB, reload and explicitly restore it.
+        page.get_by_role('tab', name='Context', exact=True).click()
+        page.get_by_role('button', name='Save checkpoint now', exact=True).click()
+        expect(page.locator('.agent-storage-status')).to_contain_text('Saved on this device')
+        stored = page.evaluate('''async () => await new Promise((resolve,reject) => {
+          const request = indexedDB.open('netdxf-shadow-agents-v1');
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => { const database = request.result, transaction = database.transaction('sessions','readonly');
+            const read = transaction.objectStore('sessions').getAll(); read.onsuccess = () => { resolve(read.result); database.close(); }; read.onerror = () => reject(read.error); };
+        })''')
+        check('IndexedDB retains a complete checkpoint without provider credentials', any('uploaded.txt' in item['checkpoint'] for item in stored) and KEY not in json.dumps(stored))
+        if not companion:
+            check('browser-only session never contacts a loopback companion', all(not url.startswith(('http://127.0.0.1:', 'http://localhost:')) or url.startswith(base + '/') for url in network))
+        page.reload(); page.wait_for_function('document.documentElement.dataset.shadowReady === "true"')
+        page.get_by_role('button', name='Agents', exact=True).click()
+        page.get_by_role('tab', name='Context', exact=True).click()
+        saved_select = page.get_by_label('Saved browser workspaces', exact=True)
+        expect(saved_select.locator('option')).not_to_have_count(0)
+        expect(page.get_by_role('button', name='Restore saved workspace', exact=True)).to_be_enabled()
+        page.get_by_role('button', name='Restore saved workspace', exact=True).click()
+        expect(page.locator('.agent-alert')).to_contain_text('workspace restored')
+        check('reload recovery restores files and transcript from IndexedDB', invoke('AgentWorkspaceRead', 'uploaded.txt')['content'] == 'Imported through browser picker\n' and invoke('AgentPoll', 0)['messages'])
+        page.get_by_role('tab', name='Settings', exact=True).click()
+        expect(page.get_by_label('API key or companion access token', exact=True)).to_have_value('')
+        check('reload never restores the provider credential', page.evaluate('() => !JSON.stringify({...localStorage,...sessionStorage}).includes(' + json.dumps(KEY) + ')'))
+
+        # Optional regression coverage for users who explicitly attach native tools.
+        if companion:
+            configure('anthropic', 'fullAccess')
+            page.get_by_role('tab', name='Settings', exact=True).click()
+            page.get_by_text('Optional native tools & desktop MCP', exact=True).click()
+            page.get_by_label('External MCP companion endpoint', exact=True).fill(companion)
+            page.get_by_label('External MCP companion access token', exact=True).fill(BRIDGE_TOKEN)
+            page.get_by_role('button', name='Connect local tools', exact=True).click()
+            expect(page.locator('.agent-external-mcp .agent-auth-status')).to_contain_text('native tools')
+            check('browser optionally attaches an authenticated native workspace', 'companion_workspace_read' in {t['name'] for t in invoke('AgentMcpTools')})
+            native = call('companion_workspace_read', {'path': 'hello.cs'})
+            check('browser reads optional companion source files', native['content'] == '// Native project\n')
+            call('companion_workspace_write', {'path': f'{tag}.txt', 'content': 'Native browser write', 'expectedVersion': 0})
+            check('browser commits optional versioned native file changes', (native_workspace / f'{tag}.txt').read_text() == 'Native browser write')
+            executed = call('companion_workspace_execute', {'executable': 'dotnet', 'arguments': ['--version'], 'timeoutSeconds': 20})
+            check('browser can execute the explicitly enabled native process tool', executed['exitCode'] == 0 and executed['standardOutput'].strip())
+            check('companion token is absent from checkpoint, public UI and browser storage',
+                  BRIDGE_TOKEN not in invoke('AgentExport') and BRIDGE_TOKEN not in json.dumps(call('studio_ui_inspect'))
+                  and page.evaluate('(key) => !JSON.stringify({...localStorage,...sessionStorage}).includes(key)', BRIDGE_TOKEN))
+
+        page.get_by_role('tab', name='Conversation', exact=True).click()
         page.screenshot(path=str(OUTPUT / f'{tag}-conversation.png'), full_page=True)
         page.set_viewport_size({'width': 390, 'height': 844})
         check('mobile agent dock stays inside the viewport', page.locator('.agent-workspace').bounding_box()['width'] <= 391)
@@ -302,15 +476,18 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--published', required=True, type=Path)
     parser.add_argument('--chromium', type=Path, help='Optional installed Chromium executable for local verification.')
+    parser.add_argument('--with-companion', action='store_true', help='Also verify optional native file/process tools. Default verification has no companion.')
     parser.add_argument('--agent-host', type=Path, default=ROOT / 'shadow/samples/netDxf.Shadow.AgentHost/bin/Release/net8.0/netDxf.Shadow.AgentHost.dll',
-                        help='Built native companion used for official Anthropic SDK transport verification.')
+                        help='Built native companion used only with --with-companion.')
     args = parser.parse_args(); OUTPUT.mkdir(parents=True, exist_ok=True)
     for pattern in ('*-failure.png', '*-diagnostic.json', 'verification.json'):
         for stale in OUTPUT.glob(pattern): stale.unlink()
     passed = []
-    if not args.agent_host.is_file():
+    if args.with_companion and not args.agent_host.is_file():
         parser.error('Build shadow/samples/netDxf.Shadow.AgentHost in Release first, or supply --agent-host.')
-    with static_host(args.published.resolve()) as (base, requests), companion_fixture(base, args.agent_host.resolve()) as native, sync_playwright() as playwright:
+    with static_host(args.published.resolve()) as (base, requests), \
+            (companion_fixture(base, args.agent_host.resolve()) if args.with_companion else nullcontext((None, None, None, []))) as native, \
+            sync_playwright() as playwright:
         options = {'headless': True, 'args': ['--disable-dev-shm-usage', '--disable-gpu', '--no-zygote']}
         if args.chromium:
             options['executable_path'] = str(args.chromium.resolve())
@@ -322,8 +499,8 @@ def main():
                 raise AssertionError('The static server received a Studio API request.')
         finally:
             browser.close()
-    (OUTPUT / 'verification.json').write_text(json.dumps({'passed': True, 'checks': passed}, indent=2) + '\n', encoding='utf-8')
-    print(f'PASS: {len(passed)} published browser agent checks; static CAD host and explicit native companion.')
+    (OUTPUT / 'verification.json').write_text(json.dumps({'passed': True, 'companionRequired': False, 'optionalCompanionVerified': args.with_companion, 'checks': passed}, indent=2) + '\n', encoding='utf-8')
+    print(f'PASS: {len(passed)} published browser agent checks; ' + ('optional native companion also verified.' if args.with_companion else 'no local companion or native process host.'))
 
 
 if __name__ == '__main__':

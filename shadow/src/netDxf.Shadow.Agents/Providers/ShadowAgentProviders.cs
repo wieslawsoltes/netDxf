@@ -4,6 +4,7 @@ using System.ClientModel.Primitives;
 using System.Globalization;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Anthropic;
 using Anthropic.Exceptions;
@@ -28,12 +29,34 @@ public sealed record ShadowAgentProviderOptions
 /// <summary>Creates independent streaming clients backed by the providers' official .NET SDKs.</summary>
 public static partial class ShadowAgentProviders
 {
+    internal const string ReasoningProviderKey = "shadow:reasoning-provider";
+
+    internal static string? GetReasoningProvider(AIContent content) =>
+        content.AdditionalProperties?.TryGetValue(ReasoningProviderKey, out var origin) == true ? origin switch
+        {
+            string value => value,
+            JsonElement { ValueKind: JsonValueKind.String } value => value.GetString(),
+            _ => null,
+        } : null;
+
     /// <summary>
     /// Creates a client. Dispose the returned client after its session ends; an injected
     /// <paramref name="httpClient"/> remains owned by its caller. SDK retries are disabled so the
     /// harness can retry inference with one bounded policy and never replay tool mutations.
     /// </summary>
-    public static IChatClient Create(ShadowAgentProviderOptions options, HttpClient? httpClient = null)
+    public static IChatClient Create(ShadowAgentProviderOptions options, HttpClient? httpClient = null) =>
+        CreateCore(options, httpClient, OperatingSystem.IsBrowser());
+
+    /// <summary>
+    /// Creates the browser-compatible official SDK adapters explicitly, including when testing
+    /// on a native runtime. <see cref="Create"/> selects these adapters automatically on WebAssembly.
+    /// Browser requests use Fetch response streaming and explicit API credentials without cookies.
+    /// The configured provider endpoint must allow the application's origin through CORS.
+    /// </summary>
+    public static IChatClient CreateBrowser(ShadowAgentProviderOptions options, HttpClient? httpClient = null) =>
+        CreateCore(options, httpClient, browser: true);
+
+    private static IChatClient CreateCore(ShadowAgentProviderOptions options, HttpClient? httpClient, bool browser)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentException.ThrowIfNullOrWhiteSpace(options.ApiKey);
@@ -50,8 +73,7 @@ public static partial class ShadowAgentProviders
         HttpMessageHandler handler = httpClient is null
             ? new HttpClientHandler()
             : new BorrowedHttpClientHandler(httpClient);
-        if (provider == "anthropic" && OperatingSystem.IsBrowser())
-            handler = new AnthropicBrowserHandler(handler);
+        if (browser) handler = new ProviderBrowserHandler(handler);
         var transport = new HttpClient(handler) { Timeout = Timeout.InfiniteTimeSpan };
         try
         {
@@ -72,9 +94,9 @@ public static partial class ShadowAgentProviders
                     inner = new ResponsesClient(new ApiKeyCredential(options.ApiKey), responseOptions).AsIChatClient(model);
                     break;
                 case "anthropic":
-                    if (OperatingSystem.IsBrowser())
-                        throw new PlatformNotSupportedException("The official Anthropic .NET SDK requires the local companion on WebAssembly. Connect local tools, then configure Anthropic again.");
-                    var anthropic = new AnthropicClient(new Anthropic.Core.ClientOptions
+                    IAnthropicClient anthropic = browser
+                        ? new AnthropicBrowserClient(options.ApiKey, endpoint?.AbsoluteUri.TrimEnd('/') ?? "https://api.anthropic.com", transport)
+                        : new AnthropicClient(new Anthropic.Core.ClientOptions
                     {
                         ApiKey = options.ApiKey,
                         AuthToken = null,
@@ -126,6 +148,8 @@ public static partial class ShadowAgentProviders
                     retryAfter = ParseRetryAfter(value);
                 return IsTransientStatus(openAI.Status);
             case AnthropicApiException anthropic:
+                if (anthropic.Data[AnthropicBrowserClient.RetryAfterKey] is string retryHeader)
+                    retryAfter = ParseRetryAfter(retryHeader);
                 return IsTransientStatus((int)anthropic.StatusCode);
             case AnthropicSseException streaming:
                 return streaming.ErrorType is Anthropic.Models.ErrorType.RateLimitError or Anthropic.Models.ErrorType.TimeoutError
@@ -171,11 +195,19 @@ public static partial class ShadowAgentProviders
         return endpoint;
     }
 
-    private sealed class AnthropicBrowserHandler(HttpMessageHandler inner) : DelegatingHandler(inner)
+    private sealed class ProviderBrowserHandler(HttpMessageHandler inner) : DelegatingHandler(inner)
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            request.Headers.TryAddWithoutValidation("anthropic-dangerous-direct-browser-access", "true");
+            // Same public HttpRequestMessage option contract as Blazor's
+            // SetBrowserResponseStreamingEnabled / SetBrowserRequestOption extensions.
+            // Keeping the package independent of ASP.NET also supports non-Blazor WASM hosts.
+            request.Options.Set(new HttpRequestOptionsKey<bool>("WebAssemblyEnableStreamingResponse"), true);
+            request.Options.Set(new HttpRequestOptionsKey<IDictionary<string, object>>("WebAssemblyFetchOptions"),
+                new Dictionary<string, object>(StringComparer.Ordinal)
+                {
+                    ["credentials"] = "omit", ["mode"] = "cors", ["cache"] = "no-store",
+                });
             return base.SendAsync(request, cancellationToken);
         }
     }
@@ -201,6 +233,7 @@ public static partial class ShadowAgentProviders
         : DelegatingChatClient(inner)
     {
         private int _disposed;
+        private readonly string reasoningProvider = provider == "gemini" ? "google" : provider;
 
         public override async Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null,
             CancellationToken cancellationToken = default) =>
@@ -235,7 +268,7 @@ public static partial class ShadowAgentProviders
             }
 
             var completed = false;
-            await foreach (var update in InnerClient.GetStreamingResponseAsync(messages, configured, cancellationToken).ConfigureAwait(false))
+            await foreach (var update in InnerClient.GetStreamingResponseAsync(CompatibleHistory(messages), configured, cancellationToken).ConfigureAwait(false))
             {
                 if (update.RawRepresentation is StreamingResponseFailedUpdate failed)
                     throw new ShadowAgentProviderException(failed.Response.Error?.Code.ToString() ?? "response_failed",
@@ -249,15 +282,44 @@ public static partial class ShadowAgentProviders
                 // reasoning content retains the SDK's original thought signature on replay.
                 for (var i = 0; i < update.Contents.Count; i++)
                 {
+                    if (update.Contents[i] is TextReasoningContent reasoning)
+                        (reasoning.AdditionalProperties ??= new())[ReasoningProviderKey] = reasoningProvider;
                     if (update.Contents[i] is FunctionCallContent call && string.IsNullOrWhiteSpace(call.CallId))
                         update.Contents[i] = new FunctionCallContent("call_" + Guid.NewGuid().ToString("N"), call.Name, call.Arguments)
                         { AdditionalProperties = call.AdditionalProperties };
                 }
-                completed |= update.FinishReason is not null;
+                // Anthropic reports its stop reason in message_delta before message_stop.
+                // Losing the connection between those events must not commit a partial turn.
+                completed |= provider == "anthropic"
+                    ? update.RawRepresentation is Anthropic.Models.Messages.RawMessageStreamEvent
+                        { Value: Anthropic.Models.Messages.RawMessageStopEvent }
+                    : update.FinishReason is not null;
                 yield return update;
             }
             if (!completed)
                 throw new ShadowAgentProviderException("stream_interrupted", "The provider stream ended without a terminal completion event.", isTransient: true);
+        }
+
+        private IEnumerable<ChatMessage> CompatibleHistory(IEnumerable<ChatMessage> messages)
+        {
+            foreach (var message in messages)
+            {
+                // ProtectedData is not a portable wire format: the adapters interpret it as
+                // OpenAI encrypted reasoning, an Anthropic signature, or base64 Gemini bytes.
+                // Retain it only for its original provider. Old untagged reasoning cannot be
+                // safely attributed; omit it from inference without changing the checkpoint.
+                // Visible assistant text and complete function call/result pairs stay intact.
+                bool Compatible(AIContent content) => content is not TextReasoningContent reasoning ||
+                    string.Equals(GetReasoningProvider(reasoning), reasoningProvider, StringComparison.Ordinal);
+                if (message.Contents.All(Compatible)) { yield return message; continue; }
+                var retained = message.Contents.Where(Compatible).ToList();
+                if (retained.Count == 0) continue;
+                var copy = message.Clone();
+                copy.Contents = retained;
+                // A raw SDK message may still contain the reasoning that was just removed.
+                copy.RawRepresentation = null;
+                yield return copy;
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -1,4 +1,5 @@
 import { installBrowserTransport } from './browser-transport.mjs';
+import { installBrowserCodeRuntime } from './agents/execution.mjs';
 
 const nativeFetch = globalThis.fetch.bind(globalThis);
 const startup = document.getElementById('browser-startup');
@@ -31,6 +32,7 @@ try {
   await Promise.all([Blazor.start(), ready]);
   delete globalThis.shadowBrowserBoot;
   const transport = installBrowserTransport({ nativeFetch });
+  installBrowserCodeRuntime();
   globalThis.shadowBrowser = Object.freeze({ runtime: 'blazor-webassembly', rasterFrames: true, fetch: transport.fetch });
   await import(diagnostics ? './studio.js' : './cad/app.mjs');
   startup.remove();
