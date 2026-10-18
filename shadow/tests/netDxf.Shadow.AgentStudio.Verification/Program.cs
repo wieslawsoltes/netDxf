@@ -190,5 +190,6 @@ Assert(!allowedRead.IsError && JsonDocument.Parse(allowedRead.Text).RootElement.
 Assert((await routed.ExecuteAsync("studio_read", McpJson.Element(new { path = "/api/state", method = "POST" }))).IsError && requests == 1,
     "callers cannot override the read alias with a mutating method");
 checks += await BrowserMcpVerification.RunAsync(endpoint, companionToken, () => Volatile.Read(ref companionExecutions));
+checks += await RunModeVerification.RunAsync();
 await host.StopAsync();
 Console.WriteLine($"Studio agent verification passed: {checks} checks covering lifecycle faults, stale drawing bindings, credential cleanup, native cancellation, browser MCP sessions and canonical route permissions.");

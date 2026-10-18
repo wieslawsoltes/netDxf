@@ -29,7 +29,7 @@ the drawing bar, or press **Ctrl+Shift+A**. The dock has five tabs:
 
 | Tab | What it does |
 | --- | --- |
-| Conversation | Streaming assistant output, task plan, expandable tool arguments/results, individual approvals, stop and resume, checkpoint import/export |
+| Conversation | Normal/Plan/Goal modes, persistent run progress and completion evidence, streaming output, task plan, tool results, approvals, stop and resume, checkpoint import/export |
 | MCP | Searchable tool catalog, complete input schemas, JSON tool console, WebMCP registration and browser MessagePort connections using the session's permission policy |
 | Files | Versioned text editor, inline diffs, code execution, multi-file/folder/ZIP import, ZIP/bundle download and reviewed folder publishing |
 | Context | Estimated prompt usage, actual provider usage when supplied, pinned requirements, compaction and IndexedDB recovery after reload |
@@ -48,6 +48,54 @@ runtime uses the official `OpenAI`, `Anthropic`, and `Google.GenAI` .NET package
 through `Microsoft.Extensions.AI.IChatClient`. Endpoint overrides receive the key
 and conversation and must support the selected provider protocol. An endpoint's
 CORS policy and the browser's local-network permissions still apply.
+
+### Normal, Plan and Goal
+
+Choose an execution mode beside the message composer. **Apply mode** changes the
+idle session immediately, including the policy used by manual and external MCP
+calls; it works without a provider key. **Send task** also applies a pending mode
+or success-criteria change before starting. Mode controls are disabled while the
+agent is working.
+
+| Execution mode | Behavior | Completion |
+| --- | --- | --- |
+| **Normal** | Inspect, implement and verify the requested task with the selected tool permissions. | The agent explicitly reports completion and finishes any published plan steps. |
+| **Plan** | Investigate with read-only tools and publish a concrete plan. Drawing edits, file mutations, code execution and native commands remain blocked, including with Full access. | A published plan is ready for review; its implementation steps may remain pending. **Execute plan** explicitly switches to Normal and continues the same task. |
+| **Goal** | Work toward the entered **Goal success criteria**, using the task itself when that field is empty. Build a plan, perform the work and verify the result. | A nonempty plan has every step completed, and the agent supplies verification alongside its completion report. |
+
+The **Agent run progress** card retains the outcome after a run stops. It shows
+model turns, total turns across resumptions, automatic continuations, output-limit
+counts, exact pause or blocker details, and an expandable outcome. Verification
+is labeled **Agent-reported verification**; the underlying tool receipts remain
+available in Conversation for inspection.
+
+All modes continue across ordinary model responses until the agent reports a
+completed outcome or a concrete blocker. A response reaching its output-token
+limit triggers continuation with retained context; it does not count as task
+completion. Incomplete function calls are never executed. The run can also stop
+for cancellation, an inference error, a configured budget or lack of progress.
+**Resume task** continues its retained conversation and completed tool results.
+Resolve a reported blocker before resuming it. A completed Normal or Goal run
+does not display Resume; send a new task to request further work.
+
+**Settings → Limits & context budget** uses `0` for **Max model turns** by
+default: there is no fixed turn cutoff. A positive value from 1 to 10,000 creates
+a resumable per-invocation budget. The separate no-progress budget defaults to
+eight turns and is configurable from 2 to 100. **Output tokens / turn** limits
+each response, while automatic context compaction preserves longer tasks.
+**Use no fixed turn limit** resets an existing turn cap without clearing the
+conversation or reconnecting credentials.
+
+Legacy unversioned preferences with the old default of 40 turns migrate once to
+zero. Those records cannot distinguish a deliberately selected 40 from the old
+default; set 40 again to retain that specific cap. Other custom positive caps are
+preserved, and the composer displays the active cap. Versioned preferences retain
+an explicitly saved 40. Task criteria are excluded from general preferences;
+checkpoints contain the retained run state alongside the task and transcript.
+Restoring into a fresh browser runtime stages the saved mode and criteria in the
+composer for review. Connect a provider, send a task or use **Apply mode** to apply
+that selection. Restoring into an already configured runtime retains its current
+mode and criteria.
 
 OpenAI, Anthropic and Google execute directly in WebAssembly. The official
 Anthropic SDK's default desktop transport configures native decompression; its
@@ -315,7 +363,13 @@ errors when completion could not be confirmed. Resuming continues the retained
 conversation instead of submitting the original task twice.
 
 The UI shows streaming text, tool arguments and results, elapsed time, approval
-state, retry status, provider usage, plans and errors. Text is rendered without
+state, retry status, provider usage, plans, persistent run state and errors. The
+session owns the reserved `agent_plan` and `agent_finish` controls so plans are
+validated for the current task and a prose response cannot silently end
+unfinished work. Completion is rejected while implementation plan steps are
+still pending; Plan and Goal add the mode-specific requirements described above.
+The same control can report a concrete blocker while retaining a resumable task.
+Text is rendered without
 executing generated HTML or JavaScript. Protocol events are sequence-numbered and
 bounded; polling catches up with pagination and resets correctly after replacing
 a session. UI transport recovery retries status reads and never replays a start
@@ -348,17 +402,32 @@ preview and a file path for paged retrieval. Workspace budgets cap file counts a
 total bytes. Export and prune unused archives if the session fills its workspace.
 
 Conversation export contains the schema version, session identity, active task,
-summary, model messages and tool results, pins, plan and portable text files. It
+summary, model messages and tool results, pins, plan, portable text files and run
+progress, including mode, criteria, interruption details and verification. It
 also preserves ordered provider reasoning/signature metadata required for valid
-continuation. Credentials and runtime configuration are excluded. Import validates
+continuation. Credentials and execution authority are excluded. Import validates
 all content and file paths before replacing the session and issues new file
 versions, so an old editor receipt cannot overwrite an imported file.
+
+Tool-call receipts survive compaction and checkpoint reload, including uncertain
+attempts reserved before dispatch and retained after cancellation. Each call ID
+is bound to a SHA-256 digest of the tool name and canonical arguments: repeating
+the same call returns its receipt, while changed arguments under that ID are
+rejected. Recent results remain available; after their bodies leave active
+context, a repeat returns historical success or failed/uncertain status and asks
+the agent to inspect current state. It does not provide fresh verification. The
+ledger allows at most 16,384 receipts within a conservative 4 MiB budget; reaching
+either limit rejects new calls before dispatch instead of evicting old IDs.
+Legacy schema-1 checkpoints without the optional ledger remain accepted and
+rebuild receipts from their retained completed call/result pairs.
 
 The checkpoint describes the agent conversation and its portable workspace. Save
 the DXF separately to persist drawing changes. After a reload or in a new runtime,
 reconnect native workspace grants and configure credentials to resume an imported
 checkpoint. Importing into an existing idle runtime retains its current credentials,
-permission setting and companion grants. Manual MCP console
+permission setting, selected execution mode/criteria and companion grants. A
+mode or criteria change makes retained work resumable under the explicitly
+selected configuration rather than restoring an older execution policy. Manual MCP console
 activity is a bounded live event view; it is not synthesized into the model's
 conversation history.
 

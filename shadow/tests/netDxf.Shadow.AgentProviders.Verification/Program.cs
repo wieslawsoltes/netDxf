@@ -14,6 +14,7 @@ foreach (var provider in new[] { "openai", "anthropic", "google", "chatgpt" }) a
 await VerifyReasoningProvenance();
 await VerifyFailures();
 await VerifyBrowserAnthropic();
+checks += await ProviderTerminationVerification.RunAsync();
 await VerifyAuthentication();
 Console.WriteLine($"PASS: {checks} provider, streaming, tool replay, PKCE, JWT and token-lifecycle checks.");
 

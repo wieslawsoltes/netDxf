@@ -3,13 +3,18 @@ import { StudioMcpBridge } from './mcp-bridge.mjs';
 import { BrowserMcpBridge } from './browser-mcp.mjs';
 import { BrowserSessionPersistence } from './persistence.mjs';
 import { mountBrowserFileTransfer, renderFileDiff } from './file-workspace.mjs';
-import { defaultConfiguration, providers, preferences, configuration, formatTokens, parseArguments, readable, safeFilePath, toolTemplate } from './contracts.mjs';
+import { defaultConfiguration, providers, executionModes, restorePreferences, preferenceRecord, configuration, formatTokens, parseArguments, readable, safeFilePath, toolTemplate } from './contracts.mjs';
+import { presentRun, recoveredRunSelection } from './run-state.mjs';
 import { node, glyph, button, field, code, codeExecution, markdown } from './render.mjs';
 
 const tabNames = [['chat','Conversation','chat'], ['tools','MCP','tools'], ['files','Files','file'], ['context','Context','context'], ['settings','Settings','settings']];
 const modeNames = { readOnly: 'Read only', ask: 'Approve changes', fullAccess: 'Full access' };
 const storageKey = 'netdxf-agent-preferences-v1';
-function loadPreferences() { try { return preferences(JSON.parse(localStorage.getItem(storageKey) || '{}')); } catch { return {}; } }
+function savePreferences(value) { try { localStorage.setItem(storageKey, JSON.stringify(preferenceRecord(value))); } catch { /* Nonsecret preferences are optional. */ } }
+function loadPreferences() {
+  try { const value = restorePreferences(JSON.parse(localStorage.getItem(storageKey) || '{}')); savePreferences(value); return value; }
+  catch { return {}; }
+}
 function download(content, name, type = 'application/json') {
   const url = URL.createObjectURL(new Blob([content], { type })), link = node('a', { href: url, download: name });
   document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 10000);
@@ -113,18 +118,69 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const prompt = node('textarea', { class: 'agent-prompt', placeholder: 'Ask the agent to inspect, build, or edit…', rows: 3, 'aria-label': 'Message to coding agent', spellcheck: false });
   const sendButton = button('Send task', () => run(send), { icon: 'send', compact: true, class: 'agent-send agent-primary' });
   const stopButton = button('Stop agent', () => run(async () => { await client.cancel(); statusLabel.textContent = 'Stopping…'; }), { icon: 'stop', compact: true, class: 'agent-stop', hidden: true });
-  const retryButton = button('Resume from current conversation', () => run(() => client.retry()), { icon: 'retry', compact: true, hidden: true });
+  const retryButton = button('Resume task', () => run(resumeTask), { icon: 'retry', 'aria-label': 'Resume from current conversation', hidden: true, class: 'agent-primary' });
+  const executePlanButton = button('Execute plan', () => run(async () => {
+    if (!client.configured) { setTab('settings'); throw new Error('Connect a provider before executing the plan.'); }
+    executionMode.value = 'normal'; updateExecutionMode(); await applyExecutionMode(); await client.retry();
+  }), { icon: 'play', hidden: true, class: 'agent-primary' });
+  const runTitle = node('strong'), runModeBadge = node('span', { class: 'agent-run-mode' });
+  const runProgress = node('p', { class: 'agent-run-counters' }), runDetail = node('p', { class: 'agent-run-detail' });
+  const runEvidence = node('details', { class: 'agent-run-evidence', hidden: true });
+  const runView = node('section', { class: 'agent-run-state', role: 'region', 'aria-label': 'Agent run progress', hidden: true }, [
+    node('div', { class: 'agent-run-heading' }, [runModeBadge, runTitle]), runProgress, runDetail, runEvidence,
+    node('div', { class: 'agent-row' }, [retryButton, executePlanButton])
+  ]); let runVersion = '';
+  const executionMode = node('select', { 'aria-label': 'Agent execution mode' }, executionModes.map(mode => node('option', { value: mode.id, text: mode.name })));
+  executionMode.value = currentConfig.mode;
+  const executionHint = node('p', { class: 'agent-mode-hint' });
+  const goalCriteria = node('textarea', { rows: 2, maxlength: 16000, 'aria-label': 'Goal success criteria', placeholder: 'Describe the observable result and checks that define success…' });
+  goalCriteria.value = currentConfig.successCriteria;
+  const goalField = field('Goal success criteria', goalCriteria, 'Optional: leave blank to use your task as the success criterion.');
+  const applyModeButton = button('Apply mode', () => run(applyExecutionMode), { icon: 'check', class: 'agent-secondary' });
+  const executionControls = node('div', { class: 'agent-mode-controls' }, [
+    node('div', { class: 'agent-mode-row' }, [node('label', {}, [node('span', { text: 'Mode' }), executionMode]), applyModeButton]), executionHint, goalField
+  ]);
+  executionMode.addEventListener('change', updateExecutionMode); goalCriteria.addEventListener('input', updateExecutionMode);
   const permissionChip = node('button', { type: 'button', class: 'agent-permission-chip', onclick: () => setTab('settings'), text: 'Approve changes' });
   const contextLabel = node('span', { text: '0 / 128k' }), contextFill = node('span');
   const contextMeter = node('button', { class: 'agent-context-meter', type: 'button', title: 'Context usage and pinned instructions', onclick: () => setTab('context') }, [node('span', { class: 'agent-context-track' }, [contextFill]), contextLabel]);
   const composer = node('div', { class: 'agent-composer' }, [
     node('div', { class: 'agent-composer-context' }, [documentChip,
-      button('Pin current drawing context', () => run(pinDrawing), { icon: 'pin', compact: true })]),
+      button('Pin current drawing context', () => run(pinDrawing), { icon: 'pin', compact: true })]), executionControls,
     node('div', { class: 'agent-prompt-box' }, [prompt,
-      node('div', { class: 'agent-prompt-actions' }, [node('span', { text: 'Enter to send · Shift+Enter for a new line' }), node('span', { class: 'grow' }), retryButton, stopButton, sendButton])]),
+      node('div', { class: 'agent-prompt-actions' }, [node('span', { text: 'Enter to send · Shift+Enter for a new line' }), node('span', { class: 'grow' }), stopButton, sendButton])]),
     node('div', { class: 'agent-composer-footer' }, [permissionChip, node('span', { class: 'grow' }), contextMeter])
   ]);
-  panels.get('chat').append(chatActions, planView, transcript, composer, liveStatus);
+  panels.get('chat').append(chatActions, runView, planView, transcript, composer, liveStatus);
+  function updateExecutionMode() {
+    const mode = executionModes.find(item => item.id === executionMode.value) || executionModes[0];
+    goalField.hidden = mode.id !== 'goal';
+    const pending = !client.config || client.config.mode !== mode.id || client.config.successCriteria !== goalCriteria.value.trim();
+    const turnLimit = client.config?.maxTurns ?? currentConfig.maxTurns;
+    executionHint.textContent = `${mode.hint} ${turnLimit ? `Turn budget: ${turnLimit.toLocaleString()}; Resume continues after the limit.` : 'No fixed turn limit.'}` + (pending ? ' Apply mode, or send a task to apply it.' : '');
+    executionControls.classList.toggle('pending', pending);
+    const busy = client.transcript.running || client.busy;
+    executionMode.disabled = busy; goalCriteria.disabled = busy; applyModeButton.disabled = busy || !pending;
+  }
+  async function applyExecutionMode() {
+    client.ensureIdle();
+    const selected = configuration({ ...(client.config || currentConfig), mode: executionMode.value, successCriteria: goalCriteria.value });
+    if (client.config?.mode === selected.mode && client.config?.successCriteria === selected.successCriteria) return;
+    await client.configure(selected); currentConfig = selected;
+    savePreferences(selected);
+    updateExecutionMode(); updatePermissionDescription(); scheduleRender();
+  }
+  async function resumeTask() {
+    if (!client.configured) { setTab('settings'); throw new Error('Connect a provider before resuming the task.'); }
+    await applyExecutionMode(); await client.retry();
+  }
+  function stageRecoveredExecution(checkpoint) {
+    const selected = client.clean(recoveredRunSelection(checkpoint, client.config));
+    if (!selected) return false;
+    executionMode.value = selected.mode; goalCriteria.value = selected.successCriteria;
+    updateExecutionMode(); return true;
+  }
+  updateExecutionMode();
   function resizePrompt() { prompt.style.height = 'auto'; prompt.style.height = `${Math.min(160, Math.max(60, prompt.scrollHeight))}px`; }
   prompt.addEventListener('input', resizePrompt);
   prompt.addEventListener('keydown', event => {
@@ -135,6 +191,8 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     clearNotice();
     if (!client.configured) { setTab('settings'); throw new Error('Choose your provider and connect it before sending a task.'); }
     const text = prompt.value;
+    if (!text.trim()) throw new Error('Enter a task for the agent.');
+    await applyExecutionMode();
     await client.start(text); if (prompt.value === text) { prompt.value = ''; resizePrompt(); }
     transcript.scrollTop = transcript.scrollHeight;
   }
@@ -150,9 +208,11 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     const selected = historyImport.files[0]; historyImport.value = ''; if (!selected) return;
     assertFileClean();
     if (selected.size > 24 * 1024 * 1024) throw new Error('Conversation imports are limited to 24 MiB.');
-    await client.importSession(await selected.text()); timelineNodes.clear(); timeline.replaceChildren(); pins = []; fileList = []; file = null; fileDirty = false;
+    const checkpoint = await selected.text();
+    await client.importSession(checkpoint); const recoveredMode = stageRecoveredExecution(checkpoint);
+    timelineNodes.clear(); timeline.replaceChildren(); pins = []; fileList = []; file = null; fileDirty = false;
     filePath.value = ''; fileEditor.value = ''; fileEditor.readOnly = false; markFileClean(); renderFiles();
-    persistence?.newSession(); notice('Conversation imported. Your current provider credentials and permission setting are retained.'); setTab('chat');
+    persistence?.newSession(); notice(recoveredMode ? 'Conversation imported. Review its recovered mode and criteria in Conversation; connecting a provider or applying the mode will use that selection.' : 'Conversation imported. Your current provider credentials, mode and permission setting are retained.'); setTab('chat');
   })); dock.append(historyImport);
 
   function scheduleRender() {
@@ -161,6 +221,20 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   }
   function renderStatus() {
     const state = client.transcript, running = state.running || client.busy;
+    const progress = presentRun(state, client.config || currentConfig);
+    const nextRunVersion = JSON.stringify(progress);
+    if (runVersion !== nextRunVersion) {
+      runVersion = nextRunVersion; runView.hidden = !progress.visible; runView.dataset.phase = progress.phase;
+      runTitle.textContent = progress.title; runModeBadge.textContent = progress.modeName;
+      runProgress.textContent = progress.progress; runDetail.textContent = progress.detail; runDetail.hidden = !progress.detail;
+      const evidence = [];
+      if (progress.criteria) evidence.push(node('h4', { text: 'Success criteria' }), node('p', { text: progress.criteria }));
+      if (progress.summary) evidence.push(node('h4', { text: 'Outcome' }), node('p', { text: progress.summary }));
+      if (progress.verification.length) evidence.push(node('h4', { text: 'Agent-reported verification' }), node('ul', {}, progress.verification.map(text => node('li', { text }))));
+      if (progress.stopReason) evidence.push(node('p', { class: 'agent-muted', text: `Run reason: ${progress.stopReason}` }));
+      runEvidence.hidden = !evidence.length;
+      runEvidence.replaceChildren(node('summary', { text: progress.verification.length ? 'Outcome & verification' : 'Task details' }), ...evidence);
+    }
     const nextPlanVersion = JSON.stringify(state.plan);
     if (planVersion !== nextPlanVersion) {
       planVersion = nextPlanVersion; planView.hidden = !state.plan.length;
@@ -171,27 +245,30 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     }
     const approvals = state.items.filter(item => item.kind === 'tool' && item.status === 'approval').length;
     statusDot.className = `agent-status-dot${approvals ? ' approval' : running ? ' running' : client.connected ? ' connected' : ''}`;
-    statusLabel.textContent = approvals ? `Waiting for ${approvals} approval${approvals === 1 ? '' : 's'}` : running ? String(state.status || 'Working').replace(/^./, c => c.toUpperCase()) : state.status === 'error' ? 'Error · resume available' : state.status === 'paused' ? 'Paused · turn budget reached' : state.status === 'cancelled' ? 'Stopped' : client.configured ? 'Ready' : client.connected ? 'Runtime connected' : 'Ready to connect';
+    statusLabel.textContent = approvals ? `Waiting for ${approvals} approval${approvals === 1 ? '' : 's'}` : running ? String(state.status || 'Working').replace(/^./, c => c.toUpperCase()) : progress.visible ? progress.title : client.configured ? 'Ready' : client.connected ? 'Runtime connected' : 'Ready to connect';
     dock.setAttribute('aria-busy', String(running)); launcher.classList.toggle('running', running);
     launcherBadge.hidden = !running && !approvals; launcherBadge.textContent = approvals ? String(approvals) : '●';
     tabButtons.get('chat').classList.toggle('needs-attention', approvals > 0);
     sendButton.hidden = state.running; stopButton.hidden = !state.running && client.operation?.kind !== 'work'; sendButton.disabled = client.busy;
     stopButton.disabled = client.operation?.kind === 'cancel' || client.operation?.kind === 'disconnect';
-    retryButton.hidden = !client.lastPrompt && !state.items.some(item => item.kind === 'user') || running; prompt.disabled = false;
+    retryButton.hidden = !progress.resumable || running; retryButton.disabled = running;
+    executePlanButton.hidden = !progress.executePlan || running; executePlanButton.disabled = running;
+    prompt.disabled = false; updateExecutionMode();
     const percent = Math.min(100, state.contextTokens / state.contextLimit * 100);
     contextFill.style.width = `${percent}%`; contextMeter.classList.toggle('near-limit', percent >= 75);
     contextLabel.textContent = `${formatTokens(state.contextTokens)} / ${formatTokens(state.contextLimit)}`;
     contextMeter.setAttribute('aria-label', `${state.contextTokens.toLocaleString()} of ${state.contextLimit.toLocaleString()} context tokens. Open context management.`);
-    permissionChip.textContent = modeNames[client.config?.permissionMode || currentConfig.permissionMode] || 'Approve changes';
-    permissionChip.classList.toggle('full-access', client.config?.permissionMode === 'fullAccess');
+    const planning = client.config?.mode === 'plan';
+    permissionChip.textContent = planning ? 'Plan · read only' : modeNames[client.config?.permissionMode || currentConfig.permissionMode] || 'Approve changes';
+    permissionChip.classList.toggle('full-access', !planning && client.config?.permissionMode === 'fullAccess');
     providerChip.querySelector('span').textContent = client.configured ? `${providers.find(p => p.id === client.config.provider)?.name || client.config.provider} · ${client.config.model}` : 'Connect a provider';
     documentChip.textContent = getDocumentName() || 'No drawing open';
-    connectButton.disabled = running; compactButton.disabled = running; pinButton.disabled = running; saveFileButton.disabled = running || !fileDirty;
+    connectButton.disabled = running; turnLimitReset.disabled = running; compactButton.disabled = running; pinButton.disabled = running; saveFileButton.disabled = running || !fileDirty;
     runFileButton.disabled = running || fileDirty || !file?.path || !/\.(?:m?js|cjs)$/i.test(file.path);
     deleteFileButton.disabled = running || fileDirty || !file?.path;
     runToolButton.disabled = running || !toolName.value.trim();
     if (selectedTab === 'context') renderContext();
-    liveStatus.textContent = approvals ? statusLabel.textContent : running ? 'Agent is working.' : 'Agent is idle.';
+    liveStatus.textContent = approvals ? statusLabel.textContent : progress.visible ? `${progress.modeName}: ${progress.title}` : 'Agent is idle.';
   }
   function renderTimeline() {
     const state = client.transcript, nearBottom = transcript.scrollHeight - transcript.scrollTop - transcript.clientHeight < 100;
@@ -487,7 +564,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
       if (existing && existing.content === restored.draft.baseContent) file = existing;
     }
     if (restored.draft) editorChanged();
-    notice('Saved conversation and workspace restored. Current credentials and permissions are retained; reconnect the provider after a page reload.');
+    notice(client.config === null ? 'Saved conversation and workspace restored. Review the recovered mode and criteria in Conversation, then reconnect a provider or apply the mode.' : 'Saved conversation and workspace restored. Current provider credentials, mode, criteria and permissions are retained.');
     await refreshSaved(); setTab(restored.draft ? 'files' : 'chat');
   }), { icon: 'refresh', class: 'agent-primary' });
   const forgetSaved = button('Forget selected saved copy', () => run(async () => {
@@ -525,7 +602,8 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   savedSelect.addEventListener('change', savedSelection);
   persistence = new BrowserSessionPersistence({ client, label: () => client.lastPrompt || getDocumentName() || 'Agent workspace',
     getDraft: () => fileDirty ? { path: filePath.value, content: fileEditor.value, basePath: file?.path, baseVersion: file?.version, baseContent: file?.content } : null,
-    restoreDraft: draft => {
+    restoreDraft: (draft, record) => {
+      if (record) stageRecoveredExecution(record.checkpoint);
       file = draft?.basePath ? { path: draft.basePath, version: draft.baseVersion, content: draft.baseContent || '', conflict: true } : null;
       filePath.value = draft?.path || ''; fileEditor.value = draft?.content || ''; fileEditor.readOnly = false;
       if (draft) editorChanged(); else markFileClean();
@@ -547,9 +625,20 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const routingNote = node('p', { class: 'agent-routing-note', hidden: true });
   const providerRuntimeNote = node('p', { class: 'agent-provider-runtime', hidden: true, text: 'The official OpenAI, Anthropic and Google .NET clients run directly in this browser. Keys stay in this page’s memory. Custom provider endpoints must allow browser requests from this site.' });
   const limits = node('div', { class: 'agent-limits' });
-  for (const [key, label, min, max] of [['maxTurns', 'Max model turns', 1, 1000], ['maxOutputTokens', 'Output tokens / turn', 256, 128000], ['contextWindowTokens', 'Model context window', 4096, 4000000]]) {
-    const input = node('input', { type: 'number', min, max, step: 1, 'aria-label': label }); formFields[key] = input; input.value = currentConfig[key]; limits.append(field(label, input));
+  for (const [key, label, min, max, help] of [
+    ['maxTurns', 'Max model turns', 0, 10000, '0 continues until the task completes or needs attention. A positive budget pauses with Resume available.'],
+    ['maxNoProgressTurns', 'No-progress turns before pause', 2, 100, 'Pause after repeated turns without useful progress. Completed tool work is retained.'],
+    ['maxOutputTokens', 'Output tokens / turn', 256, 128000, 'Per response. The agent continues automatically after output limits.'],
+    ['contextWindowTokens', 'Model context window', 4096, 4000000, 'Context compacts as needed while retaining the task, plan and workspace.']]) {
+    const input = node('input', { type: 'number', min, max, step: 1, 'aria-label': label }); formFields[key] = input; input.value = currentConfig[key]; limits.append(field(label, input, help));
   }
+  const turnLimitReset = button('Use no fixed turn limit', () => run(async () => {
+    client.ensureIdle();
+    const selected = configuration({ ...(client.config || currentConfig), maxTurns: 0 });
+    await client.configure(selected); currentConfig = selected; formFields.maxTurns.value = 0;
+    savePreferences(selected); updateExecutionMode(); scheduleRender();
+    notice('The agent will continue until completion, a blocker, cancellation, or its no-progress budget.');
+  }), { icon: 'retry', class: 'agent-secondary' });
   const signInStatus = node('p', { class: 'agent-auth-status', text: 'Start the local companion to use your ChatGPT subscription.' });
   const signInLink = node('a', { target: '_blank', rel: 'noopener noreferrer', hidden: true, text: 'Continue sign-in in your browser ↗' });
   const signInButton = button('Sign in with ChatGPT', () => run(signIn), { icon: 'key', class: 'agent-primary' });
@@ -580,7 +669,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
         await client.configure({ ...(client.config || currentConfig), permissionMode: permissionSelect.value });
         currentConfig.permissionMode = permissionSelect.value; notice(`Tool policy applied: ${modeNames[permissionSelect.value]}.`); scheduleRender();
       }), { icon: 'check', class: 'agent-secondary' }),
-      node('details', { class: 'agent-advanced-settings' }, [node('summary', { text: 'Limits & context budget' }), limits]),
+      node('details', { class: 'agent-advanced-settings' }, [node('summary', { text: 'Limits & context budget' }), limits, turnLimitReset]),
       node('div', { class: 'agent-row agent-connect-row' }, [connectButton, connectionInfo]) ]));
   const bridgeEndpoint = node('input', { type: 'url', value: 'http://127.0.0.1:5091', 'aria-label': 'External MCP companion endpoint', spellcheck: false });
   const bridgeToken = node('input', { type: 'password', autocomplete: 'off', 'aria-label': 'External MCP companion access token', 'data-agent-private': '' });
@@ -653,7 +742,8 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   function updatePermissionDescription() {
     const value = permissionSelect.value;
     permissionDescription.textContent = value === 'readOnly' ? 'The agent can inspect tools, documents, and model data. Tools that change drawing or workspace state are denied.' : value === 'fullAccess' ? 'The agent can execute all registered tools without individual approvals, including document edits, workspace file writes, and Studio control. Changes run in the current Studio workspace.' : 'Read tools run immediately. You approve each state-changing tool with its exact arguments before execution.';
-    permissionDescription.classList.toggle('full-access', value === 'fullAccess');
+    if (client.config?.mode === 'plan') permissionDescription.textContent = 'Plan mode is active: agent mutations remain blocked, including with Full access. Read-only investigation and plan publication are available. The selected permission policy applies when you switch to Normal or Goal.';
+    permissionDescription.classList.toggle('full-access', value === 'fullAccess' && client.config?.mode !== 'plan');
   }
   function updateRouting() {
     routingNote.hidden = !endpointInput.value.trim();
@@ -661,7 +751,8 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   }
   function readConfiguration() {
     return configuration({ provider: providerSelect.value, model: modelInput.value, apiKey: apiKeyInput.value, endpoint: endpointInput.value,
-      permissionMode: permissionSelect.value, ...Object.fromEntries(Object.entries(formFields).map(([key, input]) => [key, input.value])) });
+      permissionMode: permissionSelect.value, mode: executionMode.value, successCriteria: goalCriteria.value,
+      ...Object.fromEntries(Object.entries(formFields).map(([key, input]) => [key, input.value])) });
   }
   async function connectProvider() {
     clearNotice(); const config = readConfiguration(), generation = authGeneration;
@@ -674,7 +765,8 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
         if (!authenticated) throw new Error('Complete Sign in with ChatGPT before connecting the companion.');
       } else if (!config.apiKey) throw new Error('Enter your provider API key.');
       await client.configure(config); currentConfig = config;
-      try { localStorage.setItem(storageKey, JSON.stringify(preferences(config))); } catch { /* Preferences are optional in private browsing. */ }
+      updateExecutionMode(); updatePermissionDescription();
+      savePreferences(config);
       connectionInfo.textContent = 'Configured · credentials in memory'; clearNotice(); setTab('chat'); prompt.focus();
     } catch (error) { connectionInfo.textContent = client.configured ? 'Previous provider remains configured' : 'No provider configured'; throw error; }
     finally { connectButton.disabled = false; }
@@ -772,6 +864,9 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   });
   window.addEventListener('pageshow', event => { if (event.persisted && connectedOnce) client.schedule(0); });
   return Object.freeze({ show, hide, toggle: () => opened ? hide() : show(), documentChanged: () => { mcpBridge.documentChanged(); void browserMcp.documentChanged().catch(report); scheduleRender(); }, client,
-    snapshot: () => ({ open: opened, tab: selectedTab, status: client.transcript.status, running: client.transcript.running, provider: client.config?.provider, model: client.config?.model, permissionMode: client.config?.permissionMode,
+    snapshot: () => ({ open: opened, tab: selectedTab, status: client.transcript.status, running: client.transcript.running, provider: client.config?.provider, model: client.config?.model, permissionMode: client.config?.permissionMode, mode: client.config?.mode,
+      run: client.transcript.run ? { phase: client.transcript.run.phase, turnCount: client.transcript.run.turnCount, totalTurns: client.transcript.run.totalTurns,
+        continuationCount: client.transcript.run.continuationCount, outputLimitCount: client.transcript.run.outputLimitCount,
+        resumable: client.transcript.run.resumable, stopReason: client.transcript.run.stopReason } : null,
       externalMcp: mcpBridge.connected, browserMcp: browserMcp.status, recovery: persistence.status.state, workspace: fileTransfer.state() }) });
 }

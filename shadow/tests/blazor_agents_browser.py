@@ -11,6 +11,7 @@ from collections import deque
 from contextlib import contextmanager, nullcontext
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
+import itertools
 import os
 from pathlib import Path
 import socket
@@ -30,9 +31,13 @@ OUTPUT = ROOT / 'artifacts/blazor-agents'
 ASSEMBLY = 'netDxf.Shadow.Studio.Browser'
 KEY = 'verification-only-credential-never-use-for-inference'
 BRIDGE_TOKEN = 'verification-only-loopback-companion-token'
+STREAM_IDS = itertools.count(1)
 
 
-def openai_stream(text='Complete.', tool=None, call_id='call_browser'):
+def openai_stream(text='Complete.', tool=None, call_id=None, *, finish=True, limited=False):
+    call_id = call_id or f'call_browser_{next(STREAM_IDS)}'
+    if tool is None and finish and not limited:
+        tool = ('agent_finish', {'outcome': 'completed', 'summary': text, 'verification': ['Observed the recorded browser tool results.']})
     item = ({'type': 'function_call', 'id': 'fc_browser', 'call_id': call_id,
              'name': tool[0], 'arguments': json.dumps(tool[1]), 'status': 'completed'} if tool else
             {'type': 'message', 'id': 'msg_browser', 'role': 'assistant', 'status': 'completed',
@@ -44,13 +49,16 @@ def openai_stream(text='Complete.', tool=None, call_id='call_browser'):
         values.append({'type': 'response.output_text.delta', 'sequence_number': 2,
                        'item_id': 'msg_browser', 'output_index': 0, 'content_index': 0, 'delta': text})
     values.extend([{'type': 'response.output_item.done', 'sequence_number': 3, 'output_index': 0, 'item': item},
-                   {'type': 'response.completed', 'sequence_number': 4, 'response': {
-                       **response, 'status': 'completed', 'store': False, 'output': [item],
+                   {'type': 'response.incomplete' if limited else 'response.completed', 'sequence_number': 4, 'response': {
+                       **response, 'status': 'incomplete' if limited else 'completed', 'store': False, 'output': [item],
+                       **({'incomplete_details': {'reason': 'max_output_tokens'}} if limited else {}),
                        'usage': {'input_tokens': 200, 'output_tokens': 30, 'total_tokens': 230}}}])
     return ''.join('data: ' + json.dumps(value) + '\n\n' for value in values)
 
 
-def anthropic_stream(tool=None):
+def anthropic_stream(tool=None, *, text='Anthropic browser SDK complete.', finish=True, limited=False):
+    if tool is None and finish and not limited:
+        tool = ('agent_finish', {'outcome': 'completed', 'summary': text, 'verification': ['Observed the recorded browser tool results.']})
     block_index = 1 if tool else 0
     values = [
         {'type': 'message_start', 'message': {'id': 'msg_browser', 'type': 'message', 'role': 'assistant',
@@ -63,20 +71,22 @@ def anthropic_stream(tool=None):
             {'type': 'content_block_stop', 'index': 0},
         ] if tool else []),
         {'type': 'content_block_start', 'index': block_index, 'content_block':
-            {'type': 'tool_use', 'id': 'anthropic_browser_call', 'name': tool[0], 'input': {}} if tool else {'type': 'text', 'text': ''}},
+            {'type': 'tool_use', 'id': f'anthropic_browser_call_{next(STREAM_IDS)}', 'name': tool[0], 'input': {}} if tool else {'type': 'text', 'text': ''}},
         {'type': 'content_block_delta', 'index': block_index, 'delta':
-            {'type': 'input_json_delta', 'partial_json': json.dumps(tool[1])} if tool else {'type': 'text_delta', 'text': 'Anthropic browser SDK complete.'}},
+            {'type': 'input_json_delta', 'partial_json': json.dumps(tool[1])} if tool else {'type': 'text_delta', 'text': text}},
         {'type': 'content_block_stop', 'index': block_index},
-        {'type': 'message_delta', 'delta': {'stop_reason': 'tool_use' if tool else 'end_turn', 'stop_sequence': None}, 'usage': {'output_tokens': 10}},
+        {'type': 'message_delta', 'delta': {'stop_reason': 'max_tokens' if limited else 'tool_use' if tool else 'end_turn', 'stop_sequence': None}, 'usage': {'output_tokens': 10}},
         {'type': 'message_stop'},
     ]
     return ''.join('event: ' + value['type'] + '\ndata: ' + json.dumps(value) + '\n\n' for value in values)
 
 
-def google_stream(tool=None):
+def google_stream(tool=None, *, text='Google browser SDK complete.', finish=True, limited=False):
+    if tool is None and finish and not limited:
+        tool = ('agent_finish', {'outcome': 'completed', 'summary': text, 'verification': ['Observed the recorded browser tool results.']})
     return 'data: ' + json.dumps({'candidates': [{'index': 0, 'content': {'role': 'model', 'parts': [
         {'functionCall': {'name': tool[0], 'args': tool[1]}, 'thoughtSignature': 'c2lnbmF0dXJl'} if tool else
-        {'text': 'Google browser SDK complete.'}]}, 'finishReason': 'STOP'}],
+        {'text': text}]}, 'finishReason': 'MAX_TOKENS' if limited else 'STOP'}],
         'modelVersion': 'verification-model', 'responseId': 'google_browser',
         'usageMetadata': {'promptTokenCount': 200, 'candidatesTokenCount': 10, 'totalTokenCount': 210}}) + '\n\n'
 
@@ -302,6 +312,96 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
               and 'c2lnbmF0dXJl' in json.dumps(requests[-1]['body']))
         check('all three API-key providers are browser-native capabilities', set(invoke('AgentCapabilities')['directBrowserProviders']) == {'openai', 'anthropic', 'google'})
         check('browser-only tools do not require a companion catalog', not any(t['name'].startswith('companion_') for t in invoke('AgentMcpTools')))
+
+        # Exercise actual SDK wire terminals through the full WASM run loop. A complete-
+        # looking function body in a truncated response must not execute or consume its ID.
+        for provider_id, stream in [('openai', openai_stream), ('anthropic', anthropic_stream), ('google', google_stream)]:
+            configure(provider_id, 'fullAccess')
+            path = f'continued-{provider_id}.txt'
+            bad = ('workspace_write', {'path': path, 'content': 'must not commit from a partial response', 'expectedVersion': 0})
+            good = ('workspace_write', {'path': path, 'content': f'Recovered {provider_id}', 'expectedVersion': 0})
+            terminal = f'{provider_id} completed after output exhaustion.'
+            if provider_id == 'openai':
+                replies.extend([stream(tool=bad, call_id='regenerate-openai', limited=True),
+                                stream(tool=good, call_id='regenerate-openai'),
+                                stream('The edit is ready; verifying completion.', finish=False), stream(terminal)])
+            else:
+                replies.extend([stream(tool=bad, limited=True), stream(tool=good),
+                                stream(text='The edit is ready; verifying completion.', finish=False), stream(text=terminal)])
+            send(f'Complete the {provider_id} workspace task even after a token limit and progress-only response.')
+            expect(page.get_by_role('log', name='Agent conversation and tool activity')).to_contain_text(terminal)
+            completed = wait_idle()
+            check(f'{provider_id} output exhaustion and text-only progress continue automatically',
+                  completed['status'] == 'completed' and completed['run']['outputLimitCount'] == 1
+                  and completed['run']['continuationCount'] >= 2 and not completed['run']['resumable'])
+            recovered_file = invoke('AgentWorkspaceRead', path)
+            writes = [event for event in completed['events'] if event['type'] == 'toolStarted'
+                      and event.get('data', {}).get('name') == 'workspace_write'
+                      and event['data'].get('arguments', {}).get('path') == path]
+            check(f'{provider_id} truncated batch cannot mutate files or poison regenerated calls',
+                  recovered_file['content'] == f'Recovered {provider_id}' and len(writes) == 1)
+            expect(page.get_by_role('region', name='Agent run progress')).to_contain_text('Task completed')
+
+        def set_mode(mode, criteria=''):
+            page.get_by_role('tab', name='Conversation', exact=True).click()
+            page.get_by_label('Agent execution mode', exact=True).select_option(mode)
+            if mode == 'goal':
+                page.get_by_label('Goal success criteria', exact=True).fill(criteria)
+            apply = page.get_by_role('button', name='Apply mode', exact=True)
+            if apply.is_enabled():
+                apply.click()
+            page.wait_for_function('mode => window.DotNet.invokeMethodAsync("' + ASSEMBLY + '","AgentPoll",0).then(state => state.run.mode.toLowerCase() === mode)', arg=mode)
+
+        configure('openai', 'fullAccess')
+        set_mode('plan')
+        planned_steps = [{'step': 'Create the reviewed workspace file', 'status': 'pending'},
+                         {'step': 'Read back the saved file', 'status': 'pending'}]
+        replies.extend([openai_stream(tool=('workspace_write', {'path': 'plan-denied.txt', 'content': 'must not commit', 'expectedVersion': 0}), call_id='plan-denied'),
+                        openai_stream(tool=('shadow_state', {}), call_id='plan-inspect'),
+                        openai_stream(tool=('agent_plan', {'steps': planned_steps}), call_id='plan-ready'),
+                        openai_stream('The implementation plan is ready for review.')])
+        send('Investigate and prepare a concrete plan without editing the workspace.')
+        expect(page.get_by_role('button', name='Execute plan', exact=True)).to_be_visible()
+        planned = wait_idle()
+        check('Plan mode performs inspection and prepares a reviewable pending plan',
+              planned['status'] == 'completed' and planned['run']['mode'].lower() == 'plan'
+              and all(step['status'] == 'pending' for step in planned['plan']))
+        check('Plan mode prevents invented write tools even with Full access',
+              'plan-denied.txt' not in {file['path'] for file in invoke('AgentWorkspaceFiles')})
+        expect(page.get_by_role('region', name='Agent run progress')).to_contain_text('Plan ready')
+
+        replies.extend([openai_stream(tool=('workspace_write', {'path': 'executed-plan.txt', 'content': 'Reviewed plan executed', 'expectedVersion': 0}), call_id='plan-implementation'),
+                        openai_stream(tool=('workspace_read', {'path': 'executed-plan.txt'}), call_id='plan-verification'),
+                        openai_stream(tool=('agent_plan', {'steps': [{**step, 'status': 'completed'} for step in planned_steps]}), call_id='plan-completed'),
+                        openai_stream('The reviewed plan has been implemented and verified.')])
+        page.get_by_role('button', name='Execute plan', exact=True).click()
+        expect(page.get_by_role('log', name='Agent conversation and tool activity')).to_contain_text('The reviewed plan has been implemented and verified.')
+        executed_plan = wait_idle()
+        check('Execute plan resumes the existing task in Normal mode and finishes it',
+              executed_plan['run']['mode'].lower() == 'normal' and executed_plan['status'] == 'completed'
+              and invoke('AgentWorkspaceRead', 'executed-plan.txt')['content'] == 'Reviewed plan executed')
+
+        set_mode('goal', 'Create goal.txt and verify that its saved content is exactly verified.')
+        goal_steps = [{'step': 'Create and verify goal.txt', 'status': 'in_progress'}]
+        replies.extend([openai_stream(tool=('agent_plan', {'steps': goal_steps}), call_id='goal-start'),
+                        openai_stream('Premature completion must be refused.'),
+                        openai_stream(tool=('workspace_write', {'path': 'goal.txt', 'content': 'verified', 'expectedVersion': 0}), call_id='goal-write'),
+                        openai_stream(tool=('workspace_read', {'path': 'goal.txt'}), call_id='goal-read'),
+                        openai_stream(tool=('agent_plan', {'steps': [{**step, 'status': 'completed'} for step in goal_steps]}), call_id='goal-plan-complete'),
+                        openai_stream(tool=('agent_finish', {'outcome': 'completed', 'summary': 'Goal achieved and file verified.',
+                            'verification': ['workspace_read returned goal.txt with content exactly verified.']}), call_id='goal-finish')])
+        send('Achieve the saved-file goal and verify the success criteria.')
+        expect(page.get_by_role('region', name='Agent run progress')).to_contain_text('Goal completed')
+        achieved = wait_idle()
+        check('Goal mode rejects premature completion and records a finished plan with verification',
+              achieved['status'] == 'completed' and achieved['run']['verification']
+              and all(step['status'] == 'completed' for step in achieved['plan'])
+              and invoke('AgentWorkspaceRead', 'goal.txt')['content'] == 'verified')
+        saved_run = json.loads(invoke('AgentExport'))['run']
+        check('Task mode, progress and verification survive a browser checkpoint',
+              saved_run['mode'].lower() == 'goal' and saved_run['phase'] == 'completed'
+              and saved_run['verification'] == achieved['run']['verification'])
+        set_mode('normal')
 
         runtime = call('workspace_runtime')
         check('browser coding runtime is discoverable through MCP', runtime['runtime'] == 'isolated-javascript-worker')

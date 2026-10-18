@@ -43,7 +43,7 @@ using (var agent = new AgentSession(client, model, full, ownsClient: false))
     Assert(circle.Radius == 9 && editor.State.UndoCount == 1 && client.Calls == 3, "Provider retry repeated or skipped a source mutation.");
     Assert(agent.Poll().Status == "completed" && agent.Poll().Events.Any(e => e.Type == "retrying"), "Provider retry was not observable or did not complete.");
     var exported = McpJson.Parse(agent.Export());
-    Assert(exported.GetProperty("messages").EnumerateArray().SelectMany(m => m.GetProperty("contents").EnumerateArray()).Count(c => c.GetProperty("kind").GetString() == "functionCall") == 1, "Discarded partial call leaked into the checkpoint.");
+    Assert(exported.GetProperty("messages").EnumerateArray().SelectMany(m => m.GetProperty("contents").EnumerateArray()).Count(c => c.GetProperty("kind").GetString() == "functionCall" && c.GetProperty("name").GetString() == "shadow_edit") == 1, "Discarded partial call leaked into the checkpoint.");
     Assert(client.Inputs.Last().Any(m => m.Role == ChatRole.Tool), "Tool results were not returned to the provider.");
     using var restored = new AgentSession(new ScriptedChatClient(), model, full);
     restored.Import(agent.Export());
@@ -81,7 +81,7 @@ foreach (var mode in new[] { AgentPermissionMode.Ask, AgentPermissionMode.ReadOn
     await agent.RunAsync("Attempt a write.");
     Assert(ReferenceEquals(before, source.Current) && circle.Radius == 11, mode + " policy allowed a mutation.");
     if (mode == AgentPermissionMode.ReadOnly)
-        Assert(client.ToolNames[0].All(name => model.Tools.Single(t => t.Name == name).ReadOnly), "Read-only sessions advertise mutating tools.");
+        Assert(client.ToolNames[0].All(name => name is "agent_plan" or "agent_finish" || model.Tools.Single(t => t.Name == name).ReadOnly), "Read-only sessions advertise mutating tools.");
     using var restored = new AgentSession(new ScriptedChatClient(), model, full);
     restored.Import(agent.Export());
     Assert(restored.Poll().Status == "idle", "Denied-tool checkpoint did not import.");
@@ -180,7 +180,10 @@ using (var agent = new AgentSession(client, contextTools, full, ownsClient: fals
     });
     await agent.RunAsync(originalTask);
     var before = agent.ContextTokens;
+    var beforeCompaction = agent.RunState;
     await agent.CompactAsync();
+    Assert(beforeCompaction.Phase == "completed" && agent.RunState.Phase == "completed" && agent.Poll().Status == "completed"
+        && agent.RunState.CompletionSummary == beforeCompaction.CompletionSummary, "Manual compaction replaced the completed task lifecycle.");
     Assert(agent.ContextTokens < before && agent.Poll().Events.Any(e => e.Type == "compacted"), "Manual compaction did not reduce retained context or emit a receipt.");
     var archives = agent.Workspace.Export().Where(f => f.Path.StartsWith("agent-history/", StringComparison.Ordinal)).ToArray();
     Assert(archives.Length == 1 && archives[0].Content.Contains(originalTask, StringComparison.Ordinal) && archives[0].Content.Contains("provider-signature-0", StringComparison.Ordinal),
@@ -200,7 +203,7 @@ using (var agent = new AgentSession(client, contextTools, full, ownsClient: fals
         Assert(input.SelectMany(m => m.Contents).OfType<TextReasoningContent>().Any(r => r.ProtectedData == "provider-signature-6" && r.AdditionalProperties?["reasoningItemId"] as string == "rs_6"
             && r.AdditionalProperties?["shadow:reasoning-provider"] as string == "anthropic"),
             "Resumed input did not preserve protected reasoning and provider item identities.");
-        return ScriptedChatClient.Response([new TextContent("Resumed.")], token);
+        return ScriptedChatClient.Response([new TextContent("Resumed.")], token, finish: true);
     });
     await restored.RunAsync("");
     Assert(restored.Poll().Status == "completed", "Compacted checkpoint could not resume.");
@@ -243,7 +246,7 @@ using (var agent = new AgentSession(client, contextTools, full, ownsClient: fals
         Assert(replay.AdditionalProperties?["reasoningItemId"] as string == "rs_bridge"
             && replay.AdditionalProperties?["shadow:reasoning-provider"] as string == "openai" && replay.ProtectedData == "bridge-encrypted-reasoning",
             "Resumed bridge input lost the complete provider reasoning identity.");
-        return ScriptedChatClient.Response([new TextContent("Resumed.")], token);
+        return ScriptedChatClient.Response([new TextContent("Resumed.")], token, finish: true);
     });
     await restored.RunAsync("");
 }
@@ -284,6 +287,8 @@ Throws<InvalidOperationException>(() => workspace.Write("src/main.cs", new strin
 Assert(workspace.Read("src/main.cs").Version == version && workspace.Read("src/main.cs").Content == "class C {}", "Oversized write was not atomic.");
 
 checks += await BrowserCodeVerification.RunAsync();
+checks += await AgentRunVerification.RunAsync();
+checks += await AgentReceiptVerification.RunAsync();
 Console.WriteLine($"Agent verification passed: {checks} checks covering live DXF mutations, provider retries, duplicate calls, approvals, stop/resume, concurrency, compaction, protected reasoning, checkpoint validation, atomic file batches and isolated code transactions.");
 
 sealed class ScriptedChatClient : IChatClient
@@ -293,7 +298,8 @@ sealed class ScriptedChatClient : IChatClient
     public List<string[]> ToolNames { get; } = [];
     public int Calls { get; private set; }
     public void Enqueue(Func<IReadOnlyList<ChatMessage>, ChatOptions?, CancellationToken, IAsyncEnumerable<ChatResponseUpdate>> script) => scripts.Enqueue(script);
-    public void EnqueueResponse(params AIContent[] contents) => Enqueue((input, options, token) => Response(contents, token));
+    public void EnqueueResponse(params AIContent[] contents) => Enqueue((input, options, token) => Response(contents, token,
+        finish: options?.Tools?.OfType<AIFunctionDeclaration>().Any(tool => tool.Name == "agent_finish") == true));
     public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var input = messages.ToArray(); Inputs.Add(input); ToolNames.Add(options?.Tools?.OfType<AIFunctionDeclaration>().Select(t => t.Name).ToArray() ?? []); Calls++;
@@ -304,9 +310,15 @@ sealed class ScriptedChatClient : IChatClient
         GetStreamingResponseAsync(messages, options, cancellationToken).ToChatResponseAsync(cancellationToken);
     public object? GetService(Type serviceType, object? serviceKey = null) => serviceType == typeof(IChatClient) ? this : null;
     public void Dispose() { }
-    public static async IAsyncEnumerable<ChatResponseUpdate> Response(IList<AIContent> contents, [EnumeratorCancellation] CancellationToken token)
+    public static async IAsyncEnumerable<ChatResponseUpdate> Response(IList<AIContent> contents, [EnumeratorCancellation] CancellationToken token, bool finish = false)
     {
         token.ThrowIfCancellationRequested(); await Task.Yield();
+        if (finish && !contents.Any(content => content is FunctionCallContent))
+            contents = [.. contents, new FunctionCallContent("finish-" + Guid.NewGuid().ToString("N"), "agent_finish", new Dictionary<string, object?>
+            {
+                ["outcome"] = "completed", ["summary"] = "Verification fixture complete.",
+                ["verification"] = new[] { "The scripted fixture reached its expected completion." }
+            })];
         yield return new(ChatRole.Assistant, contents)
         {
             MessageId = Guid.NewGuid().ToString("N"), ResponseId = Guid.NewGuid().ToString("N"),

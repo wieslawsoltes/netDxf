@@ -30,9 +30,10 @@ test('configuration preserves editable providers and enforces endpoint and conte
   assert.throws(() => endpointUrl('https://companion.example', { companion: true }));
 });
 
-test('persistent preferences exclude credentials, endpoints and blanket authorization', () => {
-  const result = preferences({ ...defaultConfiguration, apiKey: 'private-token', endpoint: 'https://private.example', permissionMode: 'fullAccess', provider: 'google' });
-  assert.deepEqual(Object.keys(result).sort(), ['contextWindowTokens', 'maxOutputTokens', 'maxTurns', 'model', 'provider'].sort());
+test('persistent preferences exclude credentials, criteria, endpoints and blanket authorization', () => {
+  const result = preferences({ ...defaultConfiguration, apiKey: 'private-token', endpoint: 'https://private.example', permissionMode: 'fullAccess', provider: 'google', mode: 'goal', successCriteria: 'private task details' });
+  assert.deepEqual(Object.keys(result).sort(), ['contextWindowTokens', 'maxOutputTokens', 'maxTurns', 'maxNoProgressTurns', 'mode', 'model', 'provider'].sort());
+  assert.equal(result.mode, 'goal');
   assert(!JSON.stringify(result).includes('private'));
 });
 

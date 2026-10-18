@@ -3,7 +3,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Globalization;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Anthropic;
@@ -229,7 +228,7 @@ public static partial class ShadowAgentProviders
         }
     }
 
-    private sealed class ProviderChatClient(IChatClient inner, HttpClient transport, IDisposable? sdkOwner, string provider)
+    private sealed partial class ProviderChatClient(IChatClient inner, HttpClient transport, IDisposable? sdkOwner, string provider)
         : DelegatingChatClient(inner)
     {
         private int _disposed;
@@ -238,67 +237,6 @@ public static partial class ShadowAgentProviders
         public override async Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null,
             CancellationToken cancellationToken = default) =>
             await GetStreamingResponseAsync(messages, options, cancellationToken).ToChatResponseAsync(cancellationToken).ConfigureAwait(false);
-
-        public override async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages,
-            ChatOptions? options = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        {
-            ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
-            var configured = options?.Clone() ?? new ChatOptions();
-            var originalFactory = configured.RawRepresentationFactory;
-            if (provider is "openai" or "chatgpt")
-            {
-                configured.ConversationId = null;
-                configured.RawRepresentationFactory = client =>
-                {
-                    var raw = originalFactory?.Invoke(client) as CreateResponseOptions ?? new CreateResponseOptions();
-                    raw.StoredOutputEnabled = false;
-                    raw.PreviousResponseId = null;
-                    return raw;
-                };
-            }
-            else if (provider is "google" or "gemini")
-            {
-                configured.RawRepresentationFactory = client =>
-                {
-                    var raw = originalFactory?.Invoke(client) as GenerateContentConfig ?? new GenerateContentConfig();
-                    // The harness owns bounded continuation and cancellation; never create invisible billed retries.
-                    raw.AutomaticContinuation = false;
-                    return raw;
-                };
-            }
-
-            var completed = false;
-            await foreach (var update in InnerClient.GetStreamingResponseAsync(CompatibleHistory(messages), configured, cancellationToken).ConfigureAwait(false))
-            {
-                if (update.RawRepresentation is StreamingResponseFailedUpdate failed)
-                    throw new ShadowAgentProviderException(failed.Response.Error?.Code.ToString() ?? "response_failed",
-                        failed.Response.Error?.Message ?? "The provider failed the response.");
-                if (update.RawRepresentation is StreamingResponseIncompleteUpdate)
-                    throw new ShadowAgentProviderException("response_incomplete", "The provider returned an incomplete response.");
-                foreach (var error in update.Contents.OfType<ErrorContent>())
-                    throw new ShadowAgentProviderException(error.ErrorCode ?? "provider_error", error.Message ?? "The provider reported a streaming error.");
-                // Gemini can omit call IDs. Give each completed call a stable session ID before
-                // the harness checkpoints it or correlates its result. The following protected
-                // reasoning content retains the SDK's original thought signature on replay.
-                for (var i = 0; i < update.Contents.Count; i++)
-                {
-                    if (update.Contents[i] is TextReasoningContent reasoning)
-                        (reasoning.AdditionalProperties ??= new())[ReasoningProviderKey] = reasoningProvider;
-                    if (update.Contents[i] is FunctionCallContent call && string.IsNullOrWhiteSpace(call.CallId))
-                        update.Contents[i] = new FunctionCallContent("call_" + Guid.NewGuid().ToString("N"), call.Name, call.Arguments)
-                        { AdditionalProperties = call.AdditionalProperties };
-                }
-                // Anthropic reports its stop reason in message_delta before message_stop.
-                // Losing the connection between those events must not commit a partial turn.
-                completed |= provider == "anthropic"
-                    ? update.RawRepresentation is Anthropic.Models.Messages.RawMessageStreamEvent
-                        { Value: Anthropic.Models.Messages.RawMessageStopEvent }
-                    : update.FinishReason is not null;
-                yield return update;
-            }
-            if (!completed)
-                throw new ShadowAgentProviderException("stream_interrupted", "The provider stream ended without a terminal completion event.", isTransient: true);
-        }
 
         private IEnumerable<ChatMessage> CompatibleHistory(IEnumerable<ChatMessage> messages)
         {

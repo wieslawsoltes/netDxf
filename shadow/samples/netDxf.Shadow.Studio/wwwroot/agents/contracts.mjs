@@ -8,8 +8,14 @@ export const providers = Object.freeze([
 
 export const defaultConfiguration = Object.freeze({
   provider: 'openai', model: 'gpt-4.1', apiKey: '', endpoint: '', permissionMode: 'ask',
-  maxTurns: 40, maxOutputTokens: 8192, contextWindowTokens: 128000
+  mode: 'normal', successCriteria: '', maxTurns: 0, maxNoProgressTurns: 8, maxOutputTokens: 8192, contextWindowTokens: 128000
 });
+
+export const executionModes = Object.freeze([
+  { id: 'normal', name: 'Normal', hint: 'Complete the task and verify the result.' },
+  { id: 'plan', name: 'Plan', hint: 'Investigate and publish a plan. Agent edits stay blocked.' },
+  { id: 'goal', name: 'Goal', hint: 'Work toward success criteria and report completion evidence.' }
+]);
 
 export function endpointUrl(value, { companion = false } = {}) {
   const text = String(value ?? '').trim();
@@ -41,10 +47,15 @@ export function configuration(input) {
   if (/\s/.test(apiKey)) throw new Error('The API key or companion token cannot contain whitespace.');
   const permissionMode = String(input.permissionMode || 'ask');
   if (!['readOnly', 'ask', 'fullAccess'].includes(permissionMode)) throw new Error('Choose a valid tool permission mode.');
+  const mode = String(input.mode || 'normal').toLowerCase();
+  if (!executionModes.some(item => item.id === mode)) throw new Error('Choose Normal, Plan, or Goal execution mode.');
+  const successCriteria = String(input.successCriteria ?? '').trim();
+  if (successCriteria.length > 16000) throw new Error('Goal success criteria must be at most 16,000 characters.');
   const result = {
-    provider, model, apiKey, permissionMode,
+    provider, model, apiKey, permissionMode, mode, successCriteria,
     endpoint: endpointUrl(input.endpoint, { companion: provider === 'chatgpt' }),
-    maxTurns: integer(input.maxTurns ?? 40, 'Turn limit', 1, 1000),
+    maxTurns: integer(input.maxTurns ?? 0, 'Turn budget', 0, 10000),
+    maxNoProgressTurns: integer(input.maxNoProgressTurns ?? 8, 'No-progress budget', 2, 100),
     maxOutputTokens: integer(input.maxOutputTokens ?? 8192, 'Output token limit', 256, 128000),
     contextWindowTokens: integer(input.contextWindowTokens ?? 128000, 'Context window', 4096, 4000000)
   };
@@ -54,12 +65,23 @@ export function configuration(input) {
   return result;
 }
 
-/** Remember model choices and numeric limits only. Full access requires an explicit choice each load. */
+/** Remember mode, model choices and numeric limits. Task criteria and full access are not preferences. */
 export function preferences(input) {
   const result = configuration({ ...defaultConfiguration, ...input, apiKey: '', endpoint: '', permissionMode: 'ask' });
-  const { provider, model, maxTurns, maxOutputTokens, contextWindowTokens } = result;
-  return { provider, model, maxTurns, maxOutputTokens, contextWindowTokens };
+  const { provider, model, mode, maxTurns, maxNoProgressTurns, maxOutputTokens, contextWindowTokens } = result;
+  return { provider, model, mode, maxTurns, maxNoProgressTurns, maxOutputTokens, contextWindowTokens };
 }
+
+/** Version 1 did not distinguish its default 40-turn cap from a user-selected 40. */
+export function restorePreferences(value) {
+  if (!value || Array.isArray(value) || typeof value !== 'object') throw new Error('Invalid saved agent preferences.');
+  if (value.schemaVersion !== undefined && ![1, 2].includes(value.schemaVersion)) throw new Error('Unknown agent preference version.');
+  const input = { ...value };
+  if (value.schemaVersion !== 2 && Number(input.maxTurns) === 40) input.maxTurns = 0;
+  return preferences(input);
+}
+
+export function preferenceRecord(input) { return { schemaVersion: 2, ...preferences(input) }; }
 
 const credentialKey = /^(?:api[-_]?key|access[-_]?token|refresh[-_]?token|id[-_]?token|bridge[-_]?token|password|authorization|client[-_]?secret|credentials?|secrets?)$/i;
 
@@ -136,6 +158,7 @@ export class AgentTranscript {
     this.sessionId = sessionId; this.sequence = 0; this.items = []; this.tools = new Map();
     this.activeAssistant = null; this.running = false; this.status = 'idle'; this.contextTokens = 0;
     this.contextLimit = 128000; this.usage = {}; this.pins = []; this.pinsKnown = false; this.plan = []; this.dropped = 0; this.version = 0;
+    this.run = null;
   }
   add(item) {
     this.items.push(item);
@@ -185,6 +208,8 @@ export class AgentTranscript {
     if (Number.isFinite(reply.contextLimit)) this.contextLimit = Math.max(1, reply.contextLimit);
     if (Array.isArray(reply.pins)) { this.pins = reply.pins; this.pinsKnown = true; }
     if (Array.isArray(reply.plan)) this.plan = reply.plan;
+    if (reply.run && typeof reply.run === 'object' && !Array.isArray(reply.run))
+      this.run = { ...reply.run, mode: String(reply.run.mode || 'normal').toLowerCase(), phase: String(reply.run.phase || reply.status || 'idle').toLowerCase() };
     if (reply.usage && typeof reply.usage === 'object') this.usage = { ...this.usage, ...reply.usage };
     if (reply.running === false && (!Number.isSafeInteger(reply.latestSequence) || this.sequence >= reply.latestSequence)) {
       if (this.activeAssistant) { this.activeAssistant.streaming = false; this.activeAssistant.version = this.sequence; this.activeAssistant = null; }
@@ -242,6 +267,8 @@ export class AgentTranscript {
       this.add({ id, kind: 'status', type, text: event.message, data, time });
     } else if (type === 'plan') {
       if (Array.isArray(data.steps)) this.plan = data.steps;
+    } else if (type === 'run') {
+      this.run = { ...data, mode: String(data.mode || 'normal').toLowerCase(), phase: String(data.phase || 'idle').toLowerCase() };
     } else if (type === 'retrying') {
       if (data.discardPartial && this.activeAssistant) {
         const index = this.items.indexOf(this.activeAssistant); if (index >= 0) this.items.splice(index, 1);

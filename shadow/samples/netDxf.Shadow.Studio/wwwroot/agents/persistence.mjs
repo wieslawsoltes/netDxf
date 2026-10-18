@@ -151,7 +151,7 @@ export class BrowserSessionPersistence extends EventTarget {
       if (!record) throw new Error('That saved workspace no longer exists. Refresh the saved session list.');
       const validated = checkpointRecord(record, this.client.secrets);
       await this.client.importSession(validated.checkpoint);
-      this.id = newId(); this.lastSignature = null; this.restoreDraft(validated.draft);
+      this.id = newId(); this.lastSignature = null; this.restoreDraft(validated.draft, validated);
       this.emit('restored', 'Restored a saved workspace. Current provider credentials and permissions are retained; credentials were not saved.');
       this.schedule(); return validated;
     } finally { this.suspended = false; if (this.pending && !this.disposed) this.schedule(); }
