@@ -48,6 +48,11 @@ PACKAGES = (
         ('SkiaSharp.HarfBuzz', '3.119.1'), ('HarfBuzzSharp', '8.3.1.5'),
         ('HarfBuzzSharp.NativeAssets.Linux', '8.3.1.5'))),
     shadow('netDxf.Shadow.Exchange.Dwg', (CORE,), (('ACadSharp', '3.8.0'),)),
+    shadow('netDxf.Shadow.Mcp', ('netDxf.Shadow.NetDxf', 'netDxf.Shadow.Editor'),
+           (('ModelContextProtocol.Core', '2.2.0'),)),
+    shadow('netDxf.Shadow.Agents', ('netDxf.Shadow.Mcp',), (
+        ('OpenAI', '2.14.0'), ('Anthropic', '12.58.0'), ('Google.GenAI', '1.26.1'),
+        ('Microsoft.Extensions.AI.OpenAI', '10.11.0'), ('Microsoft.Extensions.AI.Abstractions', '10.11.0'))),
 )
 BY_ID = {package.id: package for package in PACKAGES}
 

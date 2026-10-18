@@ -1,0 +1,234 @@
+# netDxf.Shadow.Agents
+
+A standalone .NET 8 coding and CAD agent harness built around `Microsoft.Extensions.AI.IChatClient` and the transport-independent tool contracts in `netDxf.Shadow.Mcp`. It can run in a native application or the browser Studio, and is packed independently as `netDxf.Shadow.Agents`.
+
+The package provides streaming inference, tool execution, explicit permission modes, bounded retries, cancellation, context compaction, pinned context, plans, event polling, portable checkpoints, file workspaces and optional native process execution. The provider factory uses the official OpenAI, Anthropic and Google .NET libraries. Studio's visuals and local companion are consumers of the package.
+
+## Dependencies and provider support
+
+| Component | Package | Pinned version |
+| --- | --- | --- |
+| OpenAI Responses | `OpenAI` | `2.14.0` |
+| Anthropic Messages | `Anthropic` | `12.58.0` |
+| Google Gen AI | `Google.GenAI` | `1.26.1` |
+| OpenAI `IChatClient` adapter | `Microsoft.Extensions.AI.OpenAI` | `10.11.0` |
+| Common chat abstraction | `Microsoft.Extensions.AI.Abstractions` | `10.11.0` |
+| Shared tool executor | `netDxf.Shadow.Mcp` | Same repository package version |
+
+| Provider value | Native .NET | Browser Studio |
+| --- | --- | --- |
+| `openai` | Official Responses SDK and an API key. | Official Responses SDK with a session API key. |
+| `google` / `gemini` | Official Google Gen AI SDK and an API key. | Official Google Gen AI SDK with a session API key. |
+| `anthropic` | Official Anthropic SDK and an API key. | Typed streaming bridge to the local companion, which runs the official SDK. |
+| `chatgpt` | Official Responses SDK with a valid Sign in with ChatGPT access token. | Official Responses SDK through the local ChatGPT companion; browser holds only a bridge token. |
+
+The pinned Anthropic SDK eagerly configures `HttpClientHandler.AutomaticDecompression` in its options constructor, a feature unavailable on WebAssembly. Supplying a custom `HttpClient` does not avoid that constructor. The companion keeps the official SDK intact and gives the browser an `IChatClient` stream. OpenAI and Google do not require that companion for their API-key mode, subject to the selected endpoint's browser/CORS support.
+
+Official sources: [OpenAI .NET](https://github.com/openai/openai-dotnet), [Anthropic C#](https://github.com/anthropics/anthropic-sdk-csharp), [Google Gen AI .NET](https://github.com/googleapis/dotnet-genai), [Microsoft IChatClient](https://learn.microsoft.com/en-us/dotnet/ai/ichatclient).
+
+## Run an agent over DXF, shadow and file tools
+
+The following native example creates an independent in-memory session. Supply your own API key and a tool-capable model ID through the application configuration:
+
+```csharp
+using netDxf;
+using netDxf.Shadow.Agents;
+using netDxf.Shadow.Editor;
+using netDxf.Shadow.Mcp;
+using netDxf.Shadow.NetDxf;
+
+var provider = new ShadowAgentProviderOptions
+{
+    Provider = "openai",
+    Model = Environment.GetEnvironmentVariable("OPENAI_MODEL")
+        ?? throw new InvalidOperationException("Set OPENAI_MODEL."),
+    ApiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY")
+        ?? throw new InvalidOperationException("Set OPENAI_API_KEY."),
+};
+
+var source = new ShadowSession(new DxfDocument());
+var editor = new EditorSession(source);
+var files = new MemoryAgentWorkspace();
+var tools = ShadowMcpTools.Create(new(() => editor, () => source));
+AgentWorkspaceTools.Register(tools, files);
+
+using var agent = new AgentSession(
+    ShadowAgentProviders.Create(provider),
+    tools,
+    new AgentOptions
+    {
+        Model = provider.Model,
+        PermissionMode = AgentPermissionMode.ReadOnly,
+    },
+    workspace: files,
+    redactor: text => text.Replace(provider.ApiKey, "[redacted]",
+        StringComparison.Ordinal));
+
+agent.EventEmitted += entry =>
+{
+    if (entry.Type == "assistantDelta") Console.Write(entry.Message);
+};
+
+await agent.RunAsync("Inspect the drawing and explain its available editing capabilities.");
+Console.WriteLine(agent.Poll().Status);
+```
+
+`AgentSession` accepts any `IMcpToolExecutor`, so a host can supply an unrelated code or application tool registry. It also accepts any compatible `IChatClient`, including test clients. It owns the chat client by default; use `ownsClient:false` if a shared caller manages its lifetime. A supplied `HttpClient` passed to `ShadowAgentProviders.Create` or `CreateBrowserBridge` remains caller-owned.
+
+`RunAsync` records runtime failures as an `error` status and event so the UI can recover and continue. Configuration and concurrent-operation errors can throw before execution starts. Inspect `Poll().Status` after the task completes. Run, manual execution, import, reset and manual compaction are mutually exclusive. Cancel and await an active run before disposing the session.
+
+## Permissions and execution order
+
+`AgentOptions.PermissionMode` is the execution policy for the supplied registry:
+
+| Mode | Behavior |
+| --- | --- |
+| `ReadOnly` | Advertises read-only tools and rejects mutating calls, including calls invented by a model. |
+| `Ask` | Executes reads; emits `approvalRequested` and awaits a decision for each mutation. This is the default. |
+| `FullAccess` | Executes all tools explicitly registered by the host without per-call approval. |
+
+For `Ask`, display the `AgentApproval` in the `approvalRequested` event's `Data`. Its JSON fields include `requestId`, `tool`, `arguments` and `expiresAt`. Call `agent.Approve(requestId, true)` or `agent.Approve(requestId, false)` after the host's decision. Approval denial and expiry are returned to the model as tool results. `agent.ExecuteToolAsync(name, arguments, cancellationToken)` uses the same policy for manual/MCP invocations.
+
+Tool mutations run in model order. Only adjacent read-only calls can overlap, up to `MaxParallelReadTools`; a write waits for earlier reads, and later reads wait for that write. The executor must honor cancellation and correctly classify tools. A custom executor that marks a write as read-only changes the capability contract and must enforce any additional host policy itself.
+
+Inference completes before any of its tool calls are dispatched. A failed or truncated stream cannot execute a partially received call. The harness retries only inference with a bounded exponential delay and jitter, observes supported `Retry-After` values, and discards partial attempts. Provider SDK retries and Google automatic continuations are disabled to keep attempts observable and bounded. Authentication, invalid input, permission and account-plan failures require recovery instead of an automatic retry.
+
+Duplicate function-call IDs in one response are removed before execution. Completed call IDs are retained for the active session, and retained transcript results rebuild that cache on import. Mutations are never automatically replayed. When a tool is interrupted, its result explains that an edit may already have committed; inspect fresh document/file state before deciding whether to repeat it.
+
+## Workspace tools and native commands
+
+`IAgentWorkspace` supplies file listing, bounded character reads, complete writes, deletes, literal search, export and import. `AgentWorkspaceTools.Register(registry, workspace)` adds:
+
+| Tool | Behavior |
+| --- | --- |
+| `workspace_list` | Paths, versions and size metadata. |
+| `workspace_read` | Character paging with offset, length, current version and `hasMore`. |
+| `workspace_write` | Create with `expectedVersion:0`, or replace using the current version. |
+| `workspace_patch` | Replace exactly one occurrence of `oldText`, requiring a current version. |
+| `workspace_search` | Bounded literal matches with file paths and line numbers. |
+| `workspace_delete` | Delete after checking the current version. |
+
+`MemoryAgentWorkspace` is bounded, uses forward-slash relative paths, validates imports before replacing live data and issues fresh versions on import. Its default budget is 512 files and 16 MiB.
+
+Native applications can explicitly attach a source directory and process capability:
+
+```csharp
+using netDxf.Shadow.Agents;
+using netDxf.Shadow.Mcp;
+
+var directory = "/absolute/path/to/project";
+var nativeFiles = new DirectoryAgentWorkspace(
+    directory, maximumBytes: 128 * 1024 * 1024, maximumFiles: 20000);
+var nativeTools = new McpToolRegistry();
+AgentWorkspaceTools.Register(nativeTools, nativeFiles);
+
+// Register only when the application/user grants native process execution.
+AgentCommandTools.Register(nativeTools, new LocalAgentCommandRunner(directory));
+```
+
+`DirectoryAgentWorkspace` checks file content stamps for version conflicts, stages writes before replacing files, rejects path traversal and symbolic links, and bounds enumeration. It skips `.git`, `bin`, `obj` and `node_modules` in enumeration. Text operations use UTF-8; file metadata can identify binary files, while text search skips binary content. Workspace exports contain UTF-8 text files; binary files stay in the native directory and remain visible in file metadata. Prefer a separate memory workspace for the harness's transcript archives when native tools grant a large repository.
+
+The optional `workspace_execute` tool accepts an `AgentCommand` with `Executable`, an `Arguments` array, relative `WorkingDirectory`, and `TimeoutSeconds`. `LocalAgentCommandRunner` uses `ProcessStartInfo.ArgumentList`, runs one process operation at a time, drains bounded stdout/stderr, reports exit code, truncation, timeout and elapsed time, and kills the process tree on cancellation. Shell commands can be run by explicitly selecting a shell executable. Processes run as the hosting OS account; the working-directory grant is not an OS sandbox. Browser-only `FullAccess` does not create a shell.
+
+The [Agent Host sample](../../samples/netDxf.Shadow.AgentHost/README.md) exposes native tools with `companion_` prefixes to distinguish source files on disk from Studio's memory workspace. Startup `--workspace` and `--allow-processes` are separate grants.
+
+## Streaming events and UI state
+
+Subscribe to `EventEmitted` for immediate updates, or use `Poll(afterSequence)` to fetch at most 256 events after a known sequence. `AgentEvent` includes sequence, type, message, optional JSON data and timestamp. The bounded event log retains at most 4,096 entries and approximately 4 MiB of event text/data; `EarliestSequence` and `LatestSequence` let a client recognize a polling gap.
+
+Events cover assistant text deltas and completed messages, turns, usage, retry notices, tool start/completion with elapsed time and results, approval requests, plans, compaction, cancellation, completion, pause and errors. Provider usage reports input/output/total/cached tokens when available. `Poll` also returns current status, running state, session ID, estimated context use and configured context limit. UI observers cannot terminate the inference loop by throwing; callers should marshal events to their UI thread as needed.
+
+`SetPlan` accepts up to 64 `AgentPlanStep` values with `pending`, `in_progress` or `completed` status and at most one active step. Studio registers an `agent_plan` tool against this API. `Pin` and `Unpin` manage up to 32 retained reference entries, each at most 32,000 characters.
+
+## Context management and checkpoints
+
+The context meter conservatively estimates UTF-8 input, including instructions, tool schemas, history, summary and pins. Actual provider input usage calibrates the estimate upward. It is not an exact model tokenizer. Configure `ContextWindowTokens` for the selected model and reserve suitable output space.
+
+Before an inference crosses `CompactionThreshold`, the harness summarizes completed older rounds while retaining recent messages and keeping tool calls paired with their results. It archives the complete older transcript in `agent-history/` before replacing it with continuation notes. The current task and pinned context survive compaction. If the summarizer fails, bounded deterministic excerpts and the complete archive provide a fallback. If the workspace cannot retain the archive, compaction stops rather than discarding the original history.
+
+Large tool outputs are stored in `agent-results/` with a preview and a path for `workspace_read` paging. `MaxToolResultCharacters` limits what is returned directly to model context; the registry and workspace have their own upstream size limits. Register workspace tools for the same archive workspace if the model should retrieve those files.
+
+When idle:
+
+```csharp
+var pin = agent.Pin("Preserve drawing units and existing layer names.");
+await agent.CompactAsync();
+string checkpointJson = agent.Export();
+
+// Create another AgentSession with fresh provider credentials and the same tool host.
+restoredAgent.Import(checkpointJson);
+await restoredAgent.RunAsync(""); // Continue the retained task.
+```
+
+Checkpoints are versioned JSON containing session identity, active task, summary, transcript, pins, workspace files and plan. They preserve portable text and tool call/results, provider reasoning signatures/protected data, OpenAI reasoning item IDs and Anthropic redacted-thinking markers. Gemini's adjacent thought-signature content remains ordered correctly. The ChatGPT normalizer restores the app's `shadow` function-call namespace when the current .NET SDK re-encodes portable history.
+
+Checkpoints exclude provider API keys, OAuth credentials, SDK clients, transport objects, permission options and arbitrary system instructions. The importing host supplies current credentials, instructions, tools and permission policy. Import validates roles, collection budgets, paths and complete call/result pairs before changing the session. Resume against the original provider/model when its protected reasoning is retained. A checkpoint does not serialize the live DXF document or roll back its edits; restore the document independently and inspect fresh revision/file receipts before further changes.
+
+Transcript and workspace content may contain user data or secrets that a user/tool deliberately included. The optional session `redactor` is applied to events and exported text; hosts should redact their known session credentials and choose their own persistence policy. The package does not write checkpoints, API keys or OAuth tokens to disk automatically.
+
+## Official SDK browser bridge
+
+Applications with a connected local companion can create a portable streaming client directly:
+
+```csharp
+using var client = ShadowAgentProviders.CreateBrowserBridge(
+    new ShadowAgentProviderOptions
+    {
+        Provider = "anthropic",
+        Model = selectedModel,
+        ApiKey = sessionApiKey,
+        Endpoint = optionalProviderEndpoint,
+    },
+    endpoint: "http://127.0.0.1:5091",
+    token: companionBridgeToken);
+```
+
+The bridge sends a typed `ShadowAgentBridgeRequest` to `/providers/stream`. The API key is passed only to the explicitly selected companion for that request; the companion constructs an official vendor client. An explicit endpoint override follows the same HTTPS/loopback validation as direct provider creation. All ordinary portable `ChatOptions` are serialized using Microsoft's chat contracts, with function declarations transported separately. Opaque SDK factories and background continuation are rejected because they cannot be transported as portable execution state.
+
+Updates use a bounded NDJSON envelope carrying `ChatResponseUpdate`, with terminal completion/error frames. Microsoft's serializers preserve content, protected reasoning, tool calls/results and usage while excluding opaque `RawRepresentation`. The bridge forwards cancellation and transient failure metadata, and performs no inference or tool retries of its own. The browser harness remains responsible for tool execution, policy, retry budgets and context management.
+
+## Sign in with ChatGPT
+
+`netDxf.Shadow.Agents.Auth.ChatGptSignInClient` implements the official Sign in with ChatGPT flow for open-source local applications:
+
+```csharp
+using netDxf.Shadow.Agents.Auth;
+
+using var signIn = new ChatGptSignInClient();
+var pending = await signIn.BeginAsync(new ChatGptSignInOptions
+{
+    AppName = "Your application name",
+    HostId = persistedStableHostId,
+    CallbackUri = new Uri("http://127.0.0.1:5091/auth/callback"),
+    ClientId = previouslyIssuedClientId, // null on initial registration
+});
+
+// Open pending.AuthorizationUri in the user's browser.
+// Your active loopback listener supplies the complete callback URI:
+ChatGptCredential credential = await signIn.CompleteAsync(pending, callbackUri);
+credential = await signIn.RefreshAsync(credential);
+bool remoteRevocationConfirmed = await signIn.RevokeAsync(credential);
+```
+
+The application must start its exact `127.0.0.1` HTTP callback listener before `BeginAsync`. The documented dynamic registration uses `dynamic_agent_client` only for the initial authorization; retain the issued client ID afterward. `RegisteredClientId` on the attempt retains the validated nonsecret registration if a one-use code exchange fails and sign-in must restart. No client secret or borrowed third-party client ID is used.
+
+The implementation validates PKCE, one-use state, trusted discovery/JWKS endpoints, ID-token signature, issuer, audience, expiry, nonce and expected account subject. It requires the resource-invocation and ChatGPT direct-plan scopes, coalesces rotating refreshes and supports revocation. Credentials are in-memory objects with redacted diagnostic strings and JSON-ignored token properties. Owners control their lifetime; the sample persists only nonsecret host/client/account mapping and clears OAuth credentials on restart.
+
+Subscription inference uses the official public Responses endpoint, streaming, `store:false`, full input history and developer roles. `ChatGptResponsesContract.Normalize` enforces supported request fields and grouped local function tools. Hosted tool availability, plan usage consent, supported models and rate limits are set by OpenAI. A GitHub Pages app needs the local callback companion for this public-client flow; the page's HTTPS URL is not a supported replacement for that loopback callback.
+
+Official documentation: [open-source integration](https://developers.openai.com/siwc/token-sharing-open-source), [sign-in](https://developers.openai.com/siwc/token-sharing-open-source/sign-in), [models and inference](https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference), [current limitations](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations).
+
+## Budgets and packaging
+
+Defaults are 40 model turns, 8,192 output tokens, a 128,000-token context estimate, a 72% compaction threshold, four inference retries, four parallel reads, a three-minute inference timeout, a two-minute tool timeout and ten-minute approval expiry. These are host configuration through `AgentOptions`, not claims about provider entitlements. `FullAccess` changes tool permission behavior while retaining explicit execution and resource budgets.
+
+Build and pack from the repository root:
+
+```sh
+dotnet build shadow/src/netDxf.Shadow.Agents -c Release
+dotnet pack shadow/src/netDxf.Shadow.Agents -c Release -o artifacts/packages
+```
+
+Consume the package with the same-version Shadow dependencies, or use its project reference in a local build. Packing creates a NuGet artifact; it does not publish the package to a feed. The browser Studio and ASP.NET companion are separate consumers.
+
+Verification projects exercise the harness over real DXF edits with scripted models, the official SDKs over controlled provider streams, and the loopback companion with an official MCP client, WebSockets and cancellable native processes. Live provider credentials and account authorization remain user-supplied.

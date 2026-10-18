@@ -16,7 +16,7 @@ Mutable netDxf document <-> serialized adapter <-> immutable shadow snapshots
 
 ## Install packages
 
-The eleven libraries under `shadow/src` are independently consumable NuGet
+The thirteen libraries under `shadow/src` are independently consumable NuGet
 packages. They share **`4.0.0-preview.1`** with `netDxf.netstandard` and target
 .NET 8. See the [package table and current NuGet badges](../README.md#nuget-packages)
 and the [release setup](../doc/CI-RELEASE.md).
@@ -29,6 +29,12 @@ dotnet add package netDxf.Shadow.Rendering.SkiaSharp --version 4.0.0-preview.1
 
 NuGet resolves the required core, geometry and rendering dependencies. Add the
 optional Graph, Drafting, Dimensions, SHX and DWG modules as needed.
+
+The optional [coding agent and MCP packages](docs/coding-agents.md) add streaming
+provider sessions, context compaction, versioned coding workspaces, generic DXF
+and shadow tools, and complete Studio control. Select **Agents** in the browser
+Studio. A .NET companion supports ChatGPT sign-in, external MCP clients and native
+project files/builds.
 
 ## Build, verify and run
 
@@ -67,6 +73,9 @@ Studio shares one host-owned `SkiaTextLayoutEngine` between the render compiler 
 | `netDxf.Shadow.Rendering.SkiaSharp` | PNG/direct canvas output, gradient/image paints, HarfBuzz/native glyph metrics and native resource caches | Rendering + SkiaSharp/HarfBuzz |
 | `netDxf.Shadow.Graph` | Toleranced connectivity, intersection splitting and graph algorithms | Geometry |
 | `netDxf.Shadow.Editor` | Source-independent editing, immutable structural/property history and selection, snapping | Rendering |
+| `netDxf.Shadow.Mcp` | Generic public DXF/shadow model tools, transactional edits and official MCP transports | Adapter + Editor + official MCP SDK |
+| `netDxf.Shadow.Agents` | Streaming coding harness, providers, approvals, compaction, workspaces and native process capability | MCP + official OpenAI/Anthropic/Google SDKs |
+| `netDxf.Shadow.AgentHost` | Loopback ChatGPT sign-in, browser MCP bridge and optional native project workspace | Agents + MCP ASP.NET transport |
 | `netDxf.Shadow.Studio` | Integrated local web sample | Adapter + consumer projects |
 | `netDxf.Shadow.Verification` | Original contracts, integration and capture/read smoke measurements | Sample + libraries |
 | `netDxf.Shadow.AdvancedVerification` | Structural history, incremental processing, appearance, typography, paper viewports, SHX resources and gallery regression tests | Sample + libraries |
