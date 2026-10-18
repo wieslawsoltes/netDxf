@@ -146,6 +146,14 @@ test('saved checkpoint records allowlist fields and redact keys in conversation,
   assert.equal(record.draft.baseVersion, 2); assert(record.bytes > 0);
 });
 
+test('browser checkpoints retain compacted tool receipts without retaining nested credentials', () => {
+  const receipts = [{ callId: 'write-1', signature: 'workspace_write:{"path":"result.txt","content":"done"}', isError: false },
+    { callId: 'write-2', signature: 'workspace_write:{"path":"result.txt","content":"next"}', isError: true, authorization: 'Bearer excluded' }];
+  const record = checkpointRecord({ id: 'receipts', checkpoint: JSON.stringify({ messages: [], files: [], receipts }) });
+  assert.deepEqual(JSON.parse(record.checkpoint).receipts, receipts.map(({ authorization, ...receipt }) => receipt));
+  assert(!record.checkpoint.includes('Bearer excluded'));
+});
+
 function persistenceFixture({ text = 'Task', draft = null, exportGate = null, saveGate = null } = {}) {
   class Client extends EventTarget {
     constructor() { super(); this.busy = false; this.connected = true; this.transcript = { running: false }; this.secrets = ['private-token']; this.exports = 0; this.imports = []; }
@@ -180,6 +188,17 @@ test('restoring forks a fresh durable slot and preserves the source checkpoint a
   assert.equal(result.id, 'previous-tab'); assert.notEqual(f.persistence.id, record.id); assert.equal(f.client.imports.length, 1);
   assert.equal(f.restored[0].content, 'unsaved'); assert(f.records.has('previous-tab'));
   await f.persistence.flush(); assert.equal(f.records.size, 2); f.persistence.dispose();
+});
+
+test('recovery supplies the validated checkpoint for staging task settings without applying provider configuration', async () => {
+  const f = persistenceFixture();
+  const record = checkpointRecord({ id: 'goal', checkpoint: JSON.stringify({ messages: [], files: [], run: { mode: 'Goal', successCriteria: 'Tests pass', apiKey: 'excluded' } }) });
+  let restored;
+  f.persistence.restoreDraft = (draft, value) => { restored = value; };
+  f.records.set(record.id, record); await f.persistence.restore(record.id);
+  assert.equal(JSON.parse(restored.checkpoint).run.successCriteria, 'Tests pass');
+  assert(!restored.checkpoint.includes('excluded')); assert.equal(f.client.imports.length, 1);
+  f.persistence.dispose();
 });
 
 test('a pending save retains its original slot when a new conversation starts', async () => {

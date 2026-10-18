@@ -62,6 +62,12 @@ internal static class BrowserMcpVerification
 
         controller.Configure(new() { PermissionMode = "readOnly" });
         Assert(ToolError(await Call(5, "tools/call", Tool("fixture_change"))) && mutations == 1, "MCP cannot bypass read-only agent permissions");
+        controller.Configure(new() { PermissionMode = "fullAccess", Mode = "plan" });
+        Assert(ToolError(await Call("plan-write", "tools/call", Tool("fixture_change"))) && mutations == 1,
+            "an existing browser MCP grant cannot bypass Plan mode through FullAccess");
+        Assert(!ToolError(await Call("plan-read", "tools/call", Tool("shadow_state"))), "Plan mode retains browser MCP inspection tools");
+        Assert(!ToolError(await Call("plan-metadata", "tools/call", new { name = "agent_plan", arguments = new { steps = new[] { new { step = "Review before implementation", status = "pending" } } } }))
+            && controller.Session.Plan.Count == 1, "Plan metadata remains editable through the same browser MCP policy");
         controller.Configure(new() { PermissionMode = "ask" });
         var approval = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
         controller.Session.EventEmitted += value =>

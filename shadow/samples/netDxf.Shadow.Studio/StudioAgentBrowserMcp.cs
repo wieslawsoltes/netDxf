@@ -21,7 +21,7 @@ public sealed partial class StudioAgentController
             if (browserMcpConnections.Count >= 8)
                 throw new InvalidOperationException("At most eight browser MCP sessions may be open. Close an existing connection first.");
             var id = Guid.NewGuid().ToString("N");
-            var connection = new BrowserMcpConnection(this, documentId, executor.Tools.ToArray(), companion);
+            var connection = new BrowserMcpConnection(this, documentId, session.ToolDefinitions.ToArray(), companion);
             browserMcpConnections.Add(id, connection);
             return new { sessionId = id, documentId, maxMessageCharacters = BrowserMcpConnection.MaxMessageCharacters };
         }
@@ -83,7 +83,7 @@ public sealed partial class StudioAgentController
                 if (definition.Name.StartsWith("companion_", StringComparison.Ordinal) &&
                     (expectedCompanion is null || !expectedCompanion.TryGetTarget(out var grantedCompanion) || !ReferenceEquals(grantedCompanion, companion)))
                     return McpToolResult.Error("companion_changed", "The native companion grant changed. Enable browser MCP again before accessing its workspace.");
-                var currentDefinition = executor.Tools.FirstOrDefault(tool => tool.Name == definition.Name);
+                var currentDefinition = session.ToolDefinitions.FirstOrDefault(tool => tool.Name == definition.Name);
                 if (currentDefinition is null || currentDefinition.ReadOnly != definition.ReadOnly ||
                     currentDefinition.InputSchema.GetRawText() != definition.InputSchema.GetRawText())
                     return McpToolResult.Error("catalog_changed", "The tool catalog changed. Enable browser MCP again before using this tool.");

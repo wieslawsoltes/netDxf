@@ -81,6 +81,37 @@ Console.WriteLine(agent.Poll().Status);
 
 `RunAsync` records runtime failures as an `error` status and event so the UI can recover and continue. Configuration and concurrent-operation errors can throw before execution starts. Inspect `Poll().Status` after the task completes. Run, manual execution, import, reset and manual compaction are mutually exclusive. Cancel and await an active run before disposing the session.
 
+## Persistent runs and execution modes
+
+`AgentOptions.Mode` selects `AgentRunMode.Normal`, `Plan` or `Goal`. It is independent of `PermissionMode`:
+
+| Mode | Execution and completion |
+| --- | --- |
+| `Normal` | Continues implementation until an explicit completed or blocked outcome. Any published implementation plan must be complete before the task can finish. |
+| `Plan` | Advertises read-only tools and rejects mutations at execution time, including manual/MCP calls under `FullAccess`. Planning metadata remains available. Completion requires a published plan; implementation steps may remain pending. |
+| `Goal` | Uses `SuccessCriteria` (up to 16,000 characters), or the task when criteria are empty. Completion requires a nonempty completed plan and nonempty reported verification. |
+
+For example:
+
+```csharp
+var options = new AgentOptions
+{
+    Mode = AgentRunMode.Goal,
+    SuccessCriteria = "All requested entities exist, drawing units are preserved, and validation reports no errors.",
+    PermissionMode = AgentPermissionMode.Ask,
+    MaxTurns = 0,
+    MaxNoProgressTurns = 8,
+};
+```
+
+The session owns the reserved `agent_plan` and `agent_finish` control tools in standalone and Studio hosts. `ToolDefinitions` exposes them alongside the host's catalog. The model explicitly reports a completed outcome with its summary and verification, or a blocked outcome with a concrete blocker. Control calls are revalidated for the current task; a reused call identifier cannot restore a previous task's plan or bypass completion requirements. `agent_finish` is a run control: a manual/MCP call outside an active model response cannot declare a task complete. Completion validation does not independently prove the truth of model-supplied evidence; hosts can display its verification beside the actual tool receipts.
+
+A text response alone does not finish a task. The harness continues after normal prose responses and provider output-token limits while retaining the task and protocol-valid history. Truncated function calls are not executed. Providers normalize output-limit signals so this behavior remains consistent across their official clients. Transient inference retries remain separate from task continuation and do not replay completed mutations.
+
+`MaxTurns = 0` means no fixed model-turn cutoff. A positive value from 1 to 10,000 pauses after that many turns in the current invocation; `ResumeAsync` starts another invocation against retained history. `MaxNoProgressTurns` defaults to 8 and accepts 2–100, preventing a stalled agent from continuing indefinitely. Cancellation, errors and explicit blockers also retain recoverable task state. Completed Normal/Goal work stays completed; a host can deliberately change Plan to Normal and resume to execute the reviewed plan.
+
+`RunState` and `Poll().Run` provide `Mode`, `Phase`, current and total turn counts, `TurnLimit`, continuation/output-limit/no-progress counters, `Resumable`, `StopReason`, `Detail`, `SuccessCriteria`, `CompletionSummary` and `Verification`. Use the explicit phase and resumable flag for controls; assistant text and the arrival of a final streaming chunk are not completion signals. Run metadata is checkpointed and retained through compaction. Import preserves the importing host's `Options.Mode` and `Options.SuccessCriteria`; changing them turns a retained task into a paused, resumable task under the current policy.
+
 ## Permissions and execution order
 
 `AgentOptions.PermissionMode` is the execution policy for the supplied registry:
@@ -89,7 +120,7 @@ Console.WriteLine(agent.Poll().Status);
 | --- | --- |
 | `ReadOnly` | Advertises read-only tools and rejects mutating calls, including calls invented by a model. |
 | `Ask` | Executes reads; emits `approvalRequested` and awaits a decision for each mutation. This is the default. |
-| `FullAccess` | Executes all tools explicitly registered by the host without per-call approval. |
+| `FullAccess` | Executes tools explicitly registered by the host without per-call approval; Plan mode still blocks mutations. |
 
 For `Ask`, display the `AgentApproval` in the `approvalRequested` event's `Data`. Its JSON fields include `requestId`, `tool`, `arguments` and `expiresAt`. Call `agent.Approve(requestId, true)` or `agent.Approve(requestId, false)` after the host's decision. Approval denial and expiry are returned to the model as tool results. `agent.ExecuteToolAsync(name, arguments, cancellationToken)` uses the same policy for manual/MCP invocations.
 
@@ -160,9 +191,9 @@ The [Agent Host sample](../../samples/netDxf.Shadow.AgentHost/README.md) exposes
 
 Subscribe to `EventEmitted` for immediate updates, or use `Poll(afterSequence)` to fetch at most 256 events after a known sequence. `AgentEvent` includes sequence, type, message, optional JSON data and timestamp. The bounded event log retains at most 4,096 entries and approximately 4 MiB of event text/data; `EarliestSequence` and `LatestSequence` let a client recognize a polling gap.
 
-Events cover assistant text deltas and completed messages, turns, usage, retry notices, tool start/completion with elapsed time and results, approval requests, plans, compaction, cancellation, completion, pause and errors. Provider usage reports input/output/total/cached tokens when available. `Poll` also returns current status, running state, session ID, estimated context use and configured context limit. UI observers cannot terminate the inference loop by throwing; callers should marshal events to their UI thread as needed.
+Events cover assistant text deltas and completed messages, turns, usage, retry and continuation notices, tool start/completion with elapsed time and results, approval requests, plans, run snapshots, compaction, cancellation, completion, blockers, pause and errors. Provider usage reports input/output/total/cached tokens when available. `Poll` also returns current status, running state, session ID, estimated context use, configured context limit and `Run` metadata. A UI can update its persistent progress card from `run` snapshots without appending a new transcript message for every counter change. UI observers cannot terminate the inference loop by throwing; callers should marshal events to their UI thread as needed.
 
-`SetPlan` accepts up to 64 `AgentPlanStep` values with `pending`, `in_progress` or `completed` status and at most one active step. Studio registers an `agent_plan` tool against this API. `Pin` and `Unpin` manage up to 32 retained reference entries, each at most 32,000 characters.
+`SetPlan` accepts up to 64 `AgentPlanStep` values with `pending`, `in_progress` or `completed` status and at most one active step. The intrinsic `agent_plan` control uses the same validation in every host. `Pin` and `Unpin` manage up to 32 retained reference entries, each at most 32,000 characters.
 
 ## Context management and checkpoints
 
@@ -184,7 +215,9 @@ restoredAgent.Import(checkpointJson);
 await restoredAgent.RunAsync(""); // Continue the retained task.
 ```
 
-Checkpoints are versioned JSON containing session identity, active task, summary, transcript, pins, workspace files and plan. They preserve portable text and tool call/results, provider reasoning signatures/protected data with their `reasoningProvider` origin, OpenAI reasoning item IDs and Anthropic redacted-thinking markers. Gemini's adjacent thought-signature content remains ordered correctly. The ChatGPT normalizer restores the app's `shadow` function-call namespace when the current .NET SDK re-encodes portable history.
+Checkpoints are versioned JSON containing session identity, active task, summary, transcript, pins, workspace files, plan and run progress. They preserve portable text and tool call/results, provider reasoning signatures/protected data with their `reasoningProvider` origin, OpenAI reasoning item IDs and Anthropic redacted-thinking markers. Gemini's adjacent thought-signature content remains ordered correctly. The ChatGPT normalizer restores the app's `shadow` function-call namespace when the current .NET SDK re-encodes portable history.
+
+The optional schema-1 `receipts` ledger preserves completed and failed/uncertain tool attempts through compaction and reload. Entries contain `callId`, `signature`, `isError` and optional `redactedSignature`. The authoritative signature is uppercase SHA-256 over compact JSON `[toolName, arguments]`, with recursively sorted object keys, preserved array order and exact number lexemes. An identical call ID/signature returns its prior receipt; changed arguments under that ID are rejected. The secondary redacted signature only validates retained arguments after known-secret redaction during import. Recent exact results remain available; compacted results are replaced on repeat calls by historical status requiring current-state inspection, never fresh verification. Reservations made before dispatch survive cancellation to prevent blind replay of uncertain attempts. The ledger permits 16,384 entries within a conservative 4 MiB budget and rejects new calls before dispatch at capacity; authoritative IDs are never evicted. Legacy schema-1 checkpoints without a ledger still import, rebuilding receipts only from retained completed call/result pairs.
 
 Checkpoints exclude provider API keys, OAuth credentials, SDK clients, transport objects, permission options and arbitrary system instructions. The importing host supplies current credentials, instructions, tools and permission policy. Import validates roles, collection budgets, paths and complete call/result pairs before changing the session. Provider clients replay reasoning only when its recorded origin matches the selected provider; Google/Gemini aliases share an origin, while OpenAI API and ChatGPT subscription sessions remain distinct. Switching providers keeps visible conversation and tool call/result pairs but omits incompatible reasoning from inference. Untagged reasoning in legacy checkpoints is also omitted because its opaque signatures cannot be attributed safely. The stored checkpoint is preserved, so returning to its original provider can reuse tagged continuation data. A checkpoint does not serialize the live DXF document or roll back its edits; restore the document independently and inspect fresh revision/file receipts before further changes.
 
@@ -244,7 +277,7 @@ Official documentation: [open-source integration](https://developers.openai.com/
 
 ## Budgets and packaging
 
-Defaults are 40 model turns, 8,192 output tokens, a 128,000-token context estimate, a 72% compaction threshold, four inference retries, four parallel reads, a three-minute inference timeout, a two-minute tool timeout and ten-minute approval expiry. These are host configuration through `AgentOptions`, not claims about provider entitlements. `FullAccess` changes tool permission behavior while retaining explicit execution and resource budgets.
+Defaults are Normal mode, no fixed model-turn cutoff (`MaxTurns = 0`), an eight-turn no-progress budget, 8,192 output tokens per response, a 128,000-token context estimate, a 72% compaction threshold, four inference retries, four parallel reads, a three-minute inference timeout, a two-minute tool timeout and ten-minute approval expiry. These are host configuration through `AgentOptions`, not claims about provider entitlements. Positive model-turn budgets remain available and pause with recoverable state. `FullAccess` changes tool permission behavior while retaining the selected execution mode and resource budgets.
 
 Build and pack from the repository root:
 

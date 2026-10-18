@@ -47,12 +47,13 @@ public sealed partial class AgentSession : IDisposable
         Options = options ?? new(); Options.Validate();
         Workspace = workspace ?? new MemoryAgentWorkspace();
         redact = redactor ?? (text => text); this.ownsClient = ownsClient;
+        InitializeRunControls();
     }
 
     public AgentPollResult Poll(long afterSequence = 0)
     {
         lock (gate) return new(events.Where(e => e.Sequence > afterSequence).Take(256).ToArray(), activeRun is not null,
-            status, EstimateContext(), Options.ContextWindowTokens, SessionId, sequence, events.Count > 0 ? events[0].Sequence : sequence);
+            status, EstimateContext(), Options.ContextWindowTokens, SessionId, sequence, events.Count > 0 ? events[0].Sequence : sequence, RunState);
     }
     private void Emit(string type, string message = "", object? data = null)
     {
@@ -82,52 +83,103 @@ public sealed partial class AgentSession : IDisposable
         lock (gate) { activeRun = run; status = "running"; }
         try
         {
-            if (!string.IsNullOrWhiteSpace(prompt))
-            {
-                lock (gate) { activeTask = prompt; messages.Add(new(ChatRole.User, prompt)); }
-                Emit("user", prompt);
-            }
-            else if (messages.Count == 0) throw new ArgumentException("Enter a task before continuing.");
-            for (var turn = 1; turn <= Options.MaxTurns; turn++)
+            BeginTask(prompt);
+            for (var turn = 1; Options.MaxTurns == 0 || turn <= Options.MaxTurns; turn++)
             {
                 run.Token.ThrowIfCancellationRequested();
                 if (ContextTokens > InputBudget * Options.CompactionThreshold) await CompactCoreAsync(run.Token).ConfigureAwait(false);
                 if (ContextTokens > InputBudget)
-                    throw new InvalidOperationException("The current task, pinned context and tool schemas exceed the context budget. Increase the context window or remove a pin.");
+                {
+                    await CompactCoreAsync(run.Token, force: true).ConfigureAwait(false);
+                    if (ContextTokens > InputBudget)
+                    {
+                        EndRun("paused", "context_budget", "The current task, pinned context and tool schemas exceed the context budget. Increase the context window or remove a pin, then Resume.", true);
+                        return;
+                    }
+                }
+                long progressBefore;
+                lock (gate)
+                {
+                    progressBefore = progressVersion;
+                    runState = runState with { Phase = "running", TurnCount = turn, TotalTurns = runState.TotalTurns + 1, Detail = "Generating the next task step." };
+                }
                 Emit("turn", $"Model turn {turn}", new { turn, maximum = Options.MaxTurns });
+                EmitRun();
                 int inputEstimate;
                 lock (gate) inputEstimate = EstimateContext(false);
                 var response = await InferAsync(BuildInput(), ToolOptions(), run.Token).ConfigureAwait(false);
-                if (response.Messages.Count == 0) throw new InvalidOperationException("The provider returned no assistant message. Retry or choose another model.");
-                NormalizeCalls(response);
-                lock (gate) messages.AddRange(response.Messages);
+                run.Token.ThrowIfCancellationRequested();
                 if (response.Usage is { } usage)
                 {
                     Emit("usage", "Provider token usage", new { inputTokens = usage.InputTokenCount, outputTokens = usage.OutputTokenCount, totalTokens = usage.TotalTokenCount, cachedTokens = usage.CachedInputTokenCount });
-                    if (usage.InputTokenCount is > 0)
-                        lock (gate) tokenCalibration = Math.Max(tokenCalibration, Math.Min(4, (double)usage.InputTokenCount.Value / Math.Max(1, inputEstimate)));
+                    var calibrationInput = ResponseInteger(response, "shadow:initial-input-tokens") ?? usage.InputTokenCount;
+                    if (calibrationInput is > 0)
+                        lock (gate) tokenCalibration = Math.Max(tokenCalibration, Math.Min(4, (double)calibrationInput.Value / Math.Max(1, inputEstimate)));
                 }
-                var calls = response.Messages.SelectMany(m => m.Contents).OfType<FunctionCallContent>().Where(c => !c.InformationalOnly).ToArray();
-                if (calls.Length == 0)
+                // A terminal token limit can contain only reasoning/usage, or partially parsed
+                // function arguments. Never append or execute that incomplete tool batch.
+                if (response.FinishReason == ChatFinishReason.Length)
                 {
-                    Emit("assistant", response.Text);
-                    if (response.FinishReason == ChatFinishReason.Length)
-                        Emit("notice", "The model reached its output limit. Continue to finish the response.");
-                    lock (gate) status = "completed";
-                    Emit("completed", "Agent turn completed."); return;
+                    PreservePartialText(response);
+                    if (!response.Messages.SelectMany(message => message.Contents).OfType<FunctionCallContent>().Any() && !string.IsNullOrWhiteSpace(response.Text))
+                        RecordProgress("output-continuation\n" + response.Text);
+                    var contextLimit = string.Equals(ResponseString(response, "shadow:stop-reason"), "model_context_window_exceeded", StringComparison.OrdinalIgnoreCase);
+                    if (contextLimit) await CompactCoreAsync(run.Token, force: true).ConfigureAwait(false);
+                    ContinueTask(contextLimit ? "The provider context limit was reached; compacting and continuing automatically." :
+                        "The response output limit was reached; continuing automatically.",
+                        "The previous response was truncated. No tool calls from that partial response were executed. Continue the current task from recorded state without repeating earlier completed work. " +
+                        "Regenerate any unfinished tool request as a smaller, valid, complete call matching its schema. Use incremental workspace edits instead of one oversized write. " +
+                        "If the response contained only reasoning, reduce the reasoning needed for the next concrete step. Finish using agent_finish only after completion and verification.", outputLimit: true);
                 }
-                if (!string.IsNullOrWhiteSpace(response.Text)) Emit("assistant", response.Text);
-                await ExecuteCallsAsync(calls, run.Token).ConfigureAwait(false);
+                else if (response.FinishReason == ChatFinishReason.ContentFilter)
+                {
+                    PreservePartialText(response);
+                    EndRun("blocked", "provider_refusal", "The provider declined this response. Review the request or supply the required input before resuming.", true);
+                    return;
+                }
+                else if (ResponseString(response, "shadow:stop-reason")?.ToUpperInvariant() is "MALFORMED_FUNCTION_CALL" or "UNEXPECTED_TOOL_CALL" or "TOO_MANY_TOOL_CALLS" ||
+                    ResponseFlag(response, "shadow:invalid-tool-batch") ||
+                    response.Messages.SelectMany(message => message.Contents).OfType<FunctionCallContent>().Any(call => call.Exception is not null))
+                {
+                    PreservePartialText(response);
+                    ContinueTask("The provider returned an invalid tool batch; regenerating it before execution.",
+                        "No tools from the previous invalid batch were executed. Regenerate the next step using a smaller set of complete function calls with valid JSON matching the advertised schemas. Do not repeat earlier successful mutations.");
+                }
+                else if (response.Messages.Count == 0)
+                {
+                    ContinueTask("The provider returned no usable step; requesting a corrected response.",
+                        "The last response contained no usable assistant message or complete tool call. Generate the next concrete step with valid compact arguments matching the tool schema. If the task is complete, call agent_finish; if blocked, report the exact blocker.");
+                }
+                else
+                {
+                    NormalizeCalls(response);
+                    lock (gate) messages.AddRange(response.Messages);
+                    var calls = response.Messages.SelectMany(m => m.Contents).OfType<FunctionCallContent>().Where(c => !c.InformationalOnly).ToArray();
+                    if (!string.IsNullOrWhiteSpace(response.Text)) Emit("assistant", response.Text);
+                    if (calls.Length == 0)
+                    {
+                        ContinueTask("Continuing until the task has an explicit completion or blocker.",
+                            "Continue the requested task. A text-only response does not complete this run. Perform and verify remaining work and update the plan. If everything is complete, call agent_finish alone with the result and verification. If unable to proceed, call it with outcome blocked and the exact blocker.");
+                    }
+                    else
+                    {
+                        acceptingCompletion = calls.Length == 1 && calls[0].Name == "agent_finish";
+                        try { await ExecuteCallsAsync(calls, run.Token).ConfigureAwait(false); }
+                        finally { acceptingCompletion = false; }
+                        if (CompleteTask(run.Token)) return;
+                    }
+                }
+                run.Token.ThrowIfCancellationRequested();
+                if (!CheckProgress(progressBefore)) return;
                 // Yield even when all tools and a fake/local provider complete synchronously (WebAssembly UI).
                 await Task.Yield();
             }
-            lock (gate) status = "paused";
-            Emit("paused", "Turn budget reached. Continue to resume the same conversation.");
+            EndRun("paused", "turn_budget", "The configured round budget was reached. Resume the same task, or set the round budget to 0 to continue until completion.", true);
         }
         catch (OperationCanceledException) when (run.IsCancellationRequested)
-        { lock (gate) status = "cancelled"; Emit("cancelled", "Stopped. Completed tool operations remain recorded; inspect the drawing before repeating a write."); }
+        { EndRun("cancelled", "cancelled", "Stopped. Completed tool operations remain recorded; inspect current state before repeating a write. Resume continues the task.", true); }
         catch (Exception error)
-        { lock (gate) status = "error"; Emit("error", error.Message, new { exception = error.GetType().Name, resumable = true }); }
+        { EndRun("error", "execution_error", error.Message, true); }
         finally
         {
             lock (gate)
@@ -148,7 +200,7 @@ public sealed partial class AgentSession : IDisposable
     {
         ModelId = string.IsNullOrWhiteSpace(Options.Model) ? null : Options.Model,
         MaxOutputTokens = Options.MaxOutputTokens,
-        Tools = executor.Tools.Where(t => Options.PermissionMode != AgentPermissionMode.ReadOnly || t.ReadOnly)
+        Tools = ToolDefinitions.Where(t => Options.PermissionMode != AgentPermissionMode.ReadOnly && Options.Mode != AgentRunMode.Plan || t.ReadOnly)
             .Select(t => (AITool)new AgentFunction(t)).ToList(),
         ToolMode = ChatToolMode.Auto, AllowMultipleToolCalls = true
     };
@@ -202,7 +254,7 @@ public sealed partial class AgentSession : IDisposable
                 token.ThrowIfCancellationRequested();
                 // Only contiguous read operations can overlap; writes preserve model order.
                 var end = i;
-                while (end < calls.Length && end - i < Options.MaxParallelReadTools && executor.Tools.Any(t => t.Name == calls[end].Name && t.ReadOnly)) end++;
+                while (end < calls.Length && end - i < Options.MaxParallelReadTools && ToolDefinitions.Any(t => t.Name == calls[end].Name && t.ReadOnly)) end++;
                 if (end == i) end++;
                 var tasks = new List<Task>();
                 for (; i < end; i++)
@@ -245,12 +297,45 @@ public sealed partial class AgentSession : IDisposable
     {
         if (call.Exception is not null) return new("Malformed tool arguments: " + call.Exception.Message, true);
         var arguments = AgentJson.Element(call.Arguments ?? new Dictionary<string, object?>());
-        var signature = call.Name + "\n" + arguments.GetRawText();
+        // Completion is evaluated against the current task and plan. A receipt from a
+        // previous task must never complete a new task or bypass its verification gate.
+        if (call.Name is "agent_finish" or "agent_plan") return await ExecuteToolWithPolicyAsync(call.Name, arguments, call.CallId, token).ConfigureAwait(false);
+        if (!ValidReceiptId(call.CallId)) return ReportReceiptResult(call,
+            McpToolResult.Error("invalid_call_id", "The tool call identifier is invalid. No operation was executed."));
+        var signature = CallSignature(call.Name, arguments);
+        var receipt = new AgentCallReceipt(call.CallId, signature, true, RedactedCallSignature(call.Name, arguments, signature));
+        McpToolResult? recorded = null;
+        var cached = false; var historical = false;
         lock (gate)
-            if (completedCalls.TryGetValue(call.CallId, out var previous))
-                return previous.Signature == signature ? previous.Result : new("A completed call identifier was reused with different arguments. No operation was executed.", true);
+        {
+            if (callReceipts.TryGetValue(call.CallId, out var previous))
+            {
+                cached = previous.Signature == signature;
+                historical = cached && !completedCalls.ContainsKey(call.CallId);
+                recorded = cached
+                    ? completedCalls.TryGetValue(call.CallId, out var exact) ? exact.Result : HistoricalCallResult(previous)
+                    : McpToolResult.Error("call_id_reused", "A recorded call identifier was reused with different arguments. No operation was executed.");
+            }
+            else
+            {
+                var budget = ReceiptBudget(receipt);
+                if (callReceipts.Count >= MaximumCallReceipts || callReceiptBudget + budget > MaximumCallReceiptBudget)
+                    recorded = McpToolResult.Error("receipt_capacity", "The session's tool receipt ledger is full. No operation was executed. Export this session and start a new one before further work.");
+                else
+                {
+                    // Reserve before dispatch, including parallel reads. A cancelled/uncertain
+                    // attempt must retain its ID instead of becoming eligible for blind replay.
+                    callReceipts.Add(call.CallId, receipt); callReceiptBudget += budget;
+                }
+            }
+        }
+        if (recorded is not null) return ReportReceiptResult(call, recorded, cached, historical);
         var result = await ExecuteToolWithPolicyAsync(call.Name, arguments, call.CallId, token).ConfigureAwait(false);
-        lock (gate) completedCalls[call.CallId] = (signature, result);
+        lock (gate)
+        {
+            callReceipts[call.CallId] = receipt with { IsError = result.IsError };
+            completedCalls[call.CallId] = (signature, result);
+        }
         return result;
     }
     public async Task<McpToolResult> ExecuteToolAsync(string name, JsonElement arguments, CancellationToken cancellationToken = default)
@@ -258,28 +343,38 @@ public sealed partial class AgentSession : IDisposable
         ObjectDisposedException.ThrowIf(disposed, this);
         if (!await operation.WaitAsync(0, cancellationToken).ConfigureAwait(false)) throw new InvalidOperationException("Stop the agent before invoking a tool manually.");
         using var run = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        AgentRunState previousRun; string previousStatus;
+        lock (gate) { previousRun = runState; previousStatus = status; }
         lock (gate) { activeRun = run; status = "tool"; }
         try { return await ExecuteToolWithPolicyAsync(name, arguments, Guid.NewGuid().ToString("N"), run.Token).ConfigureAwait(false); }
-        finally { lock (gate) { activeRun = null; status = "idle"; } operation.Release(); }
+        finally { lock (gate) { activeRun = null; status = previousStatus; runState = previousRun; } operation.Release(); }
     }
     private async Task<McpToolResult> ExecuteToolWithPolicyAsync(string name, JsonElement arguments, string callId, CancellationToken token)
     {
-        var definition = executor.Tools.FirstOrDefault(t => t.Name == name);
-        if (definition is null) return new("Unknown tool. Inspect the current tool catalog.", true);
-        if (!definition.ReadOnly && Options.PermissionMode == AgentPermissionMode.ReadOnly) return new("This session is read-only. The operation was not executed.", true);
+        McpToolResult Reject(string message)
+        {
+            var rejected = new McpToolResult(redact(message), true);
+            Emit("toolCompleted", name, new { callId, name, arguments, result = rejected.Text, isError = true, executed = false, milliseconds = 0 });
+            return rejected;
+        }
+        var definition = ToolDefinitions.FirstOrDefault(t => t.Name == name);
+        if (definition is null) return Reject("Unknown tool. Inspect the current tool catalog.");
+        if (!definition.ReadOnly && Options.Mode == AgentRunMode.Plan) return Reject("Plan mode permits inspection and planning only. Switch to Normal or Goal before applying changes or executing code.");
+        if (!definition.ReadOnly && Options.PermissionMode == AgentPermissionMode.ReadOnly) return Reject("This session is read-only. The operation was not executed.");
         if (!definition.ReadOnly && Options.PermissionMode == AgentPermissionMode.Ask)
         {
             var request = new AgentApproval(callId, name, arguments, DateTimeOffset.UtcNow + Options.ApprovalTimeout);
             var decision = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             lock (gate) { approvals.Add(request.RequestId, decision); status = "approval"; }
+            SetRunPhase("approval", $"Waiting for permission to execute {name}.");
             Emit("approvalRequested", $"Allow {name}?", request);
             try
             {
                 if (!await decision.Task.WaitAsync(Options.ApprovalTimeout, token).ConfigureAwait(false))
-                { Emit("toolCompleted", "Permission denied.", new { callId, name, isError = true }); return new("Permission denied by the user. Do not attempt the operation through another tool.", true); }
+                    return Reject("Permission denied by the user. Do not attempt the operation through another tool.");
             }
-            catch (TimeoutException) { return new("Approval expired. The operation was not executed.", true); }
-            finally { lock (gate) { approvals.Remove(request.RequestId); status = "running"; } }
+            catch (TimeoutException) { return Reject("Approval expired. The operation was not executed."); }
+            finally { lock (gate) { approvals.Remove(request.RequestId); status = "running"; } SetRunPhase("running", "Continuing after the permission decision."); }
         }
         token.ThrowIfCancellationRequested();
         Emit("toolStarted", name, new { callId, name, arguments, readOnly = definition.ReadOnly });
@@ -291,12 +386,14 @@ public sealed partial class AgentSession : IDisposable
         {
             // Await cooperative cancellation. Abandoning an in-flight mutation could allow
             // a later command to race with a supposedly cancelled document transaction.
-            result = await executor.ExecuteAsync(name, arguments, timeout.Token).ConfigureAwait(false);
+            result = await (name is "agent_finish" or "agent_plan"
+                ? controlTools : executor).ExecuteAsync(name, arguments, timeout.Token).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         { result = new("Tool interrupted. Its mutation may already have committed; inspect current state before retrying.", true); }
         catch (Exception error) { result = new($"{error.GetType().Name}: {error.Message}", true); }
         result = result with { Text = redact(result.Text) };
+        if (!result.IsError && name is not ("agent_finish" or "agent_plan")) RecordProgress(name + "\n" + arguments.GetRawText() + "\n" + result.Text);
         if (result.Text.Length > Options.MaxToolResultCharacters)
         {
             var full = result.Text;
@@ -328,10 +425,12 @@ public sealed partial class AgentSession : IDisposable
     public IReadOnlyList<AgentPlanStep> Plan { get { lock (gate) return plan.ToArray(); } }
     public void SetPlan(IEnumerable<AgentPlanStep> steps)
     {
+        ArgumentNullException.ThrowIfNull(steps);
         var value = steps.ToArray();
-        if (value.Length > 64 || value.Any(s => s.Step.Length is 0 or > 1024 || s.Status is not ("pending" or "in_progress" or "completed")) || value.Count(s => s.Status == "in_progress") > 1)
+        if (value.Length > 64 || value.Any(s => s is null || s.Step is null || s.Step.Length is 0 or > 1024 || s.Status is not ("pending" or "in_progress" or "completed")) || value.Count(s => s.Status == "in_progress") > 1)
             throw new ArgumentException("Use at most 64 named steps, with pending/in_progress/completed states and at most one active step.");
         lock (gate) plan = value;
+        RecordProgress("plan\n" + AgentJson.String(value));
         Emit("plan", "Plan updated.", new { steps = value });
     }
     public void Dispose()

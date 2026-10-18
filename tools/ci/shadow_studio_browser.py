@@ -42,7 +42,7 @@ def prepare(published: Path):
                 'cad/app.mjs', 'cad/client.mjs', 'cad/cad.css', 'studio.js', 'studio.css', 'DWG-NOTICES.txt',
                 'agents/workspace.mjs', 'agents/client.mjs', 'agents/contracts.mjs', 'agents/render.mjs',
                 'agents/studio-control.mjs', 'agents/mcp-bridge.mjs', 'agents/browser-mcp.mjs', 'agents/agents.css',
-                'agents/persistence.mjs', 'agents/file-transfer.mjs', 'agents/file-workspace.mjs',
+                'agents/persistence.mjs', 'agents/file-transfer.mjs', 'agents/file-workspace.mjs', 'agents/run-state.mjs',
                 'agents/execution.mjs', 'agents/execution-worker.mjs', 'agents/execution-frame.html')
     for relative in required:
         if not (published / relative).is_file():

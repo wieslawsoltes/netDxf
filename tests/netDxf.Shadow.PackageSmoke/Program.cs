@@ -116,9 +116,18 @@ internal static class Program
             "Portable browser code contracts are absent from the standalone agent package.");
         // Construct the real SDK adapter without making an inference request or requiring an account.
         var client = ShadowAgentProviders.Create(new() { Provider = "openai", ApiKey = "package-smoke-not-a-real-key", Model = "test-model" });
-        using var agent = new AgentSession(client, registry, new() { PermissionMode = AgentPermissionMode.ReadOnly }, workspace);
+        using var agent = new AgentSession(client, registry, new()
+        {
+            PermissionMode = AgentPermissionMode.FullAccess, Mode = AgentRunMode.Plan,
+            SuccessCriteria = "Inspect the installed package without changing project files."
+        }, workspace);
         var result = agent.ExecuteToolAsync("workspace_read", McpJson.Parse("""{"path":"src/example.cs"}""")).GetAwaiter().GetResult();
         Require(!result.IsError && result.Text.Contains("class Example", StringComparison.Ordinal), "Installed harness could not execute a workspace tool.");
+        var denied = agent.ExecuteToolAsync("workspace_write", McpJson.Parse("""{"path":"must-not-exist.cs","content":"denied","expectedVersion":0}""")).GetAwaiter().GetResult();
+        Require(denied.IsError && workspace.List().All(file => file.Path != "must-not-exist.cs") &&
+            agent.Options.MaxTurns == 0 && agent.Poll().Run?.Mode == AgentRunMode.Plan &&
+            agent.ToolDefinitions.Any(tool => tool.Name == "agent_finish"),
+            "Installed persistent run contracts or Plan mode enforcement are unavailable.");
         var checkpoint = agent.Export(); agent.Import(checkpoint);
         Require(agent.Workspace.Read("src/example.cs").Content == "public class Example { }", "Installed agent checkpoint lost the source file.");
     }

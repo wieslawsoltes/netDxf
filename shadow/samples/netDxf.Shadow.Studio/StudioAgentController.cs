@@ -13,11 +13,14 @@ public sealed record StudioAgentConfiguration
     public string ApiKey { get; init; } = "";
     public string? Endpoint { get; init; }
     public string PermissionMode { get; init; } = "ask";
+    public string Mode { get; init; } = "normal";
+    public string SuccessCriteria { get; init; } = "";
     public string DocumentId { get; init; } = "demo";
-    public int MaxTurns { get; init; } = 40;
+    public int MaxTurns { get; init; }
+    public int MaxNoProgressTurns { get; init; } = 8;
     public int MaxOutputTokens { get; init; } = 8192;
     public int ContextWindowTokens { get; init; } = 128000;
-    public override string ToString() => $"{Provider}/{Model}, {PermissionMode}, document {DocumentId} (credential redacted)";
+    public override string ToString() => $"{Provider}/{Model}, {Mode}, {PermissionMode}, document {DocumentId} (credential redacted)";
 }
 
 /// <summary>Identical lifecycle and permissions for JS interop and the local Studio host.</summary>
@@ -54,6 +57,10 @@ public sealed partial class StudioAgentController : IAsyncDisposable
         providers = new[] { "openai", "anthropic", "google", "chatgpt" },
         directBrowserProviders = new[] { "openai", "anthropic", "google" },
         permissionModes = new[] { "readOnly", "ask", "fullAccess" },
+        runModes = new[] { "normal", "plan", "goal" },
+        execution = new { explicitCompletion = true, outputLimitContinuation = true, defaultTurnLimit = 0,
+            turnLimit = "Zero continues until completion, a blocker, cancellation or lack of progress; positive limits pause with Resume available.",
+            plan = "Read-only investigation and plan publication. Changing tool permissions does not enable mutations in Plan mode." },
         chatGpt = new { requiresCompanion = true, defaultEndpoint = "http://127.0.0.1:5091", signIn = "Sign in with ChatGPT",
             reason = "OpenAI's current ChatGPT plan authorization requires an HTTP 127.0.0.1 callback listener. A static browser tab cannot host this listener.",
             documentation = "https://developers.openai.com/siwc/token-sharing-open-source/sign-in" },
@@ -75,7 +82,7 @@ public sealed partial class StudioAgentController : IAsyncDisposable
     private object ConfigureCore(StudioAgentConfiguration value, bool allowUnavailableDrawing = false, bool force = false)
     {
         ArgumentNullException.ThrowIfNull(value);
-        if (string.IsNullOrWhiteSpace(value.Provider) || string.IsNullOrWhiteSpace(value.DocumentId) || value.Model is null || value.ApiKey is null)
+        if (string.IsNullOrWhiteSpace(value.Provider) || string.IsNullOrWhiteSpace(value.DocumentId) || value.Model is null || value.ApiKey is null || value.SuccessCriteria is null)
             throw new ArgumentException("Provider, drawing identifier, model and credential fields must be valid strings.", nameof(value));
         if (!force && !allowUnavailableDrawing && configuration == value) return new { configured = value.ApiKey.Length > 0, documentId };
         var mode = value.PermissionMode switch
@@ -85,7 +92,15 @@ public sealed partial class StudioAgentController : IAsyncDisposable
             "fullAccess" or "FullAccess" => AgentPermissionMode.FullAccess,
             _ => throw new ArgumentException("Unknown agent permission mode.")
         };
+        var runMode = value.Mode?.ToLowerInvariant() switch
+        {
+            "normal" => AgentRunMode.Normal,
+            "plan" => AgentRunMode.Plan,
+            "goal" => AgentRunMode.Goal,
+            _ => throw new ArgumentException("Unknown agent execution mode.")
+        };
         var options = new AgentOptions { Model = value.Model, PermissionMode = mode, MaxTurns = value.MaxTurns,
+            Mode = runMode, SuccessCriteria = value.SuccessCriteria, MaxNoProgressTurns = value.MaxNoProgressTurns,
             MaxOutputTokens = value.MaxOutputTokens, ContextWindowTokens = value.ContextWindowTokens };
         var providerOptions = new ShadowAgentProviderOptions
         { Provider = value.Provider, Model = value.Model, ApiKey = value.ApiKey, Endpoint = NormalizeEndpoint(value) };
@@ -102,7 +117,8 @@ public sealed partial class StudioAgentController : IAsyncDisposable
                 Volatile.Write(ref knownCredentials, [.. knownCredentials, value.ApiKey]);
             var previous = session; session = replacement; replacement = null;
             configuration = value; documentId = value.DocumentId; executor.Set(tools); previous.Dispose();
-            return new { configured = value.ApiKey.Length > 0, provider = value.Provider, model = value.Model, permissionMode = value.PermissionMode, documentId };
+            return new { configured = value.ApiKey.Length > 0, provider = value.Provider, model = value.Model,
+                permissionMode = value.PermissionMode, mode = value.Mode, successCriteria = value.SuccessCriteria, documentId };
         }
         catch { if (replacement is not null) replacement.Dispose(); else client.Dispose(); throw; }
     }
@@ -139,9 +155,6 @@ public sealed partial class StudioAgentController : IAsyncDisposable
         AgentWorkspaceTools.Register(registry, workspace);
         if (codeRunner is not null) AgentCodeTools.Register(registry, workspace, codeRunner);
         companion?.Register(registry);
-        registry.Register(new("agent_plan", "Publish or replace the task plan. States: pending, in_progress, completed; at most one in_progress.",
-            McpJson.Parse("""{"type":"object","properties":{"steps":{"type":"array","maxItems":64,"items":{"type":"object","properties":{"step":{"type":"string"},"status":{"type":"string","enum":["pending","in_progress","completed"]}},"required":["step","status"],"additionalProperties":false}}},"required":["steps"],"additionalProperties":false}"""), true), (args, ct) =>
-        { ct.ThrowIfCancellationRequested(); session.SetPlan(args.GetProperty("steps").Deserialize<AgentPlanStep[]>(McpJson.Options)!); return ValueTask.FromResult(McpToolResult.FromObject(session.Plan)); });
         return registry;
     }
     private string Redact(string text)
@@ -170,7 +183,7 @@ public sealed partial class StudioAgentController : IAsyncDisposable
         var reset = after > result.LatestSequence;
         if (reset) result = session.Poll(0);
         return new { result.Events, result.Running, result.Status, result.ContextTokens, result.ContextLimit, result.SessionId,
-            result.LatestSequence, result.EarliestSequence, pins = session.Pins, plan = session.Plan, documentId,
+            result.LatestSequence, result.EarliestSequence, result.Run, pins = session.Pins, plan = session.Plan, documentId,
             reset,
             messages = !result.Running && (after == 0 || reset) ? session.Transcript() : null };
         }
@@ -206,7 +219,7 @@ public sealed partial class StudioAgentController : IAsyncDisposable
     public void Reset() { lock (lifecycle) { EnsureIdle(); session.Reset(); } }
     public string Export() { lock (lifecycle) return session.Export(); }
     public void Import(string json) { lock (lifecycle) { EnsureIdle(); session.Import(json); } }
-    public IReadOnlyList<McpToolDefinition> Catalog() => executor.Tools;
+    public IReadOnlyList<McpToolDefinition> Catalog() => session.ToolDefinitions;
     public async Task<McpToolResult> Call(string name, JsonElement args)
     {
         Task<McpToolResult> task;
