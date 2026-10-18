@@ -6,6 +6,8 @@ const routes = Object.freeze({
   AgentCompact: 'compact', AgentReset: 'reset', AgentExport: 'export', AgentImport: 'import',
   AgentMcpTools: 'mcp-tools', AgentMcpCall: 'mcp-call', AgentWorkspaceFiles: 'workspace-files',
   AgentWorkspaceRead: 'workspace-read', AgentWorkspaceWrite: 'workspace-write', AgentPin: 'pin', AgentUnpin: 'unpin',
+  AgentWorkspaceExport: 'workspace-export', AgentWorkspaceApply: 'workspace-apply',
+  AgentMcpSessionOpen: 'mcp-session-open', AgentMcpSessionProcess: 'mcp-session-process', AgentMcpSessionClose: 'mcp-session-close',
   AgentCompanionConnect: 'companion-connect', AgentCompanionDisconnect: 'companion-disconnect'
 });
 
@@ -208,10 +210,6 @@ export class AgentClient extends EventTarget {
     const operation = this.beginOperation('lifecycle');
     try {
       const result = await this.invoke('AgentCompanionDisconnect'); this.assertOperation(operation);
-      if (result?.providerDisconnected) {
-        this.configured = false; this.config = null; this.generation++; this.transcript.sequence = 0;
-        this.emit('configured', null); this.emit('providerdisconnected', { reason: 'The Anthropic provider disconnected with its local companion. Reconnect the companion and provider to continue.' });
-      }
       await this.poll(); return result;
     }
     finally { this.finishOperation(operation); }
@@ -228,7 +226,19 @@ export class AgentClient extends EventTarget {
   async files() { const result = await this.invoke('AgentWorkspaceFiles'); return result?.files || result || []; }
   async readFile(path) { return this.invoke('AgentWorkspaceRead', path); }
   async writeFile(path, content, expectedVersion = null) {
-    this.ensureIdle(); return this.invoke('AgentWorkspaceWrite', path, content, expectedVersion);
+    const operation = this.beginOperation('lifecycle');
+    try {
+      const result = await this.invoke('AgentWorkspaceWrite', path, content, expectedVersion); this.assertOperation(operation);
+      this.emit('workspacechanged'); return result;
+    } finally { this.finishOperation(operation); }
+  }
+  async exportFiles() { const result = await this.invoke('AgentWorkspaceExport'); return this.clean(result?.files || result || []); }
+  async applyFiles(changes) {
+    const operation = this.beginOperation('lifecycle');
+    try {
+      const result = await this.invoke('AgentWorkspaceApply', changes); this.assertOperation(operation);
+      this.emit('workspacechanged'); return result;
+    } finally { this.finishOperation(operation); }
   }
   async pin(text) { this.ensureIdle(); const result = await this.invoke('AgentPin', String(text)); this.schedule(0); return result; }
   async unpin(id) { this.ensureIdle(); const result = await this.invoke('AgentUnpin', String(id)); this.schedule(0); return result; }

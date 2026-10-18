@@ -99,7 +99,12 @@ internal static class StudioAgentHttp
                 case "import": agent.Import(Get<string>(0)); break;
                 case "mcp-tools": value = agent.Catalog(); break;
                 case "mcp-call": value = await agent.Call(Get<string>(0), a[1]); break;
+                case "mcp-session-open": value = agent.OpenMcpSession(Get<string>(0)); break;
+                case "mcp-session-process": value = await agent.ProcessMcpSession(Get<string>(0), Get<string>(1)); break;
+                case "mcp-session-close": await agent.CloseMcpSession(Get<string>(0)); break;
                 case "workspace-files": value = agent.Files(); break;
+                case "workspace-export": value = agent.ExportFiles(); break;
+                case "workspace-apply": value = agent.ApplyFiles(Get<netDxf.Shadow.Agents.AgentFileChange[]>(0)); break;
                 case "workspace-read": value = agent.Read(Get<string>(0)); break;
                 case "workspace-write": value = agent.Write(Get<string>(0), Get<string>(1), a.Length > 2 && a[2].ValueKind == JsonValueKind.Number ? a[2].GetInt64() : null); break;
                 case "pin": value = agent.Pin(Get<string>(0)); break;

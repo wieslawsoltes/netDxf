@@ -9,6 +9,8 @@ public sealed record AgentFileInfo(string Path, long Version, int Characters, Da
     bool IsBinary = false, long? Bytes = null);
 public sealed record AgentFileSlice(string Path, long Version, string Content, int Offset, int TotalCharacters, bool HasMore);
 public sealed record AgentSearchMatch(string Path, int Line, string Text);
+/// <summary>A null content deletes a file; version zero creates a previously absent file.</summary>
+public sealed record AgentFileChange(string Path, string? Content, long ExpectedVersion);
 
 /// <summary>A host can back the workspace with disk, a repository, IndexedDB or another store.</summary>
 public interface IAgentWorkspace
@@ -22,8 +24,14 @@ public interface IAgentWorkspace
     void Import(IReadOnlyList<AgentFile> files);
 }
 
+/// <summary>Applies a group of version-checked edits atomically, including capacity validation.</summary>
+public interface IAgentTransactionalWorkspace : IAgentWorkspace
+{
+    IReadOnlyList<AgentFileInfo> Apply(IReadOnlyList<AgentFileChange> changes);
+}
+
 /// <summary>Bounded, transactional UTF-8 workspace with compare-and-swap writes.</summary>
-public sealed class MemoryAgentWorkspace(int maxFiles = 512, int maxBytes = 16 * 1024 * 1024) : IAgentWorkspace
+public sealed class MemoryAgentWorkspace(int maxFiles = 512, int maxBytes = 16 * 1024 * 1024) : IAgentTransactionalWorkspace
 {
     private readonly object gate = new();
     private Dictionary<string, AgentFile> files = new(StringComparer.Ordinal);
@@ -59,6 +67,7 @@ public sealed class MemoryAgentWorkspace(int maxFiles = 512, int maxBytes = 16 *
     public AgentFile Write(string path, string content, long? expectedVersion = null)
     {
         path = NormalizePath(path); ArgumentNullException.ThrowIfNull(content);
+        if (content.Contains('\0')) throw new ArgumentException("Workspace files must be UTF-8 text without NUL characters.", nameof(content));
         lock (gate)
         {
             files.TryGetValue(path, out var before);
@@ -102,6 +111,42 @@ public sealed class MemoryAgentWorkspace(int maxFiles = 512, int maxBytes = 16 *
         return matches;
     }
     public IReadOnlyList<AgentFile> Export() { lock (gate) return files.Values.OrderBy(f => f.Path, StringComparer.Ordinal).ToArray(); }
+    public IReadOnlyList<AgentFileInfo> Apply(IReadOnlyList<AgentFileChange> changes)
+    {
+        ArgumentNullException.ThrowIfNull(changes);
+        if (changes.Count > maxFiles * 2) throw new ArgumentException("Too many workspace changes.", nameof(changes));
+        lock (gate)
+        {
+            var candidate = new Dictionary<string, AgentFile>(files, StringComparer.Ordinal);
+            var paths = new HashSet<string>(StringComparer.Ordinal);
+            var next = nextVersion; var total = bytes; var now = DateTimeOffset.UtcNow;
+            foreach (var change in changes)
+            {
+                ArgumentNullException.ThrowIfNull(change);
+                var path = NormalizePath(change.Path);
+                if (!paths.Add(path) || change.ExpectedVersion < 0) throw new ArgumentException("Duplicate path or invalid workspace version.", nameof(changes));
+                candidate.TryGetValue(path, out var previous);
+                if ((previous?.Version ?? 0) != change.ExpectedVersion)
+                    throw new InvalidOperationException($"Workspace file changed: {path}. Read its current version before applying changes.");
+                if (change.Content is null)
+                {
+                    if (previous is null) throw new InvalidOperationException($"Workspace file no longer exists: {path}.");
+                    candidate.Remove(path); total -= Encoding.UTF8.GetByteCount(previous.Content);
+                }
+                else
+                {
+                    if (change.Content.Contains('\0')) throw new ArgumentException("Workspace files must be UTF-8 text without NUL characters.", nameof(changes));
+                    total = checked(total - (previous is null ? 0 : Encoding.UTF8.GetByteCount(previous.Content)) + Encoding.UTF8.GetByteCount(change.Content));
+                    candidate[path] = new(path, change.Content, checked(++next), now);
+                }
+            }
+            // Check the final transaction, so a replacement can release capacity for another file.
+            if (candidate.Count > maxFiles || total > maxBytes)
+                throw new InvalidOperationException("Workspace capacity exceeded. Export and remove unused files.");
+            files = candidate; bytes = total; nextVersion = next;
+            return List();
+        }
+    }
     public void Import(IReadOnlyList<AgentFile> incoming)
     {
         ArgumentNullException.ThrowIfNull(incoming);
@@ -110,7 +155,7 @@ public sealed class MemoryAgentWorkspace(int maxFiles = 512, int maxBytes = 16 *
         foreach (var file in incoming)
         {
             var path = NormalizePath(file.Path);
-            if (file.Content is null || file.Version < 1 || !candidate.TryAdd(path, file)) throw new ArgumentException("Invalid or duplicate workspace file.");
+            if (file.Content is null || file.Content.Contains('\0') || file.Version < 1 || !candidate.TryAdd(path, file)) throw new ArgumentException("Invalid, binary or duplicate workspace file.");
             total = checked(total + Encoding.UTF8.GetByteCount(file.Content));
             if (total > maxBytes) throw new ArgumentException("Workspace import exceeds its byte budget.");
         }

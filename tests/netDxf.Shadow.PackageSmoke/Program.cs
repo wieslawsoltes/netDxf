@@ -106,6 +106,14 @@ internal static class Program
         var workspace = new MemoryAgentWorkspace(); var registry = new McpToolRegistry();
         AgentWorkspaceTools.Register(registry, workspace);
         workspace.Write("src/example.cs", "public class Example { }", 0);
+        IAgentTransactionalWorkspace transaction = workspace;
+        var applied = transaction.Apply([new AgentFileChange("browser/input.json", "[2,3,5]", 0),
+            new AgentFileChange("browser/check.js", "return WebAssembly.validate(new Uint8Array());", 0)]);
+        Require(applied.Count == 3 && workspace.Read("browser/input.json").Content == "[2,3,5]",
+            "Installed agent package could not apply a portable file transaction.");
+        Require(typeof(IAgentCodeRunner).Assembly == typeof(AgentCodeTools).Assembly &&
+            typeof(AgentCodeRequest).Assembly == typeof(AgentSession).Assembly,
+            "Portable browser code contracts are absent from the standalone agent package.");
         // Construct the real SDK adapter without making an inference request or requiring an account.
         var client = ShadowAgentProviders.Create(new() { Provider = "openai", ApiKey = "package-smoke-not-a-real-key", Model = "test-model" });
         using var agent = new AgentSession(client, registry, new() { PermissionMode = AgentPermissionMode.ReadOnly }, workspace);

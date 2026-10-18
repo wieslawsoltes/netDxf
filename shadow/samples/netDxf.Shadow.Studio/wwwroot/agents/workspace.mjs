@@ -1,7 +1,10 @@
 import { AgentClient, ChatGptCompanion } from './client.mjs';
 import { StudioMcpBridge } from './mcp-bridge.mjs';
+import { BrowserMcpBridge } from './browser-mcp.mjs';
+import { BrowserSessionPersistence } from './persistence.mjs';
+import { mountBrowserFileTransfer, renderFileDiff } from './file-workspace.mjs';
 import { defaultConfiguration, providers, preferences, configuration, formatTokens, parseArguments, readable, safeFilePath, toolTemplate } from './contracts.mjs';
-import { node, glyph, button, field, code, markdown } from './render.mjs';
+import { node, glyph, button, field, code, codeExecution, markdown } from './render.mjs';
 
 const tabNames = [['chat','Conversation','chat'], ['tools','MCP','tools'], ['files','Files','file'], ['context','Context','context'], ['settings','Settings','settings']];
 const modeNames = { readOnly: 'Read only', ask: 'Approve changes', fullAccess: 'Full access' };
@@ -13,13 +16,15 @@ function download(content, name, type = 'application/json') {
 }
 
 export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDocumentName, inspectDrawing, refreshDrawing, report = () => {} }) {
+  const browserRuntime = globalThis.shadowBrowser?.runtime === 'blazor-webassembly';
   const existing = document.querySelector('link[data-shadow-agents]');
   if (!existing) document.head.append(node('link', { rel: 'stylesheet', href: new URL('./agents.css', import.meta.url).href, 'data-shadow-agents': '' }));
   const client = new AgentClient({ getDocument });
   const mcpBridge = new StudioMcpBridge({ client, getDocument });
+  const browserMcp = new BrowserMcpBridge(client, getDocument);
   let opened = false, selectedTab = 'chat', connectedOnce = false, currentConfig = { ...defaultConfiguration, ...loadPreferences() };
   let companion = null, authTimer = null, authGeneration = 0, authenticated = false, disposed = false;
-  let toolCatalog = [], toolLoading = false, fileList = [], file = null, fileDirty = false, pins = [], renderScheduled = false;
+  let toolCatalog = [], toolLoading = false, fileList = [], file = null, fileDirty = false, pins = [], renderScheduled = false, persistence = null;
   const timelineNodes = new Map(), tabButtons = new Map(), panels = new Map(), formFields = {};
   const run = callback => Promise.resolve().then(callback).catch(error => notice(error.message || String(error), 'error'));
   const dock = node('aside', { class: 'agent-workspace', hidden: true, 'aria-label': 'Coding agent workspace', 'data-agent-private': '' });
@@ -94,7 +99,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const planView = node('details', { class: 'agent-plan', hidden: true }, [planSummary, planSteps]); let planVersion = '';
   const empty = node('div', { class: 'agent-empty' }, [node('div', { class: 'agent-empty-mark' }, [glyph('agent')]),
     node('h2', { text: 'Build with your drawing.' }),
-    node('p', { text: 'Inspect native DXF objects, work with immutable shadow models, author workspace files, and drive the Studio from one conversation.' }),
+    node('p', { text: browserRuntime ? 'Inspect DXF and shadow models, edit project files, run JavaScript in a browser worker, and drive the Studio. Your workspace and completed conversations autosave on this device.' : 'Inspect DXF and shadow models, edit project files, and drive the Studio. Your workspace and completed conversations autosave on this device.' }),
     node('div', { class: 'agent-starters' }, [
       ['Understand this drawing', 'Inspect the current drawing, its native DXF entities, layers, blocks, and shadow model. Summarize its structure and any diagnostics.'],
       ['Create a dimensioned plan', 'Create a clean, dimensioned example floor plan with separate layers for walls, doors, annotations, and dimensions. Inspect the available tools first.'],
@@ -134,7 +139,9 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     transcript.scrollTop = transcript.scrollHeight;
   }
   async function newSession() {
+    persistence?.schedule(); await persistence?.flush();
     await client.reset(); pins = []; prompt.value = ''; timelineNodes.clear();
+    persistence?.newSession();
     timeline.replaceChildren(); clearNotice(); renderFiles(); renderContext(); setTab('chat');
   }
   async function exportHistory() { const text = await client.exportSession(); download(JSON.stringify(JSON.parse(text), null, 2), `shadow-agent-${new Date().toISOString().replace(/[:.]/g, '-')}.json`); notice('Conversation exported. API keys and authentication tokens are excluded.'); }
@@ -142,10 +149,10 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   historyImport.addEventListener('change', () => run(async () => {
     const selected = historyImport.files[0]; historyImport.value = ''; if (!selected) return;
     assertFileClean();
-    if (selected.size > 16 * 1024 * 1024) throw new Error('Conversation imports are limited to 16 MiB.');
+    if (selected.size > 24 * 1024 * 1024) throw new Error('Conversation imports are limited to 24 MiB.');
     await client.importSession(await selected.text()); timelineNodes.clear(); timeline.replaceChildren(); pins = []; fileList = []; file = null; fileDirty = false;
     filePath.value = ''; fileEditor.value = ''; fileEditor.readOnly = false; markFileClean(); renderFiles();
-    notice('Conversation imported. Your current provider credentials and permission setting are retained.'); setTab('chat');
+    persistence?.newSession(); notice('Conversation imported. Your current provider credentials and permission setting are retained.'); setTab('chat');
   })); dock.append(historyImport);
 
   function scheduleRender() {
@@ -180,6 +187,8 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     providerChip.querySelector('span').textContent = client.configured ? `${providers.find(p => p.id === client.config.provider)?.name || client.config.provider} · ${client.config.model}` : 'Connect a provider';
     documentChip.textContent = getDocumentName() || 'No drawing open';
     connectButton.disabled = running; compactButton.disabled = running; pinButton.disabled = running; saveFileButton.disabled = running || !fileDirty;
+    runFileButton.disabled = running || fileDirty || !file?.path || !/\.(?:m?js|cjs)$/i.test(file.path);
+    deleteFileButton.disabled = running || fileDirty || !file?.path;
     runToolButton.disabled = running || !toolName.value.trim();
     if (selectedTab === 'context') renderContext();
     liveStatus.textContent = approvals ? statusLabel.textContent : running ? 'Agent is working.' : 'Agent is idle.';
@@ -229,7 +238,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     const body = node('div', { class: 'agent-tool-body' });
     if (item.text) body.append(node('p', { text: item.text }));
     if (item.arguments !== undefined) body.append(code(item.arguments, 'Arguments'));
-    if (item.result !== undefined) body.append(code(item.result, 'Result'));
+    if (item.result !== undefined) body.append(item.name === 'workspace_run_javascript' ? codeExecution(item.result) : code(item.result, 'Result'));
     if (item.status === 'approval') {
       const allow = button('Approve once', () => approval(true), { icon: 'check', class: 'agent-primary' });
       const deny = button('Deny', () => approval(false), { class: 'agent-secondary' });
@@ -255,10 +264,28 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const toolConsole = node('details', { class: 'agent-console' }, [node('summary', { text: 'JSON tool console' }),
     node('div', { class: 'agent-console-body' }, [field('Tool', toolName), toolNames, field('Arguments', toolArgs),
       node('div', { class: 'agent-row' }, [runToolButton, button('Format JSON', () => run(() => { toolArgs.value = JSON.stringify(parseArguments(toolArgs.value), null, 2); })), node('span', { class: 'grow' }), button('Copy result', () => copy(toolResult.textContent || ''), { icon: 'copy', compact: true })]), toolResult])]);
+  const browserMcpStatus = node('p', { class: 'agent-auth-status', role: 'status', text: 'Browser MCP is disabled.' });
+  const enableBrowserMcp = button('Enable browser MCP', () => run(() => browserMcp.enable()), { icon: 'tools', class: 'agent-primary' });
+  const disableBrowserMcp = button('Disable browser MCP', () => run(() => browserMcp.disable()), { disabled: true });
+  const browserMcpSection = node('section', { class: 'agent-browser-mcp' }, [node('h3', { text: 'Browser MCP' }),
+    node('p', { text: 'Expose this drawing’s official MCP server directly inside the browser. Compatible browser agents use WebMCP when available; trusted integrations can connect a MessagePort. Calls follow the same tool permissions as your coding agent.' }),
+    node('p', {}, ['ChatGPT Site tools can control this page in a supported ChatGPT browser. An external browser agent does not need a Studio provider key. ', node('a', { href: 'https://learn.chatgpt.com/docs/webmcp', target: '_blank', rel: 'noopener noreferrer', text: 'Site tools support ↗' })]),
+    node('div', { class: 'agent-row' }, [enableBrowserMcp, disableBrowserMcp]), browserMcpStatus,
+    node('details', {}, [node('summary', { text: 'Integration details' }), code('const connection = await shadowStudioBrowserMcp.createConnection();\n// connection.port carries MCP JSON-RPC messages.\n// Initialize the MCP session before listing or calling tools.\n// Close the session when the integration disconnects.\nconnection.close();', 'Browser MessagePort API'),
+      node('p', { class: 'agent-muted', text: 'Enable access explicitly for each drawing. Changing drawings revokes the previous connection. This page does not open an HTTP listener; native desktop MCP clients can use the optional companion in Settings.' })])]);
+  browserMcpSection.hidden = !browserRuntime;
   panels.get('tools').append(node('div', { class: 'agent-section-intro' }, [node('h2', { text: 'MCP tools' }),
     node('p', { text: 'Discover the same tool contracts the agent uses. Each invocation returns its native result and follows the active permission policy.' })]),
+    browserMcpSection,
     node('div', { class: 'agent-search-row' }, [toolSearch, button('Refresh MCP tools', () => run(loadTools), { icon: 'refresh', compact: true })]),
     node('div', { class: 'agent-catalog-caption' }, [toolCount]), toolConsole, toolListNode);
+  browserMcp.addEventListener('change', event => {
+    const state = event.detail;
+    enableBrowserMcp.disabled = state.enabled || state.activating; disableBrowserMcp.disabled = !state.enabled && !state.activating;
+    browserMcpStatus.textContent = state.error || (state.activating ? 'Enabling browser MCP…' : state.enabled
+      ? `Enabled for ${getDocumentName() || state.documentId} · ${state.messagePorts} MessagePort connection${state.messagePorts === 1 ? '' : 's'}${state.webMcpRegistered ? ` · ${state.webMcpRegistered} WebMCP tools` : ' · WebMCP is unavailable in this browser; MessagePort transport is ready.'}`
+      : 'Browser MCP is disabled.');
+  });
   toolSearch.addEventListener('input', renderTools);
   toolName.addEventListener('input', () => { runToolButton.disabled = !toolName.value.trim() || client.transcript.running || client.busy; });
   async function loadTools() {
@@ -304,13 +331,46 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const fileEditor = node('textarea', { class: 'agent-file-editor', spellcheck: false, rows: 18, 'aria-label': 'Workspace file content', placeholder: 'Open a workspace file, or enter a path and start authoring.' });
   const fileReceipt = node('span', { class: 'agent-muted', text: 'No file selected' });
   const saveFileButton = button('Save file', () => run(saveFile), { icon: 'check', class: 'agent-primary', disabled: true });
-  filesPanel.append(node('div', { class: 'agent-section-intro' }, [node('h2', { text: 'Agent workspace' }), node('p', { text: 'Versioned text files for generated code, scripts, plans, and reports. Save edits before changing files; the runtime rejects writes against a newer version.' })]),
-    node('div', { class: 'agent-row agent-file-toolbar' }, [button('New file', () => run(newFile), { icon: 'plus' }), button('Import file', () => fileImport.click(), { icon: 'upload' }), node('span', { class: 'grow' }), button('Refresh workspace files', () => run(loadFiles), { icon: 'refresh', compact: true })]),
+  const runFileButton = button('Run JavaScript', () => run(async () => {
+    assertFileClean(); if (!file?.path || !/\.(?:m?js|cjs)$/i.test(file.path)) throw new Error('Open a saved JavaScript file to run it in the browser worker.');
+    const result = await client.callTool('workspace_run_javascript', { path: file.path, arguments: [], timeoutSeconds: 30 });
+    fileExecution.replaceChildren(codeExecution(result)); fileExecution.hidden = false;
+    await loadFiles(); notice(result.isError ? 'The browser worker reported an error. Inspect its result below.' : 'Browser JavaScript execution completed.', result.isError ? 'error' : 'info');
+  }), { icon: 'play', disabled: true, hidden: !browserRuntime });
+  const deleteFileButton = button('Delete file', () => run(async () => {
+    assertFileClean(); if (!file?.path) throw new Error('Open a workspace file first.');
+    const current = file; fileDelete.hidden = false;
+    fileDelete.replaceChildren(node('p', { text: `Delete ${current.path} from the browser workspace? Saved checkpoints and connected folder copies are retained.` }), node('div', { class: 'agent-row' }, [
+      button('Delete this file', () => run(async () => { await client.applyFiles([{ path: current.path, content: null, expectedVersion: current.version }]); fileDelete.hidden = true; await newFile(); await loadFiles(); notice(`Deleted ${current.path}.`); }), { class: 'agent-danger' }),
+      button('Keep file', () => { fileDelete.hidden = true; })]));
+  }), { icon: 'trash', compact: true, disabled: true });
+  const fileExecution = node('div', { class: 'agent-file-execution', hidden: true }), fileDelete = node('div', { class: 'agent-file-delete', hidden: true });
+  const fileConflict = node('div', { class: 'agent-file-conflict', hidden: true });
+  const fileDiff = node('details', { class: 'agent-editor-diff', hidden: true }, [node('summary', { text: 'Review unsaved changes' })]);
+  const fileTransferHost = node('div', { class: 'agent-file-transfer-host' });
+  const fileSearch = node('input', { type: 'search', placeholder: 'Filter files by path…', 'aria-label': 'Filter workspace files' });
+  const fileCounter = node('span', { class: 'agent-muted', text: '0 files' });
+  filesPanel.append(node('div', { class: 'agent-section-intro' }, [node('h2', { text: browserRuntime ? 'Browser coding workspace' : 'Agent workspace' }), node('p', { text: browserRuntime ? 'Versioned project files with automatic local recovery, reviewed imports, folder access, and JavaScript execution. Files run as async function bodies with a virtual workspace; Node.js and operating-system commands require a native host.' : 'Versioned project files with automatic local recovery, reviewed imports, and folder access. The runtime rejects writes against a newer version.' })]),
+    node('div', { class: 'agent-row agent-file-toolbar' }, [button('New file', () => run(newFile), { icon: 'plus' }), button('Import file', () => fileImport.click(), { icon: 'upload' }),
+      button('Runnable example', () => codeToFile("const files = workspace.list();\nconsole.log('Workspace files:', files.length);\nconst report = { files, argument: args[0] ?? 'browser' };\nworkspace.write('reports/browser-check.json', JSON.stringify(report, null, 2));\nassert(workspace.read('reports/browser-check.json').includes('files'));\nreturn { passed: true, files: files.length };", 'javascript examples/browser-check.mjs'), { icon: 'play', hidden: !browserRuntime }),
+      node('span', { class: 'grow' }), button('Refresh workspace files', () => run(loadFiles), { icon: 'refresh', compact: true })]),
+    fileTransferHost, node('div', { class: 'agent-search-row' }, [fileSearch]), node('div', { class: 'agent-file-count' }, [fileCounter]),
     fileTree, node('div', { class: 'agent-file-detail' }, [field('Path', filePath), node('div', { class: 'agent-row' }, [fileReceipt]), fileEditor,
-      node('div', { class: 'agent-row' }, [saveFileButton, button('Revert', () => run(async () => { if (file?.path) await openFile(file.path, true); else { fileEditor.value = ''; markFileClean(); } })), node('span', { class: 'grow' }),
-        button('Download file', () => run(() => download(fileEditor.value, safeFilePath(filePath.value).split('/').at(-1), 'text/plain;charset=utf-8')), { icon: 'download', compact: true }), button('Pin file', () => run(pinFile), { icon: 'pin', compact: true })]) ]));
-  fileEditor.addEventListener('input', () => { fileDirty = true; saveFileButton.disabled = client.transcript.running || client.busy; fileReceipt.textContent = `${file?.version != null ? `Version ${file.version} · ` : ''}Unsaved changes`; });
-  filePath.addEventListener('input', () => { fileDirty = true; saveFileButton.disabled = client.transcript.running || client.busy; });
+      node('div', { class: 'agent-row' }, [saveFileButton, runFileButton, button('Revert', () => run(async () => { if (file?.path) await openFile(file.path, true); else { fileEditor.value = ''; markFileClean(); } })), node('span', { class: 'grow' }),
+        button('Download file', () => run(() => download(fileEditor.value, safeFilePath(filePath.value).split('/').at(-1), 'text/plain;charset=utf-8')), { icon: 'download', compact: true }), button('Pin file', () => run(pinFile), { icon: 'pin', compact: true }), deleteFileButton]), fileDelete, fileConflict, fileDiff, fileExecution ]));
+  const fileTransfer = mountBrowserFileTransfer({ client, host: fileTransferHost, assertFileClean, onImported: async () => {
+    if (file?.path) await openFile(file.path, true); await loadFiles(); persistence?.schedule();
+  }, notice });
+  function editorChanged() {
+    fileDirty = true; saveFileButton.disabled = client.transcript.running || client.busy;
+    runFileButton.disabled = true; deleteFileButton.disabled = true;
+    fileReceipt.textContent = `${file?.version != null ? `Version ${file.version} · ` : ''}Unsaved changes`;
+    fileDiff.hidden = false; if (fileDiff.open) updateEditorDiff(); persistence?.schedule();
+  }
+  fileEditor.addEventListener('input', editorChanged); filePath.addEventListener('input', editorChanged);
+  fileSearch.addEventListener('input', renderFiles);
+  function updateEditorDiff() { while (fileDiff.children.length > 1) fileDiff.lastChild.remove(); fileDiff.append(renderFileDiff(file?.content || '', fileEditor.value)); }
+  fileDiff.addEventListener('toggle', () => { if (fileDiff.open) updateEditorDiff(); });
   fileEditor.addEventListener('keydown', event => {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') { event.preventDefault(); run(saveFile); }
     if (event.key === 'Tab') { event.preventDefault(); const start = fileEditor.selectionStart, end = fileEditor.selectionEnd; fileEditor.setRangeText('    ', start, end, 'end'); fileEditor.dispatchEvent(new Event('input')); }
@@ -321,18 +381,20 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     if (fileDirty) throw new Error('Save or revert the current file before importing another.');
     if (selected.size > 2 * 1024 * 1024) throw new Error('Workspace text files are limited to 2 MiB in this editor.');
     const content = await selected.text(); if (content.includes('\0')) throw new Error('The workspace editor imports text files.');
-    file = null; filePath.value = safeFilePath(selected.name); fileEditor.value = content; fileEditor.readOnly = false; fileDirty = true; saveFileButton.disabled = client.transcript.running || client.busy; fileReceipt.textContent = 'Imported · save to create workspace file';
+    file = null; filePath.value = safeFilePath(selected.name); fileEditor.value = content; fileEditor.readOnly = false; editorChanged(); fileReceipt.textContent = 'Imported · save to create workspace file';
   })); dock.append(fileImport);
   function assertFileClean() { if (fileDirty) throw new Error('Save or revert your current file before opening another.'); }
-  function markFileClean() { fileDirty = false; saveFileButton.disabled = true; fileReceipt.textContent = file ? `Version ${file.version ?? '—'} · ${fileEditor.value.length.toLocaleString()} characters` : 'New file'; }
-  async function newFile() { assertFileClean(); file = null; filePath.value = ''; fileEditor.value = ''; fileEditor.readOnly = false; markFileClean(); filePath.focus(); }
+  function markFileClean() { fileDirty = false; saveFileButton.disabled = true; fileDiff.hidden = true; fileDelete.hidden = true; fileConflict.hidden = true; fileReceipt.textContent = file ? `Version ${file.version ?? '—'} · ${fileEditor.value.length.toLocaleString()} characters` : 'New file'; persistence?.schedule(); scheduleRender(); }
+  async function newFile() { assertFileClean(); file = null; filePath.value = ''; fileEditor.value = ''; fileEditor.readOnly = false; fileExecution.hidden = true; markFileClean(); filePath.focus(); }
   async function loadFiles() { fileList = await client.files(); if (!Array.isArray(fileList)) throw new Error('The runtime returned an invalid workspace listing.'); renderFiles(); }
   function renderFiles() {
-    fileTree.replaceChildren(...fileList.map(entry => {
+    const filter = fileSearch.value.trim().toLowerCase(), entries = fileList.filter(entry => String(typeof entry === 'string' ? entry : entry.path).toLowerCase().includes(filter));
+    fileCounter.textContent = `${entries.length}${filter ? ` / ${fileList.length}` : ''} files · ${fileList.reduce((sum, entry) => sum + (entry.characters || 0), 0).toLocaleString()} characters`;
+    fileTree.replaceChildren(...entries.map(entry => {
       const path = typeof entry === 'string' ? entry : entry.path;
       return button(path, () => run(() => openFile(path)), { icon: 'file', class: file?.path === path ? 'selected' : '', title: `${path}${entry.version != null ? ` · version ${entry.version}` : ''}` });
     }));
-    if (!fileList.length) fileTree.append(node('p', { class: 'agent-muted', text: 'No workspace files yet. Save a code block from the conversation, import a text file, or ask the agent to create one.' }));
+    if (!entries.length) fileTree.append(node('p', { class: 'agent-muted', text: fileList.length ? 'No files match this path filter.' : 'No workspace files yet. Import a project, save a code block, or ask the agent to create a runnable script.' }));
   }
   async function openFile(path, discard = false) {
     if (!discard) assertFileClean();
@@ -345,15 +407,26 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     const path = safeFilePath(filePath.value);
     if (fileEditor.value.length > 2 * 1024 * 1024) throw new Error('Workspace text files are limited to 2 MiB in this editor.');
     if (file?.hasMore) throw new Error('This file exceeds the editor read limit. Use workspace_read with ranges and workspace_patch to edit it without truncation.');
+    if (file?.conflict && file.path === path) { await reviewFileConflict(path); return; }
     const expected = file?.path === path ? file.version ?? 0 : 0;
-    const result = await client.writeFile(path, fileEditor.value, expected);
+    let result;
+    try { result = await client.writeFile(path, fileEditor.value, expected); }
+    catch (error) { if (/file changed|current version|changed or no longer/i.test(error.message)) { await reviewFileConflict(path); return; } throw error; }
     file = { path, content: fileEditor.value, ...(result || {}) }; markFileClean(); await loadFiles(); notice(`Saved ${path}.`);
+  }
+  async function reviewFileConflict(path) {
+    const current = (await client.exportFiles()).find(entry => entry.path === path) || { path, content: '', version: 0 };
+    fileConflict.replaceChildren(node('h3', { text: 'The workspace file changed' }), node('p', { text: `${path} has a newer version than this editor. Review the current contents against your draft. Accepting the current version prepares the next Save file action; it does not write the file.` }),
+      renderFileDiff(current.content, fileEditor.value), button('Use reviewed version for next save', () => {
+        file = current; fileConflict.hidden = true; editorChanged(); notice('The current file version is now the editor baseline. Save file applies your reviewed draft with a fresh version check.');
+      }, { icon: 'check', class: 'agent-secondary' }));
+    fileConflict.hidden = false; fileReceipt.textContent = 'Version conflict · draft retained';
   }
   function codeToFile(content, info) {
     run(() => {
       assertFileClean(); const pieces = info.split(/\s+/), ext = { cs: 'cs', csharp: 'cs', js: 'mjs', javascript: 'mjs', ts: 'ts', json: 'json', xml: 'xml', xaml: 'axaml', py: 'py', python: 'py', md: 'md', markdown: 'md', yaml: 'yml', yml: 'yml', html: 'html', css: 'css', sh: 'sh' }[pieces[0]] || 'txt';
       const candidate = pieces.find(part => /[/.]/.test(part)) || `generated-${Date.now()}.${ext}`;
-      file = null; filePath.value = safeFilePath(candidate); fileEditor.value = content; fileEditor.readOnly = false; fileDirty = true; saveFileButton.disabled = client.transcript.running || client.busy; fileReceipt.textContent = 'Code artifact · save to workspace'; setTab('files');
+      file = null; filePath.value = safeFilePath(candidate); fileEditor.value = content; fileEditor.readOnly = false; editorChanged(); fileReceipt.textContent = 'Code artifact · save to workspace'; setTab('files');
     });
   }
   async function pinFile() {
@@ -399,6 +472,70 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     if (!pins.length) pinList.append(node('p', { class: 'agent-muted', text: 'Pin project rules, design intent, or a current drawing snapshot. Pins are retained during compaction.' }));
   }
 
+  // Durable recovery stays in IndexedDB; provider credentials never enter it.
+  const saveStatus = node('p', { class: 'agent-storage-status', role: 'status', text: 'Autosave on this device · credentials stay in memory.' });
+  const savedSelect = node('select', { 'aria-label': 'Saved browser workspaces' }, [node('option', { value: '', text: 'Loading saved workspaces…' })]);
+  const savedDetails = node('p', { class: 'agent-muted', text: 'Saved sessions contain conversation, plans, pinned context, files, and any editor draft.' });
+  const restoreButton = button('Restore saved workspace', () => run(async () => {
+    assertFileClean(); client.ensureIdle(); if (!savedSelect.value) throw new Error('Choose a saved workspace.');
+    persistence.schedule(); await persistence.flush();
+    const selected = savedSelect.value;
+    const restored = await persistence.restore(selected);
+    timelineNodes.clear(); timeline.replaceChildren(); pins = []; await loadFiles();
+    if (restored.draft?.basePath) {
+      const existing = (await client.exportFiles()).find(entry => entry.path === restored.draft.basePath);
+      if (existing && existing.content === restored.draft.baseContent) file = existing;
+    }
+    if (restored.draft) editorChanged();
+    notice('Saved conversation and workspace restored. Current credentials and permissions are retained; reconnect the provider after a page reload.');
+    await refreshSaved(); setTab(restored.draft ? 'files' : 'chat');
+  }), { icon: 'refresh', class: 'agent-primary' });
+  const forgetSaved = button('Forget selected saved copy', () => run(async () => {
+    if (!savedSelect.value) throw new Error('Choose a saved workspace to remove.');
+    await persistence.remove(savedSelect.value); await refreshSaved(); notice('Saved browser copy removed. The active workspace is retained.');
+  }), { icon: 'trash' });
+  const persistStorage = button('Keep browser storage', () => run(async () => {
+    if (!navigator.storage?.persist) throw new Error('This browser does not expose a persistent storage request. Download a checkpoint as a portable backup.');
+    const granted = await navigator.storage.persist();
+    notice(granted ? 'The browser granted persistent storage for this site.' : 'The browser did not grant persistent storage. Autosave remains available; download a portable checkpoint to keep another copy.');
+  }), { icon: 'storage' });
+  const saveNow = button('Save checkpoint now', () => run(async () => { client.ensureIdle(); persistence.schedule(); await persistence.flush(); await refreshSaved(); }), { icon: 'check' });
+  const recoverySection = node('section', { class: 'agent-recovery' }, [node('h3', { text: 'Browser recovery' }), saveStatus,
+    node('div', { class: 'agent-row' }, [saveNow, persistStorage]), field('Saved workspaces', savedSelect), savedDetails,
+    node('div', { class: 'agent-row' }, [restoreButton, button('Refresh saved workspaces', () => run(refreshSaved), { icon: 'refresh', compact: true }), forgetSaved]),
+    node('p', { class: 'agent-muted', text: 'The latest 10 saved sessions are retained within a 64 MiB budget. Restore opens a separate saved copy so tabs cannot overwrite one another. Browser data can be cleared or evicted; export a conversation checkpoint for a portable backup. Save drawing files separately in Studio; agent checkpoints do not include DXF drawings.' })]);
+  contextPanel.append(recoverySection);
+  let savedRecords = [], savedRefreshing = false;
+  async function refreshSaved() {
+    if (!persistence || savedRefreshing) return;
+    savedRefreshing = true;
+    try {
+      const chosen = savedSelect.value; savedRecords = await persistence.store.list();
+      savedSelect.replaceChildren(...(savedRecords.length ? savedRecords.map(record => node('option', { value: record.id, text: `${new Date(record.savedAt).toLocaleString()} · ${record.label}` })) : [node('option', { value: '', text: 'No saved browser workspaces yet' })]));
+      if (savedRecords.some(record => record.id === chosen)) savedSelect.value = chosen;
+      savedSelection();
+    } catch (error) { saveStatus.textContent = error.message; saveStatus.classList.add('error'); }
+    finally { savedRefreshing = false; }
+  }
+  function savedSelection() {
+    const record = savedRecords.find(value => value.id === savedSelect.value);
+    savedDetails.textContent = record ? `${record.files} files · ${record.messages} messages · ${(record.bytes / 1024).toFixed(0)} KiB${record.hasDraft ? ' · unsaved editor draft included' : ''}` : 'A completed conversation or a workspace file creates your first local recovery point.';
+    restoreButton.disabled = !record || client.busy || client.transcript.running; forgetSaved.disabled = !record;
+  }
+  savedSelect.addEventListener('change', savedSelection);
+  persistence = new BrowserSessionPersistence({ client, label: () => client.lastPrompt || getDocumentName() || 'Agent workspace',
+    getDraft: () => fileDirty ? { path: filePath.value, content: fileEditor.value, basePath: file?.path, baseVersion: file?.version, baseContent: file?.content } : null,
+    restoreDraft: draft => {
+      file = draft?.basePath ? { path: draft.basePath, version: draft.baseVersion, content: draft.baseContent || '', conflict: true } : null;
+      filePath.value = draft?.path || ''; fileEditor.value = draft?.content || ''; fileEditor.readOnly = false;
+      if (draft) editorChanged(); else markFileClean();
+    } });
+  persistence.addEventListener('change', event => {
+    saveStatus.textContent = event.detail.message; saveStatus.classList.toggle('error', event.detail.state === 'error');
+    if (event.detail.state === 'saved') void refreshSaved();
+  });
+  client.addEventListener('busy', savedSelection); void refreshSaved();
+
   // Provider credentials and subscription companion ------------------------
   const settingsPanel = panels.get('settings'), providerSelect = node('select', { 'aria-label': 'Model provider' }, providers.map(provider => node('option', { value: provider.id, text: provider.name })));
   const modelInput = node('input', { type: 'text', 'aria-label': 'Model ID', spellcheck: false, autocomplete: 'off' });
@@ -408,7 +545,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const permissionSelect = node('select', { 'aria-label': 'Agent permission mode' }, Object.entries(modeNames).map(([value, text]) => node('option', { value, text })));
   const permissionDescription = node('p', { class: 'agent-permission-description' });
   const routingNote = node('p', { class: 'agent-routing-note', hidden: true });
-  const providerRuntimeNote = node('p', { class: 'agent-routing-note', hidden: true, text: 'Anthropic’s .NET SDK runs through the local companion. Connect Local tools & external MCP first; a native workspace grant is optional. The Anthropic API key and requests are sent to that companion.' });
+  const providerRuntimeNote = node('p', { class: 'agent-provider-runtime', hidden: true, text: 'The official OpenAI, Anthropic and Google .NET clients run directly in this browser. Keys stay in this page’s memory. Custom provider endpoints must allow browser requests from this site.' });
   const limits = node('div', { class: 'agent-limits' });
   for (const [key, label, min, max] of [['maxTurns', 'Max model turns', 1, 1000], ['maxOutputTokens', 'Output tokens / turn', 256, 128000], ['contextWindowTokens', 'Model context window', 4096, 4000000]]) {
     const input = node('input', { type: 'number', min, max, step: 1, 'aria-label': label }); formFields[key] = input; input.value = currentConfig[key]; limits.append(field(label, input));
@@ -423,14 +560,15 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     await current.logout(); signInStatus.textContent = 'Signed out of the companion.'; scheduleRender();
   }));
   const companionPanel = node('section', { class: 'agent-companion', hidden: true }, [
-    node('h3', { text: 'Sign in with ChatGPT' }), node('p', { text: 'A localhost .NET companion completes the app sign-in callback and keeps subscription credentials on your computer. The Studio connects using the separate companion access token.' }),
+    node('h3', { text: 'Sign in with ChatGPT' }), node('p', { text: 'ChatGPT plan sign-in currently requires the optional local companion because OpenAI’s supported open-source flow uses a 127.0.0.1 callback. API-key agents for OpenAI, Anthropic and Google run directly in this browser.' }),
     code('dotnet run --project shadow/samples/netDxf.Shadow.AgentHost -- --origin https://wieslawsoltes.github.io', 'Start the local companion'),
     node('p', { class: 'agent-muted', text: 'Use this page’s origin for a local or custom deployment. Copy the companion access token from its terminal into the key field above.' }),
     node('div', { class: 'agent-row' }, [signInButton, authCheckButton, signOutButton]), signInLink, signInStatus
   ]);
   const connectButton = button('Connect provider', () => run(connectProvider), { icon: 'check', class: 'agent-primary' });
   const connectionInfo = node('span', { class: 'agent-muted', text: 'No provider configured' });
-  settingsPanel.append(node('div', { class: 'agent-section-intro' }, [node('h2', { text: 'Provider & permissions' }), node('p', { text: 'Use the official .NET provider clients with your own API credentials, or sign in through the local ChatGPT companion. Model IDs and limits remain fully editable.' })]),
+  settingsPanel.append(node('div', { class: 'agent-section-intro' }, [node('h2', { text: 'Provider & permissions' }), node('p', { text: browserRuntime ? 'Run coding agents with the official .NET clients in this browser. Model IDs, API tokens, permissions, and context limits remain fully editable.' : 'Run coding agents with the official .NET provider clients. Model IDs, API tokens, permissions, and context limits remain fully editable.' }),
+    node('div', { class: 'agent-browser-features', hidden: !browserRuntime }, [node('span', { text: '3 direct providers' }), node('span', { text: 'Browser workspace' }), node('span', { text: 'JavaScript + WebAssembly' }), node('span', { text: 'Browser MCP' })])]),
     node('div', { class: 'agent-settings-form' }, [field('Provider', providerSelect), field('Model ID', modelInput, 'Use a model with tool calling. Model availability and context limits depend on your provider account.'),
       node('label', { class: 'agent-field' }, [keyLabel, node('div', { class: 'agent-key-field' }, [apiKeyInput, button('Disconnect and clear credential', () => run(async () => {
         await client.disconnect();
@@ -455,6 +593,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   }), { icon: 'tools', class: 'agent-primary' });
   const bridgeDisconnect = button('Disconnect', () => run(async () => {
     client.ensureIdle(); mcpBridge.disconnect(); bridgeStatus.textContent = 'External MCP disconnected. Disconnecting local tools…';
+    await browserMcp.disable();
     await client.companionDisconnect(); nativeToolCount = 0; bridgeToken.value = '';
     bridgeStatus.textContent = 'Local tools and external MCP are disconnected.'; await loadTools();
   }));
@@ -463,6 +602,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   async function connectNativeTools(endpoint = bridgeEndpoint.value, token = bridgeToken.value) {
     nativeConnect.disabled = true;
     try {
+      client.ensureIdle(); await browserMcp.disable();
       const result = await client.companionConnect(endpoint, token);
       // A catalog registration belongs to one explicit connection. Re-register
       // after replacing native tools so external assistants never see stale capabilities.
@@ -473,7 +613,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     } finally { nativeConnect.disabled = false; }
   }
   const externalSection = node('section', { class: 'agent-companion agent-external-mcp' }, [node('h3', { text: 'Local tools & external MCP' }),
-    node('p', { text: 'Attach a real project directory to the browser harness for native file edits, builds, tests, and Git. You can also publish this tab’s live DXF, shadow, and Studio tools to external coding assistants.' }),
+    node('p', { text: 'Optional native support adds operating-system processes, dotnet builds, terminal Git, and an HTTP MCP endpoint for desktop coding assistants. Browser providers, durable project files, folder import/export, JavaScript execution, and browser MCP work without this companion.' }),
     code('dotnet run --project shadow/samples/netDxf.Shadow.AgentHost -- --origin https://wieslawsoltes.github.io --workspace /path/to/project --allow-processes', 'Start a project companion'),
     node('p', { class: 'agent-muted', text: 'Omit --allow-processes to grant native file tools without command execution. Use this page’s origin for a local or custom deployment.' }),
     field('Companion endpoint', bridgeEndpoint), field('Companion access token', bridgeToken, 'Kept in memory. Sent in authenticated local requests and the first WebSocket message, never in a URL.'),
@@ -484,7 +624,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     node('div', { class: 'agent-row' }, [nativeConnect, bridgeConnect, bridgeDisconnect]), bridgeStatus,
     code('MCP endpoint: http://127.0.0.1:5091/mcp\nAuthorization: Bearer <companion access token>', 'External assistant connection'),
     node('p', { class: 'agent-muted', text: 'The connection is bound to this drawing. Changing drawing tabs disconnects it. Reconnect explicitly after a connection loss; tool edits are never replayed.' })]);
-  settingsPanel.append(externalSection);
+  settingsPanel.append(node('details', { class: 'agent-optional-native' }, [node('summary', { text: 'Optional native tools & desktop MCP' }), externalSection]));
   mcpBridge.addEventListener('connected', () => { bridgeStatus.textContent = `MCP connected to ${getDocumentName() || mcpBridge.documentId}${nativeToolCount ? ` · ${nativeToolCount} native workspace tools` : ''}.`; notice('External MCP is connected to this drawing.'); });
   mcpBridge.addEventListener('disconnected', event => { bridgeStatus.textContent = event.detail.reason; });
   mcpBridge.addEventListener('error', event => { bridgeStatus.textContent = event.detail.message; });
@@ -505,7 +645,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   function updateProviderFields() {
     const provider = providers.find(p => p.id === providerSelect.value), subscription = provider.id === 'chatgpt';
     keyLabel.textContent = provider.hint; apiKeyInput.placeholder = provider.placeholder;
-    providerRuntimeNote.hidden = provider.id !== 'anthropic' || globalThis.shadowBrowser?.runtime !== 'blazor-webassembly';
+    providerRuntimeNote.hidden = subscription || globalThis.shadowBrowser?.runtime !== 'blazor-webassembly';
     companionPanel.hidden = !subscription;
     if (subscription && !endpointInput.value) endpointInput.value = 'http://127.0.0.1:5091';
     connectButton.querySelector('span').textContent = subscription ? 'Connect ChatGPT companion' : 'Connect provider'; updatePermissionDescription(); updateRouting();
@@ -585,12 +725,8 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     scheduleRender();
   });
   client.addEventListener('configured', scheduleRender); client.addEventListener('connected', scheduleRender); client.addEventListener('busy', scheduleRender);
-  client.addEventListener('providerdisconnected', event => {
-    if (providerSelect.value === 'anthropic') apiKeyInput.value = '';
-    currentConfig.apiKey = ''; connectionInfo.textContent = 'Anthropic disconnected · local companion required';
-    notice(event.detail.reason); scheduleRender();
-  });
   client.addEventListener('disconnected', () => {
+    void browserMcp.disable().catch(report);
     mcpBridge.disconnect(); nativeToolCount = 0; bridgeToken.value = ''; apiKeyInput.value = ''; currentConfig.apiKey = '';
     bridgeStatus.textContent = 'Local tools and external MCP are disconnected.';
     invalidateSignIn('Runtime disconnected. Use Sign in with ChatGPT or check the companion when reconnecting.');
@@ -620,7 +756,22 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     // Studio command shortcuts cannot consume input from an agent code editor or settings form.
     if (!(event.shiftKey && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'a')) event.stopPropagation();
   });
-  window.addEventListener('pagehide', event => { mcpBridge.disconnect(); if (!event.persisted) { disposed = true; authGeneration++; if (authTimer) clearTimeout(authTimer); client.dispose(); apiKeyInput.value = ''; bridgeToken.value = ''; currentConfig.apiKey = ''; } });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') void persistence.flush().catch(() => {}); });
+  window.addEventListener('beforeunload', event => {
+    if (client.transcript.running || persistence.pending || persistence.saving) { event.preventDefault(); event.returnValue = ''; }
+  });
+  window.addEventListener('pagehide', event => {
+    mcpBridge.disconnect(); void browserMcp.disable().catch(() => {});
+    if (!event.persisted) {
+      disposed = true; authGeneration++; if (authTimer) clearTimeout(authTimer);
+      // Saves are normally completed after each idle change and on visibility
+      // loss. A final best-effort flush never blocks page navigation.
+      void persistence.flush().catch(() => {}).finally(() => { persistence.dispose(); fileTransfer.dispose(); client.dispose(); });
+      apiKeyInput.value = ''; bridgeToken.value = ''; currentConfig.apiKey = '';
+    }
+  });
   window.addEventListener('pageshow', event => { if (event.persisted && connectedOnce) client.schedule(0); });
-  return Object.freeze({ show, hide, toggle: () => opened ? hide() : show(), documentChanged: () => { mcpBridge.documentChanged(); scheduleRender(); }, client, snapshot: () => ({ open: opened, tab: selectedTab, status: client.transcript.status, running: client.transcript.running, provider: client.config?.provider, model: client.config?.model, permissionMode: client.config?.permissionMode, externalMcp: mcpBridge.connected }) });
+  return Object.freeze({ show, hide, toggle: () => opened ? hide() : show(), documentChanged: () => { mcpBridge.documentChanged(); void browserMcp.documentChanged().catch(report); scheduleRender(); }, client,
+    snapshot: () => ({ open: opened, tab: selectedTab, status: client.transcript.status, running: client.transcript.running, provider: client.config?.provider, model: client.config?.model, permissionMode: client.config?.permissionMode,
+      externalMcp: mcpBridge.connected, browserMcp: browserMcp.status, recovery: persistence.status.state, workspace: fileTransfer.state() }) });
 }

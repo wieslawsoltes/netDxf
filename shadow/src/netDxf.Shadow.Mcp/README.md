@@ -134,7 +134,7 @@ The official SDK owns protocol negotiation, lifecycle and handlers. Its pinned v
 - `shadow://schema/types/{type}` with optional `offset` and `limit`
 - `inspect_drawing` and `edit_drawing` prompts
 
-The package itself does not expose a network listener from a static GitHub Pages page. Use in-page execution for the embedded harness and the optional Studio companion's authenticated MCP transport for external clients.
+The browser Studio runs this official protocol session over granted `MessagePort` connections and registers the same tools through WebMCP when `document.modelContext` is available. Browser agents and same-page integrations can control the live document without a server or companion. See the [browser MCP guide](../../docs/browser-mcp.md) for connection examples, permissions, request receipts and cancellation. Native clients can use the optional Studio companion's authenticated HTTP MCP endpoint.
 
 ## Verification and protocol references
 

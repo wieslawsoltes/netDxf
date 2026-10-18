@@ -33,8 +33,9 @@ optional Graph, Drafting, Dimensions, SHX and DWG modules as needed.
 The optional [coding agent and MCP packages](docs/coding-agents.md) add streaming
 provider sessions, context compaction, versioned coding workspaces, generic DXF
 and shadow tools, and complete Studio control. Select **Agents** in the browser
-Studio. A .NET companion supports ChatGPT sign-in, external MCP clients and native
-project files/builds.
+Studio. OpenAI, Anthropic and Google, browser file persistence/import/export,
+JavaScript execution and browser MCP run without a companion. An optional .NET
+host supports ChatGPT subscription OAuth, desktop HTTP MCP and native builds.
 
 ## Build, verify and run
 

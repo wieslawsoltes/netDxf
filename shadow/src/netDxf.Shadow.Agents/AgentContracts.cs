@@ -57,10 +57,10 @@ public sealed record AgentPinnedContext(string Id, string Text);
 public sealed record AgentApproval(string RequestId, string Tool, JsonElement Arguments, DateTimeOffset ExpiresAt);
 public sealed record AgentPlanStep(string Step, string Status);
 
-/// <summary>Portable transcript representation excludes opaque provider state and credentials.</summary>
+/// <summary>Portable transcript representation retains provider-scoped reasoning signatures without raw SDK objects or credentials.</summary>
 public sealed record AgentContentRecord(string Kind, string? Text = null, string? CallId = null,
     string? Name = null, JsonElement? Arguments = null, string? ProtectedData = null, string? ReasoningItemId = null,
-    bool AnthropicRedactedThinking = false, bool IsError = false);
+    bool AnthropicRedactedThinking = false, bool IsError = false, string? ReasoningProvider = null);
 public sealed record AgentMessageRecord(string Role, IReadOnlyList<AgentContentRecord> Contents);
 public sealed record AgentCheckpoint(int SchemaVersion, string SessionId, string Summary,
     IReadOnlyList<AgentMessageRecord> Messages, IReadOnlyList<AgentPinnedContext> Pins,

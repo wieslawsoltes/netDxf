@@ -5,12 +5,17 @@ The agent sees the same DXF source, immutable shadow models, editor transactions
 and UI state as the rest of Studio. Both the local ASP.NET sample and the static
 Blazor application use the same C# controller and tool contracts.
 
+The GitHub Pages app runs the complete agent loop, all three API-key providers,
+coding workspace, JavaScript execution, context management and drawing tools in
+the browser. No local companion is required for this workflow. Browser MCP also
+exposes the live Studio through MessagePort and, in compatible browsers, WebMCP.
+
 The two independently packable .NET 8 projects are:
 
 | Package | Responsibility |
 | --- | --- |
 | [`netDxf.Shadow.Mcp`](../src/netDxf.Shadow.Mcp/README.md) | Tool registry and JSON schemas; native DXF and shadow model access; editing, graph operations, snapshots and history; official MCP server transports, resources and prompts |
-| [`netDxf.Shadow.Agents`](../src/netDxf.Shadow.Agents/README.md) | Official provider adapters; streaming conversation loop; permissions; cancellation and recovery; context management, compaction and checkpoints; versioned memory/native files and explicit process execution |
+| [`netDxf.Shadow.Agents`](../src/netDxf.Shadow.Agents/README.md) | Official provider adapters; streaming conversation loop; permissions; cancellation and recovery; context management, compaction and checkpoints; transactional files, isolated code-runner contracts and optional native process execution |
 
 The release catalog includes both packages and validates their dependencies,
 documentation, source identity, symbols and installed-package execution. They are
@@ -25,17 +30,18 @@ the drawing bar, or press **Ctrl+Shift+A**. The dock has five tabs:
 | Tab | What it does |
 | --- | --- |
 | Conversation | Streaming assistant output, task plan, expandable tool arguments/results, individual approvals, stop and resume, checkpoint import/export |
-| MCP | Searchable tool catalog, complete input schemas and an executable JSON tool console using the session's permission policy |
-| Files | Versioned text editor, code-block-to-file actions, import/download, compare-and-swap saves and context pins |
-| Context | Estimated prompt usage, actual provider usage when supplied, pinned requirements and manual compaction |
+| MCP | Searchable tool catalog, complete input schemas, JSON tool console, WebMCP registration and browser MessagePort connections using the session's permission policy |
+| Files | Versioned text editor, inline diffs, code execution, multi-file/folder/ZIP import, ZIP/bundle download and reviewed folder publishing |
+| Context | Estimated prompt usage, actual provider usage when supplied, pinned requirements, compaction and IndexedDB recovery after reload |
 | Settings | Provider, model, API credential, optional endpoint, permissions, budgets, ChatGPT sign-in and companion connections |
 
 Choose a provider, enter a model that supports tool calling and enter the full API
-key. Keys are retained in memory for the current page session. Only nonsecret
-preferences are saved in browser storage. **Disconnect and clear credential**
+key. Keys are retained in memory for the current page session. Browser storage
+holds nonsecret preferences and credential-redacted recovery checkpoints. **Disconnect and clear credential**
 stops the active operation and removes runtime credentials while retaining the
-conversation and in-memory files. Reloading the page starts a new runtime; export
-a checkpoint to resume the conversation later.
+conversation and files. Reloading starts a new runtime: restore a saved workspace
+from **Context → Browser recovery** and reconnect a provider to continue. Download
+a conversation checkpoint for a portable backup.
 
 Model IDs, model context size, output limit and maximum turns are editable. The
 runtime uses the official `OpenAI`, `Anthropic`, and `Google.GenAI` .NET packages
@@ -43,13 +49,13 @@ through `Microsoft.Extensions.AI.IChatClient`. Endpoint overrides receive the ke
 and conversation and must support the selected provider protocol. An endpoint's
 CORS policy and the browser's local-network permissions still apply.
 
-OpenAI and Google execute their official clients directly in WebAssembly. The
-current official Anthropic SDK initializes a native-only HTTP decompression
-handler, so browser Anthropic sessions use the companion's official SDK through
-a typed streaming bridge. Connect **Local tools & external MCP** before configuring
-Anthropic; `--workspace` is optional for this provider bridge. The conversation
-loop, tools, approvals and context management continue to execute in the browser.
-The local ASP.NET Studio uses the Anthropic SDK directly.
+OpenAI, Anthropic and Google execute directly in WebAssembly. The official
+Anthropic SDK's default desktop transport configures native decompression; its
+browser adapter instead implements the SDK's public client transport interfaces
+over Fetch. The official message services, request models, SSE parser, tool-call
+conversion and thinking signatures remain in use. The adapter sends Anthropic's
+direct-browser-access header. No private SDK state or unofficial inference SDK
+is used. All browser transports omit cookies and stream responses as they arrive.
 
 ### Permissions
 
@@ -60,9 +66,11 @@ The local ASP.NET Studio uses the Anthropic SDK directly.
 | Full access | Every registered tool can execute without an individual confirmation. This includes native process tools if the companion was started with that capability. |
 
 Full access changes the harness policy. Available capabilities still come from
-the host. A static browser can edit the live drawing and its memory workspace;
-native files, compilers, Git and processes are attached explicitly through the
-companion below.
+the host. The browser can edit the live drawing and coding workspace, run
+JavaScript/WebAssembly, and exchange files through browser-selected folders.
+Native `dotnet`, Git executables and operating-system processes use the optional
+companion below. **Apply permissions** changes MCP permissions without requiring
+a provider key, so an external browser agent can operate Studio directly.
 
 Example tasks:
 
@@ -74,6 +82,62 @@ Example tasks:
   edit, then verify the native source and undo history."
 - "Read the connected project's source, implement the drawing exporter, run its
   tests, and show the resulting diff."
+
+## Browser files, execution and recovery
+
+**Files → Project import, export & folder access** accepts individual UTF-8 files,
+whole folders, ZIP archives and the portable JSON workspace bundle. Imports show
+per-file diffs and selections before applying a single atomic transaction. Every
+file version is checked before any edit commits; a conflict or capacity error
+leaves the workspace unchanged. Omitted paths remain intact. Binary files and
+generated directories are skipped with a visible report. The portable workspace
+holds up to 512 files and 16 MiB of UTF-8 content.
+
+Where the browser provides File System Access, **Connect folder** uses an explicit
+user-selected handle. **Review folder writes** compares current disk content with
+the workspace and highlights external edits. The browser requests write permission
+when publishing; each file is checked again before saving. A multi-file failure
+reports the files already saved. Folder publishing is atomic per file, not across
+the entire filesystem. Folder handles are not silently reacquired after reload.
+Other browsers use folder upload and ZIP download without a companion.
+
+`workspace_runtime` describes the execution contract. `workspace_run_javascript`
+accepts either a workspace `path` or inline `code`, optional string `arguments`,
+and `timeoutSeconds` from 1 to 120. The code is an async function body, with
+`workspace.list/read/write/delete`, `args`, `console`, `assert`, and the browser's
+WebAssembly API. For example, save this as `scripts/sum.js` and choose **Run
+JavaScript**, or invoke the tool with `{ "path": "scripts/sum.js" }`:
+
+```javascript
+const values = JSON.parse(workspace.read('input.json'));
+assert(Array.isArray(values), 'Expected an array');
+const total = values.reduce((sum, value) => sum + value, 0);
+workspace.write('result.json', JSON.stringify({ total }, null, 2));
+console.log('Total:', total);
+return { total };
+```
+
+With **Approve changes**, approve the requested execution in **Conversation**.
+The **Stop** control remains available there while code is running.
+
+Each run uses a fresh worker in an opaque-origin frame. It receives a bounded file
+snapshot and arguments, with no Studio DOM, provider credentials, browser storage,
+or network capability. Logs and returned values are bounded. The harness commits
+staged file changes only after successful completion and version validation.
+Exceptions, assertion failures, cancellation, timeouts and conflicts discard the
+staged edits. The worker can be terminated even during a synchronous infinite
+loop. It does not emulate Node.js, a package manager, a native .NET SDK or an OS
+shell. Drawing work continues through the real DXF/Shadow/Studio MCP tools.
+
+IndexedDB autosave coalesces changes and saves consistent checkpoints when the
+agent becomes idle. A saved copy includes transcript, protected continuation
+metadata, task, plan, pins, files and unsaved editor draft. It excludes provider
+configuration and credentials. **Save checkpoint now**, **Restore saved workspace**,
+**Forget selected saved copy**, and **Keep browser storage** expose recovery and
+storage controls. Restoring forks a saved slot so separate tabs do not overwrite
+one another. Up to ten copies are retained within 64 MiB; each checkpoint and draft
+is bounded to 20 MiB. Quota/blocked-storage errors are visible. Browser eviction
+remains possible, so ZIP and conversation downloads provide portable backups.
 
 ## Attach native files, builds and Git
 
@@ -87,7 +151,7 @@ dotnet run --project shadow/samples/netDxf.Shadow.AgentHost -- \
 ```
 
 The companion listens on `http://127.0.0.1:5091`. Copy its printed companion access
-token into **Settings → Local tools & external MCP**, then select **Connect local
+token into **Settings → Optional native tools & desktop MCP**, then select **Connect local
 tools**. Use the exact page origin for a local or custom Studio deployment. See
 the [companion README](../samples/netDxf.Shadow.AgentHost/README.md) for the port,
 configuration directory and capacity options.
@@ -117,6 +181,15 @@ claim crash-atomic transactions across a whole repository. Binary files are
 listed explicitly; text search and text checkpoint export skip them.
 
 ## Sign in with ChatGPT
+
+For a companion-free ChatGPT agent, enable **MCP → Enable browser MCP** and open
+Studio in a ChatGPT browser that supports Site tools. The already signed-in
+ChatGPT agent can use Studio's WebMCP tools with the page's current permissions.
+This connects the external ChatGPT agent to the live page; it does not transfer
+subscription credentials into Studio's embedded provider session. Availability
+depends on OpenAI's supported browser, model and workspace policy; see the
+[official Site tools guide](https://learn.chatgpt.com/docs/webmcp) and the
+[browser MCP integration guide](browser-mcp.md).
 
 The companion implements the documented Sign in with ChatGPT flow for open-source
 and locally hosted apps. GitHub Pages cannot accept the required loopback OAuth
@@ -149,6 +222,31 @@ Official references:
 - [Registration and sign-in](https://developers.openai.com/siwc/token-sharing-open-source/sign-in)
 
 ## Connect an external MCP client to this drawing
+
+### In the browser
+
+Select **MCP → Enable browser MCP**. A compatible browser receives registered
+WebMCP tools through `document.modelContext` (with legacy capability detection).
+Same-page integrations can obtain an explicitly granted MessagePort:
+
+```javascript
+const connection = await shadowStudioBrowserMcp.createConnection();
+// Use connection.port with MessagePortMcpTransport and an MCP client,
+// or exchange MCP JSON-RPC initialize, tools/list and tools/call messages.
+// Keep the connection alive only while the integration needs this drawing.
+await connection.close();
+```
+
+The port reaches the official .NET MCP session in WebAssembly. Initialization,
+resources, prompts, tool schemas and cancellation use the same SDK. Connections
+are bound to one drawing and have bounded messages, requests and retained receipts.
+Reusing an identical request ID returns the previous receipt; changing the body
+under an existing ID is rejected. Disabling browser MCP or changing drawings
+revokes the page capability and closes connections. No HTTP listener, WebSocket
+relay or localhost service is involved. See [browser-mcp.md](browser-mcp.md) for
+the transport contract and WebMCP availability.
+
+### Native desktop clients
 
 Start the same companion and select **Connect MCP** in the Studio settings. The
 current tab registers its tool catalog over an authenticated WebSocket. Configure
@@ -223,12 +321,12 @@ bounded; polling catches up with pagination and resets correctly after replacing
 a session. UI transport recovery retries status reads and never replays a start
 or a mutation.
 
-The native provider bridge transmits typed `IChatClient` messages, tool schemas
+The optional native provider bridge transmits typed `IChatClient` messages, tool schemas
 and streaming updates. It cannot execute tools. It requires the companion bearer
 token and exact allowed Origin; the provider key is sent only to the explicitly
-connected companion and the selected provider endpoint. Replacing the companion
-recreates the Anthropic bridge; disconnecting it disables that provider until it
-is connected again.
+connected companion and the selected provider endpoint. It remains available to
+embedders of `CreateBrowserBridge`; the Studio's API-key provider connections run
+directly and are independent of attaching or detaching native tools.
 
 ## Context, compaction and persistence
 
@@ -280,7 +378,7 @@ dotnet run --project shadow/tests/netDxf.Shadow.AgentStudio.Verification -c Rele
 dotnet run --project shadow/samples/netDxf.Shadow.AgentHost/Verification -c Release
 ```
 
-After publishing the static application and building the companion in Release:
+After publishing the static application:
 
 ```sh
 python shadow/tests/blazor_agents_browser.py \
@@ -288,10 +386,12 @@ python shadow/tests/blazor_agents_browser.py \
 ```
 
 This browser verification runs the published agent inside Chromium at both the
-site root and `/netDxf/`, with OpenAI/Google SDKs in WebAssembly and the Anthropic
-SDK in a real native companion. Only provider HTTP responses are scripted; model
-edits, source validation, native and portable file operations, process execution,
-permissions, checkpoints and UI are real. Native tests exercise actual temporary files,
+site root and `/netDxf/`, with all three official provider SDKs in WebAssembly and
+no companion process. Only paid provider HTTP responses are scripted; model
+edits, source validation, browser code, MessagePort MCP, file uploads, ZIP downloads,
+IndexedDB persistence, reload recovery, permissions and UI are real. Pass
+`--with-companion` after building AgentHost in Release to additionally verify its
+optional native file/process tools. Native tests exercise actual temporary files,
 processes, HTTP, WebSocket and official MCP connections. Tests do not make paid
 inference calls or sign in to a real user's ChatGPT account.
 

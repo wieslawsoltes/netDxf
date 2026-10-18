@@ -26,6 +26,8 @@ public static partial class BrowserRuntime
     [JSInvokable] public static IReadOnlyList<McpToolDefinition> AgentMcpTools() => App.Agents.Catalog();
     [JSInvokable] public static Task<McpToolResult> AgentMcpCall(string name, JsonElement arguments) => App.Agents.Call(name, arguments);
     [JSInvokable] public static IReadOnlyList<AgentFileInfo> AgentWorkspaceFiles() => App.Agents.Files();
+    [JSInvokable] public static IReadOnlyList<AgentFile> AgentWorkspaceExport() => App.Agents.ExportFiles();
+    [JSInvokable] public static object AgentWorkspaceApply(AgentFileChange[] changes) => App.Agents.ApplyFiles(changes);
     [JSInvokable] public static AgentFileSlice AgentWorkspaceRead(string path) => App.Agents.Read(path);
     [JSInvokable] public static AgentFileInfo AgentWorkspaceWrite(string path, string content, long? expectedVersion) => App.Agents.Write(path, content, expectedVersion);
     [JSInvokable] public static AgentPinnedContext AgentPin(string text) => App.Agents.Pin(text);
@@ -86,6 +88,19 @@ internal sealed partial class BrowserApplication
             });
             StudioAgentRouteTools.RegisterRead(registry);
             return registry;
-        }, async (id, ct) => { await javascript.InvokeVoidAsync("shadowStudioAgentUi.execute", ct, "refresh", McpJson.EmptyObject, id); });
+        }, async (id, ct) => { await javascript.InvokeVoidAsync("shadowStudioAgentUi.execute", ct, "refresh", McpJson.EmptyObject, id); }, new BrowserAgentCodeRunner(javascript));
+    }
+}
+
+internal sealed class BrowserAgentCodeRunner(IJSRuntime javascript) : IAgentCodeRunner
+{
+    public async ValueTask<AgentCodeResult> ExecuteAsync(AgentCodeRequest request, CancellationToken cancellationToken = default)
+    {
+        try { return await javascript.InvokeAsync<AgentCodeResult>("shadowStudioAgentCode.execute", cancellationToken, request); }
+        finally
+        {
+            if (cancellationToken.IsCancellationRequested)
+                await javascript.InvokeVoidAsync("shadowStudioAgentCode.cancel", CancellationToken.None, request.Id);
+        }
     }
 }

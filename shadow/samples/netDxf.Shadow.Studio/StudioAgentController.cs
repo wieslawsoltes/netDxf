@@ -26,6 +26,7 @@ public sealed partial class StudioAgentController : IAsyncDisposable
     private readonly Func<string, McpToolRegistry> createTools;
     private readonly object lifecycle = new();
     private readonly MemoryAgentWorkspace workspace = new();
+    private readonly IAgentCodeRunner? codeRunner;
     private readonly SwitchableExecutor executor;
     private string[] knownCredentials = [];
     private AgentSession session;
@@ -39,21 +40,28 @@ public sealed partial class StudioAgentController : IAsyncDisposable
     public IMcpToolExecutor Tools => executor;
 
     public StudioAgentController(Func<string, McpToolRegistry> createTools,
-        Func<string, CancellationToken, ValueTask>? changed = null)
+        Func<string, CancellationToken, ValueTask>? changed = null, IAgentCodeRunner? codeRunner = null)
     {
         this.createTools = createTools;
+        this.codeRunner = codeRunner;
         executor = new SwitchableExecutor(changed is null ? null : ct => changed(documentId, ct));
         session = new(new UnconfiguredChatClient(), executor, workspace: workspace, redactor: Redact);
         InstallTools("demo");
     }
     public static object Capabilities() => new
     {
+        runtime = OperatingSystem.IsBrowser() ? "browser" : "native",
         providers = new[] { "openai", "anthropic", "google", "chatgpt" },
+        directBrowserProviders = new[] { "openai", "anthropic", "google" },
         permissionModes = new[] { "readOnly", "ask", "fullAccess" },
-        chatGpt = new { requiresCompanion = true, defaultEndpoint = "http://127.0.0.1:5091", signIn = "Sign in with ChatGPT" },
+        chatGpt = new { requiresCompanion = true, defaultEndpoint = "http://127.0.0.1:5091", signIn = "Sign in with ChatGPT",
+            reason = "OpenAI's current ChatGPT plan authorization requires an HTTP 127.0.0.1 callback listener. A static browser tab cannot host this listener.",
+            documentation = "https://developers.openai.com/siwc/token-sharing-open-source/sign-in" },
         contextEstimate = "Conservative UTF-8 estimate calibrated by provider usage",
-        workspace = "Versioned in-memory files; import/export checkpoints for persistence",
-        mcp = new { inProcess = true, external = "Connect the current tab to the loopback companion's /mcp endpoint." }
+        workspace = "Versioned transactional files with browser IndexedDB session persistence, folder import/publish and portable bundles.",
+        code = new { browser = OperatingSystem.IsBrowser(), runtime = "JavaScript and WebAssembly in an isolated worker", nativeShell = false },
+        mcp = new { inProcess = true, messagePort = true, webMcp = "Available when the browser exposes document.modelContext; enable in the MCP tab.",
+            external = "Use the in-browser MessagePort connection or WebMCP. The optional companion exposes an HTTP /mcp endpoint for native clients." }
     };
     private void EnsureIdle()
     {
@@ -81,10 +89,7 @@ public sealed partial class StudioAgentController : IAsyncDisposable
             MaxOutputTokens = value.MaxOutputTokens, ContextWindowTokens = value.ContextWindowTokens };
         var providerOptions = new ShadowAgentProviderOptions
         { Provider = value.Provider, Model = value.Model, ApiKey = value.ApiKey, Endpoint = NormalizeEndpoint(value) };
-        IChatClient client = value.ApiKey.Length == 0 ? new UnconfiguredChatClient() :
-            OperatingSystem.IsBrowser() && string.Equals(value.Provider.Trim(), "anthropic", StringComparison.OrdinalIgnoreCase)
-                ? companion?.CreateChatClient(providerOptions) ?? throw new InvalidOperationException("Connect the local companion before using Anthropic in the browser. The companion runs the official Anthropic .NET SDK.")
-                : ShadowAgentProviders.Create(providerOptions);
+        IChatClient client = value.ApiKey.Length == 0 ? new UnconfiguredChatClient() : ShadowAgentProviders.Create(providerOptions);
         AgentSession? replacement = null;
         try
         {
@@ -132,6 +137,7 @@ public sealed partial class StudioAgentController : IAsyncDisposable
             registry = new McpToolRegistry();
         }
         AgentWorkspaceTools.Register(registry, workspace);
+        if (codeRunner is not null) AgentCodeTools.Register(registry, workspace, codeRunner);
         companion?.Register(registry);
         registry.Register(new("agent_plan", "Publish or replace the task plan. States: pending, in_progress, completed; at most one in_progress.",
             McpJson.Parse("""{"type":"object","properties":{"steps":{"type":"array","maxItems":64,"items":{"type":"object","properties":{"step":{"type":"string"},"status":{"type":"string","enum":["pending","in_progress","completed"]}},"required":["step","status"],"additionalProperties":false}}},"required":["steps"],"additionalProperties":false}"""), true), (args, ct) =>
@@ -208,6 +214,11 @@ public sealed partial class StudioAgentController : IAsyncDisposable
         return await task.ConfigureAwait(false);
     }
     public IReadOnlyList<AgentFileInfo> Files() => workspace.List();
+    public IReadOnlyList<AgentFile> ExportFiles() { lock (lifecycle) return workspace.Export(); }
+    public object ApplyFiles(IReadOnlyList<AgentFileChange> changes)
+    {
+        lock (lifecycle) { EnsureIdle(); var files = workspace.Apply(changes); return new { files, changed = changes.Count }; }
+    }
     public AgentFileSlice Read(string path) => workspace.Read(path, 0, 1000000);
     public AgentFileInfo Write(string path, string content, long? expectedVersion)
     {
@@ -227,6 +238,7 @@ public sealed partial class StudioAgentController : IAsyncDisposable
             if (disposed) return; disposed = true;
             session.Cancel(); pending = work;
         }
+        await DisposeMcpSessionsAsync().ConfigureAwait(false);
         await ObserveCompletion(pending).ConfigureAwait(false);
         lock (lifecycle)
         {

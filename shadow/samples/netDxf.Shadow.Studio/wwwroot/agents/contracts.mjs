@@ -82,7 +82,9 @@ export function redact(value, secrets = [], depth = 0) {
 }
 
 export function parseSession(text, secrets = []) {
-  if (typeof text !== 'string' || text.length > 16 * 1024 * 1024) throw new Error('Session files must be JSON smaller than 16 MiB.');
+  const maximumBytes = 24 * 1024 * 1024;
+  if (typeof text !== 'string' || text.length > maximumBytes || new TextEncoder().encode(text).byteLength > maximumBytes)
+    throw new Error('Session files must be JSON no larger than 24 MiB in UTF-8.');
   let value;
   try { value = JSON.parse(text); } catch { throw new Error('The session file is not valid JSON.'); }
   if (!value || Array.isArray(value) || typeof value !== 'object') throw new Error('The session must be a JSON object.');

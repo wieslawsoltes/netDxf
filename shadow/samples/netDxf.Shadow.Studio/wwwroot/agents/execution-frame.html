@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' blob:; worker-src blob:; connect-src 'none'; img-src 'none'; style-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Isolated Shadow code runtime</title>
+</head>
+<body>
+<script>
+(() => {
+  'use strict';
+  const id = location.hash.slice(1);
+  let worker = null, port = null, sourceUrl = null, receiptToken = null;
+  function stop() {
+    worker?.terminate(); worker = null;
+    if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+    sourceUrl = null; receiptToken = null;
+  }
+  function connect(event) {
+    if (event.source !== parent || event.data?.type !== 'shadow-code-connect' || event.data.id !== id || event.ports.length !== 1 || port) return;
+    removeEventListener('message', connect);
+    port = event.ports[0];
+    port.onmessage = event => {
+      const message = event.data;
+      if (message?.type === 'stop') { stop(); port.postMessage({ type: 'stopped' }); return; }
+      if (message?.type !== 'run' || worker || typeof message.source !== 'string') return;
+      try {
+        receiptToken = Array.from(crypto.getRandomValues(new Uint8Array(32)), byte => byte.toString(16).padStart(2, '0')).join('');
+        sourceUrl = URL.createObjectURL(new Blob([`${message.source}(${JSON.stringify(receiptToken)});`], { type: 'text/javascript' }));
+        worker = new Worker(sourceUrl, { name: 'Shadow workspace code' });
+        worker.onmessage = event => {
+          const value = event.data;
+          // User JavaScript can call the worker's global postMessage. Only packets from the
+          // bootstrap's private closure may become an execution receipt or console output.
+          if (!value || value.receiptToken !== receiptToken) return;
+          const { receiptToken: ignored, ...forwarded } = value;
+          if (value?.type === 'completed') stop();
+          port.postMessage(forwarded);
+        };
+        worker.onerror = event => { stop(); port.postMessage({ type: 'failure', error: event.message || 'Browser worker failed.' }); };
+        worker.postMessage(message.request);
+      } catch (error) { stop(); port.postMessage({ type: 'failure', error: error.message || String(error) }); }
+    };
+    port.start(); port.postMessage({ type: 'connected' });
+  }
+  addEventListener('message', connect);
+  addEventListener('pagehide', stop);
+  parent.postMessage({ type: 'shadow-code-ready', id }, '*');
+})();
+</script>
+</body>
+</html>

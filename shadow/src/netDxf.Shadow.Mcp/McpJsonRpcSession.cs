@@ -60,6 +60,14 @@ public sealed class McpJsonRpcSession : IAsyncDisposable
         if (!hasId)
         {
             await WriteAsync(JsonSerializer.Serialize(message, McpJson.Options), cancellationToken).ConfigureAwait(false);
+            // A server may intentionally omit a response after receiving cancellation.
+            // Browser transports still need to settle their local request promise instead
+            // of retaining it until the deadline. Forward cancellation first, then return
+            // an uncertainty receipt; the executor continues to await cooperative cleanup.
+            if (method.GetString() == "notifications/cancelled" && parameters.ValueKind == JsonValueKind.Object &&
+                parameters.TryGetProperty("requestId", out var cancelledId) && TryKey(cancelledId, out var cancelledKey) &&
+                pending.TryGetValue(cancelledKey, out var cancelled))
+                cancelled.TrySetResult(Error(cancelledId, -32800, "MCP request cancelled. Inspect current state before retrying a change."));
             return null;
         }
         if (!TryKey(id, out var key)) return Error(null, -32600, "MCP request ids must be strings or 64-bit integers.");
