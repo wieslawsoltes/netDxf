@@ -468,13 +468,14 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
       // after replacing native tools so external assistants never see stale capabilities.
       mcpBridge.disconnect();
       nativeToolCount = result.toolCount ?? result.tools?.length ?? 0;
-      bridgeStatus.textContent = nativeToolCount ? `Local workspace connected · ${nativeToolCount} native tools.` : 'Companion connected. Start it with --workspace to enable native files, builds, tests, and Git.';
+      bridgeStatus.textContent = nativeToolCount ? `Local workspace connected · ${nativeToolCount} native tools.` : 'Companion connected. Start it with --workspace for native files; add --allow-processes for builds, tests, and Git.';
       await loadTools(); return result;
     } finally { nativeConnect.disabled = false; }
   }
   const externalSection = node('section', { class: 'agent-companion agent-external-mcp' }, [node('h3', { text: 'Local tools & external MCP' }),
     node('p', { text: 'Attach a real project directory to the browser harness for native file edits, builds, tests, and Git. You can also publish this tab’s live DXF, shadow, and Studio tools to external coding assistants.' }),
-    code('dotnet run --project shadow/samples/netDxf.Shadow.AgentHost -- --origin https://wieslawsoltes.github.io --workspace /path/to/project', 'Start a project companion'),
+    code('dotnet run --project shadow/samples/netDxf.Shadow.AgentHost -- --origin https://wieslawsoltes.github.io --workspace /path/to/project --allow-processes', 'Start a project companion'),
+    node('p', { class: 'agent-muted', text: 'Omit --allow-processes to grant native file tools without command execution. Use this page’s origin for a local or custom deployment.' }),
     field('Companion endpoint', bridgeEndpoint), field('Companion access token', bridgeToken, 'Kept in memory. Sent in authenticated local requests and the first WebSocket message, never in a URL.'),
     button('Use ChatGPT companion settings', () => run(() => {
       if (providerSelect.value !== 'chatgpt') throw new Error('Choose ChatGPT subscription to copy its companion connection.');

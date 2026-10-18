@@ -257,8 +257,10 @@ all content and file paths before replacing the session and issues new file
 versions, so an old editor receipt cannot overwrite an imported file.
 
 The checkpoint describes the agent conversation and its portable workspace. Save
-the DXF separately to persist drawing changes. Reconnect native workspace grants
-and configure credentials after importing a checkpoint. Manual MCP console
+the DXF separately to persist drawing changes. After a reload or in a new runtime,
+reconnect native workspace grants and configure credentials to resume an imported
+checkpoint. Importing into an existing idle runtime retains its current credentials,
+permission setting and companion grants. Manual MCP console
 activity is a bounded live event view; it is not synthesized into the model's
 conversation history.
 
