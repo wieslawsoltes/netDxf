@@ -21,6 +21,8 @@ also supports .NET Standard 2.0, .NET Framework 4.7.1/4.8 and .NET 6.
 | [netDxf.Shadow.Dimensions](https://www.nuget.org/packages/netDxf.Shadow.Dimensions) | Dimension regeneration from immutable snapshots |
 | [netDxf.Shadow.Drafting](https://www.nuget.org/packages/netDxf.Shadow.Drafting) | Reusable CAD drafting commands and editing plans |
 | [netDxf.Shadow.Exchange.Dwg](https://www.nuget.org/packages/netDxf.Shadow.Exchange.Dwg) | Explicit diagnostic DWG/DXF exchange using ACadSharp |
+| [netDxf.Shadow.Mcp](https://www.nuget.org/packages/netDxf.Shadow.Mcp) | Official MCP transport, low-level DXF/shadow discovery and transactional tools |
+| [netDxf.Shadow.Agents](https://www.nuget.org/packages/netDxf.Shadow.Agents) | Official OpenAI/Anthropic/Google SDKs, streaming coding agents, workspace files, permissions, compaction and ChatGPT sign-in |
 
 Install the libraries your application uses. NuGet resolves their dependencies:
 

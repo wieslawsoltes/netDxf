@@ -5,13 +5,13 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A C# library for reading, creating, editing and writing DXF drawings.
-This repository develops `netDxf.netstandard`, eleven modular Shadow packages for
+This repository develops `netDxf.netstandard`, thirteen modular Shadow packages for
 immutable snapshots, synchronization, geometry, rendering and editing, and their
 conformance tools.
 
 ## NuGet packages
 
-All twelve packages share version **`4.0.0-preview.1`**, defined once in
+All fourteen packages share version **`4.0.0-preview.1`**, defined once in
 [Directory.Build.props](Directory.Build.props). The version badges include
 prereleases and reflect what is currently published on nuget.org. The new preview
 packages become available when the [trusted-publishing release workflow](doc/CI-RELEASE.md#one-time-trusted-publishing-setup)
@@ -31,6 +31,8 @@ is configured and its release is published.
 | [netDxf.Shadow.Drafting](https://www.nuget.org/packages/netDxf.Shadow.Drafting) | Drafting tools and CAD workspace commands | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Drafting.svg)](https://www.nuget.org/packages/netDxf.Shadow.Drafting) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Drafting.svg)](https://www.nuget.org/packages/netDxf.Shadow.Drafting) |
 | [netDxf.Shadow.Dimensions](https://www.nuget.org/packages/netDxf.Shadow.Dimensions) | Dimension regeneration over detached snapshots | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Dimensions.svg)](https://www.nuget.org/packages/netDxf.Shadow.Dimensions) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Dimensions.svg)](https://www.nuget.org/packages/netDxf.Shadow.Dimensions) |
 | [netDxf.Shadow.Exchange.Dwg](https://www.nuget.org/packages/netDxf.Shadow.Exchange.Dwg) | Explicit DWG/DXF exchange through ACadSharp | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Exchange.Dwg.svg)](https://www.nuget.org/packages/netDxf.Shadow.Exchange.Dwg) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Exchange.Dwg.svg)](https://www.nuget.org/packages/netDxf.Shadow.Exchange.Dwg) |
+| [netDxf.Shadow.Mcp](https://www.nuget.org/packages/netDxf.Shadow.Mcp) | MCP tools for DXF, shadow graphs, transactions and Studio extensions | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Mcp.svg)](https://www.nuget.org/packages/netDxf.Shadow.Mcp) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Mcp.svg)](https://www.nuget.org/packages/netDxf.Shadow.Mcp) |
+| [netDxf.Shadow.Agents](https://www.nuget.org/packages/netDxf.Shadow.Agents) | Streaming coding agents, official AI SDKs, context, workspaces and authentication | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Agents.svg)](https://www.nuget.org/packages/netDxf.Shadow.Agents) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Agents.svg)](https://www.nuget.org/packages/netDxf.Shadow.Agents) |
 
 Every package includes XML API documentation, a package README, MIT license
 metadata and portable `.snupkg` symbols. Internal dependencies use the same
@@ -145,6 +147,7 @@ and qualification evidence. Test totals and row counts are not completeness perc
 | [netDxf](netDxf) | Library source and XML API documentation |
 | [Shadow packages](shadow/src) | Immutable snapshots, synchronization, geometry, rendering, editing and exchange |
 | [Shadow guide](shadow/README.md) | Architecture, APIs and Studio applications |
+| [Coding agents and MCP](shadow/docs/coding-agents.md) | Browser coding workspace, official .NET provider SDKs, ChatGPT sign-in, native project companion and generic DXF/Shadow/Studio tools |
 | [TestDxfDocument](TestDxfDocument) | Sample/test application |
 | [Conformance tests](tests/netDxf.Conformance) | Versioned API and drawing regressions |
 | [Tools](tools) | Independent verifiers, coverage generation and source tooling |

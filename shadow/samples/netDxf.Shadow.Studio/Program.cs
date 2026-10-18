@@ -18,7 +18,7 @@ app.Use(async (context, next) =>
     if (context.Request.Method != "GET" && context.Request.Headers["X-Shadow-Studio"] != "1")
     { context.Response.StatusCode = 403; return; }
     context.Response.Headers["X-Content-Type-Options"] = "nosniff";
-    context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' blob:; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'";
+    context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' blob:; style-src 'self'; script-src 'self'; connect-src 'self' http://127.0.0.1:* ws://127.0.0.1:*; frame-ancestors 'none'; base-uri 'none'";
     try { await next(); }
     catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested) { }
     catch (ShadowConflictException error) when (!context.Response.HasStarted) { context.Response.StatusCode = 409; await context.Response.WriteAsJsonAsync(new { error = error.Message }); }
@@ -91,4 +91,5 @@ app.MapPost("/api/save", (Studio studio, HttpRequest http, RevisionRequest reque
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" }));
 app.MapStudioWorkspaces();
 app.MapCadWorkspace();
+app.MapStudioAgents();
 app.Run();

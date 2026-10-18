@@ -22,5 +22,7 @@
     <PackageReference Include="netDxf.Shadow.Rendering.Shx" Version="[$(PackageVersion)]" />
     <PackageReference Include="netDxf.Shadow.Rendering.SkiaSharp" Version="[$(PackageVersion)]" />
     <PackageReference Include="netDxf.Shadow.Exchange.Dwg" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Mcp" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Agents" Version="[$(PackageVersion)]" />
   </ItemGroup>
 </Project>

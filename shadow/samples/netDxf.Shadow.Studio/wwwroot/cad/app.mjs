@@ -8,6 +8,8 @@ import { CadViewport, bindViewportPageLifetime } from './viewport.mjs';
 import { CommandSession, commands, commandName, number, point, distance, polygonArea, format, fit } from './core.mjs';
 import { $, el, icon, tool, tabs, ribbon } from './ui.mjs';
 import { viewKey } from '../studio-state.mjs';
+import { mountAgentWorkspace } from '../agents/workspace.mjs';
+import { installStudioControl } from '../agents/studio-control.mjs';
 
 const client = new CadClient();
 const viewport = new CadViewport($('viewport'), $('drawing'), client, {
@@ -20,6 +22,7 @@ const viewport = new CadViewport($('viewport'), $('drawing'), client, {
 });
 let session = null, tab = 'Home', palette = 'Properties', currentLayer = '0', lastCommand = 'LINE';
 let documents = [], viewId = '', stateKey = '', activeIdentity = '', snapshot = null, lastInput = [], historyIndex = 0, toastTimer;
+let agentWorkspace = null;
 const views = new Map(), layers = new Map();
 const blockUi = blockTools({client, edit, dialog, cancel, fit:()=>viewport.fit(), layer:()=>currentLayer});
 function persisted() { try { return JSON.parse(localStorage.getItem('netdxf-cad-ui-v1') || '{}'); } catch { return {}; } }
@@ -254,6 +257,7 @@ async function action(name) {
   if(isAuthoringAction(name)){cancel(false);return authoringDialog(name,{client,editable,edit,dialog,showPalette,currentLayer});}
   if(['properties','layers','blocks','explorer','workspaces','diagnostics'].includes(name))return showPalette(name[0].toUpperCase()+name.slice(1));
   switch(name) {
+    case 'agents':agentWorkspace?.show();return;
     case 'block-edit':editable();return blockUi.begin();
     case 'block-save':editable();return blockUi.finish(true);
     case 'block-close':editable();return blockUi.finish(false);
@@ -317,6 +321,8 @@ $('open-file').addEventListener('change',e=>run(async()=>{
 }));
 $('font-file').addEventListener('change',e=>run(async()=>{const file=e.target.files[0];e.target.value='';if(!file)return;editable();if(file.size>4*1024*1024)throw new Error('Font upload limit is 4 MiB.');await client.mutate('font',file,{binary:true,query:{name:file.name}});log(`Loaded ${file.name}.`,'success');}));
 document.addEventListener('keydown',e=>{
+  if(e.target.closest('.agent-workspace'))return;
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key.toLowerCase()==='a')return;
   if($('dialog').open)return;
   const input=e.target.closest('input,select,textarea'),control=e.ctrlKey||e.metaKey;
   if(e.key==='Escape'){e.preventDefault();cancel();viewport.panMode=false;$('context-menu').hidden=true;return;}
@@ -344,6 +350,7 @@ splitter('palette-splitter',true);splitter('command-splitter',false);
 client.addEventListener('reset',()=>{viewport.clearFrame();viewport.graph=null;$('loading').hidden=false;viewport.invalidate();});
 client.addEventListener('state',()=>{
   const s=client.state; $('studio').dataset.document=client.id;
+  agentWorkspace?.documentChanged();
   const identity=JSON.stringify([client.id,s.serverId,s.documentId,s.workspaceId,s.viewVersion]);
   if(activeIdentity && identity!==activeIdentity){cancel(false);snapshot=null;viewport.snapshot=null;$('view-notice').hidden=true;}
   activeIdentity=identity;
@@ -370,4 +377,18 @@ setTimeout(pollDocuments,2500);
 log('netDxf Shadow CAD Studio — native DXF · immutable transactions · local workspace');
 log('Type HELP for commands. Middle-drag pans; wheel zooms; Enter finishes; Escape cancels.');
 drawRibbon();modes();renderPalette();
+const studioAgentUi = installStudioControl({
+  client, viewport, documents:()=>documents, currentLayer:()=>currentLayer, ribbon:()=>tab, palette:()=>palette,
+  retainedSnapshot:()=>snapshot,
+  command:()=>session?{name:session.name,prompt:session.prompt,selecting:session.selecting,complete:session.complete}:null,
+  showRibbon:name=>{tab=name;drawRibbon();$('ribbon-tabs').querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',String(b.textContent===name)));},
+  setLayer:name=>{currentLayer=name;layers.set(client.id,name);drawRibbon();renderPalette();},
+  submit, cancel, showPalette, persist, modes, activate, newDocument, edit, setSnapshot, switchWorkspace,
+  action, documentTabs, report
+});
+agentWorkspace = mountAgentWorkspace({
+  workspace:$('workspace'),documentBar:document.querySelector('.document-bar'),getDocument:()=>client.id,
+  getDocumentName:()=>documents.find(d=>d.id===client.id)?.name,
+  inspectDrawing:()=>studioAgentUi.snapshot(),refreshDrawing:async()=>{await client.refresh();await documentTabs();},report
+});
 run(async()=>{documents=await client.documents();if(documents.length)await activate(documents[0].id);else await newDocument();});

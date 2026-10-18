@@ -22,8 +22,8 @@ from package_fixtures import write_package, write_catalog
 class PackageCatalogTests(unittest.TestCase):
     def test_every_source_library_and_direct_dependency_is_reviewed(self):
         package_catalog.validate_source(ROOT)
-        self.assertEqual(12, len(package_catalog.PACKAGES))
-        self.assertEqual(11, sum(item.frameworks == ('net8.0',) for item in package_catalog.PACKAGES))
+        self.assertEqual(14, len(package_catalog.PACKAGES))
+        self.assertEqual(13, sum(item.frameworks == ('net8.0',) for item in package_catalog.PACKAGES))
 
     def test_new_library_or_changed_dependency_is_not_silently_published(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -42,7 +42,7 @@ class PackageCatalogTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Source dependencies'):
                 package_catalog.validate_source(root)
 
-    def test_exact_twenty_four_archive_inventory(self):
+    def test_exact_package_and_symbol_archive_inventory(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); write_catalog(root)
             pipeline.inspect_packages(root, '3.0.2', 'a'*40)
@@ -124,7 +124,7 @@ class ShadowConsumerTests(unittest.TestCase):
         references = root.findall('./ItemGroup/PackageReference')
         self.assertFalse(root.findall('.//ProjectReference'))
         self.assertEqual(set(package_catalog.BY_ID), {item.get('Include') for item in references})
-        self.assertEqual(12, len(references))
+        self.assertEqual(14, len(references))
         self.assertTrue(all(item.get('Version') == '[$(PackageVersion)]' for item in references))
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / 'nuget.config'
@@ -149,7 +149,7 @@ class ShadowConsumerTests(unittest.TestCase):
                                    'informational_version':'3.0.2+'+'a'*40} for key,value in hashes.items()]}
             receipt = root / shadow_packages.RECEIPT
             receipt.write_text(json.dumps(data))
-            self.assertEqual(12, shadow_packages.verify(root, '3.0.2', source)['packages'])
+            self.assertEqual(14, shadow_packages.verify(root, '3.0.2', source)['packages'])
             for mutation in ('source', 'version', 'missing-scenario', 'duplicate-scenario', 'missing-assembly',
                              'wrong-assembly', 'wrong-target', 'wrong-info-version', 'wrong-package', 'wrong-log', 'failed', 'wrong-runtime'):
                 candidate = copy.deepcopy(data)
