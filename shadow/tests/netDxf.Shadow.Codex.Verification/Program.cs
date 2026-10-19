@@ -89,6 +89,29 @@ await using (var fixture = await Fixture.OpenAsync())
     var failure = client.ReadAccountAsync(); var failedRequest = await fixture.Read();
     await fixture.Send(new { id = failedRequest.GetProperty("id"), error = new { code = -32001, message = "fixture error", data = new { retryable = true } } });
     await Throws<CodexRpcException>(async () => await failure, "typed remote failure never retries the request");
+    var steering = client.SteerTurnAsync("thread-fixture", "turn-fixture", "Use the selected layer");
+    var steerRequest = await fixture.Read();
+    Check(steerRequest.GetProperty("method").GetString() == "turn/steer"
+        && steerRequest.GetProperty("params").GetProperty("expectedTurnId").GetString() == "turn-fixture"
+        && steerRequest.GetProperty("params").GetProperty("input")[0].GetProperty("text").GetString() == "Use the selected layer",
+        "steering targets the observed active turn with canonical text input");
+    await fixture.Reply(steerRequest, new { turnId = "turn-fixture" });
+    Check((await steering).GetProperty("turnId").GetString() == "turn-fixture", "steering preserves accepted turn identity");
+    var staleSteering = client.SteerTurnAsync("thread-fixture", "stale-turn", "Do not start a new turn");
+    var staleSteerRequest = await fixture.Read();
+    await fixture.Send(new { id = staleSteerRequest.GetProperty("id"), error = new { code = -32602, message = "Expected turn does not match active turn" } });
+    await Throws<CodexRpcException>(() => staleSteering, "a rejected steering request is never retried as a new turn");
+    await Throws<ArgumentException>(() => client.SteerTurnAsync("thread-fixture", "", "text"), "steering requires an explicit expected turn");
+    var compaction = client.CompactThreadAsync("thread-fixture"); var compactRequest = await fixture.Read();
+    Check(compactRequest.GetProperty("method").GetString() == "thread/compact/start"
+        && compactRequest.GetProperty("params").EnumerateObject().Count() == 1, "compaction sends only the target thread ID");
+    await fixture.Reply(compactRequest, new { }); await compaction;
+    var compactDone = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+    client.Notification += notification => { if (notification.Method == "item/completed" && notification.Parameters.GetProperty("item").GetProperty("type").GetString() == "contextCompaction") compactDone.TrySetResult(); };
+    Check(!compactDone.Task.IsCompleted, "compaction acknowledgement does not invent a completion event");
+    await fixture.Send(new { method = "item/completed", @params = new { threadId = "thread-fixture", item = new { id = "compact-1", type = "contextCompaction" } } });
+    await compactDone.Task.WaitAsync(TimeSpan.FromSeconds(5));
+    Check(client.IsInitialized, "compaction activity remains an ordinary streamed notification");
 }
 
 await using (var malformed = await Fixture.OpenAsync(1024))

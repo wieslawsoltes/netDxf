@@ -22,6 +22,15 @@ and companion MCP configuration. ACP remains an external process with its own
 execution policy; selecting a working directory is not an operating-system
 filesystem sandbox.
 
+Codex `turn/steer` accepts only `threadId`, `expectedTurnId` and bounded text
+`input`. The server rejects a stale active-turn identity; the companion never
+falls back to `turn/start`. Optional drawing references undergo the same current
+document/occurrence validation as new prompts, while the expected turn remains
+unchanged. `thread/compact/start` accepts only a thread ID. Its acknowledgement
+does not indicate completion: the ordinary turn/item event stream reports
+compaction progress and the terminal result. Neither operation accepts model,
+workspace, sandbox or approval overrides.
+
 `/agents/events?after=<sequence>` returns `protocol`, `status`, `connected`,
 `sequence`, `truncated`, replay `events`, and current `pending` requests. Status is
 `starting`, `connected`, `disconnected`, or `stopped`. Each event has `sequence`,

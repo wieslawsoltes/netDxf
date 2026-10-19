@@ -1,14 +1,14 @@
 import { createReferenceComposer, referenceChips, splitReferencePrompt } from './drawing-references.mjs';
 import { node, button, field, code, createMarkdownView } from './render.mjs';
 import { endpointUrl } from './contracts.mjs';
-import { acpCapabilities, acpConfiguration, acpConfigurationCall, acpSessionIdentity, mergeAcpToolCall, createAcpTranscriptIds, agentSignInUrl, codexHistoryEntries, codexQuestionAnswer } from './external-agent-contracts.mjs';
+import { acpCapabilities, acpConfiguration, acpConfigurationCall, acpSessionIdentity, mergeAcpToolCall, createAcpTranscriptIds, agentSignInUrl, codexHistoryEntries, codexQuestionAnswer, codexSteeringCall, codexCompactionCall } from './external-agent-contracts.mjs';
 
 /** Local process protocols own their conversations; no credentials or transcripts are persisted here. */
 export function mountExternalAgents(panel, { connectDrawing, disconnectDrawing, refreshDrawing, drawingReferences, getDocument, report }) {
   let connection, protocol, sessionId, turnId, cursor = 0, timer, running = false, generation = 0, initialization, sessionMetadata = {}, sessionCursor, replaying = false;
   const transcriptIds = createAcpTranscriptIds(), toolRows = new Map(), controls = {};
   const messages = new Map(), historyIds = new Set();
-  let historyCursor, historyBusy = false, connecting = false, preparing = false, sessionBusy = false, boundDocument = null;
+  let historyCursor, historyBusy = false, connecting = false, preparing = false, sessionBusy = false, compacting = false, boundDocument = null;
   const obsolete = () => Object.assign(new Error('The agent connection changed; this response was discarded.'), { name: 'ObsoleteAgentResponse' });
   const current = stamp => { if (stamp !== generation) throw obsolete(); };
   const historyAnchor = node('span', { hidden: true });
@@ -74,7 +74,7 @@ export function mountExternalAgents(panel, { connectDrawing, disconnectDrawing, 
       for (const [id, value] of toolRows) if (value.row === row) toolRows.delete(id);
     }
   }
-  function finish(text) { running = false; updateControls(); status.textContent = text; for (const m of messages.values()) m.view.flush(); void Promise.resolve(refreshDrawing?.()).catch(report); }
+  function finish(text) { running = false; compacting = false; turnId = null; updateControls(); status.textContent = text; for (const m of messages.values()) m.view.flush(); void Promise.resolve(refreshDrawing?.()).catch(report); }
   function capabilities() { return acpCapabilities(initialization); }
   function updateControls() {
     const ready = !!protocol && !connecting && !preparing && !sessionBusy, acp = protocol === 'acp', caps = capabilities();
@@ -90,7 +90,9 @@ export function mountExternalAgents(panel, { connectDrawing, disconnectDrawing, 
     enable('delete', ready && acp && !running && !!sessions.value && caps.delete); if (controls.delete) controls.delete.hidden = !acp || !caps.delete;
     enable('more', ready && !running && !!sessionCursor); if (controls.more) controls.more.hidden = !sessionCursor;
     enable('history', ready && !historyBusy && !!historyCursor); if (controls.history) controls.history.hidden = protocol !== 'codex' || !historyCursor;
-    enable('send', ready && !running); enable('stop', !!protocol && running);
+    enable('send', ready && !running); enable('stop', !!protocol && running && (acp || !!turnId));
+    enable('steer', ready && protocol === 'codex' && running && !!turnId && !compacting); if (controls.steer) controls.steer.hidden = protocol !== 'codex';
+    enable('compact', ready && protocol === 'codex' && !!sessionId && !running); if (controls.compact) controls.compact.hidden = protocol !== 'codex';
     modelField.hidden = acp; models.hidden = acp; auth.hidden = !acp || !caps.auth.length;
     authHelp.hidden = !acp;
   }
@@ -130,8 +132,11 @@ export function mountExternalAgents(panel, { connectDrawing, disconnectDrawing, 
     if (protocol === 'codex') {
       if (sessionId && p.threadId && p.threadId !== sessionId) return;
       if (event.method === 'item/agentMessage/delta') message(p.itemId, 'assistant', p.delta || '', true, true);
-      else if (event.method === 'turn/started') { turnId = p.turn?.id; running = true; updateControls(); status.textContent = 'Codex is working…'; }
-      else if (event.method === 'turn/completed') finish(`Turn ${p.turn?.status || 'ended'}.`);
+      else if (event.method === 'turn/started') { turnId = p.turn?.id; running = true; updateControls(); status.textContent = compacting ? 'Compacting Codex context…' : 'Codex is working…'; }
+      else if (event.method === 'turn/completed') {
+        if (turnId && p.turn?.id && turnId !== p.turn.id) return;
+        finish(compacting ? `Context compaction ${p.turn?.status || 'ended'}.` : `Turn ${p.turn?.status || 'ended'}.`);
+      }
       else if (event.method === 'item/completed' && p.item?.type === 'agentMessage') message(p.item.id, 'assistant', p.item.text || '');
       else if (event.method === 'account/login/completed') { loginLink.hidden = true; deviceCode.hidden = true; status.textContent = p.success ? 'Codex sign-in complete.' : `Sign-in failed: ${p.error || 'Try again.'}`; }
       else if (event.method === 'account/updated') status.textContent = `Codex account: ${p.authMode || 'signed out'}`;
@@ -197,7 +202,7 @@ export function mountExternalAgents(panel, { connectDrawing, disconnectDrawing, 
       renderApprovals(state.pending || []);
       if (state.connected === false && state.status !== 'starting') {
         generation++;clearTimeout(timer);connecting=false;preparing=false;sessionBusy=false;
-        protocol = null; running = false; sessionId = null; turnId = null;
+        protocol = null; running = false; compacting = false; sessionId = null; turnId = null;
         approvals.replaceChildren(); approvals.dataset.signature = ''; loginLink.hidden = true; deviceCode.hidden = true;
         renderConfiguration({}); updateControls(); for (const m of messages.values()) m.view.flush();
         status.textContent = 'The local agent disconnected. Connect again to start its configured process. Requests are not replayed.';
@@ -218,7 +223,7 @@ export function mountExternalAgents(panel, { connectDrawing, disconnectDrawing, 
     if (!available.profiles?.some(p => p.id === profile.value && p.enabled)) throw new Error('Enable this agent executable when starting the local companion. See the local agent guide.');
     await connectDrawing(url, credential);current(stamp);
     const result = await request('start', { profile: profile.value }); protocol = result.protocol; initialization = result.initialization;
-    sessionId = null; turnId = null; cursor = 0; sessionCursor = null; sessionMetadata = {}; replaying = false;
+    sessionId = null; turnId = null; compacting = false; cursor = 0; sessionCursor = null; sessionMetadata = {}; replaying = false;
     clearConversation(); sessions.replaceChildren(); renderConfiguration();
     auth.replaceChildren();
     for (const method of capabilities().auth) auth.append(node('option', { value: method.id,
@@ -277,15 +282,36 @@ export function mountExternalAgents(panel, { connectDrawing, disconnectDrawing, 
     try {
       const references = await referenceComposer.prepare();current(stamp);
       if (!sessionId) await createSession();current(stamp);
-      replaying = false; turnId = crypto.randomUUID(); transcriptIds.boundary(); message(`user-${turnId}`, 'user', text, false, false, references); preparing=false;running=true;updateControls();status.textContent='Agent is working…';
-      if (protocol === 'codex') { const result = await call('turn/start', { threadId: sessionId, input: [{ type: 'text', text }] }, references); turnId = result.turn?.id || turnId; }
+      replaying = false; const messageId = crypto.randomUUID(); turnId = protocol === 'codex' ? null : messageId; transcriptIds.boundary(); message(`user-${messageId}`, 'user', text, false, false, references); preparing=false;running=true;updateControls();status.textContent='Agent is working…';
+      if (protocol === 'codex') { const result = await call('turn/start', { threadId: sessionId, input: [{ type: 'text', text }] }, references); if (running && !turnId) turnId = result.turn?.id || null; }
       else { const result = await call('session/prompt', { sessionId, prompt: [{ type: 'text', text }] }, references); finish(`Turn finished: ${result.stopReason || 'complete'}`); }
       if (prompt.value.trim() === text) prompt.value = ''; referenceComposer.commit(references);
     } catch (error) {if(stamp!==generation)return;finish(`Turn failed: ${clean(error.message)}`);throw error;}
     finally {if(stamp===generation){preparing=false;updateControls();}}
   }
+  async function steer() {
+    const text = prompt.value.trim(), requestedSession = sessionId, requestedTurn = turnId, stamp = generation;
+    codexSteeringCall({ protocol, sessionId, turnId, running, busy: connecting || preparing || sessionBusy || compacting }, text);
+    preparing = true; updateControls();
+    try {
+      const references = await referenceComposer.prepare(); current(stamp);
+      if (requestedSession !== sessionId || requestedTurn !== turnId) throw new Error('The active turn changed before steering. Your message was kept.');
+      const request = codexSteeringCall({ protocol, sessionId, turnId, running, busy: compacting }, text);
+      const result = await call(request.method, request.parameters, references);
+      if (result.turnId !== requestedTurn) throw new Error('The agent returned an unexpected steering receipt. Inspect the thread before retrying.');
+      message(`user-${crypto.randomUUID()}`, 'user', text, false, false, references);
+      if (prompt.value.trim() === text) prompt.value = ''; referenceComposer.commit(references);
+      if (running && turnId === requestedTurn) status.textContent = 'Steering sent to the active Codex turn.';
+    } finally { if (stamp === generation) { preparing = false; updateControls(); } }
+  }
+  async function compact() {
+    const request = codexCompactionCall({ protocol, sessionId, running, busy: connecting || preparing || sessionBusy });
+    const stamp = generation; running = true; compacting = true; turnId = null; updateControls(); status.textContent = 'Requesting Codex context compaction…';
+    try { await call(request.method, request.parameters); if (compacting) status.textContent = 'Compacting Codex context…'; }
+    catch (error) { if (stamp === generation) finish(`Context compaction failed: ${clean(error.message)}`); throw error; }
+  }
   async function stop() {
-    if (!sessionId || !running) return;
+    if (!sessionId || !running || protocol === 'codex' && !turnId) return;
     await call(protocol === 'codex' ? 'turn/interrupt' : 'session/cancel', protocol === 'codex' ? { threadId: sessionId, turnId } : { sessionId }); status.textContent = 'Stopping…';
   }
   const sessions = node('select', { 'aria-label': 'Saved agent session' });
@@ -335,7 +361,7 @@ export function mountExternalAgents(panel, { connectDrawing, disconnectDrawing, 
       }),
       node('p', { class: 'agent-muted', text: 'Claude account sign-in must complete in the unmodified Claude Code client. Studio never imports Claude or Gemini session tokens. Configure an ACP adapter you trust; its supported auth methods appear after connection.' })]),
     status, node('div', { class: 'agent-row' }, [action('new', 'New session', newSession), action('list', 'List sessions', () => listSessions()), sessions,
-      action('more', 'More sessions', () => listSessions(true)), action('load', 'Load / resume', () => loadSession()), action('resume', 'Resume without history', () => loadSession(true)),
+      action('more', 'More sessions', () => listSessions(true)), action('load', 'Load / resume', () => loadSession()), action('resume', 'Resume without history', () => loadSession(true)), action('compact', 'Compact context', compact, { title: 'Ask Codex to summarize this session. Completion appears in the activity stream.' }),
       action('close', 'Close session', async () => {
         if (!sessionId) return; await call('session/close', { sessionId }); sessionId = null; finish('Session closed.'); renderConfiguration({}); updateControls();
       }),
@@ -346,16 +372,16 @@ export function mountExternalAgents(panel, { connectDrawing, disconnectDrawing, 
         await call('session/delete', { sessionId: id }); if (sessionId === id) { sessionId = null; renderConfiguration({}); }
         sessions.selectedOptions[0]?.remove(); updateControls(); status.textContent = 'Saved session deleted.';
       })]),
-    configuration, action('history', 'Load more saved history', loadCodexHistory), history, approvals, node('div', { class: 'agent-composer' }, [referenceComposer.element, prompt, node('div', { class: 'agent-row' }, [action('send', 'Send', send, { class: 'agent-primary' }), action('stop', 'Stop', stop), button('Disconnect', () => guard(async () => { await request('stop', {}); dispose(); disconnectDrawing(); status.textContent = 'Local agent disconnected.'; }))]) ]));
+    configuration, action('history', 'Load more saved history', loadCodexHistory), history, approvals, node('div', { class: 'agent-composer' }, [referenceComposer.element, prompt, node('div', { class: 'agent-row' }, [action('send', 'Send', send, { class: 'agent-primary' }), action('steer', 'Steer active turn', steer, { title: 'Send this message to the active turn without interrupting it.' }), action('stop', 'Stop', stop), button('Disconnect', () => guard(async () => { await request('stop', {}); dispose(); disconnectDrawing(); status.textContent = 'Local agent disconnected.'; }))]) ]));
   sessions.addEventListener('change', updateControls);
   prompt.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); void guard(send); } if (event.key === 'Escape' && running) { event.preventDefault(); void guard(stop); } });
-  function dispose() { generation++; clearTimeout(timer); running = false; connecting=false;preparing=false;sessionBusy=false;boundDocument=null; protocol = null; sessionId = null; connection = null; token.value = ''; loginLink.hidden = true; deviceCode.hidden = true; renderConfiguration({}); updateControls(); for (const m of messages.values()) m.view.dispose(); }
+  function dispose() { generation++; clearTimeout(timer); running = false; compacting=false;turnId=null;connecting=false;preparing=false;sessionBusy=false;boundDocument=null; protocol = null; sessionId = null; connection = null; token.value = ''; loginLink.hidden = true; deviceCode.hidden = true; renderConfiguration({}); updateControls(); for (const m of messages.values()) m.view.dispose(); }
   updateControls();
   return { dispose() { referenceComposer.dispose(); dispose(); }, get running() { return running||preparing||sessionBusy; }, documentChanged() {
     referenceComposer.changed();
     if(!connection||(!protocol&&!connecting&&!preparing&&!sessionBusy)||boundDocument===(getDocument?.()??null))return;
     if(running){const cancelling=stop();void guard(()=>cancelling);}
-    generation++;clearTimeout(timer);running=false;connecting=false;preparing=false;sessionBusy=false;protocol=null;sessionId=null;turnId=null;
+    generation++;clearTimeout(timer);running=false;compacting=false;connecting=false;preparing=false;sessionBusy=false;protocol=null;sessionId=null;turnId=null;
     approvals.replaceChildren();approvals.dataset.signature='';loginLink.hidden=true;deviceCode.hidden=true;renderConfiguration({});updateControls();
     for(const value of messages.values())value.view.flush();
     status.textContent='Drawing changed. Reconnect the local agent to bind its MCP tools to this drawing.';

@@ -79,11 +79,23 @@ internal static class FakeAgent
                     await Result(item.Value.Id, new { turn = new { id = "turn-fixture", status = "interrupted" } }); requests.Remove(item.Key);
                 }
             }
+            if (method == "turn/steer" && p.GetProperty("expectedTurnId").GetString() != "turn-fixture")
+            { await Send(new { id, error = new { code = -32602, message = "Expected turn does not match the active turn" } }); continue; }
+            if (method == "thread/compact/start")
+            {
+                await Result(id, new { echo = p });
+                await Notice("turn/started", new { threadId = "thread-fixture", turn = new { id = "compact-fixture", status = "inProgress" } });
+                await Notice("item/started", new { threadId = "thread-fixture", turnId = "compact-fixture", item = new { id = "compact-item", type = "contextCompaction" } });
+                await Notice("item/completed", new { threadId = "thread-fixture", turnId = "compact-fixture", item = new { id = "compact-item", type = "contextCompaction" } });
+                await Notice("turn/completed", new { threadId = "thread-fixture", turn = new { id = "compact-fixture", status = "completed" } });
+                continue;
+            }
             var result = new JsonObject { ["echo"] = JsonNode.Parse(p.GetRawText()), ["method"] = method, ["cwd"] = Directory.GetCurrentDirectory() };
             if (method == "session/new") { result["sessionId"] = "session-fixture"; result["modes"] = new JsonObject { ["currentModeId"] = "default", ["availableModes"] = new JsonArray(new JsonObject { ["id"] = "default", ["name"] = "Default" }) }; }
             if (method is "thread/start" or "thread/resume" or "thread/read") result["thread"] = new JsonObject { ["id"] = "thread-fixture", ["cwd"] = Directory.GetCurrentDirectory() };
             if (method == "account/login/start") { result["loginId"] = "login-fixture"; result["authUrl"] = "https://example.invalid/fixture-login"; }
             if (method is "thread/list" or "thread/turns/list" or "thread/items/list") { result["data"] = new JsonArray(); result["nextCursor"] = null; }
+            if (method == "turn/steer") result["turnId"] = "turn-fixture";
             await Result(id, result);
         }
     }

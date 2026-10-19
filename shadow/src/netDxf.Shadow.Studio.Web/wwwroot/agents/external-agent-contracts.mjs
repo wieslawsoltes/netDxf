@@ -94,3 +94,17 @@ export function codexQuestionAnswer(question, selected, freeText, otherSelected 
   if (options.length && !otherSelected && !options.some(option => option.label === answer)) throw new Error('Choose an answer offered by the agent.');
   return answer;
 }
+
+/** Steering is only input for the observed active turn; it must never fall back to starting another turn. */
+export function codexSteeringCall({ protocol, sessionId, turnId, running, busy = false }, text) {
+  if (protocol !== 'codex' || !sessionId || !turnId || !running || busy) throw new Error('Wait for an active Codex turn before steering.');
+  text = String(text ?? '').trim();
+  if (!text || new TextEncoder().encode(text).length > 64 * 1024) throw new Error('Enter steering text within 64 KiB.');
+  return { method: 'turn/steer', parameters: { threadId: sessionId, expectedTurnId: turnId, input: [{ type: 'text', text }] } };
+}
+
+/** A compaction acknowledgement is not completion. The UI keeps the thread busy until its terminal notification. */
+export function codexCompactionCall({ protocol, sessionId, running, busy = false }) {
+  if (protocol !== 'codex' || !sessionId || running || busy) throw new Error('Choose an idle Codex session before compacting context.');
+  return { method: 'thread/compact/start', parameters: { threadId: sessionId } };
+}

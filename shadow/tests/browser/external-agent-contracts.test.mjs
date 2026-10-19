@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { acpCapabilities, acpConfiguration, acpConfigurationCall, acpSessionIdentity, mergeAcpToolCall, createAcpTranscriptIds, agentSignInUrl, codexHistoryEntries, codexQuestionAnswer } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/external-agent-contracts.mjs';
+import { acpCapabilities, acpConfiguration, acpConfigurationCall, acpSessionIdentity, mergeAcpToolCall, createAcpTranscriptIds, agentSignInUrl, codexHistoryEntries, codexQuestionAnswer, codexSteeringCall, codexCompactionCall } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/external-agent-contracts.mjs';
 
 test('ACP actions follow advertised capabilities rather than an agent brand or missing fields', () => {
   const absent = acpCapabilities({ agentInfo: { name: 'Gemini' } });
@@ -84,4 +84,17 @@ test('Codex questions expose freeform answers only when advertised and preserve 
   assert.throws(() => codexQuestionAnswer(question, 'sentinel', '   ', true));
   assert.throws(() => codexQuestionAnswer(question, 'invented'));
   assert.equal(codexQuestionAnswer({}, 'Plain answer'), 'Plain answer');
+});
+test('Codex steering requires an observed active turn and preserves its stale-turn guard', () => {
+  const state = { protocol: 'codex', sessionId: 'thread', turnId: 'turn', running: true };
+  assert.deepEqual(codexSteeringCall(state, ' Use this layer '), { method: 'turn/steer', parameters: { threadId: 'thread', expectedTurnId: 'turn', input: [{ type: 'text', text: 'Use this layer' }] } });
+  for (const invalid of [{ running: false }, { turnId: null }, { sessionId: null }, { protocol: 'acp' }, { busy: true }])
+    assert.throws(() => codexSteeringCall({ ...state, ...invalid }, 'text'));
+  for (const text of ['', '  ', 'é'.repeat(32769)]) assert.throws(() => codexSteeringCall(state, text));
+});
+test('Codex compaction requires an idle existing session and exposes no inference or workspace overrides', () => {
+  const state = { protocol: 'codex', sessionId: 'thread', running: false };
+  assert.deepEqual(codexCompactionCall(state), { method: 'thread/compact/start', parameters: { threadId: 'thread' } });
+  for (const invalid of [{ running: true }, { sessionId: null }, { protocol: 'acp' }, { busy: true }])
+    assert.throws(() => codexCompactionCall({ ...state, ...invalid }));
 });

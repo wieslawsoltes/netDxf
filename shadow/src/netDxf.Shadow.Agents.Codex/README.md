@@ -4,6 +4,10 @@ This .NET 8 library connects a native host to the official `codex app-server` JS
 
 The client supplies the initialization handshake, correlated bidirectional requests, ordered notifications, and convenience methods for account status, browser/device login, model discovery, thread creation/resume, turns and interruption. `CallAsync` exposes additional version-dependent protocol methods. Responses and notifications retain their JSON fields so hosts can render token usage, tool activity and future item types without a library update. Models must be selected explicitly when creating a thread.
 
+`SteerTurnAsync(threadId, expectedTurnId, text)` appends input to the observed active turn. Codex rejects an absent or stale turn; the client never retries steering as a new turn. `CompactThreadAsync(threadId)` requests manual context compaction. Its immediate acknowledgement only confirms dispatch: consume `contextCompaction` item activity and the corresponding `turn/completed` notification to establish the outcome. Cancellation stops waiting locally; use the observed turn ID with `InterruptTurnAsync` to interrupt work remotely. These methods follow the [official steering and compaction contracts](https://learn.chatgpt.com/docs/app-server).
+
+Studio's Local coding agents panel exposes **Steer active turn** once a real turn ID is known and **Compact context** while an existing session is idle. Steering uses the same bounded text and authoritative drawing-reference validation as a new prompt. Rejected or stale steering keeps the draft; compaction preserves displayed history and keeps session controls busy until the terminal notification. Neither action changes model, workspace, sandbox or approval policy. ACP controls remain limited to the capabilities it advertises; the UI does not send Codex methods to ACP agents.
+
 ```csharp
 await using var codex = await CodexAppServerClient.StartAsync(new()
 {

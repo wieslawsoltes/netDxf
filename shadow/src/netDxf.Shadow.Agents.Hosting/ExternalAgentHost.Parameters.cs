@@ -54,6 +54,10 @@ public sealed partial class ExternalAgentHost
                 break;
             case "turn/start":
                 args["threadId"] = RequiredString(p, "threadId"); args["input"] = TextContent(p, "input"); break;
+            case "turn/steer":
+                args["threadId"] = RequiredString(p, "threadId"); args["expectedTurnId"] = RequiredString(p, "expectedTurnId");
+                args["input"] = TextContent(p, "input"); break;
+            case "thread/compact/start": args["threadId"] = RequiredString(p, "threadId"); break;
             case "turn/interrupt": args["threadId"] = RequiredString(p, "threadId"); args["turnId"] = RequiredString(p, "turnId"); break;
             default: throw new ArgumentException("This Codex method is not exposed by the Studio host.");
         }

@@ -68,6 +68,17 @@ try
         Check(duplicate.StatusCode == HttpStatusCode.BadRequest, "duplicate parameter keys are rejected");
     var textResult = await Call("turn/start", new { threadId = "thread-fixture", input = new[] { new { type = "text", text = "normal", unsafePath = "/" } }, cwd = "/", sandbox = "danger-full-access" });
     Check(textResult.GetProperty("echo").EnumerateObject().Count() == 2 && textResult.GetProperty("echo").GetProperty("input")[0].EnumerateObject().Count() == 2, "turn policy and content extensions cannot widen host grant");
+    var steer = await Call("turn/steer", new { threadId = "thread-fixture", expectedTurnId = "turn-fixture", input = Text("Use the selected layer"), cwd = "/", model = "unsafe-override", sandboxPolicy = new { type = "dangerFullAccess" } });
+    Check(steer.GetProperty("turnId").GetString() == "turn-fixture" && steer.GetProperty("echo").EnumerateObject().Count() == 3,
+        "steering preserves expected turn while stripping model, workspace and sandbox overrides");
+    await RejectCall("turn/steer", new { threadId = "thread-fixture", input = Text("missing ID") }, "steering requires the observed active turn ID");
+    await RejectCall("turn/steer", new { threadId = "thread-fixture", expectedTurnId = "stale", input = Text("stale ID") }, "server rejects stale steering instead of starting a new turn");
+    await RejectCall("turn/steer", new { threadId = "thread-fixture", expectedTurnId = "turn-fixture", input = new[] { new { type = "localImage", path = "/private/file" } } }, "steering retains text-only input boundaries");
+    var compact = await Call("thread/compact/start", new { threadId = "thread-fixture", cwd = "/", instructions = "unsafe override" });
+    Check(compact.GetProperty("echo").EnumerateObject().Count() == 1, "compaction can supply only the thread identity");
+    var compactEvents = await WaitPoll(p => p.GetProperty("events").EnumerateArray().Any(e => e.GetProperty("method").GetString() == "turn/completed"));
+    Check(compactEvents.GetProperty("events").EnumerateArray().Any(e => e.GetProperty("method").GetString() == "item/completed"
+        && e.GetProperty("data").GetProperty("item").GetProperty("type").GetString() == "contextCompaction"), "host streams actual compaction item lifecycle after acknowledgement");
 
     var drawingReference = new DrawingObjectReference(Guid.NewGuid(), "live", 0, 7, "fixture-object", "A1", "netDxf.Entities.Line", "Model", "fixture-occurrence", []);
     var referencedCall = new { method = "turn/start", parameters = new { threadId = "thread-fixture", input = Text("Referenced drawing task") }, references = new[] { drawingReference } };
@@ -87,6 +98,14 @@ try
         await Send(browser, new { type = "result", id = validationCall.GetProperty("id").GetString(), result = new { text = JsonSerializer.Serialize(validation, McpJson.Options), isError = false } });
         var referenceResult = await pendingReference;
         Check(referenceResult.GetProperty("echo").GetProperty("input")[0].GetProperty("text").GetString()!.Contains("<shadow-drawing-references-v1>", StringComparison.Ordinal), "external protocol receives server-generated reference declaration after validation");
+        var referencedSteer = new { method = "turn/steer", parameters = new { threadId = "thread-fixture", expectedTurnId = "turn-fixture", input = Text("Use this drawing object") }, references = new[] { drawingReference } };
+        var pendingSteer = Post("/agents/call", referencedSteer); validationCall = await Receive(browser);
+        Check(validationCall.GetProperty("name").GetString() == DrawingReferences.ValidationTool, "steering uses authoritative drawing-reference validation");
+        await Send(browser, new { type = "result", id = validationCall.GetProperty("id").GetString(), result = new { text = JsonSerializer.Serialize(validation, McpJson.Options), isError = false } });
+        var referenceSteerResult = await pendingSteer;
+        Check(referenceSteerResult.GetProperty("echo").GetProperty("expectedTurnId").GetString() == "turn-fixture"
+            && referenceSteerResult.GetProperty("echo").GetProperty("input")[0].GetProperty("text").GetString()!.Contains("<shadow-drawing-references-v1>", StringComparison.Ordinal),
+            "reference enrichment retains the steering stale-turn guard");
         var staleCall = http.PostAsJsonAsync("/agents/call", referencedCall); validationCall = await Receive(browser);
         validation = validation with { CanSend = false, Items = [new(drawingReference, "deleted", null, "Deleted")] };
         await Send(browser, new { type = "result", id = validationCall.GetProperty("id").GetString(), result = new { text = JsonSerializer.Serialize(validation, McpJson.Options), isError = false } });

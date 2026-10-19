@@ -142,10 +142,10 @@ public sealed partial class ExternalAgentHost : IAsyncDisposable
         {
             if (call.References is { Count: > 0 })
             {
-                if (call.Method is not ("turn/start" or "session/prompt")) throw new ArgumentException("Drawing references belong to a prompt.");
+                if (call.Method is not ("turn/start" or "turn/steer" or "session/prompt")) throw new ArgumentException("Drawing references belong to a prompt.");
                 if (drawing is null) throw new InvalidOperationException("Connect the Studio drawing relay before attaching references.");
                 var references = await DrawingReferences.ValidateCurrentAsync(drawing, call.References, linked.Token).ConfigureAwait(false);
-                var property = call.Method == "turn/start" ? "input" : "prompt";
+                var property = call.Method is "turn/start" or "turn/steer" ? "input" : "prompt";
                 var content = TextContent(call.Parameters, property);
                 var text = string.Join("\n", content.Select(part => part!["text"]!.GetValue<string>()));
                 var parameters = JsonNode.Parse(call.Parameters.GetRawText())!.AsObject();
