@@ -52,7 +52,7 @@ as other editing operations.
 
 This implements ordinary named definitions and references, not AutoCAD dynamic
 block action graphs, constraints/visibility states, external-reference in-place
-editing, attribute-definition authoring, or arbitrary 3D modeler operations.
+editing, standalone model-space ATTDEF placement, or arbitrary 3D modeler operations.
 Objects unsupported by the representation-preserving transform/copy planners
 are refused; they are never flattened to sampled display lines for block creation.
 Native roundtrip, deep-copy isolation, recursive/foreign/locked refusals, scene
@@ -98,8 +98,7 @@ Shadow collection edits use this operation after applying only actual additions
 and removals. Pure reordering therefore preserves native handles through preview,
 branch merge and undo/redo, including definitions referenced by other objects.
 Duplicate or mismatched dictionary tags are rejected before native membership edits.
-This is a reusable foundation for the forthcoming definition-attribute manager;
-it does not itself provide the shared `BATTMAN` or `ATTDEF` dialogs.
+The shared `BATTMAN` manager uses this foundation for staged prompt ordering.
 
 `block.PrepareAttributeDefinitionRenames(renames)` accepts current-to-new tag
 pairs and returns a single-use `Apply()` plan. `RenameAttributeDefinitions` prepares
@@ -129,7 +128,8 @@ retained definitions and updates bindings, then adopts additions. This supports
 swaps, reuse of removed tags and adding a definition under a retained definition's
 old tag in one history operation. Undo restores the corresponding native objects.
 Renaming a definition while moving it to another block is currently refused.
-The shared definition-manager UI and `ATTDEF` authoring remain subsequent work.
+The shared definition manager combines this tag/binding work with appearance and
+membership changes, optionally synchronizing existing references in the same batch.
 
 New source INSERTs with omitted attributes prepare their defaults from the proposed
 definition state. A single batch can edit tags, defaults, geometry, text modes,
@@ -163,6 +163,46 @@ Re-adopting a removed object can allocate a new native handle. Native membership
 notifications occur after commit; if an application callback fails, the native
 call reports that failure. A source journal that cannot restore the full public
 graph stops further edits until inspection and reattachment.
+
+## Definition attributes
+
+`BATTMAN` and Manage attributes in the Home/Insert ribbon edit the selected
+reference's block, the active `BEDIT` definition, or a named block chosen from the
+drawing. The shared manager edits tags, prompts, defaults, verify/preset flags and
+supported text/property fields. Constant defaults remain editable; constant and
+multiline modes are read-only after creation. Ordering and removals stay staged
+until Apply or OK. Apply keeps the manager open, and OK after Apply does not create
+another history entry. The last definition cannot be removed through this manager.
+
+Apply changes to existing references is selected initially. It combines definition
+edits with the all-reference synchronization policy below: retained assignments
+survive tag renames, while formatting resets, orphan removal and INSERT XData
+removal are undoable together. Clear that option to edit definitions independently.
+Sync references explicitly runs synchronization even without staged field changes.
+Use `ATTSYNC` or the typed edit-preview operation when a separate review is needed.
+
+`ATTDEF` and Define attribute add a definition directly to an existing local named
+block. Specify its tag, prompt, default, definition coordinates, height, style,
+layer and modes. Position locking requires DXF 2010 or later; multiline content
+requires DXF 2018. Unsupported modes are disabled for older drawings and rejected
+by the planner. Newline characters become embedded MTEXT paragraphs; the initial
+single-line fallback uses spaces. Existing references acquire new definitions only
+when synchronized. Inside `BEDIT`, authoring stays in the branch until save, and
+discard leaves the live drawing unchanged.
+
+`DraftingAttributeDefinitions.Read` and `Plan` live in the reusable Drafting library.
+They validate identity, ownership, tag uniqueness, layers, resource names, profile
+capabilities and bounded geometry before publishing changes. Studio composes the
+plan with `AttributeSynchronization.Plan` when requested. Native and WebAssembly
+hosts share GET/POST `attribute-definitions` routes, agent request schemas and
+portable workflow references. Typed `attribute-definitions` preview operations
+carry `attributeDefinitions: { block, changes, updateExisting, convertTextModes }`;
+previews include synchronization reports and require the normal identity guards.
+
+The dialogs follow the ordinary [Block Attribute Manager workflow](https://help.autodesk.com/cloudhelp/2022/ENU/AutoCAD-Core/files/GUID-16555B43-D4FA-4C8E-BDF5-4256E9166A6F.htm).
+Standalone model-space ATTDEF placement, insertion-time verify prompts, manager
+column settings/automatic previews, annotation contexts and plot-style editing
+remain outside this increment. This is not complete AutoCAD block parity.
 
 ## Synchronize attributes
 

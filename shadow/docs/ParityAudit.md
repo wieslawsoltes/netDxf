@@ -13,7 +13,7 @@ corresponding end-to-end evidence cover their stated scope.
 | Rapid drawing creation, editing and a complete MCP toolset | Generic source/schema/collection/method tools, atomic drawing batches, typed Studio routes; MCP and AgentStudio verification programs | Build a per-native-entity/property/method coverage inventory, close unsupported authoring/editing shapes, and exercise them through actual Studio/MCP workflows. Generic reflection access alone does not prove safe full editing support. |
 | Full graph analysis in Studio | Nodes, edges, components, path/traversal, cut vertices/bridges, nearest node, diagnostics, fundamental cycles and minimum spanning forests share reusable algorithms and MCP tools | Broaden source-reference graph exploration and query-to-selection workflows; validate large real drawings and export/import analysis receipts. Geometric topology does not imply discipline connectivity. |
 | AutoCAD-like ribbon and command/log visibility | Adaptive ribbon panels, keyboard command workflow, independent command/history visibility, clean screen; browser tests | Continue command discoverability, keyboard navigation, focus/accessibility and small-screen validation as commands are added. |
-| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; native same-tag attribute rebinding; exact embedded-text snapshot editing/history; shared instance attribute editor and all-reference ATTSYNC previews with native/WASM save/reopen evidence | Definition-attribute editing, block-library import/export, richer insertion previews, array references and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
+| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; native same-tag attribute rebinding; exact embedded-text snapshot editing/history; shared instance editor, BATTMAN/ATTDEF for named-block definitions and all-reference ATTSYNC previews with native/WASM save/reopen evidence | Standalone model-space ATTDEF placement, insertion-time prompts, explicit default-attribute previews, block-library import/export, richer insertion/array workflows and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
 | MOVE and other editing tools with drafting aids | MOVE/COPY/ROTATE/SCALE/MIRROR, basic topology edits, STRETCH/BREAK/BREAKATPOINT increment, object/grid snap, Ortho/polar/tracking; native and browser regressions | Extend entity/coordinate-system coverage for each command, curve trim/extend/offset, reference/copy variants of transforms, richer arrays, selection cycling and additional acquisition modes. Existing planar restrictions remain material. |
 | Full line, text style and layer UI | Managers expose supported table fields, complex linetypes, LIN import, fixed-height/font metadata, layer color/plot/lock/freeze/transparency; native layer-state save/update/rename/delete/selective restore with history and DXF persistence | Layer filters/isolation, saved-layer editing, persisted restore masks, LAS transfer, unresolved-resource repair, individual viewport overrides, plot-style workflows, text editing/formatting and externally referenced resource behavior. |
 | Token-efficient coding harness and provider caching | Bounded context/tool batches, caching configuration and usage, stable prefixes, checkpoint/compaction behavior; provider/agent fixtures | Verify supported provider/model combinations with opt-in real accounts, measure cache hits on repeated identical tasks, and compare quality/latency/cost. Fixtures do not establish actual provider cache performance. |
@@ -94,10 +94,11 @@ exact pushed revision, including each operating-system and package-consumer job.
 ## Current implementation order
 
 1. Preserve green CI on every new pushed increment. Process-launch and browser
-   regressions were corrected; all 23 checks passed on `0d768115`, including the
-   attribute editor, synchronization and definition ordering. Each new pushed revision needs its own checks.
-2. Finish definition identity/default construction, then implement shared
-   `BATTMAN`/`ATTDEF` authoring and explicit default-attribute insertion previews.
+   regressions were corrected; all 23 checks passed on `e559aceb`, including the
+   attribute editor, synchronization, definition ordering and identity/default fixes.
+   Each new pushed revision needs its own checks.
+2. Qualify the shared `BATTMAN`/`ATTDEF` increment, then implement explicit
+   default-attribute insertion previews and insertion-time attribute prompts.
    Continue block-library transfer, insertion/array workflows and supported
    attributed/nonuniform explode cases with native and browser history tests.
 3. Complete remaining layers/styles and drafting workflows: filters/isolation,
@@ -123,6 +124,34 @@ exact pushed revision, including each operating-system and package-consumer job.
 Credentials supplied in conversation are neither used nor persisted. Paid testing
 remains disabled, with actual spend USD 0. Any later opt-in evaluation must retain
 the user's cumulative USD 20 ceiling. There is no credential material in this audit.
+
+### Definition manager increment
+
+- Reusable `DraftingAttributeDefinitions` plans edit tags, prompts, defaults,
+  verify/preset flags and supported appearance fields, create single/multiline
+  definitions, and stage ordering/removal. Native identity, assigned instance
+  values, optional independent definition edits and atomic synchronization are
+  preserved through history. Profile checks refuse unsavable locking/multiline
+  modes. Multiline creation stores paragraphs separately from its single-line
+  fallback; a real-browser save regression caught and verified that distinction.
+- Shared `BATTMAN` and named-block `ATTDEF` dialogs are available through commands,
+  Home/Insert ribbon actions and semantic agent controls. Apply remains open;
+  Cancel discards staged changes. Existing-reference updates default on with the
+  synchronization effects displayed. Constants cannot be moved by the UI, and
+  the last definition cannot be removed. Creation inside `BEDIT` is isolated until
+  save; discard and live undo/redo are verified.
+- Native and WebAssembly routes share read/edit contracts, typed previews with
+  synchronization reports, request-schema discovery and portable workflow replay.
+  The reusable implementation stays in Drafting/Core and shared web assets.
+- Local validation: 1,390 Advanced checks, 416 browser unit checks, 112 published
+  native Chromium checks and 179 standalone WASM checks across root/subpath
+  hosting. Both Release publishes pass. All 92 route contracts and 978 published
+  assets validate; independently read saved DXF files have no audit errors or
+  repairs. Hosted CI must qualify the new commits separately from `e559aceb`.
+- Remaining block scope includes model-space ATTDEF placement, insertion-time
+  prompts/verification, explicit default-attribute previews, library transfer,
+  annotation contexts, plot styles and the other workflows in the requirement
+  table. These results do not establish full AutoCAD block parity.
 
 ### Attribute renderer and instance editor increment
 
