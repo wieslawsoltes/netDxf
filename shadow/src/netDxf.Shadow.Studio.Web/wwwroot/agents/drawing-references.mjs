@@ -11,13 +11,13 @@ export function referenceChips(references, { historical = false, statuses = new 
     details.append(node('summary', { title: `${ref.objectId} · ${ref.workspaceId} · revision ${ref.revision}`, text: label }),
       node('small', { text: historical ? `Captured at revision ${ref.revision}` : status?.message || `Revision ${ref.revision} · ${ref.workspaceId}` }), code(ref));
     if (inspect) details.append(button('Check current object', () => inspect(ref)));
-    if (remove) details.append(button(`Remove ${label}`, () => remove(ref), { compact: true }));
+    if (remove) details.append(button(`Remove ${label}`, () => remove(ref), { icon: 'trash', compact: true }));
     row.append(details);
   }
   return row;
 }
 
-export function createReferenceComposer({ api, getDocument = () => null, report = () => {}, compact = false }) {
+export function createReferenceComposer({ api, getDocument = () => null, report = () => {}, compact = false, onChange = () => {} }) {
   let references = [], routeId = null, statuses = new Map(), generation = 0, disposed = false, checking = false, rendered = '';
   const chips = node('div', { hidden: true }), status = node('span', { class: 'agent-muted', role: 'status' });
   const action = callback => Promise.resolve().then(callback).catch(error => report(error));
@@ -29,6 +29,7 @@ export function createReferenceComposer({ api, getDocument = () => null, report 
     const next = JSON.stringify([references, [...statuses], routeId, getDocument()]);
     if (rendered === next) return;
     rendered = next;
+    const focusWasInside = chips.contains(document.activeElement);
     const expanded = new Set([...chips.querySelectorAll('details[open]')].map(item => item.getAttribute('data-reference-key')));
     refresh.hidden = references.length === 0;
     chips.hidden = references.length === 0;
@@ -38,6 +39,7 @@ export function createReferenceComposer({ api, getDocument = () => null, report 
     }) }));
     for (const item of chips.querySelectorAll('details')) item.open = expanded.has(item.getAttribute('data-reference-key'));
     status.textContent = references.length ? `${references.length} attached${routeId !== getDocument() ? ' · different drawing' : ''}` : '';
+    onChange(references.length, { focusWasInside });
   }
   async function capture() {
     const route = getDocument(), stamp = ++generation;

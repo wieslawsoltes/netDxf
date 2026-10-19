@@ -237,6 +237,8 @@ Raster geometry preserves independent authored U/V directions, shear and image c
 
 ## Graph and editing
 
+Studio’s [Graph workspace](docs/GraphAnalysis.md) adds component/feature visualization, interactive source inspection and route picking, bounded projection paging and SVG/JSON export. [Palette and ribbon layout](docs/WorkspaceLayout.md) supports simultaneous docked, floating and anchored palettes and four ribbon display modes.
+
 Topology uses a packed spatial index, explicit endpoint/curve tolerances, intersection/overlap splitting, optional elevation compatibility and union-find welding. Results retain source entity and occurrence identities. Algorithms include connected components, cycle rank, junctions/dead ends, Dijkstra shortest paths and iterative Tarjan bridges with parallel-edge handling. Curved intersections use sampled curves, not certified analytic predicates.
 
 `EditorSession` supports property commands, entity creation/deletion, collection replacement, structural graph patches and unified undo/redo. Canonical snapshots are retained for structural commands. Intervening external source revisions invalidate history and require an explicit reset. Moving an inserted selection targets the outermost insert by default; definition editing changes shared geometry. Unsupported planners/factories fail rather than silently mutating unrelated data.

@@ -1,0 +1,41 @@
+.pd-workspace .pd-dock { display:flex; flex:none; min-width:0; min-height:0; background:#272e38; }
+.pd-dock-panes { display:flex; flex:1; flex-direction:column; min-width:0; min-height:0; overflow:auto; scrollbar-width:thin; }
+.pd-window { display:flex; flex-direction:column; min-width:0; min-height:0; color:#dce5ef; background:#29313c; border:1px solid #495969; }
+.pd-dock .pd-window { flex:1 0 180px; border-width:0 0 1px; }
+.pd-title { display:flex; flex:none; align-items:center; gap:1px; min-height:32px; height:32px; padding:2px; background:#3b4858; border-bottom:1px solid #192430; }
+.pd-title button,.pd-title summary { display:grid; place-items:center; min-height:27px; min-width:25px; padding:1px 4px; font-size:16px; border-radius:3px; }
+.pd-selector { flex:1; min-width:0; width:70px; padding:3px 2px; font-size:11px; border-color:transparent; background:#3b4858; font-weight:600; }
+.pd-move { cursor:grab; touch-action:none; color:#b1c6db; }
+.pd-move:active { cursor:grabbing; }
+.pd-title button[aria-pressed=true] { background:#235373; color:#b8e3ff; border-color:#5c94b5; }
+.pd-content { flex:1; min-height:0; min-width:0; overflow:auto; overscroll-behavior:contain; padding:8px; }
+.pd-splitter { flex:none; width:5px; background:#19212b; cursor:col-resize; touch-action:none; }
+.pd-splitter:hover,.pd-splitter:focus-visible { background:#4f99c5; }
+.pd-locked .pd-splitter { cursor:default; }
+.pd-overlay { position:absolute; inset:0; pointer-events:none; z-index:12; }
+.pd-overlay .pd-window { position:absolute; pointer-events:auto; box-shadow:0 7px 24px #080f1a88; }
+.pd-floating { border-color:#6d849b; border-radius:4px; }
+.pd-floating .pd-title { border-radius:3px 3px 0 0; }
+.pd-resize { position:absolute; right:0; bottom:0; width:20px; height:20px; cursor:nwse-resize; touch-action:none; background:linear-gradient(135deg,transparent 55%,#7892aa 57%,transparent 61%,transparent 70%,#7892aa 73%,transparent 77%); }
+.pd-floating .pd-content { padding-bottom:20px; }
+.pd-edge { display:flex; flex:none; flex-direction:column; align-items:stretch; gap:5px; width:28px; padding:5px 2px; background:#202b36; border-inline:1px solid #42566a; overflow:auto; scrollbar-width:none; }
+.pd-edge-button { writing-mode:vertical-rl; white-space:nowrap; flex:none; padding:9px 4px; font-size:11px; border:1px solid #40546b; background:#2a394a; border-radius:3px; }
+.pd-edge-button[aria-expanded=true] { background:#245b80; border-color:#8bbddd; }
+.pd-edge-left .pd-edge-button { transform:rotate(180deg); }
+.pd-menu { position:relative; flex:none; }
+.pd-menu>summary,.pd-launcher>summary { list-style:none; cursor:pointer; }
+.pd-menu>summary::-webkit-details-marker,.pd-launcher>summary::-webkit-details-marker { display:none; }
+.pd-menu-body { position:fixed; z-index:25; width:180px; max-height:calc(100dvh - 16px); overflow:auto; padding:4px; border:1px solid #72869b; background:#2c3b4b; box-shadow:0 5px 18px #09131c88; }
+.pd-menu-body button { display:block; width:100%; min-height:30px; text-align:left; font-size:11px; }
+.pd-launcher { position:absolute; top:5px; left:50%; width:90px; margin-left:-45px; z-index:11; color:#c7d9e9; }
+.pd-launcher[open] { z-index:20; }
+.pd-launcher>summary { padding:4px 10px; background:#2b3b4ee8; border:1px solid #5d7389; border-radius:4px; font-size:11px; }
+.pd-launcher-body { position:fixed; width:250px; max-width:calc(100vw - 16px); max-height:calc(100dvh - 16px); overflow:auto; padding:12px; border:1px solid #70869c; border-radius:5px; background:#29394a; box-shadow:0 7px 24px #08131d88; }
+.pd-launcher-body>label:first-child { display:flex; flex-direction:column; gap:7px; font-size:11px; }
+.pd-launcher-body select { width:100%; }
+.pd-lock-label { display:flex; align-items:center; gap:7px; padding:10px 0; }
+.pd-launcher-body>button { border:1px solid #617d97; width:100%; text-align:left; }
+.pd-launcher-body p { margin:10px 0 0; font-size:10px; line-height:1.6; color:#a6bdcf; }
+.pd-sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+#studio.clean .pd-dock,#studio.clean .pd-edge,#studio.clean .pd-overlay,#studio.clean .pd-launcher { display:none; }
+@media(pointer:coarse) { .pd-title { height:38px; min-height:38px; }.pd-title button,.pd-title summary { min-height:34px; min-width:30px; }.pd-edge { width:32px; }.pd-edge-button { padding:12px 5px; }.pd-splitter { width:9px; }.pd-resize { width:30px; height:30px; }.pd-launcher>summary { padding:7px 12px; } }

@@ -362,6 +362,32 @@ internal static class Program
         Require(geometry.Occurrences.Length == 2 && topology.Edges.Length == 4 && topology.Nodes.Length == 5,
             "Crossing geometry/topology failed.");
         Require(topology.Junctions.Single().Edges.Length == 4, "Missing topology junction.");
+        var page = topology.Visualize(new GraphVisualizationOptions { NodeLimit = 2, EdgeLimit = 1 });
+        Require(page.NodeCount == 5 && page.EdgeCount == 4 && page.ComponentCount == 1 &&
+            page.Nodes.Total == 5 && page.Edges.Total == 4 && page.Nodes.Items.Length == 2 && page.Edges.Items.Length == 1 &&
+            page.Nodes.NextOffset == 2 && page.Edges.NextOffset == 1 && page.Truncated,
+            "Installed graph visualization lost bounded independent pages or full counts.");
+        var edge = page.Edges.Items.Single();
+        Require(edge.Start == topology.Nodes[edge.A].Position && edge.End == topology.Nodes[edge.B].Position &&
+            edge.RootEntity == edge.Entity && edge.InsertPath.IsEmpty && edge.Bridge && page.JunctionCount == 1,
+            "Installed graph visualization lost endpoint geometry, source roots or feature annotations.");
+        var next = topology.Visualize(new GraphVisualizationOptions
+        { NodeOffset = page.Nodes.NextOffset!.Value, NodeLimit = 2, EdgeOffset = page.Edges.NextOffset!.Value, EdgeLimit = 1 });
+        Require(next.Nodes.Items[0].Id == topology.Nodes[2].Id && next.Edges.Items[0].Id == topology.Edges[1].Id,
+            "Installed graph visualization continuation did not preserve global IDs.");
+        var block = new netDxf.Blocks.Block("GraphSource");
+        var leaf = new Line(Vector3.Zero, new Vector3(10, 0, 0)); block.Entities.Add(leaf);
+        var insert = new Insert(block, new Vector3(20, 30, 4));
+        var document = new DxfDocument(); document.Entities.Add(insert);
+        var insertedTopology = new TopologyBuilder().Build(new CadSceneBuilder().Build(new ShadowSession(document).Current));
+        var insertedPage = insertedTopology.Visualize(new GraphVisualizationOptions
+        { RootEntity = Id(insert), NodeLimit = 1, EdgeLimit = 1 });
+        var insertedEdge = insertedPage.Edges.Items.Single();
+        Require(insertedPage.Nodes.Total == 2 && insertedPage.Edges.Total == 1 && insertedPage.Truncated &&
+            insertedEdge.Entity == Id(leaf).Value && insertedEdge.RootEntity == Id(insert).Value &&
+            insertedEdge.InsertPath.SequenceEqual([Id(insert).Value]) && !string.IsNullOrEmpty(insertedEdge.Occurrence) &&
+            insertedEdge.Start == new Vec3(20, 30, 4) && insertedEdge.End == new Vec3(30, 30, 4),
+            "Installed graph visualization lost selectable INSERT roots or transformed occurrence coordinates.");
         var subset = new RenderCompiler().Compile(fixture.Session.Current,
             new() { RootEntities = [Id(fixture.Line)] });
         Require(subset.Items.Length == 1 && subset.Items[0].Entity == Id(fixture.Line),

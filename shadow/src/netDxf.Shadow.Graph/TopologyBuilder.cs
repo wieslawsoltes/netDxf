@@ -10,7 +10,7 @@ public sealed record TopologyOptions(double EndpointTolerance = 0.01, double Cur
 /// <summary>Spatially indexed segment topology. Curve intersections use the explicit approximation tolerance.</summary>
 public sealed class TopologyBuilder
 {
-    private sealed record Segment(Vec3 A, Vec3 B, ObjectId Entity, string Occurrence)
+    private sealed record Segment(Vec3 A, Vec3 B, ObjectId Entity, string Occurrence, ImmutableArray<ObjectId> InsertPath)
     {
         public Bounds2 Bounds => Bounds2.Empty.Include(A).Include(B);
     }
@@ -38,7 +38,7 @@ public sealed class TopologyBuilder
                     for (var i = 1; i < points.Length; i++)
                     {
                         if (segments.Count >= options.MaximumSegments) throw new InvalidOperationException("Topology segment budget exceeded.");
-                        segments.Add(new(points[i - 1], points[i], occurrence.Entity, occurrence.Key));
+                        segments.Add(new(points[i - 1], points[i], occurrence.Entity, occurrence.Key, occurrence.InsertPath));
                     }
                 }
         }
@@ -107,7 +107,8 @@ public sealed class TopologyBuilder
         {
             var a = ids[Root(raw.A)]; var b = ids[Root(raw.B)];
             if (raw.Length <= 1e-14) continue;
-            var id = edges.Count; edges.Add(new(id, a, b, raw.Length, raw.Source.Entity, raw.Source.Occurrence));
+            var id = edges.Count; edges.Add(new(id, a, b, raw.Length, raw.Source.Entity, raw.Source.Occurrence)
+            { RootEntity = raw.Source.InsertPath.IsDefaultOrEmpty ? raw.Source.Entity : raw.Source.InsertPath[0], InsertPath = raw.Source.InsertPath });
             adjacency[a].Add(id); adjacency[b].Add(id);
         }
         var nodes = roots.Select((root, id) => new GraphNode(id, pointsList[root], adjacency[id].ToImmutableArray())).ToImmutableArray();

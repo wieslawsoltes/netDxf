@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {graphPalette} from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/graph-ui.mjs';
-import {byText,byLabel,gate,tick,installDom} from './ui-fixture.mjs';
+import {byText,byLabel,gate,tick,installDom,all} from './ui-fixture.mjs';
 
 function fixture(t){
   const root=installDom(t),reads=[],errors=[];
@@ -64,4 +64,127 @@ test('graph result actions refuse a superseded drawing even before its palette r
   await byText(f.root,'Highlight this result').click();await byText(f.root,'Focus').click();
   assert.equal(f.viewport.graph,undefined);assert.deepEqual(f.viewport.camera,{});
   assert.equal(f.errors.length,2);assert.ok(f.errors.every(e=>/drawing changed/.test(e.message)));
+});
+
+const projection=(overrides={})=>({graphKey:'build-a',nodeCount:2,edgeCount:1,componentCount:1,cycleRank:0,
+  nodes:{items:[{id:10,x:0,y:0,degree:1,component:0,deadEnd:true},{id:90,x:10,y:0,degree:1,component:0,deadEnd:true}],total:2,nextOffset:null},
+  edges:{items:[{id:30,a:10,b:90,start:{x:0,y:0},end:{x:10,y:0},length:10,entity:'H:LEAF',rootEntity:'H:ROOT',occurrence:'insert/leaf',component:0,bridge:true}],total:1,nextOffset:null},...overrides});
+async function loadProjection(f,data=projection()){
+  const pending=byText(f.root,'Load topology').click();await tick();f.reads.at(-1).resolve(f.receipt(data));await pending;
+}
+test('topology projection exposes counts, colors, complete coverage and paged accumulation',async t=>{
+  const f=fixture(t),first=projection({nodes:{items:[{id:10,x:0,y:0,component:0}],total:2,nextOffset:1},edges:{items:[],total:1,nextOffset:0}});
+  await loadProjection(f,first);assert.match(f.root.textContent,/Partial topology/);assert.equal(f.reads[0].options.body.tool,'graph_visualization');
+  const more=byText(f.root,'Load more topology').click();await tick();assert.equal(f.reads[1].options.body.arguments.graphKey,'build-a');assert.equal(f.reads[1].options.body.arguments.nodeOffset,1);
+  f.reads[1].resolve(f.receipt(projection()));await more;
+  assert.equal(f.viewport.graph.edges.length,1);assert.equal(f.viewport.graph.nodes.length,2);assert.match(f.root.textContent,/Complete filtered topology/);assert.equal(byText(f.root,'Load more topology').disabled,true);
+  const mode=byLabel(f.root,'Graph coloring');mode.value='features';await mode.dispatch('change');assert.equal(f.viewport.graph.mode,'features');assert.match(f.root.textContent,/Bridge \/ articulation/);
+});
+test('changed topology parameters fence pending projection and all analysis build IDs',async t=>{
+  const f=fixture(t),pending=byText(f.root,'Load topology').click();await tick();
+  const tolerance=byLabel(f.root,'Endpoint tolerance');tolerance.value='.2';await tolerance.dispatch('input');
+  f.reads[0].resolve(f.receipt(projection()));await pending;assert.equal(f.viewport.graph,null);assert.doesNotMatch(f.root.textContent,/Complete filtered topology/);
+  await loadProjection(f);
+  const query=byText(f.root,'Run analysis').click();await tick();assert.equal(f.reads.at(-1).options.body.arguments.graphKey,'build-a');f.reads.at(-1).resolve(f.receipt({nodeCount:2,graphKey:'build-a'}));await query;
+});
+test('a different graph build cannot silently merge into the loaded projection',async t=>{
+  const f=fixture(t);await loadProjection(f,projection({nodes:{items:[],total:2,nextOffset:0}}));
+  const more=byText(f.root,'Load more topology').click();await tick();f.reads.at(-1).resolve(f.receipt(projection({graphKey:'other-build'})));await more;
+  assert.equal(f.viewport.graph.nodes.length,0);assert.match(f.errors.at(-1).message,/changed between pages/);
+});
+test('full result loading follows offsets with one build guard and retains all loaded geometry',async t=>{
+  const f=fixture(t);f.render.setOperation('edges');
+  let request=byText(f.root,'Run analysis').click();await tick();
+  const edge=id=>({id,a:id,b:id+1,start:{x:id,y:0},end:{x:id+1,y:0},entity:'H:'+id,length:1});
+  f.reads[0].resolve(f.receipt({graphKey:'result-build',items:[edge(10)],total:2,nextOffset:1}));await request;
+  request=byText(f.root,'Load full result (bounded)').click();await tick();f.reads[1].resolve(f.receipt({graphKey:'result-build',items:[edge(10)],total:2,nextOffset:1}));await tick();
+  assert.equal(f.reads[2].options.body.arguments.offset,1);assert.equal(f.reads[2].options.body.arguments.graphKey,'result-build');
+  f.reads[2].resolve(f.receipt({graphKey:'result-build',items:[edge(20)],total:2,nextOffset:null}));await request;
+  await byText(f.root,'Highlight this result').click();assert.deepEqual(f.viewport.graph.edges.map(e=>e.id),[10,20]);assert.match(f.root.textContent,/Loaded across pages/);assert.doesNotMatch(f.root.textContent,/Partial result/);
+});
+test('full result paging rejects repeated cursors and drawing changes without publishing partial stale data',async t=>{
+  const f=fixture(t);f.render.setOperation('nodes');
+  let pending=byText(f.root,'Run analysis').click();await tick();f.reads[0].resolve(f.receipt({graphKey:'build-a',items:[{id:1,x:0,y:0}],total:3,nextOffset:1}));await pending;
+  pending=byText(f.root,'Load full result (bounded)').click();await tick();f.reads[1].resolve(f.receipt({graphKey:'build-a',items:[{id:1,x:0,y:0}],total:3,nextOffset:1}));await tick();f.reads[2].resolve(f.receipt({graphKey:'build-a',items:[{id:2,x:1,y:0}],total:3,nextOffset:1}));await pending;
+  assert.match(f.errors[0].message,/invalid page cursor/);
+  pending=byText(f.root,'Run analysis').click();await tick();f.client.key='new';f.reads.at(-1).resolve(f.receipt({items:[{id:99,x:0,y:0}],total:1,nextOffset:null}));await pending;assert.doesNotMatch(f.root.textContent,/Node 99/);
+});
+test('visual endpoint picking is explicit, cancels independently and never accepts a stale drawing',async t=>{
+  const f=fixture(t);let picks=0,lastPick;f.viewport.beginGraphPick=value=>{picks++;lastPick=value;};
+  f.render.setOperation('path');assert.equal(picks,0);await loadProjection(f);
+  await byText(f.root,'Pick start node').click();assert.equal(lastPick.kind,'node');lastPick.onPick({kind:'node',node:{id:90,x:10,y:0}});
+  assert.equal(byLabel(f.root,'Start node').value,'90');assert.match(f.root.textContent,/Start node: 90/);
+  await byText(f.root,'Pick end node').click();f.client.key='different';assert.throws(()=>lastPick.onPick({kind:'node',node:{id:10,x:0,y:0}}),/drawing changed/);assert.equal(byLabel(f.root,'End node').value,'1');
+});
+test('source selection passes owning root and exact occurrence under a captured drawing receipt',async t=>{
+  const root=installDom(t),selected=[],errors=[],state={documentId:'d',workspaceId:'w',viewVersion:1,revision:0,layout:'Model'};
+  const client={state,key:'a',async read(){return {result:{...state,data:{...projection(),layout:'Model'}}};}},viewport={camera:{},invalidate(){}};
+  const render=graphPalette({client,viewport,snapshot:()=>null,report:e=>errors.push(e),selectSources:async(sources,key)=>selected.push({sources,key})});render(root);
+  await byText(root,'Load topology').click();let pick;viewport.beginGraphPick=value=>{pick=value;};await byText(root,'Inspect in drawing').click();pick.onPick({kind:'edge',id:30,edge:projection().edges.items[0]});
+  await byText(root,'Select source in drawing').click();assert.equal(selected[0].key,'a');assert.equal(selected[0].sources[0].rootEntity,'H:ROOT');assert.equal(selected[0].sources[0].occurrence,'insert/leaf');
+  client.key='new';await byText(root,'Select source in drawing').click();assert.equal(selected.length,1);assert.match(errors.at(-1).message,/drawing changed/);
+});
+test('bounded full results preserve the first unconsumed offset when slicing the last provider page',async t=>{
+  const root=installDom(t),requests=[],errors=[],state={documentId:'d',workspaceId:'w',viewVersion:1,revision:0,layout:'Model'};
+  const client={state,key:'a',async read(path,{body}){const offset=body.arguments.offset||0,limit=body.arguments.limit;requests.push(offset);return {result:{...state,data:{layout:'Model',graphKey:'build-a',items:Array.from({length:Math.min(limit,4100-offset)},(_,i)=>({id:offset+i,x:offset+i,y:0})),total:4100,nextOffset:offset+limit<4100?offset+limit:null}}};}};
+  const render=graphPalette({client,viewport:{camera:{},invalidate(){}},snapshot:()=>null,report:e=>errors.push(e)});render(root);render.setOperation('nodes');
+  const limit=byLabel(root,'Page / visit limit');limit.value='199';await limit.dispatch('input');
+  await byText(root,'Run analysis').click();await byText(root,'Load full result (bounded)').click();
+  assert.deepEqual(errors,[]);assert.match(root.textContent,/4100 matches · showing 1–4000/);assert.equal(byText(root,'Next').disabled,false);
+  await byText(root,'Next').click();assert.equal(requests.at(-1),4000);assert.match(root.textContent,/showing 4001–4100/);
+});
+test('hiding the workspace cancels graph picking and fences an in-flight projection',async t=>{
+  const f=fixture(t);let cancels=0;f.viewport.cancelGraphPick=()=>cancels++;
+  const pending=byText(f.root,'Load topology').click();await tick();f.render.hide();assert.equal(cancels,1);f.reads[0].resolve(f.receipt(projection()));await pending;
+  assert.equal(f.viewport.graph,undefined);assert.doesNotMatch(f.root.textContent,/Complete filtered topology/);
+});
+test('analysis-only continuation reuses its discovered build identity and topology refresh supersedes older analysis',async t=>{
+  const f=fixture(t);f.render.setOperation('nodes');let pending=byText(f.root,'Run analysis').click();await tick();
+  f.reads[0].resolve(f.receipt({graphKey:'analysis-build',items:[{id:1,x:0,y:0}],total:2,nextOffset:1}));await pending;
+  pending=byText(f.root,'Next').click();await tick();assert.equal(f.reads[1].options.body.arguments.graphKey,'analysis-build');
+  const load=byText(f.root,'Load topology').click();await tick();f.reads[2].resolve(f.receipt(projection()));await load;
+  f.reads[1].resolve(f.receipt({graphKey:'analysis-build',items:[{id:88,x:0,y:0}],total:2,nextOffset:null}));await pending;
+  assert.doesNotMatch(f.root.textContent,/Node 88/);assert.equal(f.viewport.graph.graphKey,'build-a');
+});
+test('clear overlay fences pending loads and stays cleared across palette rendering until explicitly shown',async t=>{
+  const f=fixture(t);const pending=byText(f.root,'Load topology').click();await tick();await byText(f.root,'Clear overlay').click();f.reads[0].resolve(f.receipt(projection()));await pending;assert.equal(f.viewport.graph,null);
+  await loadProjection(f);await byText(f.root,'Clear overlay').click();f.render(f.root);assert.equal(f.viewport.graph,null);await byText(f.root,'Show overlay').click();assert.equal(f.viewport.graph.edges.length,1);
+});
+test('public graph clear fences loading and saved analytical overlays across hide/reopen',async t=>{
+  const f=fixture(t);const load=byText(f.root,'Load topology').click();await tick();f.render.clearOverlay();f.reads[0].resolve(f.receipt(projection()));await load;assert.equal(f.viewport.graph,null);
+  await loadProjection(f);f.render.setOperation('edges');const pending=byText(f.root,'Run analysis').click();await tick();f.reads.at(-1).resolve(f.receipt({graphKey:'build-a',items:projection().edges.items,total:1,nextOffset:null}));await pending;assert.equal(f.viewport.graph.highlight,true);
+  f.render.clearOverlay();assert.equal(f.viewport.graph,null);f.render.hide();f.render(f.root);assert.equal(f.viewport.graph,null);await byText(f.root,'Show overlay').click();assert.equal(f.viewport.graph.edges.length,1);
+});
+test('graph thumbnails use revocable Blob URLs and legends require no inline style attributes',async t=>{
+  const originalCreate=URL.createObjectURL,originalRevoke=URL.revokeObjectURL,created=[],revoked=[];
+  URL.createObjectURL=blob=>{assert.equal(blob.type,'image/svg+xml');const url=`blob:graph-test-${created.length}`;created.push(url);return url;};
+  URL.revokeObjectURL=url=>revoked.push(url);
+  t.after(()=>{URL.createObjectURL=originalCreate;URL.revokeObjectURL=originalRevoke;});
+  const f=fixture(t);await loadProjection(f);
+  const image=()=>all(f.root).find(node=>node.tagName==='IMG');
+  assert.match(image().getAttribute('src'),/^blob:/);
+  for(const swatch of all(f.root).filter(node=>node.tagName==='I')){assert.equal(swatch.getAttribute('style'),null);assert.match(swatch.className,/^graph-color-[0-9a-f]{6}$/);}
+  const first=image().getAttribute('src'),mode=byLabel(f.root,'Graph coloring');mode.value='features';await mode.dispatch('change');assert.ok(revoked.includes(first));
+  const second=image().getAttribute('src');f.render(f.root);assert.ok(revoked.includes(second));
+  const third=image().getAttribute('src');f.render.hide();assert.ok(revoked.includes(third));
+  assert.equal(new Set(revoked).size,revoked.length);assert.deepEqual(created,revoked);
+});
+test('load remaining topology follows adaptive short-page cursors for both streams',async t=>{
+  const f=fixture(t),small=offset=>projection({nodes:{items:[{id:offset,x:offset,y:0}],total:4,nextOffset:offset<3?offset+1:null},edges:{items:[{id:offset,a:offset,b:offset+1,start:{x:offset,y:0},end:{x:offset+1,y:0},entity:'H:'+offset,length:1}],total:4,nextOffset:offset<3?offset+1:null}});
+  await loadProjection(f,small(0));const pending=byText(f.root,'Load remaining topology (bounded)').click();
+  for(let offset=1;offset<4;offset++){await tick();const request=f.reads.at(-1);assert.equal(request.options.body.arguments.nodeOffset,offset);assert.equal(request.options.body.arguments.edgeOffset,offset);assert.equal(request.options.body.arguments.graphKey,'build-a');request.resolve(f.receipt(small(offset)));}
+  await pending;assert.deepEqual(f.errors,[]);assert.equal(f.viewport.graph.nodes.length,4);assert.equal(f.viewport.graph.edges.length,4);assert.match(f.root.textContent,/Complete filtered topology/);assert.equal(byText(f.root,'Load remaining topology (bounded)').disabled,true);
+});
+test('load remaining respects forty-page budget and retains an honest resumable partial projection',async t=>{
+  const root=installDom(t),state={documentId:'d',workspaceId:'w',viewVersion:1,revision:0,layout:'Model'},requests=[],errors=[];
+  const client={state,key:'a',async read(path,{body}){const offset=body.arguments.nodeOffset;requests.push(offset);return {result:{...state,data:{layout:'Model',...projection({nodes:{items:[{id:offset,x:offset,y:0}],total:100,nextOffset:offset+1},edges:{items:[],total:0,nextOffset:null}})}}};}};
+  const viewport={camera:{},invalidate(){}},render=graphPalette({client,viewport,snapshot:()=>null,report:e=>errors.push(e)});render(root);
+  await byText(root,'Load topology').click();await byText(root,'Load remaining topology (bounded)').click();assert.equal(requests.length,41);assert.equal(viewport.graph.nodes.length,41);assert.match(root.textContent,/Stopped after 40 continuation pages/);assert.equal(byText(root,'Load remaining topology (bounded)').disabled,false);assert.deepEqual(errors,[]);
+});
+test('clear, hide, parameter and drawing changes fence load-remaining continuations',async t=>{
+  for(const change of ['clear','hide','input','drawing']){
+    const f=fixture(t);await loadProjection(f,projection({nodes:{items:[],total:2,nextOffset:0}}));const pending=byText(f.root,'Load remaining topology (bounded)').click();await tick();
+    if(change==='clear')f.render.clearOverlay();else if(change==='hide')f.render.hide();else if(change==='input'){const input=byLabel(f.root,'Endpoint tolerance');input.value='.2';await input.dispatch('input');}else f.client.key='new';
+    f.reads.at(-1).resolve(f.receipt(projection()));await pending;assert.equal(f.reads.length,2);assert.ok(f.viewport.graph===null||f.viewport.graph.nodes.length===0);assert.deepEqual(f.errors,[]);
+  }
 });

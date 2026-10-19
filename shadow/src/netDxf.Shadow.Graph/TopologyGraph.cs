@@ -3,7 +3,13 @@ using System.Collections.Immutable;
 namespace netDxf.Shadow.Graph;
 
 public sealed record GraphNode(int Id, Vec3 Position, ImmutableArray<int> Edges);
-public sealed record GraphEdge(int Id, int A, int B, double Length, ObjectId Entity, string Occurrence);
+public sealed record GraphEdge(int Id, int A, int B, double Length, ObjectId Entity, string Occurrence)
+{
+    /// <summary>Selectable source root: the outer INSERT, or Entity for an uninserted occurrence.</summary>
+    public ObjectId RootEntity { get; init; } = Entity;
+    /// <summary>Ordered source INSERT chain, preserving repeated definition occurrences.</summary>
+    public ImmutableArray<ObjectId> InsertPath { get; init; } = [];
+}
 public sealed record GraphPath(ImmutableArray<int> Nodes, ImmutableArray<int> Edges, double Length);
 public sealed partial record TopologyGraph(Guid DocumentId, long Revision, ImmutableArray<GraphNode> Nodes,
     ImmutableArray<GraphEdge> Edges, ImmutableArray<ShadowDiagnostic> Diagnostics)

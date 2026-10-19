@@ -1,3 +1,5 @@
+@import url('./ribbon.css');
+@import url('./graph.css');
 :root { color-scheme: dark; font: 12px 'Segoe UI', Arial, sans-serif; --chrome:#30343a; --panel:#272b31; --edge:#171a1f; --text:#e2e5eb; --muted:#a3acba; --accent:#58baff; --palette-width:290px; --command-height:90px; }
 * { box-sizing:border-box; } html,body { margin:0; height:100%; overflow:hidden; background:#20252d; color:var(--text); }
 button,input,select,textarea { font:inherit; color:inherit; } button { background:transparent; border:1px solid transparent; padding:4px 8px; cursor:pointer; border-radius:2px; }

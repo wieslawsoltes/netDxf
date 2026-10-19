@@ -1,6 +1,7 @@
 import { point, add, sub, distance, screen, world, zoom, fit, constrain, trackPoint, format } from './core.mjs';
 import { viewKey } from '../studio-state.mjs';
 import { InsertionPreview } from './insertion-preview.mjs';
+import { drawGraph, graphBounds, graphIdentity, hitGraph } from './graph-visualization.mjs';
 
 /** A cached page resumes its live viewport, including its frame and resize observer. */
 export function bindViewportPageLifetime(viewport, target = globalThis) {
@@ -42,9 +43,20 @@ export class CadViewport {
     this.canvas.width = Math.max(1, Math.floor(this.size.w * this.dpr)); this.canvas.height = Math.max(1, Math.floor(this.size.h * this.dpr)); this.changed();
   }
   fit() { this.camera = fit(this.client.state?.bounds, this.size); this.changed(); }
+  setGraph(scene) { this.graph=scene;this.graphKey=graphIdentity(this.client.state);this.invalidate(); }
+  graphCurrent() { return !!this.graph && this.snapshot===null && (this.graphKey===graphIdentity(this.client.state)||this.graphKey===viewKey(this.client.state)); }
+  fitGraph(scene=this.graph) { const bounds=graphBounds(scene);if(bounds){this.camera=fit(bounds,this.size);this.changed();} }
+  beginGraphPick({kind='any',onPick,onCancel}={}) {
+    if(!this.graphCurrent())throw new Error('Load current topology before picking graph items.');
+    if(this.command)throw new Error('Finish the drawing command before picking graph items.');
+    this.cancelInput();this.graphPick={kind,onPick,onCancel,key:graphIdentity(this.client.state)};
+    this.element.focus({preventScroll:true});this.invalidate();
+  }
+  cancelGraphPick() { const pick=this.graphPick;if(!pick)return false;this.graphPick=null;pick.onCancel?.();this.invalidate();return true; }
   setData() {
     const s = this.client.state, identity = s ? `${this.client.id}:${s.serverId}:${s.documentId}:${s.workspaceId}` : '';
     if (identity !== this.identity) { this.clearFrame(); this.graph = null; this.snapHit = null; this.identity = identity; }
+    if(this.graphPick&&this.graphPick.key!==graphIdentity(s))this.cancelGraphPick();
     this.changed();
   }
   changed() { this.invalidate(); this.hooks.camera?.(this.camera); this.requestFrame(); }
@@ -133,6 +145,7 @@ export class CadViewport {
     finally { if (force && this.pickAbort === abort) this.pickAbort = null; }
   }
   cancelInput() {
+    this.cancelGraphPick();
     const cameraActive = !!this.drag?.pan || !!this.pinch;
     this.inputVersion++; this.snapGeneration++;
     clearTimeout(this.snapTimer); this.snapAbort?.abort(); this.pickAbort?.abort();
@@ -153,9 +166,9 @@ export class CadViewport {
     }
     const pan = e.button === 1 || this.space || this.panMode, p = world(pixel, this.camera, this.size);
     let grip;
-    if (!pan && !this.command && this.snapshot === null) grip = this.client.data?.grips.find(g => distance(screen(g.position, this.camera, this.size), pixel) < 8);
+    if (!pan && !this.command && !this.graphPick && this.snapshot === null) grip = this.client.data?.grips.find(g => distance(screen(g.position, this.camera, this.size), pixel) < 8);
     this.drag = { id: e.pointerId, inputVersion: this.inputVersion, key: this.client.key, epoch: this.client.epoch,
-      command: this.command, commandVersion: this.command?.version, snapshot: this.snapshot, pixel, last: pixel, first: p, current: p, pan, grip, moved: false, extend: e.ctrlKey || e.metaKey || this.settings.pickAdd !== false, remove: e.shiftKey };
+      command: this.command, commandVersion: this.command?.version, graphPick:this.graphPick, snapshot: this.snapshot, pixel, last: pixel, first: p, current: p, pan, grip, moved: false, extend: e.ctrlKey || e.metaKey || this.settings.pickAdd !== false, remove: e.shiftKey };
     this.element.classList.toggle('panning', !!pan); this.invalidate();
   }
   move(e) {
@@ -203,7 +216,10 @@ export class CadViewport {
       };
       current();
       const p = world(this.local(e), this.camera, this.size);
-      if (drag.grip && drag.moved) {
+      if(drag.graphPick) {
+        if(drag.graphPick!==this.graphPick||drag.graphPick.key!==graphIdentity(this.client.state)||!this.graphCurrent())throw new Error('The graph changed during the pick. Load topology again.');
+        if(!drag.moved){const hit=hitGraph(this.graph,this.local(e),p=>screen(p,this.camera,this.size),{kind:drag.graphPick.kind});if(hit){const pick=this.graphPick;this.graphPick=null;await pick.onPick?.(hit);}else this.hooks.error?.(new Error('No visible graph item at this location. Pick closer or zoom in.'));}
+      } else if (drag.grip && drag.moved) {
         const pos = await this.snapped(p, drag.grip.position, true, true); current(); await this.hooks.grip?.(drag.grip, pos);
       } else if(this.command?.step.kind==='window') {
         if(drag.moved && this.command.index===0)await this.hooks.window?.(drag.first,p);
@@ -225,13 +241,7 @@ export class CadViewport {
       const center = screen(point(f.camera.x, f.camera.y), this.camera, this.size);
       c.drawImage(f.image, center.x - f.size.w * scale / 2, center.y - f.size.h * scale / 2, f.size.w * scale, f.size.h * scale);
     }
-    if (this.graph && this.graphKey === viewKey(this.client.state)) {
-      c.strokeStyle = '#e2b65b'; c.lineWidth = 1; c.globalAlpha = .7;
-      const graphNodes = new Map(this.graph.nodes.map(node => [node.id,node]));
-      for (const edge of this.graph.edges) { const a = graphNodes.get(edge.a), b = graphNodes.get(edge.b); if (a && b) this.path(c, [a, b]); }
-      if (this.graph.highlight) for (const node of this.graph.nodes) { const p = screen(node,this.camera,this.size); c.beginPath(); c.arc(p.x,p.y,4,0,Math.PI*2); c.stroke(); }
-      c.globalAlpha = 1;
-    }
+    if (this.graphCurrent()) drawGraph(c,this.graph,p=>screen(p,this.camera,this.size),this.size);
     if (this.snapshot === null) {
       for (const grip of this.client.data?.grips || []) {
         const p = screen(grip.position, this.camera, this.size); c.fillStyle = '#429ced'; c.strokeStyle = '#bddefc'; c.lineWidth = 1;
@@ -239,7 +249,7 @@ export class CadViewport {
       }
       this.preview(c);
     }
-    if (this.drag && !this.drag.pan && !this.drag.grip && (!this.command || this.command.selecting || this.command.step.kind==='window') && this.drag.moved) {
+    if (this.drag && !this.drag.pan && !this.drag.grip && !this.graphPick && (!this.command || this.command.selecting || this.command.step.kind==='window') && this.drag.moved) {
       const a = screen(this.drag.first, this.camera, this.size), b = this.drag.last, crossing = this.command?.spec.crossingSelection || b.x < a.x;
       c.fillStyle = crossing ? '#5cbd7840' : '#4b95dc40'; c.strokeStyle = crossing ? '#90e6a5' : '#8cbbf4';
       c.setLineDash(crossing ? [5, 3] : []); c.lineWidth = 1; c.fillRect(a.x, a.y, b.x - a.x, b.y - a.y); c.strokeRect(a.x, a.y, b.x - a.x, b.y - a.y); c.setLineDash([]);

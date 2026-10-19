@@ -14,6 +14,8 @@ export class Element {
   set value(value){this.inputValue=String(value);}
   get value(){return this.inputValue??(this.tagName==='SELECT'?this.children.find(child=>child.tagName==='OPTION')?.value:'')??'';}
   get isConnected(){return this.attached===true||this.parentNode?.isConnected===true;}
+  contains(value){return all(this).includes(value);}
+  focus(){document.activeElement=this;}
   querySelectorAll(selector){return all(this).filter(node=>selector==='details[open]'?node.tagName==='DETAILS'&&node.open:node.tagName.toLowerCase()===selector);}
 }
 export function all(root){return [root,...root.children.flatMap(child=>child instanceof Element?all(child):[])];}
@@ -24,7 +26,7 @@ export function gate(){let resolve,reject;const promise=new Promise((yes,no)=>{r
 export function installDom(t){
   const original=globalThis.document,storage=globalThis.localStorage;
   const root=new Element('main');root.attached=true;const head=new Element('head');head.attached=true;
-  globalThis.document={createElement:tag=>new Element(tag),createElementNS:(namespace,tag)=>Object.assign(new Element(tag),{namespaceURI:namespace}),createDocumentFragment:()=>new Element('#fragment'),baseURI:'https://studio.test/',head,querySelector:()=>null};
+  globalThis.document={createElement:tag=>new Element(tag),createElementNS:(namespace,tag)=>Object.assign(new Element(tag),{namespaceURI:namespace}),createDocumentFragment:()=>new Element('#fragment'),baseURI:'https://studio.test/',head,activeElement:root,querySelector:()=>null};
   globalThis.localStorage={getItem:()=>null,setItem(){}};
   t.after(()=>{globalThis.document=original;globalThis.localStorage=storage;});return root;
 }

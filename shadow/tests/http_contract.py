@@ -20,8 +20,9 @@ ROOT = Path(__file__).resolve().parents[2]
 STUDIO = ROOT / 'shadow/samples/netDxf.Shadow.Studio'
 
 
-def run(dotnet: str, configuration: str) -> None:
-    candidates = list((STUDIO / 'bin').glob(f'**/{configuration}/net8.0/netDxf.Shadow.Studio.dll'))
+def run(dotnet: str, configuration: str, published: Path | None = None) -> None:
+    candidates = [published / 'netDxf.Shadow.Studio.dll'] if published else list((STUDIO / 'bin').glob(f'**/{configuration}/net8.0/netDxf.Shadow.Studio.dll'))
+    candidates = [path for path in candidates if path.is_file()]
     if len(candidates) != 1:
         raise RuntimeError(f'Build exactly one {configuration}/net8.0 Studio target first; found {len(candidates)} assemblies.')
     reports = []
@@ -33,7 +34,7 @@ def run(dotnet: str, configuration: str) -> None:
         log_path = Path(temp) / 'server.log'
         with log_path.open('wb') as log:
             process = subprocess.Popen([dotnet, str(candidates[0]), '--urls', 'http://127.0.0.1:0'],
-                                       cwd=STUDIO, stdout=log, stderr=subprocess.STDOUT)
+                                       cwd=published or STUDIO, stdout=log, stderr=subprocess.STDOUT)
         streams = []
         try:
             deadline = time.monotonic() + 30
@@ -94,6 +95,36 @@ def run(dotnet: str, configuration: str) -> None:
                 'modes': 1, 'anchor': {'x': '1.25', 'y': 0, 'z': 0}}, cad['state'])
             assert {axis: snap['position'][axis] for axis in ['x', 'y', 'z']} == {'x': 0.125, 'y': -2.5, 'z': 0}
             passed('CAD endpoint metadata and nullable math request binding')
+            # The graph workspace uses this same route in native and WASM hosts.
+            # Numeric graph IDs are valid only under the returned build key and receipt.
+            graph_state = cad['state']
+            def graph_query(tool, **arguments):
+                return request(cad_prefix + '/graph/query', {'tool': tool, 'arguments': {
+                    'revision': graph_state['revision'], **arguments}}, graph_state)
+            visualization = graph_query('graph_visualization', nodeLimit=1, edgeLimit=1)
+            assert not visualization['isError']
+            graph_receipt = visualization['result']; projection = graph_receipt['data']
+            assert all(graph_receipt[key] == graph_state[key] for key in ['documentId', 'workspaceId', 'viewVersion', 'revision'])
+            assert projection['nodeCount'] == 2 and projection['edgeCount'] == 1 and projection['truncated']
+            assert projection['nodes']['nextOffset'] == 1 and projection['edges']['nextOffset'] is None
+            edge = projection['edges']['items'][0]
+            assert edge['entity'] == edge['rootEntity'] and edge['insertPath'] == []
+            assert {axis: edge['start'][axis] for axis in ['x', 'y', 'z']} == {'x': 0.125, 'y': -2.5, 'z': 0}
+            key = projection['graphKey']
+            continuation = graph_query('graph_visualization', graphKey=key, nodeOffset=1, nodeLimit=1)['result']['data']
+            assert continuation['graphKey'] == key and continuation['nodes']['items'][0]['id'] == 1
+            path = graph_query('graph_path', graphKey=key, source=edge['a'], target=edge['b'])['result']['data']
+            assert path['reachable'] and path['graphKey'] == key and path['edgeCount'] == 1
+            passed('graph projection and analysis share identity geometry pagination and source links')
+            assert graph_query('graph_visualization', nodeLimit=5001)['isError']
+            assert graph_query('graph_path', graphKey='stale', source=edge['a'], target=edge['b'])['isError']
+            assert graph_query('graph_visualization', graphKey=key, endpointTolerance=.02)['isError']
+            request(cad_prefix + '/graph/query', {'tool': 'graph_visualization', 'arguments': {}},
+                    expected=409, custom={'X-Shadow-Studio': '1'})
+            request(cad_prefix + '/graph/query', {'tool': 'graph_visualization', 'arguments': {}},
+                    {**graph_state, 'workspaceId': 'stale-graph-workspace'}, expected=409)
+            assert request(cad_prefix + '/state')['state'] == graph_state
+            passed('graph route rejects stale topology workspace identity and excessive output without mutation')
             cad = post(cad_prefix + '/layer', cad['state'], layer={'id': None, 'name': 'HTTP-É-日本語'})
             layer = next(layer for layer in cad['layers'] if layer['name'] == 'HTTP-É-日本語')
             cad = post(cad_prefix + '/layer', cad['state'], layer={'id': layer['id'], 'color': '#123456'})
@@ -254,4 +285,5 @@ def run(dotnet: str, configuration: str) -> None:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dotnet', default='dotnet'); parser.add_argument('--configuration', default='Release')
-    args = parser.parse_args(); run(args.dotnet, args.configuration)
+    parser.add_argument('--published', type=Path, help='Use a fresh native publish directory instead of bin output.')
+    args = parser.parse_args(); run(args.dotnet, args.configuration, args.published.resolve() if args.published else None)

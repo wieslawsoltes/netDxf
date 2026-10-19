@@ -1,0 +1,46 @@
+.graph-workspace { display:flex;flex-direction:column;gap:9px;min-width:0; }
+.graph-workspace .toolbar { display:flex;flex-wrap:wrap;gap:5px; }
+.graph-workspace .toolbar button { flex:1 1 auto; }
+.graph-workspace .property-row { min-width:0; }
+.graph-workspace .property-row input:not([type=checkbox]),.graph-workspace .property-row select { min-width:0;max-width:100%; }
+.graph-workspace details { border:1px solid var(--border,#425163);border-radius:5px;padding:7px; }
+.graph-workspace summary { cursor:pointer;font-weight:600; }
+.graph-workspace details[open] summary { margin-bottom:8px; }
+.graph-stats { display:grid;grid-template-columns:1fr 1fr;gap:5px;font-variant-numeric:tabular-nums; }
+.graph-stats>span { grid-column:1/-1;color:var(--muted,#a9bbc9);font-size:12px; }
+.graph-partial { border-left:3px solid #ffba49;padding:5px 8px;background:#ffba4910;color:#ffdc9f;font-size:12px; }
+.graph-thumbnail { display:block;width:100%;height:140px;object-fit:contain;border:1px solid #425163;border-radius:5px;background:#17212b;margin:8px 0; }
+.graph-legend { display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px;font-size:11px; }
+.graph-legend-item { display:inline-flex;align-items:center;gap:5px; }
+.graph-legend-item i { width:10px;height:10px;display:inline-block;border:1px solid #ffffff40;border-radius:50%;flex:none; }
+.graph-color-5bc0eb { background-color:#5bc0eb; }
+.graph-color-ffba49 { background-color:#ffba49; }
+.graph-color-9bc53d { background-color:#9bc53d; }
+.graph-color-e879b9 { background-color:#e879b9; }
+.graph-color-a99af5 { background-color:#a99af5; }
+.graph-color-48d6bb { background-color:#48d6bb; }
+.graph-color-fa9075 { background-color:#fa9075; }
+.graph-color-a8c5ff { background-color:#a8c5ff; }
+.graph-color-d6d16e { background-color:#d6d16e; }
+.graph-color-c39c79 { background-color:#c39c79; }
+.graph-color-75cfec { background-color:#75cfec; }
+.graph-color-f7a8a8 { background-color:#f7a8a8; }
+.graph-color-ff7d8a { background-color:#ff7d8a; }
+.graph-color-d99cff { background-color:#d99cff; }
+.graph-color-cbd5e1 { background-color:#cbd5e1; }
+.graph-color-64d8bd { background-color:#64d8bd; }
+.graph-color-ffcf66 { background-color:#ffcf66; }
+.graph-color-7593a5 { background-color:#7593a5; }
+.graph-color-87cbe5 { background-color:#87cbe5; }
+.graph-color-ffffff { background-color:#ffffff; }
+.graph-legend small { flex-basis:100%;color:var(--muted,#a9bbc9); }
+.graph-visibility { display:flex;flex-wrap:wrap;gap:8px; }
+.graph-visibility .property-row { display:flex;align-items:center;gap:5px;margin:0;flex:0 0 auto; }
+.graph-workspace .property-row input[type=checkbox] { width:auto;height:auto;min-width:auto;flex:0 0 auto; }
+.graph-visibility .property-row>span { white-space:nowrap;overflow:visible;text-overflow:clip;flex:0 0 auto; }
+.graph-inspector:not(:empty) { border:1px solid #84bad8;background:#263746;border-radius:5px;padding:8px; }
+.graph-inspector h3 { margin:0 0 6px;font-size:14px; }
+.graph-inspector p,.graph-inspector small,.graph-result-card small { overflow-wrap:anywhere; }
+.graph-results { display:flex;flex-direction:column;gap:5px; }
+.graph-result-card { min-width:0; }
+.graph-workspace button:focus-visible,.graph-workspace summary:focus-visible { outline:2px solid #8ed5ff;outline-offset:2px; }

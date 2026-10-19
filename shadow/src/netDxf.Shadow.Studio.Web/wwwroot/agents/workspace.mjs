@@ -116,9 +116,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   // Conversation -----------------------------------------------------------
   const providerChip = node('button', { type: 'button', class: 'agent-provider-chip', onclick: () => setTab('settings') }, [glyph('key'), node('span', { text: 'Connect a provider' })]);
   const documentChip = node('span', { class: 'agent-document-chip', text: 'Current drawing', title: 'Each turn is bound to the active drawing at its start.' });
-  const chatActions = node('div', { class: 'agent-chat-toolbar' }, [providerChip, node('span', { class: 'grow' }),
-    button('Import conversation', () => historyImport.click(), { icon: 'upload', compact: true }),
-    button('Export conversation', () => run(exportHistory), { icon: 'download', compact: true })]);
+  const chatActions = node('div', { class: 'agent-chat-toolbar', 'aria-label': 'Model, progress and context' });
   const planSummary = node('summary'), planSteps = node('ol');
   const planView = node('details', { class: 'agent-plan', hidden: true }, [planSummary, planSteps]); let planVersion = '';
   const empty = node('div', { class: 'agent-empty' }, [node('div', { class: 'agent-empty-mark' }, [glyph('agent')]),
@@ -157,7 +155,10 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
       node('div', { class: 'agent-popover-heading' }, [node('strong', { text: 'Run details' }),
         button('Close run details', () => chatPopovers.close(runView, true), { icon: 'close', compact: true })]),
       runDetail, runEvidence, planView, activity, usageStrip,
-      node('div', { class: 'agent-row' }, [retryButton, executePlanButton])])
+      node('div', { class: 'agent-row' }, [retryButton, executePlanButton]),
+      node('div', { class: 'agent-row agent-history-actions' }, [
+        button('Import conversation', () => historyImport.click(), { icon: 'upload' }),
+        button('Export conversation', () => run(exportHistory), { icon: 'download' })])])
   ]); let runVersion = '';
   const executionMode = node('select', { 'aria-label': 'Agent execution mode' }, executionModes.map(mode => node('option', { value: mode.id, text: mode.name })));
   executionMode.value = currentConfig.mode;
@@ -173,31 +174,48 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const permissionChip = node('button', { type: 'button', class: 'agent-permission-chip', onclick: () => setTab('settings'), text: 'Approve changes' });
   const contextLabel = node('span', { text: '0 / 128k' }), contextFill = node('span');
   const contextMeter = node('button', { class: 'agent-context-meter', type: 'button', title: 'Context usage and pinned instructions', onclick: () => setTab('context') }, [node('span', { class: 'agent-context-track' }, [contextFill]), contextLabel]);
-  const referenceComposer = createReferenceComposer({ api: drawingReferences, getDocument, compact: true, report: error => notice(error.message || String(error), 'error') });
+  const referenceComposer = createReferenceComposer({ api: drawingReferences, getDocument, compact: true,
+    report: error => notice(error.message || String(error), 'error'), onChange: (count, { focusWasInside }) => {
+      const restoreAttachmentFocus = !count && (focusWasInside || attachmentMenu.contains(document.activeElement));
+      attachmentMenu.hidden = !count; attachmentCount.textContent = String(count);
+      attachmentMenu.querySelector('summary').setAttribute('aria-label', `Review ${count} attached drawing object${count === 1 ? '' : 's'}`);
+      if (!count) chatPopovers.close(attachmentMenu);
+      if (restoreAttachmentFocus) referenceComposer.controls.querySelector('button').focus();
+    } });
   referenceComposer.chips.classList.add('agent-composer-references');
   const modeLabel = node('span');
-  const modeMenu = node('details', { class: 'agent-mode-menu' }, [
+  const modeMenu = node('details', { class: 'agent-mode-menu', 'data-placement': 'above' }, [
     node('summary', { class: 'agent-mode-toggle', 'aria-controls': 'agent-task-settings', title: 'Execution mode and task settings' }, [modeLabel]),
     node('div', { id: 'agent-task-settings', class: 'agent-mode-popover agent-chat-popover' }, [
       node('div', { class: 'agent-popover-heading' }, [node('strong', { text: 'Task settings' }),
-        button('Close task settings', () => chatPopovers.close(modeMenu, true), { icon: 'close', compact: true })]), executionControls])
+        button('Close task settings', () => chatPopovers.close(modeMenu, true), { icon: 'close', compact: true })]), executionControls,
+      node('div', { class: 'agent-task-permissions' }, [permissionChip])])
+  ]);
+  const attachmentCount = node('span', { text: 'Attachments' });
+  const attachmentMenu = node('details', { class: 'agent-attachment-menu', 'data-placement': 'above', hidden: true }, [
+    node('summary', { class: 'agent-attachment-toggle', 'aria-controls': 'agent-attachment-details', title: 'Review attached drawing objects' }, [glyph('link'), attachmentCount]),
+    node('div', { id: 'agent-attachment-details', class: 'agent-attachment-popover agent-chat-popover' }, [
+      node('div', { class: 'agent-popover-heading' }, [node('strong', { text: 'Drawing attachments' }),
+        button('Close attachments', () => chatPopovers.close(attachmentMenu, true), { icon: 'close', compact: true })]), referenceComposer.chips])
   ]);
   const composer = node('div', { class: 'agent-composer' }, [
+    node('div', { class: 'agent-prompt-box' }, [prompt,
+      node('div', { class: 'agent-prompt-actions' }, [stopButton, sendButton])]),
     node('div', { class: 'agent-composer-context' }, [documentChip,
       button('Pin current drawing context', () => run(pinDrawing), { icon: 'pin', compact: true }), referenceComposer.controls,
-      node('span', { class: 'grow' }), modeMenu]), referenceComposer.chips,
-    node('div', { class: 'agent-prompt-box' }, [prompt,
-      node('div', { class: 'agent-prompt-actions' }, [node('span', { text: 'Enter to send · Shift+Enter for a new line' }), node('span', { class: 'grow' }), stopButton, sendButton])]),
-    node('div', { class: 'agent-composer-footer' }, [permissionChip, node('span', { class: 'grow' }), contextMeter])
+      attachmentMenu, node('span', { class: 'grow' }), modeMenu])
   ]);
-  panels.get('chat').append(chatActions, runView, transcript, jumpLatest, composer, liveStatus);
-  const chatPopovers = bindChatPopovers(dock, [runView, modeMenu]);
+  prompt.title = 'Enter to send · Shift+Enter for a new line';
+  chatActions.append(providerChip, runView, contextMeter);
+  panels.get('chat').append(chatActions, transcript, jumpLatest, composer, liveStatus);
+  const chatPopovers = bindChatPopovers(dock, [runView, modeMenu, attachmentMenu], { bounds: transcript, container: panels.get('chat') });
   function updateExecutionMode() {
     const mode = executionModes.find(item => item.id === executionMode.value) || executionModes[0];
     goalField.hidden = mode.id !== 'goal';
     const pending = !client.config || client.config.mode !== mode.id || client.config.successCriteria !== goalCriteria.value.trim();
-    modeLabel.textContent = `${mode.name}${pending ? ' •' : ''}`;
-    modeMenu.querySelector('summary').setAttribute('aria-label', `${mode.name} mode${pending ? ', unapplied settings' : ''}. Open task settings.`);
+    const permissions = client.config?.permissionMode || currentConfig.permissionMode;
+    modeLabel.textContent = `${mode.name}${permissions === 'fullAccess' && mode.id !== 'plan' ? ' · Full access' : ''}${pending ? ' •' : ''}`;
+    modeMenu.querySelector('summary').setAttribute('aria-label', `${mode.name} mode, ${mode.id === 'plan' ? 'read only' : modeNames[permissions]}${pending ? ', unapplied settings' : ''}. Open task settings.`);
     const turnLimit = client.config?.maxTurns ?? currentConfig.maxTurns;
     executionHint.textContent = `${mode.hint} ${turnLimit ? `Turn budget: ${turnLimit.toLocaleString()}; Resume continues after the limit.` : 'No fixed turn limit.'}` + (pending ? ' Apply mode, or send a task to apply it.' : '');
     executionControls.classList.toggle('pending', pending);
@@ -267,12 +285,11 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     const state = client.transcript, running = state.running || client.busy;
     const progress = presentRun(state, client.config || currentConfig);
     const nextRunVersion = JSON.stringify(progress);
-    runView.hidden = !progress.visible && !state.plan.length;
-    if (runView.hidden) chatPopovers.close(runView);
+    runView.hidden = false;
     if (runVersion !== nextRunVersion) {
       runVersion = nextRunVersion; runView.dataset.phase = progress.phase;
-      runTitle.textContent = progress.title; runModeBadge.textContent = progress.modeName;
-      runProgress.textContent = `${progress.turns} turn${progress.turns === 1 ? '' : 's'}`;
+      runTitle.textContent = progress.visible ? progress.title : 'Session'; runModeBadge.textContent = progress.modeName;
+      runProgress.textContent = progress.turns ? `${progress.turns}` : '';
       runProgress.title = progress.progress;
       runDetail.textContent = [progress.detail, progress.progress].filter(Boolean).join('\n'); runDetail.hidden = false;
       const evidence = [];
@@ -320,6 +337,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     permissionChip.textContent = planning ? 'Plan · read only' : modeNames[client.config?.permissionMode || currentConfig.permissionMode] || 'Approve changes';
     permissionChip.classList.toggle('full-access', !planning && client.config?.permissionMode === 'fullAccess');
     providerChip.querySelector('span').textContent = client.configured ? `${providers.find(p => p.id === client.config.provider)?.name || client.config.provider} · ${client.config.model}` : 'Connect a provider';
+    providerChip.title = providerChip.textContent;
     documentChip.textContent = getDocumentName() || 'No drawing open';
     connectButton.disabled = running; turnLimitReset.disabled = running; compactButton.disabled = running; pinButton.disabled = running; saveFileButton.disabled = running || !fileDirty;
     runFileButton.disabled = running || fileDirty || !file?.path || !/\.(?:m?js|cjs)$/i.test(file.path);
