@@ -97,8 +97,8 @@ exact pushed revision, including each operating-system and package-consumer job.
    regressions were corrected; all 23 checks passed on `e559aceb`, including the
    attribute editor, synchronization, definition ordering and identity/default fixes.
    Each new pushed revision needs its own checks.
-2. Qualify explicit attribute insertion previews and insertion-time value/verify
-   prompts, then continue block-library transfer, insertion/array workflows and supported
+2. Build production block-library transfer on the verified stream exchange and
+   captured-graph/history foundations, then extend insertion/array workflows and supported
    attributed/nonuniform explode cases with native and browser history tests.
 3. Complete remaining layers/styles and drafting workflows: filters/isolation,
    layer-state transfer/restore settings, resource repair, viewport overrides,
@@ -145,6 +145,28 @@ the user's cumulative USD 20 ceiling. There is no credential material in this au
   collision policies, versioned library management and Studio/agent controls remain
   open. Model-space export does not archive root definition metadata or preserve
   cloned hatch associations; those limitations are documented in BlockAuthoring.md.
+
+### Captured block graph and COPY increment
+
+- The shared adapter reconstructs captured INSERT attribute collections before
+  binding owned sequence records. Distinct duplicate-tag instances, empty stored
+  sequences and terminator metadata are retained. The native sequence materialization
+  API registers new records and is idempotent for existing ones.
+- COPY retains shared definition bindings while cloning assigned attributes. Its
+  preview, repeated undo/redo and text/binary save/reload preserve values, geometry,
+  empty-sequence presence and owned identities. Native and WASM browser regressions
+  also exercise copying an inserted block and independently audit the saved result.
+- Removing newly imported block graphs now detaches contained entities before
+  deleting definitions and orders resource registration/removal by dependencies.
+  Captured nested-definition fixtures cover shared children, attributes, layers,
+  dimension styles and custom arrow blocks through repeated undo/redo.
+- These changes remove adapter obstacles found while developing library transfer.
+  A production import planner, resource-name policies and Studio library controls
+  are still required; a bounded verification fixture does not supply those features.
+- Local verification: 1,412 Advanced checks, 19 native attribute-membership cases
+  in Debug and Release, 124 published native browser checks and 202 standalone WASM
+  checks pass. Both Release publishes and all five native targets build. All 93
+  route contracts and 984 assets validate. Hosted CI must qualify the pushed head.
 
 ### Insertion attribute increment
 

@@ -95,6 +95,23 @@ Conformance covers both text and binary formats for all six supported DXF versio
 model/paper source isolation, nested units/resources/settings, independent export,
 attribute values and embedded packets, linked columns, validation and failure paths.
 
+Captured INSERT graphs carry an owned attribute-collection reference, unlike the
+inline sequence used by initial authoring plans. The source adapter resolves the
+proposed members before constructing the INSERT and binding its read-only sequence
+terminator. Distinct stored attributes with equal tags retain their values and
+identities. `insert.EnsureAttributeSequenceEnd()` supports metadata on an empty
+sequence without creating a synthetic attribute; it registers the record if the
+insertion already belongs to a drawing and retains its identity on repeated calls.
+
+COPY and ARRAY preserve the shared `Attribute.Definition` relationship while
+cloning instance attributes and owned data. The copied values and geometry remain
+independent. Removing definitions as part of a graph transaction detaches their
+entities before removing referenced definitions/resources. Registration orders
+linetypes, layers, blocks and dimension styles so nested references and custom arrow
+blocks can be removed and restored through history. These adapter contracts are
+tested with captured cross-document graphs; the production library import planner
+and its collision/metadata policies remain open.
+
 ## Integration contracts
 
 The existing `BlockSourceDisposition` numeric values remain Retain=0,
