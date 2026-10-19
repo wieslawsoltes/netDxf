@@ -10,6 +10,24 @@ internal static partial class Program
 {
     private static void RegisterAttributeReplacementTests()
     {
+        foreach (bool attached in new[] { false, true })
+        foreach (bool binary in new[] { false, true }) Run("attribute-membership/ensure-empty-sequence/" + attached + "/" + binary, () =>
+        {
+            var root = new Insert(new Block("EMPTY_SEQUENCE")); var doc = new DxfDocument();
+            if (attached) doc.Entities.Add(root);
+            Check(root.EndSequenceRecord == null, "Empty insertion unexpectedly has a terminator");
+            var end = root.EnsureAttributeSequenceEnd();
+            end.XData.Add(new XData(new ApplicationRegistry("SEQUENCE_METADATA")));
+            end.XData["SEQUENCE_METADATA"].XDataRecord.Add(new XDataRecord(XDataCode.String, "retained"));
+            if (!attached) doc.Entities.Add(root);
+            string handle = end.Handle;
+            Check(handle != null && end.Owner == root && root.Attributes.Count == 0, "Terminator was not registered without attributes");
+            Check(root.EnsureAttributeSequenceEnd() == end && end.Handle == handle, "Repeated ensure replaced the terminator");
+            using var stream = new MemoryStream(); Check(doc.Save(stream, binary), "Empty sequence save failed"); stream.Position = 0;
+            var loaded = DxfDocument.Load(stream)!.Entities.Inserts.Single();
+            Check(loaded.Attributes.Count == 0 && loaded.EndSequenceRecord != null, "Empty sequence was lost");
+            Equal("retained", loaded.EndSequenceRecord!.XData["SEQUENCE_METADATA"].XDataRecord.Single().Value, "Sequence metadata transport");
+        });
         Run("attribute-membership/reorder-retains-collection-identities-and-values", () =>
         {
             var block = new Block("REPLACE"); block.AttributeDefinitions.Add(new AttributeDefinition("A")); block.AttributeDefinitions.Add(new AttributeDefinition("B"));
