@@ -209,8 +209,7 @@ public sealed partial class AgentSession : IDisposable
     {
         ModelId = string.IsNullOrWhiteSpace(Options.Model) ? null : Options.Model,
         MaxOutputTokens = Options.MaxOutputTokens,
-        Tools = AvailableTools
-            .Select(t => (AITool)FunctionFor(t)).ToList(),
+        Tools = PrepareTools().Functions.ToList(),
         ToolMode = ChatToolMode.Auto, AllowMultipleToolCalls = true
     };
     private async Task<ChatResponse> InferAsync(IReadOnlyList<ChatMessage> input, ChatOptions options, CancellationToken token, bool display = true)
@@ -433,10 +432,10 @@ public sealed partial class AgentSession : IDisposable
         lock (gate)
         {
             if (pins.Count >= 32) throw new InvalidOperationException("The session already has 32 pins.");
-            var pin = new AgentPinnedContext(Guid.NewGuid().ToString("N"), redact(text)); pins.Add(pin); return pin;
+            var pin = new AgentPinnedContext(Guid.NewGuid().ToString("N"), redact(text)); pins.Add(pin); retainedContextRevision++; return pin;
         }
     }
-    public bool Unpin(string id) { lock (gate) return pins.RemoveAll(p => p.Id == id) > 0; }
+    public bool Unpin(string id) { lock (gate) { var removed = pins.RemoveAll(p => p.Id == id) > 0; if (removed) retainedContextRevision++; return removed; } }
     public IReadOnlyList<AgentPinnedContext> Pins { get { lock (gate) return pins.ToArray(); } }
     public IReadOnlyList<AgentPlanStep> Plan { get { lock (gate) return plan.ToArray(); } }
     public void SetPlan(IEnumerable<AgentPlanStep> steps)

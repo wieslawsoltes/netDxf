@@ -1,6 +1,7 @@
 using System.Text;
 using System.Runtime.CompilerServices;
 using netDxf.Shadow.Mcp;
+using Microsoft.Extensions.AI;
 
 namespace netDxf.Shadow.Agents;
 
@@ -8,15 +9,44 @@ public sealed partial class AgentSession
 {
     private readonly ConditionalWeakTable<McpToolDefinition, AgentFunction> functionDeclarations = new();
     private AgentFunction FunctionFor(McpToolDefinition tool) => functionDeclarations.GetValue(tool, definition => new(definition));
-    private IEnumerable<McpToolDefinition> AvailableTools => ToolDefinitions
-        .Where(tool => Options.PermissionMode != AgentPermissionMode.ReadOnly && Options.Mode != AgentRunMode.Plan || tool.ReadOnly)
-        .OrderBy(tool => tool.Name, StringComparer.Ordinal);
+    private sealed record PreparedToolCatalog(McpToolDefinition[] Host, IReadOnlyList<McpToolDefinition> Definitions,
+        AITool[] Functions, string Guidance, long ContextBytes);
+    private PreparedToolCatalog? preparedTools;
+    private PreparedToolCatalog PrepareTools()
+    {
+        lock (gate)
+        {
+            // Do not rely on collection identity: hosts may replace an entry in the
+            // same list. Definitions are immutable records; reference comparison
+            // catches changed schemas/policies without serializing them on every poll.
+            var host = executor.Tools;
+            if (preparedTools is { } cached && cached.Host.Length == host.Count)
+            {
+                // A custom host may expose a live list with a snapshot enumerator.
+                // Do not index it using a Count that can change between reads.
+                using var entries = host.GetEnumerator();
+                var same = true;
+                for (var i = 0; i < cached.Host.Length && same; i++)
+                    same = entries.MoveNext() && ReferenceEquals(cached.Host[i], entries.Current);
+                if (same && !entries.MoveNext()) return cached;
+            }
+            var snapshot = host.ToArray();
+            var definitions = snapshot.Where(tool => tool.Name is not ("agent_finish" or "agent_plan")).Concat(controlTools.Tools).ToArray();
+            var available = definitions.Where(tool => Options.PermissionMode != AgentPermissionMode.ReadOnly && Options.Mode != AgentRunMode.Plan || tool.ReadOnly)
+                .OrderBy(tool => tool.Name, StringComparer.Ordinal).ToArray();
+            var functions = available.Select(FunctionFor).ToArray();
+            var guidance = BuildToolGuidance(available);
+            return preparedTools = new(snapshot, Array.AsReadOnly(definitions), functions.Cast<AITool>().ToArray(), guidance,
+                functions.Sum(function => (long)function.ContextBytes) + Encoding.UTF8.GetByteCount(guidance));
+        }
+    }
 
     // Keep the harness useful with unrelated registries. Only describe workflows that
     // the current host actually exposes, and rebuild when a dynamic host changes tools.
-    private string ToolGuidance()
+    private string ToolGuidance() => PrepareTools().Guidance;
+    private static string BuildToolGuidance(IEnumerable<McpToolDefinition> available)
     {
-        var names = AvailableTools.Select(tool => tool.Name).ToHashSet(StringComparer.Ordinal);
+        var names = available.Select(tool => tool.Name).ToHashSet(StringComparer.Ordinal);
         var text = new StringBuilder();
         if (names.Contains("shadow_state"))
             text.AppendLine("CAD workflow: begin with shadow_state for current document/workspace/revision receipts. Reuse unchanged receipts for reads, and use the receipt returned by each successful mutation for the next edit. A conflict requires fresh state and inspection; do not guess the next revision.");
