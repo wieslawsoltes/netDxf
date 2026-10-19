@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../src/netDxf.Shadow.Symbols/netDxf.Shadow.Symbols.csproj" /><ProjectReference Include="../../src/netDxf.Shadow.Pid/netDxf.Shadow.Pid.csproj" /><ProjectReference Include="../../src/netDxf.Shadow.Piping/netDxf.Shadow.Piping.csproj" /><ProjectReference Include="../../src/netDxf.Shadow.Electrical/netDxf.Shadow.Electrical.csproj" /></ItemGroup>
+</Project>

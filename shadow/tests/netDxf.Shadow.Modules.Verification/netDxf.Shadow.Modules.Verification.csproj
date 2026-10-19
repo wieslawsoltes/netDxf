@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><RollForward>Major</RollForward></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../src/netDxf.Shadow.Modules/netDxf.Shadow.Modules.csproj" /></ItemGroup>
+</Project>

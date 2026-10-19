@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Reusable adapters connecting persistent native CAD domain metadata to module commands and bounded validation reports.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow.Modules/netDxf.Shadow.Modules.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Symbols/netDxf.Shadow.Symbols.csproj" />
+  </ItemGroup>
+</Project>
