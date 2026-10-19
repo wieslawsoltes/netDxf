@@ -36,6 +36,9 @@ public sealed record RenderCompileOptions(string Layout = "Model", double Tolera
 {
     /// <summary>Definition-space rendering, isolated from model annotation and paper projection.</summary>
     public ObjectId? RootBlock { get; init; }
+    /// <summary>Exact root subset for transient previews and isolated presentations. Default
+    /// retains all roots; an explicit subset suppresses automatic paper viewport composition.</summary>
+    public ImmutableArray<ObjectId> RootEntities { get; init; }
     public bool IncludePaperViewports { get; init; } = true;
     /// <summary>Consumer-only multiplier for authored linetype scales. Paper composition compensates
     /// this scale per viewport before compiling both dashes and decorations.</summary>

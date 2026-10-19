@@ -85,6 +85,8 @@ public static class StudioCadHttp
             hub.Use(id, s => StudioHttp.Execute(s, http, () => Results.File(s.CadExportBlockLibrary(new(revision, new(block), binary), token), "application/dxf", "block-library.dxf"))));
         routes.MapGet("/{id}/attributes", (string id, StudioDocumentHub hub, HttpRequest http, long revision) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadReadAttributes(revision))));
+        routes.MapPost("/{id}/insert-preview", (string id, StudioDocumentHub hub, HttpRequest http, CadInsertPreviewRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadInsertPreview(request, token))));
         routes.MapPost("/{id}/attributes", (string id, StudioDocumentHub hub, HttpRequest http, CadAttributeRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadEditAttributes(request, token))));
         routes.MapGet("/{id}/attribute-definitions", (string id, StudioDocumentHub hub, HttpRequest http, long revision, string? block, bool? currentSpace) =>
