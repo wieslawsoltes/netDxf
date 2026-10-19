@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>ASP.NET Core HTTP endpoints for CAD workspaces and Studio agents.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow.Studio.Core/netDxf.Shadow.Studio.Core.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Studio.Agents/netDxf.Shadow.Studio.Agents.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+</Project>

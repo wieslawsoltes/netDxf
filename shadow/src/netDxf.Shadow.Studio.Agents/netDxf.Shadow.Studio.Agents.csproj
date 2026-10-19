@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Studio agent lifecycle, browser tool bridge, UI relay and companion integration.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow.Agents/netDxf.Shadow.Agents.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Studio.Core/netDxf.Shadow.Studio.Core.csproj" />
+
+  </ItemGroup>
+</Project>

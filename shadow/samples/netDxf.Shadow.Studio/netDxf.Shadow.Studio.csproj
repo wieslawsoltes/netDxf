@@ -1,14 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
-    <ProjectReference Include="../../src/netDxf.Shadow.Agents/netDxf.Shadow.Agents.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Mcp/netDxf.Shadow.Mcp.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Exchange.Dwg/netDxf.Shadow.Exchange.Dwg.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Drafting/netDxf.Shadow.Drafting.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Dimensions/netDxf.Shadow.Dimensions.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.NetDxf/netDxf.Shadow.NetDxf.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Editor/netDxf.Shadow.Editor.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Graph/netDxf.Shadow.Graph.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Rendering.SkiaSharp/netDxf.Shadow.Rendering.SkiaSharp.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Rendering.Shx/netDxf.Shadow.Rendering.Shx.csproj" />
+    <ProjectReference Include="../../src/netDxf.Shadow.Studio.Hosting/netDxf.Shadow.Studio.Hosting.csproj" />
+    <ProjectReference Include="../../src/netDxf.Shadow.Studio.Web/netDxf.Shadow.Studio.Web.csproj" />
   </ItemGroup>
 </Project>

@@ -1,11 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType><RollForward>Major</RollForward></PropertyGroup>
   <ItemGroup>
-    <Compile Include="../../samples/netDxf.Shadow.Studio/StudioAgentBrowserMcp.cs" Link="StudioAgentBrowserMcp.cs" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Agents/netDxf.Shadow.Agents.csproj" />
-    <Compile Include="../../samples/netDxf.Shadow.Studio/StudioAgentController.cs" Link="StudioAgentController.cs" />
-    <Compile Include="../../samples/netDxf.Shadow.Studio/StudioAgentCompanion.cs" Link="StudioAgentCompanion.cs" />
-    <Compile Include="../../samples/netDxf.Shadow.Studio/StudioAgentRouteTools.cs" Link="StudioAgentRouteTools.cs" />
+    <ProjectReference Include="../../src/netDxf.Shadow.Studio.Agents/netDxf.Shadow.Studio.Agents.csproj" />
   </ItemGroup>
 </Project>

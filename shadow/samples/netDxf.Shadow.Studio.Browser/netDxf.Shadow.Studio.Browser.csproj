@@ -9,46 +9,14 @@
     <WasmBuildNative>true</WasmBuildNative>
     <WasmEnableThreads>false</WasmEnableThreads>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
-    <BrowserFontDirectory>$(BaseIntermediateOutputPath)studio-fonts/</BrowserFontDirectory>
-    <NotoFontSource>https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac</NotoFontSource>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../src/netDxf.Shadow.Agents/netDxf.Shadow.Agents.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Mcp/netDxf.Shadow.Mcp.csproj" />
+    <ProjectReference Include="../../src/netDxf.Shadow.Studio.WebAssembly/netDxf.Shadow.Studio.WebAssembly.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" PrivateAssets="all" />
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" Version="3.119.4" />
     <PackageReference Include="HarfBuzzSharp.NativeAssets.WebAssembly" Version="8.3.1.5" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Exchange.Dwg/netDxf.Shadow.Exchange.Dwg.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Drafting/netDxf.Shadow.Drafting.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Dimensions/netDxf.Shadow.Dimensions.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.NetDxf/netDxf.Shadow.NetDxf.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Editor/netDxf.Shadow.Editor.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Graph/netDxf.Shadow.Graph.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Rendering.SkiaSharp/netDxf.Shadow.Rendering.SkiaSharp.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Rendering.Shx/netDxf.Shadow.Rendering.Shx.csproj" />
-    <!-- The browser compiles the actual Studio services, not a second implementation. -->
-    <Compile Include="../netDxf.Shadow.Studio/*.cs"
-             Exclude="../netDxf.Shadow.Studio/Program.cs;../netDxf.Shadow.Studio/StudioHttp.cs;../netDxf.Shadow.Studio/StudioCadHttp.cs;../netDxf.Shadow.Studio/StudioDocumentHub.Http.cs;../netDxf.Shadow.Studio/StudioAgentHttp.cs"
-             Link="Shared/%(Filename)%(Extension)" />
-    <Content Include="../netDxf.Shadow.Studio/wwwroot/**/*"
-             Exclude="../netDxf.Shadow.Studio/wwwroot/index.html;../netDxf.Shadow.Studio/wwwroot/diagnostics.html"
-             Link="wwwroot/%(RecursiveDir)%(Filename)%(Extension)" />
-    <Content Include="../netDxf.Shadow.Studio/wwwroot/index.html" Link="wwwroot/studio-shell.html" />
-    <Content Include="../netDxf.Shadow.Studio/wwwroot/diagnostics.html" Link="wwwroot/diagnostics-shell.html" />
-    <BrowserFont Include="NotoSans-Regular.ttf;NotoSans-Bold.ttf;NotoSans-Italic.ttf;NotoSans-BoldItalic.ttf" />
-    <Content Include="@(BrowserFont->'$(BrowserFontDirectory)%(Identity)')" Link="wwwroot/fonts/%(Filename)%(Extension)" />
-    <Content Include="$(BrowserFontDirectory)OFL.txt" Link="wwwroot/fonts/OFL.txt" />
+    <ProjectReference Include="../../src/netDxf.Shadow.Studio.Web/netDxf.Shadow.Studio.Web.csproj" />
     <Content Include="../../src/netDxf.Shadow.Exchange.Dwg/THIRD-PARTY-NOTICES.txt" Link="wwwroot/DWG-NOTICES.txt" />
   </ItemGroup>
-  <!-- Font restoration is build-time only, pinned to an immutable upstream commit.
-       No host system fonts or runtime CDN requests are used by the browser app. -->
-  <Target Name="RestoreStudioBrowserFonts" BeforeTargets="PrepareForBuild">
-    <MakeDir Directories="$(BrowserFontDirectory)" />
-    <DownloadFile SourceUrl="$(NotoFontSource)/hinted/ttf/NotoSans/%(BrowserFont.Identity)"
-                  DestinationFolder="$(BrowserFontDirectory)" DestinationFileName="%(BrowserFont.Identity)"
-                  Condition="!Exists('$(BrowserFontDirectory)%(BrowserFont.Identity)')" />
-    <DownloadFile SourceUrl="$(NotoFontSource)/LICENSE" DestinationFolder="$(BrowserFontDirectory)" DestinationFileName="OFL.txt"
-                  Condition="!Exists('$(BrowserFontDirectory)OFL.txt')" />
-  </Target>
 </Project>
