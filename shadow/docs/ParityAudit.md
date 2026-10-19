@@ -13,7 +13,7 @@ corresponding end-to-end evidence cover their stated scope.
 | Rapid drawing creation, editing and a complete MCP toolset | Generic source/schema/collection/method tools, atomic drawing batches, typed Studio routes; MCP and AgentStudio verification programs | Build a per-native-entity/property/method coverage inventory, close unsupported authoring/editing shapes, and exercise them through actual Studio/MCP workflows. Generic reflection access alone does not prove safe full editing support. |
 | Full graph analysis in Studio | Nodes, edges, components, path/traversal, cut vertices/bridges, nearest node, diagnostics, fundamental cycles and minimum spanning forests share reusable algorithms and MCP tools | Broaden source-reference graph exploration and query-to-selection workflows; validate large real drawings and export/import analysis receipts. Geometric topology does not imply discipline connectivity. |
 | AutoCAD-like ribbon and command/log visibility | Adaptive ribbon panels, keyboard command workflow, independent command/history visibility, clean screen; browser tests | Continue command discoverability, keyboard navigation, focus/accessibility and small-screen validation as commands are added. |
-| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; exact attribute history; shared instance editor, BATTMAN/ATTDEF for named-block definitions, ATTSYNC previews, insertion-time value/verify prompts, explicit insertion attributes and DXF block-library transfer with conflict policies/previews | Standalone model-space ATTDEF placement, library catalog/version workflows and remaining transfer metadata, cursor-following insertion graphics, richer insertion/array workflows and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
+| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; exact attribute history; shared instance editor, BATTMAN/ATTDEF for named blocks and standalone layout definitions, ATTSYNC previews, insertion-time value/verify prompts, explicit insertion attributes and DXF block-library transfer with conflict policies/previews | Command-line -ATTDEF and richer definition text settings, duplicate-tag layout copying, library catalog/version workflows and remaining transfer metadata, cursor-following insertion graphics, richer insertion/array workflows and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
 | MOVE and other editing tools with drafting aids | MOVE/COPY/ROTATE/SCALE/MIRROR, basic topology edits, STRETCH/BREAK/BREAKATPOINT increment, object/grid snap, Ortho/polar/tracking; native and browser regressions | Extend entity/coordinate-system coverage for each command, curve trim/extend/offset, reference/copy variants of transforms, richer arrays, selection cycling and additional acquisition modes. Existing planar restrictions remain material. |
 | Full line, text style and layer UI | Managers expose supported table fields, complex linetypes, LIN import, fixed-height/font metadata, layer color/plot/lock/freeze/transparency; native layer-state save/update/rename/delete/selective restore with history and DXF persistence | Layer filters/isolation, saved-layer editing, persisted restore masks, LAS transfer, unresolved-resource repair, individual viewport overrides, plot-style workflows, text editing/formatting and externally referenced resource behavior. |
 | Token-efficient coding harness and provider caching | Bounded context/tool batches, caching configuration and usage, stable prefixes, checkpoint/compaction behavior; provider/agent fixtures | Verify supported provider/model combinations with opt-in real accounts, measure cache hits on repeated identical tasks, and compare quality/latency/cost. Fixtures do not establish actual provider cache performance. |
@@ -94,10 +94,11 @@ exact pushed revision, including each operating-system and package-consumer job.
 ## Current implementation order
 
 1. Preserve green CI on every new pushed increment. Process-launch and browser
-   regressions were corrected; all 23 checks passed on `b242a2b8`, including the
-   attribute workflows and captured block graph/COPY fixes. Pages deployment was skipped.
+   regressions were corrected; all 23 checks passed on `6b8a1482`, including the
+   production block-library transfer and cross-platform installed-package matrix.
+   Pages deployment was skipped.
    Each new pushed revision needs its own checks.
-2. Qualify production block-library transfer through native/browser and installed
+2. Finish standalone layout attribute authoring through native/browser and installed
    package checks, then extend insertion/array workflows and supported attributed/
    nonuniform explode cases with native and browser history tests. Retain explicit
    library metadata, catalog/version management and dynamic-block gaps.
@@ -147,12 +148,39 @@ the user's cumulative USD 20 ceiling. There is no credential material in this au
   regressions; both Release publishes and all five core target builds pass.
   All 96 route contracts and 987 assets validate.
   Independent DXF audits preserve exported attributes, units, base point and ENDBLK
-  metadata without repairs. Installed-package and hosted checks must qualify this
-  increment separately from the green `b242a2b8` baseline.
+  metadata without repairs. All 33 packages pass packing and 14 fresh installed-consumer
+  scenarios pass locally. Hosted CI on `6b8a1482` passes all 23 checks, including
+  qualification and the complete Windows/Linux package-runtime matrix; Pages is skipped.
 - Persistent catalog/version management, user-library search/paging, additional
   transfer metadata and reviewed symbol families remain open. Nonzero handle-valued
   XData is refused until explicit remapping is implemented; external files are not
   bundled. This increment does not implement dynamic or parametric blocks.
+
+### Standalone layout attribute increment
+
+- Shared ATTDEF authoring accepts model/paper layout owners, the current block
+  editor and named definitions. Point acquisition occurs after the dialog closes;
+  cancellation leaves source geometry and history unchanged. Typed agent reads use
+  `currentSpace=true`, and proposals retain the normal drawing/revision guards.
+- Definitions keep their native Object classification and keyed block ownership.
+  Root rendering displays their tags, selection and grips operate on the original
+  objects, and BLOCK includes their defaults with the selected geometry. Converted
+  references receive explicit assigned attributes in previews and adopted source.
+- Affine edits and MOVE coordinate embedded multiline and fallback frames; move
+  grips preserve independent offsets. Retain/convert/remove block dispositions,
+  exact undo/redo, paper/model space, recorded replay and text/binary persistence
+  have dedicated regressions. Embedded nonuniform frames and scaling inline height
+  overrides are explicitly refused.
+- Local verification passes 1,460 Advanced, 424 JavaScript, 141 fresh published
+  native Chromium and 237 standalone WASM checks across root/subpath hosting.
+  Both Release publishes succeed; all 96 route
+  contracts and 987 assets validate. Independent saved-DXF audits require no repairs.
+  An installed-only package consumer now exercises standalone creation, tag preview,
+  multiline grip movement and history. Installed-package execution and hosted CI
+  for this increment must qualify the committed revision separately.
+- Duplicate-tag layout copying, command-line -ATTDEF, richer definition text
+  settings and the other block requirements remain open. This is a bounded
+  workflow increment, not evidence of complete AutoCAD block parity.
 
 ### Native block exchange increment
 

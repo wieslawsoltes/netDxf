@@ -52,7 +52,7 @@ as other editing operations.
 
 This implements ordinary named definitions and references, not AutoCAD dynamic
 block action graphs, constraints/visibility states, external-reference in-place
-editing, standalone model-space ATTDEF placement, or arbitrary 3D modeler operations.
+editing, or arbitrary 3D modeler operations.
 Objects unsupported by the representation-preserving transform/copy planners
 are refused; they are never flattened to sampled display lines for block creation.
 Native roundtrip, deep-copy isolation, recursive/foreign/locked refusals, scene
@@ -329,8 +329,9 @@ removal are undoable together. Clear that option to edit definitions independent
 Sync references explicitly runs synchronization even without staged field changes.
 Use `ATTSYNC` or the typed edit-preview operation when a separate review is needed.
 
-`ATTDEF` and Define attribute add a definition directly to an existing local named
-block. Specify its tag, prompt, default, definition coordinates, height, style,
+`ATTDEF` and Define attribute add a definition to the current model/paper space,
+the active block editor, or a chosen existing local named block. Specify its tag,
+prompt, default, definition coordinates, height, style,
 layer and modes. Position locking requires DXF 2010 or later; multiline content
 requires DXF 2018. Unsupported modes are disabled for older drawings and rejected
 by the planner. Newline characters become embedded MTEXT paragraphs; the initial
@@ -338,18 +339,48 @@ single-line fallback uses spaces. Existing references acquire new definitions on
 when synchronized. Inside `BEDIT`, authoring stays in the branch until save, and
 discard leaves the live drawing unchanged.
 
+In model/paper space, Specify on-screen starts a point-acquisition command after
+the dialog closes. The definition is published only after the point is accepted;
+Escape cancels without a history entry. Clear that option to enter coordinates in
+the dialog. On-screen placement is also available in the active block editor, but
+not for an inactive named definition. Pending placement retains the original
+drawing/revision receipt and cannot silently apply to another drawing.
+
+Standalone definitions render their tags, while read/edit APIs retain their
+independent defaults. They participate in selection, move grips, supported affine
+transforms, erase and BLOCK selection. The invisible attribute mode controls
+inserted attributes; its definition stays visible while authoring. BLOCK localizes
+definition coordinates with the selected geometry, inherits owner insertion units,
+and explicitly constructs assigned defaults for a converted INSERT. Retain,
+convert and remove source dispositions preserve their ordinary history semantics.
+MOVE and grips transform both embedded multiline and fallback text frames while
+preserving their offset. Embedded text requires uniform orthogonal scaling;
+nonuniform frames and scaling inline height overrides are refused.
+
+Native `AttributeDefinition` remains an Object in Shadow and belongs to the
+owner's keyed `AttributeDefinitions` collection. Rendering it does not reclassify
+it as an Entity or add it to the owner's ordinary entity collection. Definitions
+are included only at the displayed root; INSERT expansion renders assigned
+attributes, avoiding duplicate tags over their values. Native definition tags
+must remain unique within an owner, so copying to an owner with the same tag is
+refused. Duplicate-tag standalone authoring parity is still outstanding.
+
 `DraftingAttributeDefinitions.Read` and `Plan` live in the reusable Drafting library.
 They validate identity, ownership, tag uniqueness, layers, resource names, profile
 capabilities and bounded geometry before publishing changes. Studio composes the
 plan with `AttributeSynchronization.Plan` when requested. Native and WebAssembly
 hosts share GET/POST `attribute-definitions` routes, agent request schemas and
-portable workflow references. Typed `attribute-definitions` preview operations
+portable workflow references. GET `currentSpace=true` resolves the active block
+editor or current model/paper layout; an explicit `block` takes precedence.
+Layout definitions have no inserted references to synchronize, so requesting
+`updateExisting` for a layout is refused before publication.
+Typed `attribute-definitions` preview operations
 carry `attributeDefinitions: { block, changes, updateExisting, convertTextModes }`;
 previews include synchronization reports and require the normal identity guards.
 
 The dialogs follow the ordinary [Block Attribute Manager workflow](https://help.autodesk.com/cloudhelp/2022/ENU/AutoCAD-Core/files/GUID-16555B43-D4FA-4C8E-BDF5-4256E9166A6F.htm).
-Standalone model-space ATTDEF placement, manager
-column settings/automatic previews, annotation contexts and plot-style editing
+Command-line `-ATTDEF`, duplicate-tag copying, additional definition text settings,
+manager column settings/automatic previews, annotation contexts and plot-style editing
 remain outside this increment. This is not complete AutoCAD block parity.
 
 ## Synchronize attributes
