@@ -21,6 +21,13 @@ public sealed partial class Studio
             if (state.Id is { } id) names[id] = "$layer-state/" + Uri.EscapeDataString(state["Name"].Text);
         foreach (var block in source.Document["Blocks"].Items)
         {
+            var definitionIndex = 0;
+            foreach (var entry in block["AttributeDefinitions"].Items)
+            {
+                if (entry["Value"].Id is { } definitionId)
+                    names[definitionId] = "$attribute-definition/" + Uri.EscapeDataString(block["Name"].Text) + "/" + definitionIndex;
+                definitionIndex++;
+            }
             var index = 0; foreach (var entity in block["Entities"].Items)
             {
                 if (entity.Id is { } id)

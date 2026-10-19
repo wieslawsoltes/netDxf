@@ -23,30 +23,39 @@ public static class DraftingAttributes
         var root = Root(snapshot, insert, false); var attributes = root["Attributes"].Items.Take(10_001).ToArray();
         if (attributes.Length > 10_000) throw new ArgumentException("Attribute editor budget exceeded.");
         var duplicates = attributes.GroupBy(a => a["Tag"].Text, StringComparer.OrdinalIgnoreCase).Where(g => g.Count() > 1).Select(g => g.Key).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        return attributes.Select(a =>
-        {
-            var source = CadTextProjection.Read(a); var text = source.Text; var flags = Flags(a);
-            return new DraftingAttribute(a.Id!.Value, a["Tag"].Text, a["Definition"]["Prompt"].Text, text.Content, text.Multiline,
-                (flags & 2) != 0, duplicates.Contains(a["Tag"].Text), source.Style["Name"].Text, text.Alignment, text.Height,
-                source.Rotation, text.Width, a["WidthFactor"].Number(1), a["ObliqueAngle"].Number(), a["IsBackward"].Boolean(),
-                a["IsUpsideDown"].Boolean(), a["Layer"]["Name"].Text, a["Linetype"]["Name"].Text, a["Lineweight"].Text,
-                Color(a), (flags & 1) != 0, a["IsPositionLocked"].Boolean(), text.LineSpacing?.Factor ?? 1, text.LineSpacing?.Exact ?? false);
-        }).ToImmutableArray();
+        return attributes.Select(a => ReadFields(a, duplicates.Contains(a["Tag"].Text))).ToImmutableArray();
+    }
+
+    internal static DraftingAttribute ReadFields(ShadowReader a, bool duplicate = false)
+    {
+        var source = CadTextProjection.Read(a); var text = source.Text; var flags = Flags(a);
+        return new(a.Id!.Value, a["Tag"].Text, a.Type == "AttributeDefinition" ? a["Prompt"].Text : a["Definition"]["Prompt"].Text,
+            text.Content, text.Multiline, (flags & 2) != 0, duplicate, source.Style["Name"].Text, text.Alignment, text.Height,
+            source.Rotation, text.Width, a["WidthFactor"].Number(1), a["ObliqueAngle"].Number(), a["IsBackward"].Boolean(),
+            a["IsUpsideDown"].Boolean(), a["Layer"]["Name"].Text, a["Linetype"]["Name"].Text, a["Lineweight"].Text,
+            Color(a), (flags & 1) != 0, a["IsPositionLocked"].Boolean(), text.LineSpacing?.Factor ?? 1, text.LineSpacing?.Exact ?? false);
     }
 
     public static DraftingPlan Plan(ShadowSnapshot snapshot, ObjectId insert, ImmutableArray<AttributeEdit> requests, CancellationToken token = default)
     {
-        var root = Root(snapshot, insert, true);
+        return PlanFields(snapshot, Root(snapshot, insert, true), requests, false, token);
+    }
+
+    internal static DraftingPlan PlanDefinitionFields(ShadowSnapshot snapshot, ObjectId block, ImmutableArray<AttributeEdit> requests, CancellationToken token) =>
+        PlanFields(snapshot, DraftingBlocks.Definition(snapshot, block), requests, true, token);
+
+    private static DraftingPlan PlanFields(ShadowSnapshot snapshot, ShadowReader root, ImmutableArray<AttributeEdit> requests, bool definitions, CancellationToken token)
+    {
         if (requests.IsDefaultOrEmpty || requests.Length > 10_000) throw new ArgumentException("Choose a bounded nonempty attribute edit batch.");
-        var owned = root["Attributes"].Items.Select(a => a.Id).ToHashSet(); var seen = new HashSet<ObjectId>();
+        var owned = (definitions ? root["AttributeDefinitions"].Items.Select(a => a["Value"]) : root["Attributes"].Items).Select(a => a.Id).ToHashSet(); var seen = new HashSet<ObjectId>();
         var edit = new ShadowGraphEdit(snapshot); var anyVisual = false;
         foreach (var request in requests)
         {
             token.ThrowIfCancellationRequested();
             if (request is null || !seen.Add(request.Attribute) || !owned.Contains(request.Attribute))
-                throw new ArgumentException("Each edited attribute must be a unique member of the selected INSERT.");
+                throw new ArgumentException("Each edited attribute must be a unique member of the selected owner.");
             var attribute = snapshot.Read(request.Attribute);
-            if (attribute.Type != "Attribute" || attribute["Owner"].Id != insert) throw new ArgumentException("Attribute ownership is inconsistent.");
+            if (attribute.Type != (definitions ? "AttributeDefinition" : "Attribute") || attribute["Owner"].Id != root.Id) throw new ArgumentException("Attribute ownership is inconsistent.");
             if (attribute["Layer"]["IsLocked"].Boolean()) throw new InvalidOperationException("An attribute is on a locked layer.");
             var source = CadTextProjection.Read(attribute); var multiline = source.Text.Multiline; var visual = false;
             var packet = attribute["TextData"].Value as ShadowValue.Structure;
@@ -81,7 +90,7 @@ public static class DraftingAttributes
             {
                 if (value.Length > 1_000_000 || value.Contains('\0')) throw new ArgumentException("Attribute values require at most one million characters without NUL.");
                 if (!multiline && (value.Contains('\r') || value.Contains('\n'))) throw new ArgumentException("Single-line attribute values cannot contain line breaks.");
-                if ((Flags(attribute) & 2) != 0 && value != source.Text.Content) throw new InvalidOperationException("Edit constant attribute values in their block definition.");
+                if (!definitions && (Flags(attribute) & 2) != 0 && value != source.Text.Content) throw new InvalidOperationException("Edit constant attribute values in their block definition.");
                 if (multiline) TextField("Value", ShadowValue.From(value)); else Set("Value", ShadowValue.From(value));
             }
             if (request.TextStyle is { } styleName)
@@ -151,6 +160,9 @@ public static class DraftingAttributes
                 Set("Flags", Atom("netDxf.Entities.AttributeFlags", invisible ? Flags(attribute) | 1 : Flags(attribute) & ~1));
             if (request.PositionLocked is { } locked)
             {
+                if (!ShadowValue.Equivalent(attribute["IsPositionLocked"].Value, ShadowValue.From(locked)) &&
+                    snapshot.Document["DrawingVariables"]["AcadVer"].Text is not ("AutoCad2010" or "AutoCad2013" or "AutoCad2018"))
+                    throw new NotSupportedException("Attribute position locking requires a DXF 2010 or later drawing profile.");
                 Set("IsPositionLocked", ShadowValue.From(locked), false);
                 if (packet is not null) packet = packet with { Fields = packet.Fields.SetItem("Locked", ShadowValue.From(locked)) };
             }
@@ -161,7 +173,7 @@ public static class DraftingAttributes
             }
             if (visual) { Set("ProxyGraphics", ShadowValue.Null); anyVisual = true; }
         }
-        if (anyVisual && root["ProxyGraphics"].Exists) edit.Set(insert, "ProxyGraphics", ShadowValue.Null);
+        if (anyVisual && root["ProxyGraphics"].Exists) edit.Set(root.Id!.Value, "ProxyGraphics", ShadowValue.Null);
         token.ThrowIfCancellationRequested(); edit.PruneUnreachable(); return new("EDIT ATTRIBUTES", edit.Build(), []);
     }
 
@@ -172,10 +184,10 @@ public static class DraftingAttributes
             throw new ArgumentException("Select a local block reference with attributes.");
         return root;
     }
-    private static ShadowReader Resource(ShadowSnapshot snapshot, string table, string name) =>
+    internal static ShadowReader Resource(ShadowSnapshot snapshot, string table, string name) =>
         snapshot.Document[table].Items.FirstOrDefault(r => r["Name"].Text.Equals(name, StringComparison.OrdinalIgnoreCase)) is { Exists: true } resource
             ? resource : throw new ArgumentException("Unknown " + table + " resource: " + name);
-    private static int Flags(ShadowReader attribute)
+    internal static int Flags(ShadowReader attribute)
     {
         var text = attribute["Flags"].Text;
         if (int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)) return value;

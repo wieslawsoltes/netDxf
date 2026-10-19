@@ -73,6 +73,10 @@ public static class StudioCadHttp
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadReadAttributes(revision))));
         routes.MapPost("/{id}/attributes", (string id, StudioDocumentHub hub, HttpRequest http, CadAttributeRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadEditAttributes(request, token))));
+        routes.MapGet("/{id}/attribute-definitions", (string id, StudioDocumentHub hub, HttpRequest http, long revision, string? block) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadReadAttributeDefinitions(revision, block))));
+        routes.MapPost("/{id}/attribute-definitions", (string id, StudioDocumentHub hub, HttpRequest http, CadAttributeDefinitionRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadEditAttributeDefinitions(request, token))));
         routes.MapPost("/{id}/block/rename", (string id, StudioDocumentHub hub, HttpRequest http, CadBlockRenameRequest request) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadRenameBlock(request))));
         routes.MapPost("/{id}/hatch/create", (string id, StudioDocumentHub hub, HttpRequest http, CadHatchAuthoringRequest request, CancellationToken token) =>

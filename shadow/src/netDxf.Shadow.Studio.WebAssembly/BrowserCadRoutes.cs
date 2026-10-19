@@ -42,6 +42,8 @@ internal sealed partial class BrowserApplication
         Cad("POST", "/api/cad/{id}/block/define", (s, r) => s.CadDefineBlock(r.Body<CadBlockDefinitionRequest>(), Token));
         Cad("GET", "/api/cad/{id}/attributes", (s, r) => s.CadReadAttributes(r.Long("revision")));
         Cad("POST", "/api/cad/{id}/attributes", (s, r) => s.CadEditAttributes(r.Body<CadAttributeRequest>(), Token));
+        Cad("GET", "/api/cad/{id}/attribute-definitions", (s, r) => s.CadReadAttributeDefinitions(r.Long("revision"), r.Optional("block")));
+        Cad("POST", "/api/cad/{id}/attribute-definitions", (s, r) => s.CadEditAttributeDefinitions(r.Body<CadAttributeDefinitionRequest>(), Token));
         Cad("POST", "/api/cad/{id}/block/rename", (s, r) => s.CadRenameBlock(r.Body<CadBlockRenameRequest>()));
         Cad("POST", "/api/cad/{id}/hatch/create", (s, r) => s.CadCreateHatch(r.Body<CadHatchAuthoringRequest>(), Token));
         Cad("GET", "/api/cad/{id}/hatch/pattern", (s, r) => s.CadReadHatchPattern(r.Long("revision")));

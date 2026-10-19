@@ -73,6 +73,22 @@ internal static class StudioAgentSchemaVerification
                 Require(edit.GetProperty("properties").GetProperty(field).GetProperty("anyOf")
                     .EnumerateArray().Any(v => v.TryGetProperty("type", out var type) && type.GetString() == "null"));
         }));
+        tests.Add(("Studio definition schema exposes creation modes and preview synchronization", () =>
+        {
+            using var studio = new Studio(); var tools = studio.CreateMcpRegistry();
+            var definitions = Read(tools, new { type = "CadAttributeDefinitionRequest" }).GetProperty("schema").GetProperty("$defs");
+            var operation = definitions.GetProperty("netDxf.Shadow.Studio.CadAttributeDefinitionOperation").GetProperty("properties");
+            Require(!operation.GetProperty("updateExisting").GetProperty("default").GetBoolean());
+            Require(!operation.GetProperty("convertTextModes").GetProperty("default").GetBoolean());
+            var changes = definitions.GetProperty("netDxf.Shadow.Drafting.AttributeDefinitionChanges").GetProperty("properties");
+            foreach (var field in new[] { "edits", "add", "remove", "order" }) Require(changes.GetProperty(field).GetProperty("type").GetString() == "array");
+            var creation = definitions.GetProperty("netDxf.Shadow.Drafting.AttributeDefinitionCreation");
+            Require(creation.GetProperty("required").GetArrayLength() == 1 && creation.GetProperty("required")[0].GetString() == "tag");
+            Require(creation.GetProperty("properties").GetProperty("positionLocked").GetProperty("default").GetBoolean());
+            var preview = Read(tools, new { type = "CadEditPreviewRequest" }).GetProperty("schema").GetProperty("$defs");
+            Require(preview.GetProperty("netDxf.Shadow.Studio.CadEditOperation").GetProperty("properties").TryGetProperty("attributeDefinitions", out _));
+            Require(preview.TryGetProperty("netDxf.Shadow.Drafting.AttributeDefinitionCreation", out _));
+        }));
     }
     private static JsonElement Read(McpToolRegistry tools, object args)
     {

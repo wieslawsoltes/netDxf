@@ -15,7 +15,7 @@ public sealed record CadAttributeSyncSummary(ObjectId Block, string BlockName, i
     int RemovedXData, int TextConversions, bool DetailsTruncated, ImmutableArray<AttributeSynchronizationReference> References);
 public sealed record CadEditOperation(string Kind, DraftingCommand? Command = null, ResourceEdit? Resource = null,
     LayerEdit? Layer = null, CadPreviewProperty? Property = null, string? Module = null, CadModuleCommandRequest? ModuleCommand = null,
-    CadAttributeSyncOperation? AttributeSync = null);
+    CadAttributeSyncOperation? AttributeSync = null, CadAttributeDefinitionOperation? AttributeDefinitions = null);
 public sealed record CadEditPreviewRequest(long Revision, string Description, ImmutableArray<CadEditOperation> Operations);
 public sealed record CadEditPreviewTokenRequest(long Revision, string PreviewId);
 
@@ -59,12 +59,17 @@ public sealed partial class Studio
                             new(ConvertTextModes: synchronization.ConvertTextModes), token);
                         attributeSynchronizations.Add(AttributeSyncSummary(sync));
                         plan = new("ATTSYNC " + sync.BlockName, sync.Patch, []); break;
+                    case "attribute-definitions" when operation.AttributeDefinitions is { } definitions:
+                        var definitionPlan = PlanAttributeDefinitions(branch.Snapshot, definitions, token);
+                        plan = definitionPlan.Plan;
+                        if (definitionPlan.Sync is { } definitionSync) attributeSynchronizations.Add(AttributeSyncSummary(definitionSync));
+                        break;
                     case "property" when operation.Property is { } property:
                         if (!selected.Contains(property.Entity)) throw new ShadowConflictException("Preview property targets must belong to the current selection.");
                         var entity = DraftingGuard.Entity(branch.Snapshot, property.Entity);
                         branch.SetProperty(property.Entity, property.Property, ConvertInput(entity[property.Property].Value, property.Value));
                         break;
-                    default: throw new ArgumentException("Choose a typed command, module, resource, layer, property or attribute-sync preview operation with its matching payload.");
+                    default: throw new ArgumentException("Choose a typed command, module, resource, layer, property, attribute-sync or attribute-definitions preview operation with its matching payload.");
                 }
                 if (plan is not null)
                 {

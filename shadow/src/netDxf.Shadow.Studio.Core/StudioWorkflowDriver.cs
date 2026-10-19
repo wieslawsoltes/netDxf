@@ -66,6 +66,7 @@ public sealed partial class Studio
                 case "layer": CadLayer(new(Current.Revision, Read<LayerEdit>())); break;
                 case "layer-state": CadLayerState(new(Current.Revision, Read<LayerStateEdit>()), token); break;
                 case "attributes": CadEditAttributes(Read<CadAttributeRequest>() with { Revision = Current.Revision }, token); break;
+                case "attribute-definitions": CadEditAttributeDefinitions(Read<CadAttributeDefinitionRequest>() with { Revision = Current.Revision }, token); break;
                 case "resource": CadResource(new(Current.Revision, Read<ResourceEdit>())); break;
                 case "select": CadSelect(Read<CadSelectionRequest>() with { Revision = Current.Revision }, token); break;
                 case "property": SetProperty(Read<PropertyRequest>() with { Revision = Current.Revision }); break;

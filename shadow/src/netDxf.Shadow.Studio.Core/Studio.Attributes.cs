@@ -16,6 +16,7 @@ public sealed partial class Studio
                 throw new ArgumentException("Select one block reference to edit its attributes.");
             var root = Current.Read(selected[0]);
             return new { revision = Current.Revision, insert = selected[0], blockName = root["Block"]["Name"].Text,
+                drawingVersion = Current.Document["DrawingVariables"]["AcadVer"].Text,
                 attributes = DraftingAttributes.Read(Current, selected[0]) };
         }
     }
