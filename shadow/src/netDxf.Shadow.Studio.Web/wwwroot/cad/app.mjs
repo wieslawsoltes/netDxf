@@ -13,6 +13,7 @@ import { definitionTools } from './attribute-definition-ui.mjs';
 import { graphPalette } from './graph-ui.mjs';
 import { CadClient } from './client.mjs';
 import { blockTools } from './block-ui.mjs';
+import { blockLibraryTools } from './block-library-ui.mjs';
 import { createInsertSession } from './block-contracts.mjs';
 import { insertionDefinitions, InsertAttributeSession } from './insert-attribute-contracts.mjs';
 import { insertionAttributeDialog } from './insert-attribute-ui.mjs';
@@ -41,6 +42,7 @@ const views = new Map(), layers = new Map();
 const ribbonLayout = new RibbonLayout($('ribbon'));
 let chrome = chromePreferences();
 const blockUi = blockTools({client, edit, dialog, cancel, fit:()=>viewport.fit(), layer:()=>currentLayer, placeInsert:options=>{editable();setSession(createInsertSession(options,currentLayer));lastCommand='INSERT';ensureCommandLine();$('command-input').focus({preventScroll:true});}});
+const blockLibraryUi = blockLibraryTools({client,edit,dialog,showPalette,download});
 const resourceUi = resourceTools({client, edit, dialog, run, editable});
 const analysisUi = analysisTools({client,edit,viewport,report,editable});
 const moduleUi = moduleTools({client,edit,dialog,report,editable,viewport,showPalette,
@@ -392,6 +394,8 @@ async function action(name) {
     case 'edit-previews':showPalette('Edit previews');return;
     case 'workflows':showPalette('Workflows');return;
     case 'block-insert':editable();return blockUi.insert();
+    case 'block-library-import':editable();return blockLibraryUi.importLibrary();
+    case 'block-library-export':editable();return blockLibraryUi.exportLibrary();
     case 'block-edit':editable();return blockUi.begin();
     case 'block-save':editable();return blockUi.finish(true);
     case 'block-close':editable();return blockUi.finish(false);

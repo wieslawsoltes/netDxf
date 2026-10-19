@@ -42,6 +42,11 @@ export function analysisTools({client,edit,viewport,report,editable}){
     async function show(item,key,valid){const current=previewCurrent(item,client.state),summary=item.summary,after=healthSummary(item.afterHealth),before=healthSummary(item.beforeHealth),card=el('section',{class:'analysis-preview'},[
       el('b',{text:item.description}),el('p',{text:`${summary.added} added · ${summary.changed} changed · ${summary.removed} removed source objects`}),el('p',{class:'hint',text:item.validation}),el('p',{class:after.errors?'diagnostic':'hint',text:`Health errors: ${before.errors} → ${after.errors}; warnings: ${before.warnings} → ${after.warnings}${after.complete&&before.complete?'':' (checks incomplete)'}`})]);output.append(card);
       if(!current)card.append(el('p',{class:'diagnostic',text:'This proposal is stale. Recreate it from the current drawing, selection and view.'}));
+      for(const library of item.blockLibraries||[]){
+        const details=el('details',{},[el('summary',{text:`${library.name}: resource decisions${library.detailsTruncated?' (first 500)':''}`})]);
+        for(const resource of library.resources)details.append(el('p',{class:'hint',text:`${resource.action} ${resource.table}: ${resource.sourceName} → ${resource.targetName}`}));
+        card.append(details);
+      }
       for(const sync of item.attributeSynchronizations||[]){
         card.append(el('p',{class:'attribute-warning',text:`${sync.blockName}: ${sync.referenceCount} block references. ${sync.retained} attributes reset to definition formatting/properties; assigned values retained. ${sync.added} added, ${sync.removed} removed. ${sync.removedXData} INSERT XData records deleted. ${sync.textConversions} text mode conversions.`}));
         const details=el('details',{},[el('summary',{text:`Attribute reset details${sync.detailsTruncated?' (truncated; inspect source objects for complete values)':''}`})]);
@@ -55,6 +60,13 @@ export function analysisTools({client,edit,viewport,report,editable}){
       }
       const images=el('div',{class:'analysis-comparison'});card.append(images);
       if(current)for(const [label,isAfter]of [['Before',false],['After',true]]){const figure=el('figure',{},[el('figcaption',{text:label})]);images.append(figure);try{const blob=await client.read(`edit-preview/render?${new URLSearchParams({previewId:item.previewId,after:String(isAfter),width:'640',height:'400',backend:'svg'})}`,{blob:true});if(!valid()||!blob)return;const url=URL.createObjectURL(blob);previewUrls.push(url);figure.append(el('img',{src:url,alt:`${label}: ${item.description}`}));}catch(error){if(!valid())return;figure.append(el('p',{class:'diagnostic',text:`Preview unavailable: ${error.message}`}));}}
+      if(!valid())return;
+      if(current)for(const library of item.blockLibraries||[]){
+        const figure=el('figure',{},[el('figcaption',{text:`Definition: ${library.name}`})]);images.append(figure);
+        try{const blob=await client.read(`edit-preview/render?${new URLSearchParams({previewId:item.previewId,after:'true',block:library.block.value,width:'640',height:'400',backend:'svg'})}`,{blob:true});
+          if(!valid()||!blob)return;const url=URL.createObjectURL(blob);previewUrls.push(url);figure.append(el('img',{src:url,alt:`Imported definition: ${library.name}`}));
+        }catch(error){if(!valid())return;figure.append(el('p',{class:'diagnostic',text:`Definition preview unavailable: ${error.message}`}));}
+      }
       if(!valid())return;
       card.append(el('details',{},[el('summary',{text:`Source changes${summary.detailsTruncated?' (details truncated)':''}`}),...summary.details.map(change=>el('p',{class:'hint',text:`${change.kind} ${change.type} ${change.object.value}: ${change.properties.join(', ')}`}))]),el('div',{class:'toolbar'},[
         action('Apply as one edit',async()=>{editable();await edit('edit-preview/apply',{previewId:item.previewId},{expectedKey:key});await load();},!current),
