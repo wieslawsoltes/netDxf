@@ -92,6 +92,8 @@ public static class StudioCadHttp
         routes.MapGet("/{id}/resources", (string id, StudioDocumentHub hub) => hub.Use(id, s => s.CadResources()));
         routes.MapPost("/{id}/resource", (string id, StudioDocumentHub hub, HttpRequest http, CadResourceRequest request) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadResource(request))));
+        routes.MapPost("/{id}/layer-state", (string id, StudioDocumentHub hub, HttpRequest http, CadLayerStateRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadLayerState(request, token))));
         routes.MapPost("/{id}/layer", (string id, StudioDocumentHub hub, HttpRequest http, CadLayerRequest request) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadLayer(request))));
         routes.MapPost("/{id}/assign-layer", (string id, StudioDocumentHub hub, HttpRequest http, CadAssignLayerRequest request) =>

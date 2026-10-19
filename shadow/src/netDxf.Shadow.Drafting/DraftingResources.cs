@@ -27,7 +27,17 @@ public static class DraftingResources
     public static int Uses(ShadowSnapshot snapshot, ObjectId id)
     {
         var tables = new[] { "Layers", "Linetypes", "TextStyles", "ShapeStyles" }.Select(t => snapshot.Document[t].Id).ToHashSet();
-        return snapshot.Objects.Values.Count(n => n.Id != snapshot.Root && n.Id != id && !tables.Contains(n.Id) && n.Properties.Values.Any(v => v.References().Contains(id)));
+        var uses = snapshot.Objects.Values.Where(n => n.Id != snapshot.Root && n.Id != id && !tables.Contains(n.Id) && n.Properties.Values.Any(v => v.References().Contains(id)))
+            .Select(n => n.Id).ToHashSet();
+        var target = snapshot.Read(id); var name = target["Name"].Text;
+        // Native saved layer states refer to resources by name, not ObjectId.
+        // Include their owners so the manager does not advertise them as unused.
+        if (target.Type is "Layer" or "Linetype")
+            foreach (var state in snapshot.Document["Layers"]["StateManager"].Items)
+                if (target.Type == "Layer" && state["CurrentLayer"].Text.Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || state["Properties"].Items.Any(p => p["Value"][target.Type == "Layer" ? "Name" : "LinetypeName"].Text.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                    uses.Add(state.Id!.Value);
+        return uses.Count;
     }
     public static bool Reserved(ShadowReader item, string kind) => item["IsReserved"].Boolean() || kind.ToLowerInvariant() switch
     { "layer" => item["Name"].Text == "0", "linetype" => new[] { "ByLayer", "ByBlock", "Continuous" }.Contains(item["Name"].Text, StringComparer.OrdinalIgnoreCase), "textstyle" => item["Name"].Text.Equals("Standard", StringComparison.OrdinalIgnoreCase), _ => false };

@@ -17,6 +17,8 @@ public sealed partial class Studio
         foreach (var table in new[] { "Blocks", "Layers", "Linetypes", "TextStyles", "ShapeStyles" })
             foreach (var item in source.Document[table].Items)
                 if (item.Id is { } id) names[id] = "$resource/" + table + "/" + Uri.EscapeDataString(item["Name"].Text);
+        foreach (var state in source.Document["Layers"]["StateManager"].Items)
+            if (state.Id is { } id) names[id] = "$layer-state/" + Uri.EscapeDataString(state["Name"].Text);
         foreach (var block in source.Document["Blocks"].Items)
         {
             var index = 0; foreach (var entity in block["Entities"].Items)

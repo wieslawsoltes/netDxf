@@ -51,6 +51,7 @@ internal sealed partial class BrowserApplication
         Cad("POST", "/api/cad/{id}/block/finish", (s, r) => s.CadFinishBlock(r.Body<CadBlockFinishRequest>(), Token));
         Cad("POST", "/api/cad/{id}/grip", (s, r) => s.CadGrip(r.Body<CadGripRequest>()));
         Cad("GET", "/api/cad/{id}/resources", (s, r) => s.CadResources());
+        Cad("POST", "/api/cad/{id}/layer-state", (s, r) => s.CadLayerState(r.Body<CadLayerStateRequest>(), Token));
         Cad("POST", "/api/cad/{id}/resource", (s, r) => s.CadResource(r.Body<CadResourceRequest>()));
         Cad("POST", "/api/cad/{id}/layer", (s, r) => s.CadLayer(r.Body<CadLayerRequest>()));
         Cad("POST", "/api/cad/{id}/assign-layer", (s, r) => s.CadAssignLayer(r.Body<CadAssignLayerRequest>()));

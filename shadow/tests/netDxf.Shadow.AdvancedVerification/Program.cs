@@ -26,6 +26,7 @@ BlockIntegrationVerification.Register(tests);
 InsertWorkflowVerification.Register(tests);
 CadDomainReviewVerification.Register(tests);
 ResourceManagerVerification.Register(tests);
+LayerStateVerification.Register(tests);
 HealthPreviewVerification.Register(tests);
 WorkflowVerification.Register(tests);
 CadWorkspaceVerification.Register(tests);

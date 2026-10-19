@@ -133,6 +133,26 @@ The shared Studio ribbon opens the Layer manager, Linetype manager, and Text sty
 
 Layer fields include on/off, freeze, lock, plot, RGB or indexed color, existing linetype, native lineweight, transparency (0–90%), description, and freeze in new viewports. Current layers cannot be frozen, and a layer must be on and thawed before this manager makes it current. New-viewport freeze is stored metadata; individual viewport overrides and CTB/STB plotting are not implemented.
 
+`DraftingLayerStates.Read` and `Plan` expose native saved layer states. Studio's
+Home/Manage ribbon and `LAYERSTATE`/`LAS` commands open the shared manager. Save,
+update, rename, delete and restore each create one undo operation. Restoration
+selects global on/off, frozen, locked, plot, new-viewport freeze, color, linetype,
+lineweight and transparency fields, optionally restoring the current layer and
+turning off unlisted layers. Colors and transparency are independent snapshots;
+capturing global fields preserves stored viewport-only flag bits. State names,
+descriptions and saved properties survive text/binary DXF and workflow replay.
+Saved name references count as resource use and follow layer/linetype renames,
+including undo and redo. The host endpoint is `POST layer-state` with a
+`CadLayerStateRequest`; resource discovery includes `layerStates`.
+
+The editor bounds states to 1,000 and layers per state to 10,000. Restoration
+rejects missing named resources and frozen current-layer targets before mutation.
+Recreating missing layers would prevent native removal during undo, so unresolved
+states require resource repair first. Individual saved-layer editing, persisted
+restore masks, viewport overrides, and LAS import/export remain outside this
+manager. Behavior reference: Autodesk's
+[Layer States Manager](https://help.autodesk.com/cloudhelp/2025/ENG/AutoCAD-Core/files/GUID-3E0F662B-226F-4A27-B5BB-D15252CC994C.htm).
+
 Linetypes support up to 256 ordered simple, text, or shape segments, with dash/gap/dot length, text or shape name, an existing document style, XY offset, positive scale, rotation, and Relative/Absolute/Upright mode. Shape segments require a numeric DXF shape identifier so saving never needs an implicit local SHX path lookup. Reserved ByLayer, ByBlock, and Continuous definitions are preserved; create a named copy to author a different pattern. The LIN picker accepts files up to 512 KiB and 256 definitions, previews one selected definition before applying it, preserves complex text options, and resolves shape names only against explicit document resources. A shape with no known numeric identifier remains editable and cannot be saved until its identifier is supplied. Existing SHX/SHP upload and presentation alignment commands remain available.
 
 Text styles expose stored TTF/SHX font filename, optional SHX Big Font, independent TrueType family and bold/italic face metadata, fixed height, width factor (0.01–100), oblique angle (−85°–85°), vertical/backward/upside-down flags. Unedited extended metadata and unknown flag bits are preserved. Font references are metadata: the manager does not browse server files or promise that a missing font renders. Vertical behavior depends on the font. The native fidelity operation `TextStyle.SetStoredFontFiles` updates filenames without replacing extended font XData, allowing source history to restore exact font-data identities.

@@ -52,6 +52,9 @@ public sealed partial class Studio
             }).ToArray();
             var resources = new[] { "Layers", "Linetypes", "TextStyles", "ShapeStyles", "DimensionStyles" }.ToDictionary(table => table,
                 table => snapshot.Document[table].Items.OrderBy(r => r["Name"].Text, StringComparer.Ordinal).Select(r => Node(r.Object!, [r.Id!.Value], 0)).ToArray());
+            var layerStates = snapshot.Document["Layers"]["StateManager"].Items.OrderBy(s => s["Name"].Text, StringComparer.Ordinal)
+                .Select(s => Node(s.Object!, [s.Id!.Value], 0)).ToArray();
+            if (layerStates.Length > 0) resources["LayerStates"] = layerStates;
             var semanticBytes = JsonSerializer.SerializeToUtf8Bytes(new { blocks, resources }, StudioJson.CreateOptions());
             if (semanticBytes.Length > 16 * 1024 * 1024) throw new InvalidOperationException("Workflow semantic observation exceeds 16 MiB.");
             var scene = Scene(); var viewport = Viewport.Fit(scene.Bounds, 640, 400);
