@@ -8,7 +8,7 @@ namespace netDxf.Shadow.Drafting;
 public sealed record DraftingCommand(string Name, ImmutableArray<Vec3> Points = default,
     ImmutableArray<ObjectId> Entities = default, double Value = 0, double Secondary = 0,
     string? Text = null, string Layer = "0", bool Closed = false, int Count = 6, double Rotation = 0,
-    ObjectId? Reference = null);
+    ObjectId? Reference = null, Vec3? Scale = null, Vec3? BasePoint = null);
 
 public sealed record DraftingLimits(int MaximumPoints = 10_000, int MaximumEntities = 10_000,
     int MaximumClonedObjects = 100_000, double MaximumCoordinate = 1e12, double MinimumLength = 1e-9);

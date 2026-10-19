@@ -8,7 +8,9 @@ internal sealed class SourceCollectionPlan
 {
     private readonly object source;
     private readonly Type elementType;
-    // Constructor-owned arrays/vertices precede registered definitions; entities are
+    // Register APPIDs before XDATA; native adoption otherwise clones an unregistered
+    // registry and breaks the explicit graph identity. Constructor-owned arrays/vertices
+    // precede other registered definitions; entities are
     // attached last so references never force a table to retain a removed definition.
     internal int AttachmentOrder { get; }
     private readonly MethodInfo? insert;
@@ -26,7 +28,7 @@ internal sealed class SourceCollectionPlan
     {
         this.source = source;
         this.elementType = elementType;
-        AttachmentOrder = source is netDxf.Collections.EntityCollection ? 2 : IsTable(source.GetType()) ? 1 : 0;
+        AttachmentOrder = source is netDxf.Collections.ApplicationRegistries ? -1 : source is netDxf.Collections.EntityCollection ? 2 : IsTable(source.GetType()) ? 1 : 0;
         array = source as Array;
         Before = ((IEnumerable)source).Cast<object?>().ToArray();
         After = after;

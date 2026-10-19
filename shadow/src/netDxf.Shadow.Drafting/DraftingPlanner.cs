@@ -62,7 +62,8 @@ public sealed partial class DraftingPlanner
             "OFFSET" => Offset(snapshot, command, owner, cancellationToken),
             "TRIM" or "EXTEND" => TrimExtend(snapshot, command),
             "FILLET" or "CHAMFER" => Corner(snapshot, command, owner),
-            "JOIN" or "EXPLODE" => JoinExplode(snapshot, command, owner),
+            "JOIN" => JoinExplode(snapshot, command, owner),
+            "EXPLODE" => Explode(snapshot, command, owner, cancellationToken),
             _ => Create(snapshot, command, owner, cancellationToken)
         };
     }
@@ -82,7 +83,8 @@ public sealed partial class DraftingPlanner
             values.TryAdd("Normal", ShadowValue.From(Vec3.UnitZ));
             values.TryAdd("LinetypeScale", ShadowValue.From(1.0));
             values.TryAdd("Lineweight", new ShadowValue.Atom("netDxf.Lineweight", "ByLayer"));
-            var byLayer = snapshot.Document["Linetypes"].Items.FirstOrDefault(v => v["Name"].Text.Equals("ByLayer", StringComparison.OrdinalIgnoreCase));
+            var currentLinetype = DraftingResources.Current(snapshot, "linetype");
+            var byLayer = snapshot.Document["Linetypes"].Items.FirstOrDefault(v => v["Name"].Text.Equals(currentLinetype.Length == 0 ? "ByLayer" : currentLinetype, StringComparison.OrdinalIgnoreCase));
             if (byLayer.Exists) values.TryAdd("Linetype", byLayer.Value);
             var id = edit.AddEntity(owner, "netDxf.Entities." + type, values); created.Add(id); return id;
         }
@@ -145,8 +147,18 @@ public sealed partial class DraftingPlanner
                     ["Value"] = ShadowValue.From(command.Text), ["Rotation"] = N(command.Rotation) };
                 if (command.Name == "TEXT") { text["WidthFactor"] = N(1); text["ObliqueAngle"] = N(0); }
                 else text["RectangleWidth"] = N(Math.Max(0, command.Secondary));
-                var style = snapshot.Document["TextStyles"].Items.FirstOrDefault(v => v["Name"].Text.Equals("Standard", StringComparison.OrdinalIgnoreCase));
-                if (style.Exists) text["Style"] = style.Value;
+                var currentTextStyle = DraftingResources.Current(snapshot, "textstyle");
+                var style = snapshot.Document["TextStyles"].Items.FirstOrDefault(v => v["Name"].Text.Equals(currentTextStyle.Length == 0 ? "Standard" : currentTextStyle, StringComparison.OrdinalIgnoreCase));
+                if (style.Exists)
+                {
+                    text["Style"] = style.Value;
+                    if (style["Height"].Number() > 0) text["Height"] = N(style["Height"].Number());
+                    if (command.Name == "TEXT")
+                    {
+                        text["WidthFactor"] = N(style["WidthFactor"].Number(1)); text["ObliqueAngle"] = N(style["ObliqueAngle"].Number());
+                        text["IsBackward"] = ShadowValue.From(style["IsBackward"].Boolean()); text["IsUpsideDown"] = ShadowValue.From(style["IsUpsideDown"].Boolean());
+                    }
+                }
                 Add(command.Name == "TEXT" ? "Text" : "MText", text); break;
             case "SPLINE":
                 Need(p, 4);
@@ -181,9 +193,21 @@ public sealed partial class DraftingPlanner
                     blockNode["Name"] is not ShadowValue.Atom blockName || blockName.Text.StartsWith('*'))
                     throw new ArgumentException("Choose an existing named block definition.");
                 DraftingBlocks.ValidateReference(snapshot, owner, block, limits.MaximumClonedObjects, token);
-                var scale = command.Value == 0 ? 1 : Positive(command.Value);
-                Add("Insert", new() { ["Block"] = new ShadowValue.Reference(block), ["Position"] = V(p[0]),
-                    ["Scale"] = V(new(scale, scale, scale)), ["Rotation"] = N(command.Rotation) }); break;
+                var scale = command.Scale ?? new Vec3(command.Value == 0 ? 1 : command.Value, command.Value == 0 ? 1 : command.Value, command.Value == 0 ? 1 : command.Value);
+                CheckInsertScale(scale);
+                if (snapshot.Read(block)["Record"]["ScaleUniformly"].Boolean() &&
+                    (Math.Abs(Math.Abs(scale.X) - Math.Abs(scale.Y)) > limits.MinimumLength || Math.Abs(Math.Abs(scale.X) - Math.Abs(scale.Z)) > limits.MinimumLength))
+                    throw new ArgumentException("This block definition requires uniform scale magnitudes on all axes.");
+                var position = p[0];
+                if (command.BasePoint is { } basePoint)
+                {
+                    CheckPoint(basePoint);
+                    var linear = Affine3.RotateZ(command.Rotation * Math.PI / 180) * Affine3.Scale(scale * BlockUnitFactor(snapshot, owner, snapshot.Read(block)));
+                    position += linear.Direction(snapshot.Read(block)["Origin"].Vector() - basePoint);
+                    CheckPoint(position);
+                }
+                Add("Insert", new() { ["Block"] = new ShadowValue.Reference(block), ["Position"] = V(position),
+                    ["Scale"] = V(scale), ["Rotation"] = N(command.Rotation) }); break;
             default: throw new NotSupportedException($"Unknown drafting command '{command.Name}'.");
         }
         token.ThrowIfCancellationRequested();

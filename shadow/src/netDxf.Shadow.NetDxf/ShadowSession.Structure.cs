@@ -43,10 +43,12 @@ public sealed partial class ShadowSession
             foreach (var change in patch.Changes.Where(e => e.After is not null))
             {
                 var source = Resolve(change.Id);
-                if (change.Before is { } oldNode && SourceMethodPlan.Create(source, oldNode, change.After!) is { } method) methods.Add(method);
+                var method = change.Before is { } oldNode ? SourceMethodPlan.Create(source, oldNode, change.After!, source is netDxf.Tables.TextStyle && SourceMethodPlan.XDataGraphChanged(current, target, change.Id, patch)) : null;
+                if (method is not null) methods.Add(method);
                 foreach (var (name, value) in change.After!.Properties)
                 {
                     if (change.Before is { } previous && ShadowValue.Equivalent(previous[name], value)) continue;
+                    if (method?.Properties?.Contains(name) == true) continue;
                     // Type is read-only entity metadata on some objects, but a writable
                     // semantic enum on HatchPattern and other public data-model types.
                     // Let the accessor contract decide rather than dropping it by name.
@@ -214,6 +216,8 @@ public sealed partial class ShadowSession
             foreach (var (name, value) in parent.Properties)
             {
                 if (value is not ShadowValue.Reference reference || !additions.ContainsKey(reference.Id)) continue;
+                // ATTRIB.Definition is a shared semantic dependency, not an owned payload.
+                if (parent.TypeName == "netDxf.Entities.Attribute" && name == "Definition") continue;
                 var accessor = SourceAccessors.Find(type, name);
                 if (accessor is not { CanWrite: false }) continue;
                 if (!result.TryGetValue(reference.Id, out var candidates))

@@ -54,13 +54,4 @@ public sealed partial class CadSceneBuilder
         var digits = new string(value.Where(char.IsDigit).ToArray());
         return double.TryParse(digits, out number) ? number / 100 : 0.25;
     }
-    private static double UnitMeters(string unit) => unit switch
-    {
-        "Inches" => 0.0254, "Feet" => 0.3048, "Miles" => 1609.344, "Millimeters" => 0.001,
-        "Centimeters" => 0.01, "Meters" => 1, "Kilometers" => 1000, "Microinches" => 2.54e-8,
-        "Mils" => 2.54e-5, "Yards" => 0.9144, "Angstroms" => 1e-10, "Nanometers" => 1e-9,
-        "Microns" => 1e-6, "Decimeters" => 0.1, "Decameters" => 10, "Hectometers" => 100,
-        "Gigameters" => 1e9, "AstronomicalUnits" => 149597870700, "LightYears" => 9.4607304725808e15,
-        "Parsecs" => 3.0856775814913673e16, _ => 1
-    };
 }

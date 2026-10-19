@@ -3,10 +3,11 @@ using netDxf.Entities;
 namespace netDxf.Shadow.NetDxf;
 
 /// <summary>Public compound mutators for values with no independent writable setters.</summary>
-internal sealed record SourceMethodPlan(Action Apply, Action Rollback)
+internal sealed partial record SourceMethodPlan(Action Apply, Action Rollback, IReadOnlySet<string>? Properties = null)
 {
-    internal static SourceMethodPlan? Create(object source, ShadowObject before, ShadowObject after)
+    internal static SourceMethodPlan? Create(object source, ShadowObject before, ShadowObject after, bool fontXDataManaged = false)
     {
+        if (source is netDxf.Tables.TextStyle textStyle && TextStyleFonts(textStyle, before, after, fontXDataManaged) is { } fonts) return fonts;
         if (source is not Ellipse ellipse ||
             ShadowValue.Equivalent(before["MajorAxis"], after["MajorAxis"]) &&
             ShadowValue.Equivalent(before["MinorAxis"], after["MinorAxis"])) return null;
