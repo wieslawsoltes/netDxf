@@ -382,9 +382,9 @@ test('semantic Studio controls validate all settings before mutation and fence t
   await ui.execute('selection.set', { entities: ['H:1'], remove: true }, 'a');
   assert.equal(selections.length, 2); assert.equal(selections[1].body.remove, true);
   const actions=[]; host.action=async name=>actions.push(name);
-  for (const name of ['layer-states','attributes','graph-analysis','ribbon-minimize','command-line','command-history'])
+  for (const name of ['layer-states','attributes','attribute-definitions','attribute-create','graph-analysis','ribbon-minimize','command-line','command-history'])
     await ui.execute('ui.action',{name},'a');
-  assert.deepEqual(actions,['layer-states','attributes','graph-analysis','ribbon-minimize','command-line','command-history']);
+  assert.deepEqual(actions,['layer-states','attributes','attribute-definitions','attribute-create','graph-analysis','ribbon-minimize','command-line','command-history']);
   host.client.key='a/live/1';
   host.edit=async (...args)=>selections.push(args);
   const body={state:{action:'restore',id:{value:'state:1'},fields:64}};
@@ -398,4 +398,12 @@ test('semantic Studio controls validate all settings before mutation and fence t
   const attributes={insert:{value:'insert:1'},attributes:[{attribute:{value:'attribute:1'},value:'P-101'}]};
   await ui.execute('cad.edit',{path:'attributes',body:attributes},'a');
   assert.deepEqual(selections[3],['attributes',attributes,{expectedKey:'a/live/1'}]);
+  await ui.execute('cad.read',{path:'attribute-definitions',block:'H:12&other'},'a');
+  assert.equal(reads[1],'attribute-definitions?revision=7&block=H%3A12%26other');
+  await assert.rejects(ui.execute('cad.read',{path:'attribute-definitions',block:{}},'a'),/bounded block identity/);
+  await assert.rejects(ui.execute('cad.read',{path:'attribute-definitions',block:'x'.repeat(1025)},'a'),/bounded block identity/);
+  assert.equal(reads.length,2);
+  const definition={definition:{block:{value:'H:12'},changes:{add:[{tag:'SERVICE'}]}}};
+  await ui.execute('cad.edit',{path:'attribute-definitions',body:definition},'a');
+  assert.deepEqual(selections[4],['attribute-definitions',definition,{expectedKey:'a/live/1'}]);
 });

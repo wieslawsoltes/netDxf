@@ -1,16 +1,16 @@
 /** Typed UI automation boundary. Model-produced text is never executed as JavaScript or HTML. */
 const actionNames = new Set([
-  'properties','layers','blocks','explorer','workspaces','diagnostics','agents','modules','health','edit-previews','workflows','block-edit','block-save','block-close','block-insert', 'layer-manager', 'layer-states', 'attributes', 'attribute-sync', 'linetypes', 'text-styles',
+  'properties','layers','blocks','explorer','workspaces','diagnostics','agents','modules','health','edit-previews','workflows','block-edit','block-save','block-close','block-insert', 'layer-manager', 'layer-states', 'attributes', 'attribute-sync', 'attribute-definitions', 'attribute-create', 'linetypes', 'text-styles',
   'new','demo','open','save','save-as','font','undo','redo','fit','regen','zoom-in','zoom-out','pan','palette','dock','clean',
   'settings','layer-new','assign-layer','snapshot','snapshots','fork','annotation','linetype','graph','graph-analysis','export-png','export-svg',
   'ribbon-minimize','command-line','command-history',
   'legacy','reset-ui','help','block-create','block-redefine','block-rename','hatch-create','hatch-edit'
 ]);
-const readRoutes = new Set(['state', 'graph', 'hatch/pattern', 'resources', 'attributes', 'modules', 'edit-previews', 'workflow/status', 'workflow/export']);
+const readRoutes = new Set(['state', 'graph', 'hatch/pattern', 'resources', 'attributes', 'attribute-definitions', 'modules', 'edit-previews', 'workflow/status', 'workflow/export']);
 const readPostRoutes = new Set(['graph/query','modules/symbols','modules/analyze','health','references/capture','references/validate']);
 const editRoutes = new Set([
   'command', 'block/define', 'block/rename', 'hatch/create', 'hatch/pattern', 'select', 'block/create', 'block/begin',
-  'block/finish', 'grip', 'layer', 'layer-state', 'attributes', 'assign-layer', 'property', 'history/undo', 'history/redo', 'layout', 'retain', 'fork',
+  'block/finish', 'grip', 'layer', 'layer-state', 'attributes', 'attribute-definitions', 'assign-layer', 'property', 'history/undo', 'history/redo', 'layout', 'retain', 'fork',
   'workspace', 'merge/preview', 'merge/apply', 'annotation-view', 'linetype-view','resource',
   'modules/toggle','modules/command','edit-preview','edit-preview/apply','edit-preview/discard','health/select','workflow/start','workflow/stop','workflow/replay','workflow/roundtrip'
 ]);
@@ -198,6 +198,7 @@ export function installStudioControl(host) {
         if(readPostRoutes.has(args.path))return client.read(args.path,{body:{...object(args.body||{}),revision:client.state.revision}});
         if (!readRoutes.has(args.path)) throw new Error('Unsupported CAD read route. Discover the available routes first.');
         const query = new URLSearchParams({ revision: client.state.revision });
+        if(args.path==='attribute-definitions'&&args.block!==undefined){if(typeof args.block!=='string'||!args.block||args.block.length>1024)throw new Error('Choose a bounded block identity.');query.set('block',args.block);}
         return client.read(`${args.path}?${query}`);
       }
       case 'cad.edit':
