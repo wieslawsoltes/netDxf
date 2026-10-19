@@ -1,7 +1,7 @@
-import { AgentTranscript, configuration, endpointUrl, parseSession, redact } from './contracts.mjs';
+import { AgentTranscript, configuration, modelDiscoveryRequest, endpointUrl, parseSession, redact } from './contracts.mjs';
 
 const routes = Object.freeze({
-  AgentCapabilities: 'capabilities', AgentConfigure: 'configure', AgentDisconnect: 'disconnect', AgentSetDocument: 'set-document',
+  AgentCapabilities: 'capabilities', AgentModels: 'models', AgentConfigure: 'configure', AgentDisconnect: 'disconnect', AgentSetDocument: 'set-document',
   AgentStart: 'start', AgentStartPrompt: 'start-prompt', AgentRetry: 'retry', AgentPoll: 'poll', AgentUiReply: 'ui-reply', AgentCancel: 'cancel', AgentApprove: 'approve',
   AgentCompact: 'compact', AgentReset: 'reset', AgentExport: 'export', AgentImport: 'import',
   AgentMcpTools: 'mcp-tools', AgentMcpCall: 'mcp-call', AgentWorkspaceFiles: 'workspace-files',
@@ -56,6 +56,14 @@ export class AgentClient extends EventTarget {
       this.generation++; this.transcript.sequence = 0;
       await this.poll(); return result;
     } finally { this.finishOperation(operation); }
+  }
+  async models(input) {
+    if (this.disposed) throw new Error('This agent workspace has closed.');
+    const request = modelDiscoveryRequest(input);
+    if (request.apiKey && !this.secrets.includes(request.apiKey)) this.secrets.push(request.apiKey);
+    const result = await this.invoke('AgentModels', JSON.stringify(request));
+    if (this.disposed) throw new Error('This agent workspace has closed.');
+    return this.clean(result);
   }
   async disconnect() {
     if (this.disposed) throw new Error('This agent workspace has closed.');

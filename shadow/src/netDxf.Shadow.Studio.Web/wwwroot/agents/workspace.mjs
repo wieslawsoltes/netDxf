@@ -10,6 +10,8 @@ import { mountBrowserFileTransfer, renderFileDiff } from './file-workspace.mjs';
 import { defaultConfiguration, providers, executionModes, restorePreferences, preferenceRecord, configuration, formatTokens, formatDuration, toolActivity, parseArguments, readable, safeFilePath, toolTemplate } from './contracts.mjs';
 import { presentRun, recoveredRunSelection } from './run-state.mjs';
 import { bindChatPopovers } from './chat-popovers.mjs';
+import { ModelDiscovery, modelOptionLabel, selectModelBudgets } from './model-discovery.mjs';
+import { ToolDisclosure } from './tool-disclosure.mjs';
 import { node, glyph, button, field, code, codeExecution, markdown, createMarkdownView } from './render.mjs';
 
 const tabNames = [['chat','Conversation','chat'], ['local','Local agents','play'], ['tools','MCP','tools'], ['files','Files','file'], ['context','Context','context'], ['efficiency','Efficiency','activity'], ['settings','Settings','settings']];
@@ -37,6 +39,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   let companion = null, authTimer = null, authGeneration = 0, authenticated = false, disposed = false;
   let toolCatalog = [], toolLoading = false, fileList = [], file = null, fileDirty = false, pins = [], renderScheduled = false, persistence = null;
   const timelineNodes = new Map(), tabButtons = new Map(), panels = new Map(), formFields = {};
+  const toolDisclosure = new ToolDisclosure();
   const run = callback => Promise.resolve().then(callback).catch(error => notice(error.message || String(error), 'error'));
   const dock = node('aside', { class: 'agent-workspace', hidden: true, 'aria-label': 'Coding agent workspace', 'data-agent-private': '' });
   const resize = node('div', { class: 'agent-resize', role: 'separator', tabindex: '0', 'aria-label': 'Resize agent workspace', 'aria-orientation': 'vertical', hidden: true });
@@ -239,7 +242,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   }
   async function newSession() {
     persistence?.schedule(); await persistence?.flush();
-    await client.reset(); pins = []; prompt.value = ''; referenceComposer.clear(); for (const cached of timelineNodes.values()) { cached.markdown?.dispose(); cached.preview?.dispose(); } timelineNodes.clear();
+    await client.reset(); pins = []; prompt.value = ''; referenceComposer.clear(); for (const cached of timelineNodes.values()) { cached.markdown?.dispose(); cached.preview?.dispose(); } timelineNodes.clear(); toolDisclosure.clear();
     persistence?.newSession();
     timeline.replaceChildren(); clearNotice(); renderFiles(); renderContext(); setTab('chat');
   }
@@ -363,9 +366,8 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     jumpLatest.hidden = transcript.scrollHeight - transcript.scrollTop - transcript.clientHeight < 100;
   }
   function renderToolCard(element, item) {
-    const previous = element.querySelector('details'), wasOpen = previous?.open;
     const detail = node('details', { class: `agent-tool-card ${item.status || ''}` });
-    detail.open = wasOpen ?? ['approval', 'error'].includes(item.status);
+    const disclosure = toolDisclosure.bind(detail, item);
     const activity = toolActivity(item);
     detail.append(node('summary', {}, [node('span', { class: `agent-tool-indicator ${item.status || ''}`, text: item.status === 'complete' ? '✓' : item.status === 'error' ? '!' : item.status === 'approval' ? '?' : '◇' }),
       node('span', { class: 'agent-tool-label', title: item.name }, [node('strong', { text: activity.label }), activity.detail ? node('small', { text: activity.detail }) : null]),
@@ -400,7 +402,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     }
     detail.addEventListener('toggle', populate); populate();
     detail.append(body); element.replaceChildren(detail);
-    return { dispose() { closed = true; preview?.dispose(); } };
+    return { dispose() { closed = true; disclosure.dispose(); preview?.dispose(); } };
   }
 
   // MCP tool catalog and structured console --------------------------------
@@ -701,13 +703,40 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const routingNote = node('p', { class: 'agent-routing-note', hidden: true });
   const providerRuntimeNote = node('p', { class: 'agent-provider-runtime', hidden: true, text: 'The official OpenAI, Anthropic and Google .NET clients run directly in this browser. Keys stay in this page’s memory. Custom provider endpoints must allow browser requests from this site.' });
   const providerCacheNote = node('p', { class: 'agent-muted' });
-  const limits = node('div', { class: 'agent-limits' });
+  const limits = node('div', { class: 'agent-limits' }); let contextField;
   for (const [key, label, min, max, help] of [
     ['maxTurns', 'Max model turns', 0, 10000, '0 continues until the task completes or needs attention. A positive budget pauses with Resume available.'],
     ['maxNoProgressTurns', 'No-progress turns before pause', 2, 100, 'Pause after repeated turns without useful progress. Completed tool work is retained.'],
     ['maxOutputTokens', 'Output tokens / turn', 256, 128000, 'Per response. The agent continues automatically after output limits.'],
-    ['contextWindowTokens', 'Model context window', 4096, 4000000, 'Context compacts as needed while retaining the task, plan and workspace.']]) {
-    const input = node('input', { type: 'number', min, max, step: 1, 'aria-label': label }); formFields[key] = input; input.value = currentConfig[key]; limits.append(field(label, input, help));
+    ['contextWindowTokens', 'Model context window', 4096, 4000000, 'Editable local token budget. Discovery fills a known context window, or conservatively uses a reported input limit. Context compacts before this budget; output tokens are reserved.']]) {
+    const input = node('input', { type: 'number', min, max, step: 1, 'aria-label': label }); formFields[key] = input; input.value = currentConfig[key];
+    const control = field(label, input, help); if (key === 'contextWindowTokens') contextField = control; else limits.append(control);
+  }
+  const discoveredModels = node('select', { 'aria-label': 'Discovered models', disabled: true }, [node('option', { value: '', text: 'Discover models to choose from your account' })]);
+  const discoveryStatus = node('p', { class: 'agent-model-discovery-status agent-muted', role: 'status', text: 'Fetch the provider model catalog without starting a model response. Some providers omit token limits; all budgets remain editable.' });
+  const modelLimitNote = node('p', { class: 'agent-model-limits-note agent-muted', text: 'The current budget is a local setting, not a verified provider limit.' });
+  const discoverButton = button('Discover models', () => run(() => modelDiscovery.discover()), { icon: 'refresh', class: 'agent-secondary' });
+  const modelDiscovery = new ModelDiscovery({ load: request => client.models(request),
+    getIdentity: () => ({ provider: providerSelect.value, apiKey: apiKeyInput.value, endpoint: endpointInput.value }),
+    onChange: state => {
+      discoverButton.disabled = state.loading;
+      discoveredModels.disabled = state.loading || !state.models.length;
+      discoveredModels.replaceChildren(node('option', { value: '', text: state.loading ? 'Loading models…' : state.models.length ? 'Choose a discovered model' : 'No discovered models' }),
+        ...state.models.map(model => node('option', { value: model.id, text: modelOptionLabel(model) })));
+      discoveryStatus.classList.toggle('error', state.status === 'error');
+      discoveryStatus.textContent = state.notice || (state.models.length ? `${state.models.length} models available. Select one to use its reported limits.` : 'Discover models using the provider, credential and endpoint entered above.');
+      if (state.truncated) discoveryStatus.textContent += ' The catalog is truncated; you can still enter any model ID manually.';
+    } });
+  discoveredModels.addEventListener('change', () => {
+    const model = modelDiscovery.state.models.find(value => value.id === discoveredModels.value); if (!model) return;
+    const budget = selectModelBudgets(model, formFields.contextWindowTokens.value, formFields.maxOutputTokens.value);
+    modelInput.value = model.id; formFields.contextWindowTokens.value = budget.context; formFields.maxOutputTokens.value = budget.output;
+    modelLimitNote.textContent = budget.note + (model.metadataSource === 'official-exact-id-catalog' ? ' Limits come from documentation for this exact model ID.' : '');
+  });
+  modelInput.addEventListener('input', () => { discoveredModels.value = ''; modelLimitNote.textContent = 'Manual model ID. Verify the provider limit and edit the local context budget as needed.'; });
+  formFields.contextWindowTokens.addEventListener('input', () => { modelLimitNote.textContent = 'Manual context budget. Discovery changes this value only when you select a model.'; });
+  function invalidateModels() {
+    modelDiscovery.invalidate(); modelLimitNote.textContent = 'Provider settings changed. Discover again to verify limits, or enter a manual context budget.';
   }
   const turnLimitReset = button('Use no fixed turn limit', () => run(async () => {
     client.ensureIdle();
@@ -741,6 +770,8 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
         connectionInfo.textContent = 'Disconnected · runtime credential cleared'; scheduleRender();
       }), { icon: 'close', compact: true })]), keyHint]),
       field('Endpoint / proxy (optional)', endpointInput, 'Blank uses the provider default. Custom endpoints receive the credential and request content.'), routingNote,
+      node('section', { class: 'agent-model-discovery', 'aria-label': 'Provider model discovery' }, [node('div', { class: 'agent-row' }, [node('h3', { text: 'Available models' }), discoverButton]),
+        field('Account model catalog', discoveredModels), discoveryStatus, contextField, modelLimitNote]),
       providerRuntimeNote, providerCacheNote, companionPanel, node('hr'), field('Tool permissions', permissionSelect), permissionDescription,
       button('Apply permissions', () => run(async () => {
         await client.configure({ ...(client.config || currentConfig), permissionMode: permissionSelect.value });
@@ -798,11 +829,11 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   providerSelect.addEventListener('change', () => {
     const provider = providers.find(p => p.id === providerSelect.value);
     modelInput.value = provider.model; apiKeyInput.value = ''; endpointInput.value = provider.id === 'chatgpt' ? 'http://127.0.0.1:5091' : '';
-    invalidateSignIn(); updateProviderFields();
+    invalidateModels(); invalidateSignIn(); updateProviderFields();
   });
   permissionSelect.addEventListener('change', updatePermissionDescription);
-  endpointInput.addEventListener('input', () => { invalidateSignIn(); updateRouting(); });
-  apiKeyInput.addEventListener('input', () => invalidateSignIn());
+  endpointInput.addEventListener('input', () => { invalidateModels(); invalidateSignIn(); updateRouting(); });
+  apiKeyInput.addEventListener('input', () => { invalidateModels(); invalidateSignIn(); });
   function invalidateSignIn(message = 'Start the local companion to use your ChatGPT subscription.') {
     authenticated = false; companion = null; authGeneration++;
     if (authTimer) clearTimeout(authTimer); authTimer = null;
@@ -898,6 +929,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   client.addEventListener('disconnected', () => {
     void browserMcp.disable().catch(report);
     mcpBridge.disconnect(); nativeToolCount = 0; bridgeToken.value = ''; apiKeyInput.value = ''; currentConfig.apiKey = '';
+    invalidateModels();
     bridgeStatus.textContent = 'Local tools and external MCP are disconnected.';
     invalidateSignIn('Runtime disconnected. Use Sign in with ChatGPT or check the companion when reconnecting.');
     run(loadTools); scheduleRender();
@@ -933,7 +965,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   window.addEventListener('pagehide', event => {
     mcpBridge.disconnect(); void browserMcp.disable().catch(() => {});
     if (!event.persisted) {
-      externalAgents.dispose(); referenceComposer.dispose(); chatPopovers.dispose(); clearNotice();
+      externalAgents.dispose(); referenceComposer.dispose(); chatPopovers.dispose(); modelDiscovery.dispose(); clearNotice();
       for (const cached of timelineNodes.values()) { cached.markdown?.dispose(); cached.preview?.dispose(); }
       disposed = true; authGeneration++; if (authTimer) clearTimeout(authTimer);
       // Saves are normally completed after each idle change and on visibility

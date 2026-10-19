@@ -38,6 +38,15 @@ function integer(value, name, minimum, maximum) {
   return number;
 }
 
+/** A model catalog lookup does not configure a session or need a selected model. */
+export function modelDiscoveryRequest(input) {
+  const provider = String(input.provider || 'openai');
+  if (!providers.some(item => item.id === provider)) throw new Error('Choose a supported model provider.');
+  const apiKey = String(input.apiKey ?? '').trim();
+  if (/\s/.test(apiKey)) throw new Error('The API key or companion token cannot contain whitespace.');
+  return { provider, apiKey, endpoint: endpointUrl(input.endpoint, { companion: provider === 'chatgpt' }) };
+}
+
 export function configuration(input) {
   const provider = String(input.provider || 'openai');
   if (!providers.some(p => p.id === provider)) throw new Error('Choose a supported model provider.');
@@ -59,7 +68,7 @@ export function configuration(input) {
     maxOutputTokens: integer(input.maxOutputTokens ?? 8192, 'Output token limit', 256, 128000),
     contextWindowTokens: integer(input.contextWindowTokens ?? 128000, 'Context window', 4096, 4000000)
   };
-  if (result.maxOutputTokens >= result.contextWindowTokens / 2)
+  if (result.maxOutputTokens >= Math.floor(result.contextWindowTokens / 2))
     throw new Error('Output tokens must use less than half of the context window, leaving room for the task and tools.');
   if (input.documentId) result.documentId = String(input.documentId);
   return result;
