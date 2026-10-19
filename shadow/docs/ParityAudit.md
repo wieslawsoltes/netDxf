@@ -13,7 +13,7 @@ corresponding end-to-end evidence cover their stated scope.
 | Rapid drawing creation, editing and a complete MCP toolset | Generic source/schema/collection/method tools, atomic drawing batches, typed Studio routes; MCP and AgentStudio verification programs | Build a per-native-entity/property/method coverage inventory, close unsupported authoring/editing shapes, and exercise them through actual Studio/MCP workflows. Generic reflection access alone does not prove safe full editing support. |
 | Full graph analysis in Studio | Nodes, edges, components, path/traversal, cut vertices/bridges, nearest node, diagnostics, fundamental cycles and minimum spanning forests share reusable algorithms and MCP tools | Broaden source-reference graph exploration and query-to-selection workflows; validate large real drawings and export/import analysis receipts. Geometric topology does not imply discipline connectivity. |
 | AutoCAD-like ribbon and command/log visibility | Adaptive ribbon panels, keyboard command workflow, independent command/history visibility, clean screen; browser tests | Continue command discoverability, keyboard navigation, focus/accessibility and small-screen validation as commands are added. |
-| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; Advanced native fixtures | Dedicated attribute editor and definition synchronization, block-library import/export, richer insertion previews, array references and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
+| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; native same-tag attribute rebinding; exact embedded-text snapshot editing/history | Dedicated attribute editor and undoable definition synchronization, block-library import/export, richer insertion previews, array references and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
 | MOVE and other editing tools with drafting aids | MOVE/COPY/ROTATE/SCALE/MIRROR, basic topology edits, STRETCH/BREAK/BREAKATPOINT increment, object/grid snap, Ortho/polar/tracking; native and browser regressions | Extend entity/coordinate-system coverage for each command, curve trim/extend/offset, reference/copy variants of transforms, richer arrays, selection cycling and additional acquisition modes. Existing planar restrictions remain material. |
 | Full line, text style and layer UI | Managers expose supported table fields, complex linetypes, LIN import, fixed-height/font metadata, layer color/plot/lock/freeze/transparency; native layer-state save/update/rename/delete/selective restore with history and DXF persistence | Layer filters/isolation, saved-layer editing, persisted restore masks, LAS transfer, unresolved-resource repair, individual viewport overrides, plot-style workflows, text editing/formatting and externally referenced resource behavior. |
 | Token-efficient coding harness and provider caching | Bounded context/tool batches, caching configuration and usage, stable prefixes, checkpoint/compaction behavior; provider/agent fixtures | Verify supported provider/model combinations with opt-in real accounts, measure cache hits on repeated identical tasks, and compare quality/latency/cost. Fixtures do not establish actual provider cache performance. |
@@ -69,10 +69,32 @@ exact pushed revision, including each operating-system and package-consumer job.
   results supplement the prior CI baseline; the next pushed revision requires
   its own complete hosted checks.
 
+### Attribute foundation increment
+
+- `Attribute.GetTextData`/`SetTextData` and the corresponding ATTDEF methods
+  transfer independent stored text packets. They preserve optional flags, ordered
+  embedded layout fields, binary auxiliary data and canonical style references.
+  Fallback text and proxy graphics remain independent. The existing DXF writer
+  still emits version marker zero for embedded content when it was absent.
+- Shadow exposes `TextData` as a writable detached value. External embedded
+  edits now change the snapshot; unchanged captures retain snapshot identity.
+  Scalar edits, branch previews/merge and repeated undo/redo preserve the packet.
+  Visible-content editors must invalidate stale proxy graphics explicitly.
+- Native `Insert.Sync` rebinds retained attributes to replacement definitions
+  with the same tag, retaining their identity and authored values. Geometry is
+  prepared before membership changes; removal/addition invalidates INSERT proxy
+  graphics. Arbitrary native event callbacks are not a rollback transaction.
+  A dedicated, undoable Studio ATTSYNC command and attribute editor remain open;
+  native Sync still preserves resource overrides rather than resetting them.
+- Local .NET 8 results: 157 attribute conformance cases, 688 insert conformance
+  cases and all 1,256 Advanced checks pass. Independent preexisting DXF fixtures
+  exercise both text/binary input and output. These tests are foundations for the
+  remaining UI work, not evidence of complete block parity.
+
 ## Current implementation order
 
 1. Preserve green CI on every new pushed increment. Process-launch and browser
-   regressions were corrected; all 23 checks passed on `377291ce`.
+   regressions were corrected; all 23 checks passed on `8a52aa4a`.
 2. STRETCH/BREAK, graph cycle/forest access and external-agent context controls
    have landed. Extend their coverage as related workflows are implemented.
 3. Continue block attributes, remaining layer workflows, drafting command/entity coverage and reusable
