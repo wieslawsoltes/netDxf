@@ -13,7 +13,7 @@ corresponding end-to-end evidence cover their stated scope.
 | Rapid drawing creation, editing and a complete MCP toolset | Generic source/schema/collection/method tools, atomic drawing batches, typed Studio routes; MCP and AgentStudio verification programs | Build a per-native-entity/property/method coverage inventory, close unsupported authoring/editing shapes, and exercise them through actual Studio/MCP workflows. Generic reflection access alone does not prove safe full editing support. |
 | Full graph analysis in Studio | Nodes, edges, components, path/traversal, cut vertices/bridges, nearest node, diagnostics, fundamental cycles and minimum spanning forests share reusable algorithms and MCP tools | Broaden source-reference graph exploration and query-to-selection workflows; validate large real drawings and export/import analysis receipts. Geometric topology does not imply discipline connectivity. |
 | AutoCAD-like ribbon and command/log visibility | Adaptive ribbon panels, keyboard command workflow, independent command/history visibility, clean screen; browser tests | Continue command discoverability, keyboard navigation, focus/accessibility and small-screen validation as commands are added. |
-| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; native same-tag attribute rebinding; exact embedded-text snapshot editing/history; shared instance editor, BATTMAN/ATTDEF for named-block definitions and all-reference ATTSYNC previews with native/WASM save/reopen evidence | Standalone model-space ATTDEF placement, insertion-time prompts, explicit default-attribute previews, block-library import/export, richer insertion/array workflows and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
+| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; exact attribute history; shared instance editor, BATTMAN/ATTDEF for named-block definitions, ATTSYNC previews, insertion-time value/verify prompts and explicit insertion attributes in previews | Standalone model-space ATTDEF placement, block-library import/export, cursor-following insertion graphics, richer insertion/array workflows and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
 | MOVE and other editing tools with drafting aids | MOVE/COPY/ROTATE/SCALE/MIRROR, basic topology edits, STRETCH/BREAK/BREAKATPOINT increment, object/grid snap, Ortho/polar/tracking; native and browser regressions | Extend entity/coordinate-system coverage for each command, curve trim/extend/offset, reference/copy variants of transforms, richer arrays, selection cycling and additional acquisition modes. Existing planar restrictions remain material. |
 | Full line, text style and layer UI | Managers expose supported table fields, complex linetypes, LIN import, fixed-height/font metadata, layer color/plot/lock/freeze/transparency; native layer-state save/update/rename/delete/selective restore with history and DXF persistence | Layer filters/isolation, saved-layer editing, persisted restore masks, LAS transfer, unresolved-resource repair, individual viewport overrides, plot-style workflows, text editing/formatting and externally referenced resource behavior. |
 | Token-efficient coding harness and provider caching | Bounded context/tool batches, caching configuration and usage, stable prefixes, checkpoint/compaction behavior; provider/agent fixtures | Verify supported provider/model combinations with opt-in real accounts, measure cache hits on repeated identical tasks, and compare quality/latency/cost. Fixtures do not establish actual provider cache performance. |
@@ -97,9 +97,8 @@ exact pushed revision, including each operating-system and package-consumer job.
    regressions were corrected; all 23 checks passed on `e559aceb`, including the
    attribute editor, synchronization, definition ordering and identity/default fixes.
    Each new pushed revision needs its own checks.
-2. Qualify the shared `BATTMAN`/`ATTDEF` increment, then implement explicit
-   default-attribute insertion previews and insertion-time attribute prompts.
-   Continue block-library transfer, insertion/array workflows and supported
+2. Qualify explicit attribute insertion previews and insertion-time value/verify
+   prompts, then continue block-library transfer, insertion/array workflows and supported
    attributed/nonuniform explode cases with native and browser history tests.
 3. Complete remaining layers/styles and drafting workflows: filters/isolation,
    layer-state transfer/restore settings, resource repair, viewport overrides,
@@ -124,6 +123,34 @@ exact pushed revision, including each operating-system and package-consumer job.
 Credentials supplied in conversation are neither used nor persisted. Paid testing
 remains disabled, with actual spend USD 0. Any later opt-in evaluation must retain
 the user's cumulative USD 20 ceiling. There is no credential material in this audit.
+
+### Insertion attribute increment
+
+- `InsertAttributeConstruction` materializes explicit owned attributes in proposed
+  snapshots before publication, using native text transformation and the actual
+  definition origin, insertion frame, owner units and MIRRTEXT. Assigned values
+  use exact definition identities and do not rewrite definitions or other INSERTs.
+  Initialization preserves insertion XData; it does not apply ATTSYNC's reset policy.
+  Single/multiline defaults render in detached previews and survive exact native
+  adoption, undo/redo and text/binary DXF transport.
+- Shared insertion UI supports ATTREQ, ATTDIA and command-line `-INSERT`, constant
+  defaults, preset behavior, verification, invisible values, multiline input and
+  independent repeated placement. Cancellation happens before source publication;
+  each successful insertion is one undo entry. Literal END and whitespace in
+  attribute input are preserved. Pending input is fenced to its drawing receipt.
+- Typed `insert` operations, ordinary INSERT command previews and recorded replay
+  use the same explicit construction. Native/WASM routes and agent schemas expose
+  identity-bound assignments. Source-independent drafting remains independent of
+  native geometry; library callers compose placement with the NetDxf construction
+  plan as documented in BlockAuthoring.md.
+- Local verification: 1,402 Advanced checks and 422 browser unit checks. Published
+  native Chromium passes 122 checks; standalone WASM passes 199 across root and
+  subpath hosting. Independent saved-DXF audits find the requested values and no
+  errors or repairs. Both Release publishes pass; all 93 route contracts and 984
+  assets validate. New commits still require hosted CI qualification.
+- Remaining insertion work includes cursor-following block graphics, additional
+  acquisition/coordinate modes and arrays. Library transfer, model-space ATTDEF,
+  supported attributed/nonuniform explode and dynamic block behavior remain open.
 
 ### Definition manager increment
 

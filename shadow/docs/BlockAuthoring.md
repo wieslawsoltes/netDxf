@@ -140,8 +140,52 @@ custom registered INSERT factories keep their authored defaults. Unused definiti
 XData, extension dictionaries and proxy payloads are not cloned for this preparation.
 Embedded styles are refreshed after resource edits, before registration, so their
 detached text packets do not recreate an old style name after a same-batch rename.
-This source construction step does not expand omitted attribute nodes in a detached
-preview; authoring planners must include those nodes for an explicit attribute preview.
+This low-level source construction step does not expand omitted attribute nodes
+in a detached preview. Studio insertion now uses the explicit construction planner
+described below so its previews contain those nodes before native publication.
+
+## Insertion values and previews
+
+`INSERT`, the block picker and repeated placement collect values after positioning
+the reference. `ATTREQ 0` uses definition defaults; `ATTREQ 1` enables value entry.
+`ATTDIA 1` opens the shared attribute dialog, while `ATTDIA 0` uses command prompts.
+Both settings default to 1 and persist in the local UI preferences. `-INSERT`
+uses command prompts regardless of ATTDIA, while still honoring ATTREQ.
+
+Constant definitions retain their defaults and are not prompted. Command entry
+skips ordinary preset prompts; dialog entry includes editable preset values.
+Verify definitions receive a second opportunity to confirm or correct their
+values. Invisible attributes remain editable during insertion. Command-line Enter
+keeps the displayed default, two quotation marks clear it, and other input retains
+literal spaces and words such as END rather than treating them as snap overrides.
+Multiline values support MTEXT controls and normalize newlines to paragraph breaks.
+Their independent single-line fallback remains the definition's fallback value.
+
+The complete reference and its attributes publish as one undo operation only after
+value collection succeeds. Cancel/Escape discards the pending insertion. Each
+repeated placement starts from current definition defaults and gets its own values
+and undo entry. Drawing/workspace/revision changes invalidate pending value entry.
+These controls follow Autodesk's [ATTREQ](https://help.autodesk.com/cloudhelp/2020/ENU/AutoCAD-Core/files/GUID-7A7229F8-C99D-42C5-8784-4231767611F8.htm),
+[ATTDIA](https://help.autodesk.com/cloudhelp/2023/ENU/AutoCAD-Core/files/GUID-DD7AE7D3-D9D7-49E7-948E-079D8451FFA2.htm)
+and [attribute-mode documentation](https://help.autodesk.com/cloudhelp/2015/ENU/AutoCAD-Core/files/GUID-92A7CE9D-2E1C-415E-A1BF-5CB35D5E2D38.htm).
+
+`InsertAttributeConstruction.Plan` in `netDxf.Shadow.NetDxf` expands an empty
+reference in an immutable proposed snapshot into explicit owned attributes. It
+uses the same native transformation as synchronization, including definition
+origin, insertion frame, owner units, MIRRTEXT and embedded text. It never changes
+another reference or clears insertion XData. Optional `InsertAttributeAssignment`
+values identify exact definitions; duplicates, foreign definitions, changed
+constant defaults and invalid text are rejected before publication.
+
+Library callers first apply the source-independent `DraftingPlanner` placement
+patch to a snapshot, then apply the construction patch for the created INSERT.
+Compose the result with `ShadowGraphPatch.Between` and execute once. Studio does
+this for ordinary INSERT commands, `CadInsert`, recorded workflows and typed edit
+previews. `CadInsertOperation` combines a command and optional assignments through
+the native/WASM `insert` route. An edit-preview operation with `kind: "insert"`
+and its `insert` payload uses the same plan; a normal command preview also includes
+explicit defaults. These are complete drawing previews; cursor-following block
+graphics and richer insertion acquisition remain future work.
 
 `EATTEDIT`, `ATTEDIT` and `ATE` open the shared instance editor. Its Attribute,
 Text options and Properties tabs edit values and supported appearance fields;
@@ -200,7 +244,7 @@ carry `attributeDefinitions: { block, changes, updateExisting, convertTextModes 
 previews include synchronization reports and require the normal identity guards.
 
 The dialogs follow the ordinary [Block Attribute Manager workflow](https://help.autodesk.com/cloudhelp/2022/ENU/AutoCAD-Core/files/GUID-16555B43-D4FA-4C8E-BDF5-4256E9166A6F.htm).
-Standalone model-space ATTDEF placement, insertion-time verify prompts, manager
+Standalone model-space ATTDEF placement, manager
 column settings/automatic previews, annotation contexts and plot-style editing
 remain outside this increment. This is not complete AutoCAD block parity.
 
