@@ -11,7 +11,7 @@ export function referenceChips(references, { historical = false, statuses = new 
     details.append(node('summary', { title: `${ref.objectId} · ${ref.workspaceId} · revision ${ref.revision}`, text: label }),
       node('small', { text: historical ? `Captured at revision ${ref.revision}` : status?.message || `Revision ${ref.revision} · ${ref.workspaceId}` }), code(ref));
     if (inspect) details.append(button('Check current object', () => inspect(ref)));
-    if (remove) details.append(button(`Remove ${label}`, () => remove(ref), { compact: true }));
+    if (remove) details.append(button(`Remove ${label}`, () => remove(ref), { icon: 'trash', compact: true }));
     row.append(details);
   }
   return row;
