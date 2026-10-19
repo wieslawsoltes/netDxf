@@ -17,7 +17,7 @@ public sealed partial class Studio
     private readonly DraftingPlanner drafting = new();
     private ImmutableArray<ObjectId> cadSelectionOrder = [];
     private static readonly HashSet<string> SelectionCommands = new(StringComparer.OrdinalIgnoreCase)
-        { "MOVE", "COPY", "ROTATE", "SCALE", "MIRROR", "ARRAY", "OFFSET", "TRIM", "EXTEND", "FILLET", "CHAMFER", "JOIN", "EXPLODE", "ERASE", "BLOCK" };
+        { "MOVE", "COPY", "ROTATE", "SCALE", "MIRROR", "ARRAY", "OFFSET", "TRIM", "EXTEND", "FILLET", "CHAMFER", "JOIN", "EXPLODE", "ERASE", "BLOCK", "STRETCH", "BREAK", "BREAKATPOINT" };
     public long CadRevision { get { lock (gate) return Current.Revision; } }
     public bool CadHasBranches { get { lock (gate) return branches.Count != 0; } }
     public (Guid Document, long Revision) CadStamp { get { lock (gate) return (session.Current.DocumentId, session.Current.Revision); } }

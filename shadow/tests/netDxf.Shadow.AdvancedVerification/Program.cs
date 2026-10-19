@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 
 var tests = new List<(string Name, Action Run)>();
+ModifyParityVerification.Register(tests);
 MathVerification.Register(tests);
 SvgStreamingVerification.Register(tests);
 ImportedSplineVerification.Register(tests);

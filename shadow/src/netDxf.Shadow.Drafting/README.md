@@ -32,6 +32,8 @@ its own scene/selection context. Immutable plans do not grant authorization.
 | DIMALIGNED / DIMLINEAR | Native dimension definitions; two references plus dimension-line point |
 | INSERT | Existing named block, position, signed XYZ scale, rotation and optional alternate definition base point |
 | MOVE / ROTATE / SCALE / MIRROR | Explicit base point/axis; representation-preserving existing affine planners |
+| STRETCH | Crossing-window endpoints/vertices, insertion/center anchors and fully enclosed affine-representable geometry |
+| BREAK / BREAKATPOINT | Projected cuts on XY LINE, ARC, CIRCLE or Polyline2D; preserve analytic bulges and interpolate widths |
 | COPY / ARRAY | Deep entity-owned data copies, shared table/block definitions; rectangular array |
 | ERASE | Structural removal with canonical undo/redo |
 | OFFSET | Lines, circles/arcs, and simple straight polylines; side point plus positive distance |
@@ -43,6 +45,35 @@ its own scene/selection context. Immutable plans do not grant authorization.
 Coordinates use drawing units; angles use degrees. ARRAY uses `Count` columns,
 `Value` integral rows, and the delta of its two points as X/Y cell spacing. The
 original occupies the first cell. COPY uses its two points as displacement.
+
+`STRETCH` takes four points: two crossing-window corners, a base point and a
+destination. Its explicit selected entities scope the edit. LINE endpoints and
+Polyline2D vertices inside the window move by the displacement; exterior
+vertices remain fixed. Widths and bulges are retained. Circles/ellipses use their
+center, while text, points and INSERTs use their insertion point; INSERT
+attributes move together and shared definitions remain unchanged. Other supported
+geometry moves when wholly enclosed, using the existing affine planner. Conic
+containment uses analytic extrema and NURBS use their positive-weight control
+hull. Partially enclosed arcs/splines and constrained geometry still require
+additional planners and are rejected atomically. The UI offers a crossing
+rectangle by drag or two points, selection removal, base/second point and
+Displacement prompts. Crossing polygons and multiple windows remain outstanding.
+These behaviors follow the documented
+[STRETCH convention](https://help.autodesk.com/cloudhelp/2022/ENU/AutoCAD-Core/files/GUID-F000A502-D39E-4D31-A8E2-4A626473FB72.htm).
+
+`BREAK` takes two projected points and one selected entity. Open curves retain
+the portions outside the gap; a whole-curve gap deletes the source. A circle
+becomes an arc after removing the counterclockwise interval. Closed polylines
+retain one open path across the authored seam. `BREAKATPOINT` takes one interior
+point on an open supported curve and splits it without a gap. Polyline cuts
+retain exact circular bulges and interpolate tapered widths at each cut. The
+browser supports a picked first point, the `First` option and `@` for a no-gap
+break. Source identities, appearance, undo/redo and DXF output are verified.
+Persistent attached data that cannot be redistributed safely is rejected before
+mutation. Ellipse/spline splitting remains outstanding. See Autodesk's
+[BREAK](https://help.autodesk.com/cloudhelp/2025/ENG/AutoCAD-Core/files/GUID-36A1CDE0-3871-4B25-AC98-93235FA83863.htm)
+and [BREAKATPOINT](https://help.autodesk.com/cloudhelp/2025/ENG/AutoCAD-Core/files/GUID-E0439DE0-B2C3-4233-BB4D-5A574A00694B.htm)
+command conventions.
 
 `INSERT` retains shared block definitions. `Value` continues to supply a uniform
 scale; optional `Scale` supplies separate X/Y/Z factors and allows negative axes

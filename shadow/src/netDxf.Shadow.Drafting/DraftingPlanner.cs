@@ -57,6 +57,8 @@ public sealed partial class DraftingPlanner
             "BLOCK" => CreateBlockInOwner(snapshot, new(command.Text ?? "", points.Length == 1 ? points[0] :
                 throw new ArgumentException("BLOCK requires one base point."), ids, Layer: command.Layer), owner, cancellationToken),
             "MOVE" or "ROTATE" or "SCALE" or "MIRROR" => Transform(snapshot, command, cancellationToken),
+            "STRETCH" => Stretch(snapshot, command, owner, cancellationToken),
+            "BREAK" or "BREAKATPOINT" => Break(snapshot, command, owner, cancellationToken),
             "COPY" or "ARRAY" => Copy(snapshot, command, owner, cancellationToken),
             "ERASE" => Erase(snapshot, command),
             "OFFSET" => Offset(snapshot, command, owner, cancellationToken),
