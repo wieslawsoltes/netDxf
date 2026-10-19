@@ -29,6 +29,7 @@ internal static partial class Program
         RegisterAttributeDefinitionProjectionTests();
         RegisterAttributeDefinitionOrderingTests();
         RegisterAttributeDefinitionNamingTests();
+        RegisterBlockCloneMetadataTests();
         RegisterDrawingCompatibilityTests();
         RegisterOpaqueObjectCode5Tests();
         RegisterHatchExplicitPeriodicTests();

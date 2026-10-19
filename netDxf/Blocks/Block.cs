@@ -217,7 +217,7 @@ namespace netDxf.Blocks
         {
         }
 
-        internal Block(string name, IEnumerable<EntityObject> entities, IEnumerable<AttributeDefinition> attributes, bool checkName)
+        internal Block(string name, IEnumerable<EntityObject> entities, IEnumerable<AttributeDefinition> attributes, bool checkName, string xrefFile = "")
             : base(name, DxfObjectCode.Block, checkName)
         {
             if (string.IsNullOrEmpty(name))
@@ -230,7 +230,7 @@ namespace netDxf.Blocks
             this.description = string.Empty;
             this.origin = Vector3.Zero;
             this.layer = Layer.Default;
-            this.xrefFile = string.Empty;
+            this.xrefFile = xrefFile;
             this.Owner = new BlockRecord(name);
             this.flags = BlockTypeFlags.None;
             this.end = new EndBlock(this);
@@ -650,13 +650,17 @@ namespace netDxf.Blocks
                 throw new ArgumentException("*Model_Space and *Paper_Space# blocks can only be cloned with a new valid name.");
             }
 
-            Block copy = new Block(newName, null, null, checkName)
+            Block copy = new Block(newName, null, null, checkName, block.xrefFile)
             {
                 Description = block.description,
                 Flags = block.flags,
                 Layer = (Layer) block.Layer.Clone(),
                 Origin = block.origin
             };
+
+            copy.Record.Units = block.Record.Units;
+            copy.Record.AllowExploding = block.Record.AllowExploding;
+            copy.Record.ScaleUniformly = block.Record.ScaleUniformly;
 
             // remove anonymous flag for renamed anonymous blocks
             if (checkName)
