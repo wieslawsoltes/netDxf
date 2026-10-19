@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../src/netDxf.Shadow.Mcp/netDxf.Shadow.Mcp.csproj" />
+    <Compile Include="../../src/netDxf.Shadow.Agents/AgentFunction.cs" Link="AgentFunction.cs" />
     <PackageReference Include="OpenAI" Version="2.14.0" />
     <PackageReference Include="Anthropic" Version="12.58.0" />
     <PackageReference Include="Google.GenAI" Version="1.26.1" />

@@ -23,8 +23,11 @@ internal static class ProviderTerminationVerification
                 "google" => GoogleStop(reason, empty ? null : "done"),
                 _ => OpenAIStop(reason, empty),
             };
-            var requests = 0;
-            using var http = new HttpClient(new TestHandler((_, _) => { requests++; return Task.FromResult(Sse(payload)); }));
+            var requests = 0; JsonObject? requestBody = null;
+            using var http = new HttpClient(new TestHandler(async (request, token) =>
+            {
+                requests++; requestBody = JsonNode.Parse(await request.Content!.ReadAsStringAsync(token))!.AsObject(); return Sse(payload);
+            }));
             using var client = Create(provider, browser, http);
             var response = await client.GetResponseAsync([new(ChatRole.User, "Continue the coding task.")], new() { MaxOutputTokens = 256 });
             var label = $"{provider} {(browser ? "browser" : "native")} {(empty ? "reasoning-only" : "text")} output limit";
@@ -33,6 +36,9 @@ internal static class ProviderTerminationVerification
             Check(response.Text == (empty ? "" : "done") && Property(response, ShadowAgentProviders.StopReasonKey) == reason,
                 label + " retains only visible text and exact response-level reason");
             Check(requests == 1, label + " never silently raises the configured output ceiling");
+            if (provider == "openai") Check(!string.IsNullOrEmpty(requestBody?["prompt_cache_key"]?.GetValue<string>()), label + " retains API cache key");
+            else if (provider == "anthropic") Check(requestBody?["cache_control"]?["ttl"]?.GetValue<string>() == "5m", label + " retains native ephemeral cache hint");
+            else Check(!requestBody!.ContainsKey("prompt_cache_key") && !requestBody.ContainsKey("cache_control"), label + " adds no foreign provider cache fields");
         }
 
         foreach (var provider in new[] { "openai", "chatgpt", "anthropic", "google" })

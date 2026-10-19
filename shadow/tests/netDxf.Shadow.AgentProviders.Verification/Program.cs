@@ -7,6 +7,9 @@ using System.Text.Json.Nodes;
 using Microsoft.Extensions.AI;
 using netDxf.Shadow.Agents;
 using netDxf.Shadow.Agents.Auth;
+using netDxf.Shadow.Editor;
+using netDxf.Shadow.Mcp;
+using netDxf.Shadow.NetDxf;
 
 var checks = 0;
 foreach (var provider in new[] { "openai", "anthropic", "google", "chatgpt" }) await VerifyProvider(provider);
@@ -16,12 +19,106 @@ await VerifyFailures();
 await VerifyBrowserAnthropic();
 checks += await ProviderTerminationVerification.RunAsync();
 await VerifyAuthentication();
+await VerifyMcpSchemas();
+await VerifyCaching();
+await VerifyBridgeCaching();
 Console.WriteLine($"PASS: {checks} provider, streaming, tool replay, PKCE, JWT and token-lifecycle checks.");
 
 void Check(bool condition, string name)
 {
     if (!condition) throw new InvalidOperationException("FAIL: " + name);
     checks++;
+}
+
+async Task VerifyMcpSchemas()
+{
+    var source = new ShadowSession(new netDxf.DxfDocument());
+    var editor = new EditorSession(source);
+    var registry = ShadowMcpTools.Create(new(() => editor, () => source));
+    JsonObject? body = null;
+    using var http = new HttpClient(new TestHandler(async (request, token) =>
+    {
+        body = JsonNode.Parse(await request.Content!.ReadAsStringAsync(token))!.AsObject();
+        return new(HttpStatusCode.OK) { Content = new StringContent(Streams.For("openai", false), Encoding.UTF8, "text/event-stream") };
+    }));
+    using var client = ShadowAgentProviders.Create(new() { Provider = "openai", Model = "gpt-6-luna", ApiKey = "fixture-key" }, http);
+    await client.GetResponseAsync([new(ChatRole.User, "Inspect the drawing.")], new()
+    {
+        Tools = registry.Tools.Select(tool => (AITool)new AgentFunction(tool)).ToList(),
+    });
+    Check(body?["model"]?.GetValue<string>() == "gpt-6-luna", "Explicit GPT-6 Luna model is preserved without substitution");
+    var functions = body!["tools"]!.AsArray().OfType<JsonObject>().ToArray();
+    Check(functions.Length == registry.Tools.Count, "All shared MCP tools reach Responses");
+    foreach (var tool in registry.Tools)
+    {
+        var function = functions.Single(item => item["name"]?.GetValue<string>() == tool.Name);
+        Check(function["strict"]?.GetValue<bool>() == false, tool.Name + " explicitly preserves non-strict MCP semantics");
+        Check(JsonNode.DeepEquals(function["parameters"], JsonNode.Parse(tool.InputSchema.GetRawText())),
+            tool.Name + " preserves optional fields and arbitrary CAD value schemas exactly");
+    }
+}
+
+async Task VerifyCaching()
+{
+    foreach (var provider in new[] { "openai", "anthropic", "google", "chatgpt" })
+    {
+        var bodies = new List<JsonObject>();
+        using var http = new HttpClient(new TestHandler(async (request, token) =>
+        {
+            bodies.Add(JsonNode.Parse(await request.Content!.ReadAsStringAsync(token))!.AsObject());
+            var stream = Streams.For(provider, false);
+            stream = provider switch
+            {
+                "anthropic" => stream.Replace("\"input_tokens\":11", "\"input_tokens\":2,\"cache_creation_input_tokens\":2,\"cache_read_input_tokens\":7", StringComparison.Ordinal),
+                "google" => stream.Replace("\"promptTokenCount\":11", "\"promptTokenCount\":11,\"cachedContentTokenCount\":7", StringComparison.Ordinal),
+                _ => stream.Replace("\"input_tokens\":11", "\"input_tokens\":11,\"input_tokens_details\":{\"cached_tokens\":7,\"cache_write_tokens\":2}", StringComparison.Ordinal),
+            };
+            return new(HttpStatusCode.OK) { Content = new StringContent(stream, Encoding.UTF8, "text/event-stream") };
+        }));
+        using var client = ShadowAgentProviders.CreateBrowser(new() { Provider = provider, Model = "fixture-model", ApiKey = "fixture-key", PromptCacheKey = "stable-fixture" }, http);
+        var history = new ChatMessage[] { new(ChatRole.System, "Stable system prefix"), new(ChatRole.User, "Inspect drawing") };
+        var response = await client.GetResponseAsync(history);
+        await client.GetResponseAsync(history);
+        Check(response.Usage?.CachedInputTokenCount == 7, provider + " exposes cache-read tokens from official SDK");
+        Check(response.Usage?.InputTokenCount == 11, provider + " includes cached reads and writes in input usage");
+        if (provider == "openai")
+        {
+            Check(bodies.All(body => body["prompt_cache_key"]?.GetValue<string>() == "stable-fixture"), "OpenAI reuses explicit stable cache key");
+            Check(bodies.All(body => !body.ContainsKey("prompt_cache_retention") && !body.ContainsKey("prompt_cache_options")), "OpenAI preserves model/account retention defaults");
+        }
+        else if (provider == "anthropic")
+        {
+            Check(bodies.All(body => body["cache_control"]?["type"]?.GetValue<string>() == "ephemeral" && body["cache_control"]?["ttl"]?.GetValue<string>() == "5m"),
+                "Anthropic enables native moving five-minute prefix cache");
+            Check(response.Usage?.AdditionalCounts?.TryGetValue("CacheCreationInputTokens", out var written) == true && written == 2,
+                "Anthropic retains cache-write usage");
+        }
+        else Check(bodies.All(body => !body.ContainsKey("cache_control") && !body.ContainsKey("prompt_cache_key")), provider + " retains implicit caching without foreign cache fields");
+        Check(history.All(message => message.Contents.All(content => content.AdditionalProperties is null)), provider + " caching leaves stored transcript unmodified");
+        using var disabled = ShadowAgentProviders.CreateBrowser(new() { Provider = provider, Model = "fixture-model", ApiKey = "fixture-key", OptimizePromptCaching = false }, http);
+        await disabled.GetResponseAsync(history);
+        Check(!bodies[^1].ContainsKey("cache_control") && !bodies[^1].ContainsKey("prompt_cache_key"), provider + " honors cache-hint opt-out");
+    }
+}
+async Task VerifyBridgeCaching()
+{
+    var requests = new List<ShadowAgentBridgeRequest>();
+    using var http = new HttpClient(new TestHandler(async (request, token) =>
+    {
+        requests.Add(JsonSerializer.Deserialize<ShadowAgentBridgeRequest>(await request.Content!.ReadAsStringAsync(token), ShadowAgentBridgeRequest.JsonOptions)!);
+        var update = JsonSerializer.Serialize(new ShadowAgentBridgeFrame("update", new(ChatRole.Assistant, "done")), ShadowAgentBridgeRequest.JsonOptions);
+        return new(HttpStatusCode.OK) { Content = new StringContent(update + "\n{\"type\":\"completed\"}\n", Encoding.UTF8, "application/x-ndjson") };
+    }));
+    var config = new ShadowAgentProviderOptions { Provider = "openai", Model = "fixture-model", ApiKey = "fixture-key" };
+    using var client = ShadowAgentProviders.CreateBrowserBridge(config, "http://127.0.0.1:5091", new string('x', 32), http);
+    await client.GetResponseAsync([new(ChatRole.User, "one")]);
+    await client.GetResponseAsync([new(ChatRole.User, "two")]);
+    Check(requests.Count == 2 && requests[0].OptimizePromptCaching && !string.IsNullOrEmpty(requests[0].PromptCacheKey)
+        && requests[0].PromptCacheKey == requests[1].PromptCacheKey, "Stateless bridge reuses session-scoped cache key across native client instances");
+    var disabled = ShadowAgentBridgeRequest.Create(config with { OptimizePromptCaching = false, PromptCacheKey = "explicit-fixture" }, [new(ChatRole.User, "test")], null);
+    Check(!disabled.OptimizePromptCaching && disabled.PromptCacheKey == "explicit-fixture", "Bridge preserves explicit cache options");
+    await Throws<ArgumentException>(() => Task.FromResult(ShadowAgentBridgeRequest.Create(config with { PromptCacheKey = new string('x', 65) }, [new(ChatRole.User, "test")], null)),
+        "Bridge rejects invalid cache keys before dispatch");
 }
 async Task Throws<T>(Func<Task> action, string name) where T : Exception
 {

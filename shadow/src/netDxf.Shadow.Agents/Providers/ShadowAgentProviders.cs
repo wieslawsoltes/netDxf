@@ -21,6 +21,10 @@ public sealed record ShadowAgentProviderOptions
     [JsonIgnore]
     public string ApiKey { get; init; } = "";
     public string? Endpoint { get; init; }
+    /// <summary>Apply provider-supported prefix cache hints. Implicit service caching may still occur when false.</summary>
+    public bool OptimizePromptCaching { get; init; } = true;
+    /// <summary>Optional nonsecret OpenAI cache-accounting/routing key, stable for related requests.</summary>
+    public string? PromptCacheKey { get; init; }
 
     public override string ToString() => $"{Provider}/{Model}; Endpoint={Endpoint ?? "default"}; ApiKey=[redacted]";
 }
@@ -59,6 +63,8 @@ public static partial class ShadowAgentProviders
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentException.ThrowIfNullOrWhiteSpace(options.ApiKey);
+        if (options.PromptCacheKey is { } key && (key.Length is < 1 or > 64 || key.Any(char.IsControl)))
+            throw new ArgumentException("A prompt cache key requires 1–64 non-control characters.", nameof(options));
         var provider = options.Provider.Trim().ToLowerInvariant();
         var endpoint = GetEndpoint(options.Endpoint);
         var model = string.IsNullOrWhiteSpace(options.Model) ? provider switch
@@ -123,7 +129,8 @@ public static partial class ShadowAgentProviders
                 default:
                     throw new ArgumentException($"Unknown agent provider '{options.Provider}'.", nameof(options));
             }
-            return new ProviderChatClient(inner, transport, sdkOwner, provider);
+            return new ProviderChatClient(inner, transport, sdkOwner, provider, model, options.OptimizePromptCaching,
+                options.PromptCacheKey ?? "shadow-" + Guid.NewGuid().ToString("N"));
         }
         catch
         {
@@ -228,7 +235,8 @@ public static partial class ShadowAgentProviders
         }
     }
 
-    private sealed partial class ProviderChatClient(IChatClient inner, HttpClient transport, IDisposable? sdkOwner, string provider)
+    private sealed partial class ProviderChatClient(IChatClient inner, HttpClient transport, IDisposable? sdkOwner, string provider,
+        string model, bool optimizePromptCaching, string promptCacheKey)
         : DelegatingChatClient(inner)
     {
         private int _disposed;

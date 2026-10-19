@@ -53,7 +53,7 @@ public sealed partial class AgentSession : IDisposable
     public AgentPollResult Poll(long afterSequence = 0)
     {
         lock (gate) return new(events.Where(e => e.Sequence > afterSequence).Take(256).ToArray(), activeRun is not null,
-            status, EstimateContext(), Options.ContextWindowTokens, SessionId, sequence, events.Count > 0 ? events[0].Sequence : sequence, RunState);
+            status, EstimateContext(), Options.ContextWindowTokens, SessionId, sequence, events.Count > 0 ? events[0].Sequence : sequence, RunState, usageTotals);
     }
     private void Emit(string type, string message = "", object? data = null)
     {
@@ -73,8 +73,11 @@ public sealed partial class AgentSession : IDisposable
                 try { observer(item); } catch (Exception) { /* Host telemetry is observational. */ }
     }
 
-    public async Task RunAsync(string prompt, CancellationToken cancellationToken = default)
+    public Task RunAsync(string prompt, CancellationToken cancellationToken = default) => RunCoreAsync(new AgentPrompt(prompt).Validate(), cancellationToken);
+
+    private async Task RunCoreAsync(AgentPrompt request, CancellationToken cancellationToken, bool validateReferences = false)
     {
+        var prompt = request.ToContextText();
         ArgumentNullException.ThrowIfNull(prompt);
         if (prompt.Length > 256000) throw new ArgumentException("Prompt exceeds 256,000 characters.", nameof(prompt));
         ObjectDisposedException.ThrowIf(disposed, this);
@@ -83,7 +86,12 @@ public sealed partial class AgentSession : IDisposable
         lock (gate) { activeRun = run; status = "running"; }
         try
         {
-            BeginTask(prompt);
+            if (validateReferences)
+            {
+                request = request with { References = await DrawingReferences.ValidateCurrentAsync(executor, request.References, run.Token).ConfigureAwait(false) };
+                prompt = request.ToContextText();
+            }
+            BeginTask(request);
             for (var turn = 1; Options.MaxTurns == 0 || turn <= Options.MaxTurns; turn++)
             {
                 run.Token.ThrowIfCancellationRequested();
@@ -111,7 +119,6 @@ public sealed partial class AgentSession : IDisposable
                 run.Token.ThrowIfCancellationRequested();
                 if (response.Usage is { } usage)
                 {
-                    Emit("usage", "Provider token usage", new { inputTokens = usage.InputTokenCount, outputTokens = usage.OutputTokenCount, totalTokens = usage.TotalTokenCount, cachedTokens = usage.CachedInputTokenCount });
                     var calibrationInput = ResponseInteger(response, "shadow:initial-input-tokens") ?? usage.InputTokenCount;
                     if (calibrationInput is > 0)
                         lock (gate) tokenCalibration = Math.Max(tokenCalibration, Math.Min(4, (double)calibrationInput.Value / Math.Max(1, inputEstimate)));
@@ -153,8 +160,10 @@ public sealed partial class AgentSession : IDisposable
                 else
                 {
                     NormalizeCalls(response);
-                    lock (gate) messages.AddRange(response.Messages);
                     var calls = response.Messages.SelectMany(m => m.Contents).OfType<FunctionCallContent>().Where(c => !c.InformationalOnly).ToArray();
+                    if (calls.Length > Options.MaxToolCallsPerTurn)
+                        throw new InvalidOperationException($"The provider returned more than {Options.MaxToolCallsPerTurn} tool calls in one turn. No tools were executed; request a smaller batch before continuing.");
+                    lock (gate) messages.AddRange(response.Messages);
                     if (!string.IsNullOrWhiteSpace(response.Text)) Emit("assistant", response.Text);
                     if (calls.Length == 0)
                     {
@@ -200,14 +209,16 @@ public sealed partial class AgentSession : IDisposable
     {
         ModelId = string.IsNullOrWhiteSpace(Options.Model) ? null : Options.Model,
         MaxOutputTokens = Options.MaxOutputTokens,
-        Tools = ToolDefinitions.Where(t => Options.PermissionMode != AgentPermissionMode.ReadOnly && Options.Mode != AgentRunMode.Plan || t.ReadOnly)
-            .Select(t => (AITool)new AgentFunction(t)).ToList(),
+        Tools = AvailableTools
+            .Select(t => (AITool)FunctionFor(t)).ToList(),
         ToolMode = ChatToolMode.Auto, AllowMultipleToolCalls = true
     };
     private async Task<ChatResponse> InferAsync(IReadOnlyList<ChatMessage> input, ChatOptions options, CancellationToken token, bool display = true)
     {
         for (var attempt = 0; ; attempt++)
         {
+            var watch = Stopwatch.StartNew();
+            double? firstTokenMilliseconds = null;
             var updates = new List<ChatResponseUpdate>();
             var outputCharacters = 0;
             using var timeout = CancellationTokenSource.CreateLinkedTokenSource(token);
@@ -216,13 +227,18 @@ public sealed partial class AgentSession : IDisposable
             {
                 await foreach (var update in client.GetStreamingResponseAsync(input, options, timeout.Token).ConfigureAwait(false))
                 {
-                    outputCharacters = checked(outputCharacters + update.Text.Length + update.Contents.OfType<FunctionCallContent>().Sum(c => AgentJson.String(c.Arguments).Length));
+                    outputCharacters = checked(outputCharacters + update.Text.Length
+                        + update.Contents.OfType<TextReasoningContent>().Sum(c => checked((c.Text?.Length ?? 0) + (c.ProtectedData?.Length ?? 0)))
+                        + update.Contents.OfType<FunctionCallContent>().Sum(c => AgentJson.String(c.Arguments).Length));
                     if (outputCharacters > Math.Max(1000000, Options.MaxOutputTokens * 32) || updates.Count >= 100000)
                         throw new InvalidOperationException("The provider exceeded the configured response buffer budget.");
                     updates.Add(update);
+                    if (firstTokenMilliseconds is null && (update.Text.Length > 0 || update.Contents.OfType<FunctionCallContent>().Any())) firstTokenMilliseconds = watch.Elapsed.TotalMilliseconds;
                     if (display && update.Text.Length > 0) Emit("assistantDelta", update.Text);
                 }
-                return updates.ToChatResponse();
+                var response = updates.ToChatResponse();
+                RecordUsage(response.Usage, watch.Elapsed.TotalMilliseconds, firstTokenMilliseconds, display ? "turn" : "compaction");
+                return response;
             }
             catch (Exception error) when (!token.IsCancellationRequested && attempt < Options.MaxRetries && IsRetryable(error, out _))
             {

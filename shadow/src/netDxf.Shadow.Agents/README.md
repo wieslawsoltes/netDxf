@@ -130,6 +130,12 @@ Inference completes before any of its tool calls are dispatched. A failed or tru
 
 Duplicate function-call IDs in one response are removed before execution. Completed call IDs are retained for the active session, and retained transcript results rebuild that cache on import. Mutations are never automatically replayed. When a tool is interrupted, its result explains that an edit may already have committed; inspect fresh document/file state before deciding whether to repeat it.
 
+`MaxToolCallsPerTurn` bounds a provider batch (64 by default). Oversized batches and output-limited tool responses execute no tools and retain no unfinished call records. This lets a host safely request a smaller batch or raise its output budget before continuing.
+
+The harness supplies workflow guidance only for tools the host advertises and the permission policy allows. For drawing work it favors batched entity creation, targeted type discovery, filtered object reads, bulk property transactions and fresh mutation receipts. Geometric topology tools are distinguished from ownership/reference graph tools. Read-only context estimates count only advertised tools. MCP function declarations explicitly disable OpenAI strict normalization so optional fields, arbitrary DXF value schemas and open creation-property maps preserve their native semantics; argument validation remains in the MCP registry. See [OpenAI function calling](https://developers.openai.com/api/docs/guides/function-calling).
+
+The [opt-in live evaluator](../../tests/netDxf.Shadow.Agents.LiveEvaluation/README.md) covers creation, selective edits and topology with native assertions, saved DXF reloads, tool receipts, timing/usage metrics and a shared cost ledger. Its offline `--self-test` needs no provider or credential. Live mode requires an explicit provider/model, environment-only key, operator-verified prices and a budget reservation before each inference.
+
 ## Workspace tools and native commands
 
 `IAgentWorkspace` supplies file listing, bounded character reads, complete writes, deletes, literal search, export and import. `AgentWorkspaceTools.Register(registry, workspace)` adds:
@@ -192,6 +198,21 @@ The [Agent Host sample](../../samples/netDxf.Shadow.AgentHost/README.md) exposes
 Subscribe to `EventEmitted` for immediate updates, or use `Poll(afterSequence)` to fetch at most 256 events after a known sequence. `AgentEvent` includes sequence, type, message, optional JSON data and timestamp. The bounded event log retains at most 4,096 entries and approximately 4 MiB of event text/data; `EarliestSequence` and `LatestSequence` let a client recognize a polling gap.
 
 Events cover assistant text deltas and completed messages, turns, usage, retry and continuation notices, tool start/completion with elapsed time and results, approval requests, plans, run snapshots, compaction, cancellation, completion, blockers, pause and errors. Provider usage reports input/output/total/cached tokens when available. `Poll` also returns current status, running state, session ID, estimated context use, configured context limit and `Run` metadata. A UI can update its persistent progress card from `run` snapshots without appending a new transcript message for every counter change. UI observers cannot terminate the inference loop by throwing; callers should marshal events to their UI thread as needed.
+
+`Poll().Usage` contains cumulative successful-inference totals, including compaction, plus cache-write and reasoning counts when reported, elapsed inference time and the most recent first-token latency. Each usage event has its inference delta and a `totals` snapshot, so cursor replay never needs to sum an already-counted request. Unknown provider fields stay null. Failed or interrupted requests can still be billable and are not represented as complete usage; the opt-in evaluator reserves their upper-bound cost separately. Import/reset starts a new observed usage interval.
+
+### Prompt caching and overhead
+
+Tool declarations retain stable ordinal ordering and reuse the same function objects, allowing SDK schema caches and provider prefix caches to reuse them. Context accounting memoizes immutable transcript sizes instead of serializing the entire history on every UI poll. Stable instructions and pinned reference material precede the replaceable compaction summary.
+
+Provider caching is deliberately provider-specific:
+
+- **OpenAI:** the service caches eligible prefixes automatically. The client sends a stable, nonsecret key for its lifetime; `PromptCacheKey` can supply an application key. Earlier models use it for routing, while newer models use it for cache accounting. Model-dependent retention defaults remain unchanged. See [OpenAI prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
+- **Anthropic:** the official SDK sends one top-level `cache_control` with a five-minute ephemeral TTL, allowing the breakpoint to move with the conversation. Existing content/tool breakpoints or a caller-supplied raw request factory take precedence. Cache reads and writes remain distinct usage counters. See [Anthropic prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching).
+- **Google:** supported Gemini models provide implicit prefix caching. Stable tools, instructions and history improve reuse; this harness does not create paid cache-storage objects or inject another provider's fields. See [Gemini context caching](https://ai.google.dev/gemini-api/docs/caching).
+- **ChatGPT subscription:** the supported Responses contract and service-managed behavior remain authoritative. No API-only cache controls are added; cache-read usage is displayed when returned.
+
+`ShadowAgentProviderOptions.OptimizePromptCaching = false` omits harness-added hints; it does not disable a provider's automatic cache. A cache hit is never promised. Actual savings depend on model minimums, prefix reuse, cache lifetime and cache-write pricing; the UI shows observed tokens rather than estimated monetary savings. No credentials enter cache keys or portable checkpoints.
 
 `SetPlan` accepts up to 64 `AgentPlanStep` values with `pending`, `in_progress` or `completed` status and at most one active step. The intrinsic `agent_plan` control uses the same validation in every host. `Pin` and `Unpin` manage up to 32 retained reference entries, each at most 32,000 characters.
 

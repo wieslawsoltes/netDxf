@@ -89,8 +89,10 @@ public sealed partial class AgentSession
         Mode = Options.Mode, SuccessCriteria = Options.SuccessCriteria, TurnLimit = Options.MaxTurns
     };
 
-    private void BeginTask(string prompt)
+    private void BeginTask(AgentPrompt request)
     {
+        var prompt = request.ToContextText();
+        string? messageId = null;
         lock (gate)
         {
             completionDecision = null; acceptingCompletion = false;
@@ -108,7 +110,13 @@ public sealed partial class AgentSession
                 if (combined.Length > 256000) throw new ArgumentException("The task and its updates exceed 256,000 characters. Start a new task or shorten the update.");
                 activeTask = combined;
             }
-            if (hasPrompt) messages.Add(new(ChatRole.User, prompt));
+            if (hasPrompt)
+            {
+                var message = new ChatMessage(ChatRole.User, prompt);
+                messageId = Guid.NewGuid().ToString("N");
+                if (request.References is { Count: > 0 }) promptMetadata.Add(message, new(messageId, request));
+                messages.Add(message);
+            }
             else if (messages.Count == 0 && activeTask.Length == 0) throw new ArgumentException("Enter a task before continuing.");
             else messages.Add(new(ChatRole.User,
                 "Resume the current task from the recorded state and plan. Inspect current state before repeating an interrupted mutation. Complete and verify remaining work, then call agent_finish."));
@@ -119,7 +127,7 @@ public sealed partial class AgentSession
                 StopReason = "", Detail = "Working on the current task.", CompletionSummary = "", Verification = []
             };
         }
-        if (!string.IsNullOrWhiteSpace(prompt)) Emit("user", prompt);
+        if (!string.IsNullOrWhiteSpace(prompt)) Emit("user", request.Text, new { references = request.References, messageId });
         EmitRun();
     }
 

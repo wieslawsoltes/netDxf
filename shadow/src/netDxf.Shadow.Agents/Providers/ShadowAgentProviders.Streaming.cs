@@ -36,7 +36,20 @@ public static partial class ShadowAgentProviders
                     var raw = originalFactory?.Invoke(client) as CreateResponseOptions ?? new CreateResponseOptions();
                     raw.StoredOutputEnabled = false;
                     raw.PreviousResponseId = null;
+                    // Keep the official continuation and terminal-event handling below. Cache hints
+                    // belong only to the API provider; the subscription path keeps its own contract.
+                    if (provider == "openai" && optimizePromptCaching) raw.PromptCacheKey ??= promptCacheKey;
                     return raw;
+                };
+            }
+            else if (provider == "anthropic" && optimizePromptCaching && originalFactory is null &&
+                !input.Any(message => message.AdditionalProperties?.ContainsKey("CacheControl") == true) &&
+                !(configured.Tools?.Any(tool => tool.AdditionalProperties.ContainsKey("CacheControl")) ?? false))
+            {
+                configured.RawRepresentationFactory = client => new Anthropic.Models.Messages.MessageCreateParams
+                {
+                    Model = configured.ModelId ?? model, MaxTokens = configured.MaxOutputTokens ?? 8192, Messages = [],
+                    CacheControl = new() { Ttl = Anthropic.Models.Messages.Ttl.Ttl5m },
                 };
             }
             else if (google)
