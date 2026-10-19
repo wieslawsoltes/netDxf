@@ -1,13 +1,17 @@
+import { mountEfficiency } from './efficiency.mjs';
+import { mountEditApprovalPreview } from './edit-approval-preview.mjs';
+import { createReferenceComposer, referenceChips } from './drawing-references.mjs';
+import { mountExternalAgents } from './external-agents.mjs';
 import { AgentClient, ChatGptCompanion } from './client.mjs';
 import { StudioMcpBridge } from './mcp-bridge.mjs';
 import { BrowserMcpBridge } from './browser-mcp.mjs';
 import { BrowserSessionPersistence } from './persistence.mjs';
 import { mountBrowserFileTransfer, renderFileDiff } from './file-workspace.mjs';
-import { defaultConfiguration, providers, executionModes, restorePreferences, preferenceRecord, configuration, formatTokens, parseArguments, readable, safeFilePath, toolTemplate } from './contracts.mjs';
+import { defaultConfiguration, providers, executionModes, restorePreferences, preferenceRecord, configuration, formatTokens, formatDuration, toolActivity, parseArguments, readable, safeFilePath, toolTemplate } from './contracts.mjs';
 import { presentRun, recoveredRunSelection } from './run-state.mjs';
-import { node, glyph, button, field, code, codeExecution, markdown } from './render.mjs';
+import { node, glyph, button, field, code, codeExecution, markdown, createMarkdownView } from './render.mjs';
 
-const tabNames = [['chat','Conversation','chat'], ['tools','MCP','tools'], ['files','Files','file'], ['context','Context','context'], ['settings','Settings','settings']];
+const tabNames = [['chat','Conversation','chat'], ['local','Local agents','play'], ['tools','MCP','tools'], ['files','Files','file'], ['context','Context','context'], ['efficiency','Efficiency','activity'], ['settings','Settings','settings']];
 const modeNames = { readOnly: 'Read only', ask: 'Approve changes', fullAccess: 'Full access' };
 const storageKey = 'netdxf-agent-preferences-v1';
 function savePreferences(value) { try { localStorage.setItem(storageKey, JSON.stringify(preferenceRecord(value))); } catch { /* Nonsecret preferences are optional. */ } }
@@ -20,10 +24,11 @@ function download(content, name, type = 'application/json') {
   document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
-export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDocumentName, inspectDrawing, refreshDrawing, report = () => {} }) {
+export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDocumentName, inspectDrawing, refreshDrawing, drawingReferences, drawingPreview, openDrawingPreview, report = () => {} }) {
   const browserRuntime = globalThis.shadowBrowser?.runtime === 'blazor-webassembly';
   const existing = document.querySelector('link[data-shadow-agents]');
   if (!existing) document.head.append(node('link', { rel: 'stylesheet', href: new URL('./agents.css', import.meta.url).href, 'data-shadow-agents': '' }));
+  if (!document.querySelector('link[data-shadow-markdown]')) document.head.append(node('link', { rel: 'stylesheet', href: new URL('../markdown/markdown.css?v=1', import.meta.url).href, 'data-shadow-markdown': '' }));
   const client = new AgentClient({ getDocument });
   const mcpBridge = new StudioMcpBridge({ client, getDocument });
   const browserMcp = new BrowserMcpBridge(client, getDocument);
@@ -68,6 +73,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const alertText = node('span'), alert = node('div', { class: 'agent-alert', role: 'status', hidden: true }, [alertText,
     button('Dismiss message', () => { alert.hidden = true; }, { icon: 'close', compact: true })]);
   dock.append(header, tabs, alert, ...panels.values());
+  mountEfficiency(panels.get('efficiency'));
   function notice(message, kind = 'info') {
     alertText.textContent = client.clean(String(message)); alert.className = `agent-alert ${kind}`; alert.hidden = false;
     if (kind === 'error') statusLabel.textContent = client.transcript.running ? 'Run active · action needs attention' : 'Needs attention';
@@ -94,6 +100,11 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     catch { notice('Clipboard access is unavailable. Select and copy the text directly.', 'error'); }
   }
 
+  const externalAgents = mountExternalAgents(panels.get('local'), {
+    connectDrawing: async (url, token) => { if (!client.connected) await client.connect(); await mcpBridge.connect(url, token); },
+    disconnectDrawing: () => mcpBridge.disconnect(), refreshDrawing, drawingReferences, getDocument, report
+  });
+
   // Conversation -----------------------------------------------------------
   const providerChip = node('button', { type: 'button', class: 'agent-provider-chip', onclick: () => setTab('settings') }, [glyph('key'), node('span', { text: 'Connect a provider' })]);
   const documentChip = node('span', { class: 'agent-document-chip', text: 'Current drawing', title: 'Each turn is bound to the active drawing at its start.' });
@@ -114,11 +125,16 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   ]);
   const transcript = node('div', { class: 'agent-transcript', role: 'log', 'aria-label': 'Agent conversation and tool activity', 'aria-live': 'off', tabindex: 0 });
   const timeline = node('div', { class: 'agent-timeline' }); transcript.append(empty, timeline);
+  const jumpLatest = button('Jump to latest', () => { transcript.scrollTop = transcript.scrollHeight; jumpLatest.hidden = true; }, { icon: 'arrow', class: 'agent-jump-latest', hidden: true });
+  transcript.addEventListener('scroll', () => { jumpLatest.hidden = transcript.scrollHeight - transcript.scrollTop - transcript.clientHeight < 100; }, { passive: true });
+  const activityLabel = node('span'), activityCount = node('small');
+  const activity = node('div', { class: 'agent-activity', role: 'status', hidden: true }, [node('span', { class: 'agent-activity-dot' }), activityLabel, activityCount]);
+  const usageStrip = node('button', { type: 'button', class: 'agent-usage-strip', hidden: true, onclick: () => setTab('context'), title: 'Observed usage for this session. Open detailed token and cache metrics.' });
   const liveStatus = node('span', { class: 'agent-sr-only', role: 'status', 'aria-live': 'polite' });
   const prompt = node('textarea', { class: 'agent-prompt', placeholder: 'Ask the agent to inspect, build, or edit…', rows: 3, 'aria-label': 'Message to coding agent', spellcheck: false });
   const sendButton = button('Send task', () => run(send), { icon: 'send', compact: true, class: 'agent-send agent-primary' });
   const stopButton = button('Stop agent', () => run(async () => { await client.cancel(); statusLabel.textContent = 'Stopping…'; }), { icon: 'stop', compact: true, class: 'agent-stop', hidden: true });
-  const retryButton = button('Resume task', () => run(resumeTask), { icon: 'retry', 'aria-label': 'Resume from current conversation', hidden: true, class: 'agent-primary' });
+  const retryButton = button('Resume task', () => run(resumeTask), { icon: 'retry', 'aria-label': 'Resume from current conversation', title: 'Continue from recorded results without replaying completed edits.', hidden: true, class: 'agent-primary' });
   const executePlanButton = button('Execute plan', () => run(async () => {
     if (!client.configured) { setTab('settings'); throw new Error('Connect a provider before executing the plan.'); }
     executionMode.value = 'normal'; updateExecutionMode(); await applyExecutionMode(); await client.retry();
@@ -144,14 +160,16 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const permissionChip = node('button', { type: 'button', class: 'agent-permission-chip', onclick: () => setTab('settings'), text: 'Approve changes' });
   const contextLabel = node('span', { text: '0 / 128k' }), contextFill = node('span');
   const contextMeter = node('button', { class: 'agent-context-meter', type: 'button', title: 'Context usage and pinned instructions', onclick: () => setTab('context') }, [node('span', { class: 'agent-context-track' }, [contextFill]), contextLabel]);
+  const referenceComposer = createReferenceComposer({ api: drawingReferences, getDocument, report: error => notice(error.message || String(error), 'error') });
   const composer = node('div', { class: 'agent-composer' }, [
     node('div', { class: 'agent-composer-context' }, [documentChip,
       button('Pin current drawing context', () => run(pinDrawing), { icon: 'pin', compact: true })]), executionControls,
+    referenceComposer.element,
     node('div', { class: 'agent-prompt-box' }, [prompt,
       node('div', { class: 'agent-prompt-actions' }, [node('span', { text: 'Enter to send · Shift+Enter for a new line' }), node('span', { class: 'grow' }), stopButton, sendButton])]),
     node('div', { class: 'agent-composer-footer' }, [permissionChip, node('span', { class: 'grow' }), contextMeter])
   ]);
-  panels.get('chat').append(chatActions, runView, planView, transcript, composer, liveStatus);
+  panels.get('chat').append(chatActions, runView, planView, transcript, jumpLatest, activity, usageStrip, composer, liveStatus);
   function updateExecutionMode() {
     const mode = executionModes.find(item => item.id === executionMode.value) || executionModes[0];
     goalField.hidden = mode.id !== 'goal';
@@ -185,7 +203,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   prompt.addEventListener('input', resizePrompt);
   prompt.addEventListener('keydown', event => {
     if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); if (!client.transcript.running && !client.busy) run(send); }
-    if (event.key === 'Escape') { event.stopPropagation(); }
+    if (event.key === 'Escape') { event.stopPropagation(); if (client.transcript.running && !stopButton.disabled) { event.preventDefault(); stopButton.click(); } }
   });
   async function send() {
     clearNotice();
@@ -193,12 +211,13 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     const text = prompt.value;
     if (!text.trim()) throw new Error('Enter a task for the agent.');
     await applyExecutionMode();
-    await client.start(text); if (prompt.value === text) { prompt.value = ''; resizePrompt(); }
+    const references = await referenceComposer.prepare();
+    await client.start(text, references); referenceComposer.commit(references); if (prompt.value === text) { prompt.value = ''; resizePrompt(); }
     transcript.scrollTop = transcript.scrollHeight;
   }
   async function newSession() {
     persistence?.schedule(); await persistence?.flush();
-    await client.reset(); pins = []; prompt.value = ''; timelineNodes.clear();
+    await client.reset(); pins = []; prompt.value = ''; referenceComposer.clear(); for (const cached of timelineNodes.values()) { cached.markdown?.dispose(); cached.preview?.dispose(); } timelineNodes.clear();
     persistence?.newSession();
     timeline.replaceChildren(); clearNotice(); renderFiles(); renderContext(); setTab('chat');
   }
@@ -210,7 +229,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     if (selected.size > 24 * 1024 * 1024) throw new Error('Conversation imports are limited to 24 MiB.');
     const checkpoint = await selected.text();
     await client.importSession(checkpoint); const recoveredMode = stageRecoveredExecution(checkpoint);
-    timelineNodes.clear(); timeline.replaceChildren(); pins = []; fileList = []; file = null; fileDirty = false;
+    for (const cached of timelineNodes.values()) { cached.markdown?.dispose(); cached.preview?.dispose(); } timelineNodes.clear(); timeline.replaceChildren(); pins = []; fileList = []; file = null; fileDirty = false;
     filePath.value = ''; fileEditor.value = ''; fileEditor.readOnly = false; markFileClean(); renderFiles();
     persistence?.newSession(); notice(recoveredMode ? 'Conversation imported. Review its recovered mode and criteria in Conversation; connecting a provider or applying the mode will use that selection.' : 'Conversation imported. Your current provider credentials, mode and permission setting are retained.'); setTab('chat');
   })); dock.append(historyImport);
@@ -254,6 +273,16 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     retryButton.hidden = !progress.resumable || running; retryButton.disabled = running;
     executePlanButton.hidden = !progress.executePlan || running; executePlanButton.disabled = running;
     prompt.disabled = false; updateExecutionMode();
+    const activeTools = state.items.filter(item => item.kind === 'tool' && ['running', 'approval'].includes(item.status));
+    activity.hidden = !running;
+    activity.classList.toggle('awaiting-approval', approvals > 0);
+    activityLabel.textContent = approvals ? 'Waiting for your approval' : activeTools.length ? activeTools.slice(0, 2).map(item => toolActivity(item).label).join(' · ') : state.activeAssistant ? 'Writing response' : 'Thinking';
+    activityCount.textContent = state.turn?.current ? `Turn ${state.turn.current}${state.turn.maximum ? ` / ${state.turn.maximum}` : ''}` : '';
+    const usage = state.usage;
+    usageStrip.hidden = usage.inputTokens == null && usage.outputTokens == null;
+    const cached = usage.cachedTokens ?? usage.cachedInputTokens;
+    usageStrip.textContent = [usage.inputTokens == null ? null : `${formatTokens(usage.inputTokens)} input`, usage.outputTokens == null ? null : `${formatTokens(usage.outputTokens)} output`,
+      cached == null ? null : `${formatTokens(cached)} cached`, usage.inferences == null ? null : `${usage.inferences} inference${usage.inferences === 1 ? '' : 's'}`].filter(Boolean).join(' · ');
     const percent = Math.min(100, state.contextTokens / state.contextLimit * 100);
     contextFill.style.width = `${percent}%`; contextMeter.classList.toggle('near-limit', percent >= 75);
     contextLabel.textContent = `${formatTokens(state.contextTokens)} / ${formatTokens(state.contextLimit)}`;
@@ -274,7 +303,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     const state = client.transcript, nearBottom = transcript.scrollHeight - transcript.scrollTop - transcript.clientHeight < 100;
     empty.hidden = state.items.length > 0;
     const liveIds = new Set(state.items.map(item => item.id));
-    for (const [id, cached] of timelineNodes) if (!liveIds.has(id)) { cached.element.remove(); timelineNodes.delete(id); }
+    for (const [id, cached] of timelineNodes) if (!liveIds.has(id)) { cached.markdown?.dispose(); cached.preview?.dispose(); cached.element.remove(); timelineNodes.delete(id); }
     for (const item of state.items) {
       const version = `${item.version || ''}:${item.status || ''}:${item.streaming}:${item.text?.length || 0}`;
       let cached = timelineNodes.get(item.id);
@@ -282,20 +311,21 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
         const element = node('article', { class: `agent-message agent-message-${item.kind}` });
         cached = { element, version: null }; timelineNodes.set(item.id, cached); timeline.append(element);
       }
-      if (cached.item !== item) { cached.element.replaceChildren(); cached.element.className = `agent-message agent-message-${item.kind}`; cached.body = null; cached.version = null; cached.item = item; }
+      if (cached.item !== item) { cached.markdown?.dispose(); cached.preview?.dispose(); cached.markdown = null; cached.element.replaceChildren(); cached.element.className = `agent-message agent-message-${item.kind}`; cached.body = null; cached.version = null; cached.item = item; }
       if (cached.version === version) continue;
       cached.version = version;
-      if (item.kind === 'tool') renderToolCard(cached.element, item);
+      if (item.kind === 'tool') { cached.preview?.dispose(); cached.preview = renderToolCard(cached.element, item); }
       else if (item.kind === 'assistant' || item.kind === 'user') {
         if (!cached.body) {
           const role = node('div', { class: 'agent-message-role' }, [item.kind === 'assistant' ? glyph('agent') : node('span', { class: 'agent-user-avatar', text: 'You' }), node('strong', { text: item.kind === 'assistant' ? 'Shadow Agent' : 'You' })]);
           if (item.time) { const date = new Date(item.time); if (!Number.isNaN(date.valueOf())) role.append(node('time', { text: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), datetime: date.toISOString() })); }
           role.append(button('Copy message', () => copy(item.text || ''), { icon: 'copy', compact: true }));
           cached.body = node('div', { class: 'agent-message-body' }); cached.element.append(role, cached.body);
+          if (item.references?.length) cached.element.append(referenceChips(item.references, { historical: true }));
         }
         cached.body.classList.toggle('streaming', item.streaming === true);
-        if (item.streaming || item.kind === 'user') { cached.body.classList.add('plain'); cached.body.textContent = item.text || ''; }
-        else { cached.body.classList.remove('plain'); cached.body.replaceChildren(markdown(item.text || '', { onCopy: copy, onCode: codeToFile })); }
+        cached.markdown ??= createMarkdownView(cached.body, { onCopy: copy, onCode: item.kind === 'assistant' ? codeToFile : undefined, headingOffset: 2 });
+        cached.markdown.update(item.text || '', { streaming: item.streaming === true });
       } else {
         cached.element.className = `agent-message agent-message-${item.kind} ${item.type || ''}`;
         cached.element.replaceChildren(node('span', { class: 'agent-event-mark', text: item.kind === 'error' ? '!' : item.type === 'compacted' ? '◇' : '·' }), node('span', { text: item.text }));
@@ -304,29 +334,47 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     }
     if (!state.items.length) transcript.scrollTop = 0;
     else if (nearBottom) transcript.scrollTop = transcript.scrollHeight;
+    jumpLatest.hidden = transcript.scrollHeight - transcript.scrollTop - transcript.clientHeight < 100;
   }
   function renderToolCard(element, item) {
     const previous = element.querySelector('details'), wasOpen = previous?.open;
     const detail = node('details', { class: `agent-tool-card ${item.status || ''}` });
-    detail.open = wasOpen ?? item.status === 'approval';
+    detail.open = wasOpen ?? ['approval', 'error'].includes(item.status);
+    const activity = toolActivity(item);
     detail.append(node('summary', {}, [node('span', { class: `agent-tool-indicator ${item.status || ''}`, text: item.status === 'complete' ? '✓' : item.status === 'error' ? '!' : item.status === 'approval' ? '?' : '◇' }),
-      node('code', { text: item.name }), node('span', { class: 'grow' }), node('span', { class: 'agent-tool-status', text: item.status === 'approval' ? 'Approval needed' : item.status || 'Queued' }),
-      item.durationMs !== undefined ? node('small', { text: `${Number(item.durationMs).toLocaleString()} ms` }) : null]));
+      node('span', { class: 'agent-tool-label', title: item.name }, [node('strong', { text: activity.label }), activity.detail ? node('small', { text: activity.detail }) : null]),
+      node('span', { class: 'grow' }), node('span', { class: 'agent-tool-status', text: item.status === 'approval' ? 'Approval needed' : item.status === 'complete' ? 'Done' : item.status || 'Queued' }),
+      item.durationMs !== undefined ? node('small', { text: formatDuration(item.durationMs) }) : null]));
     const body = node('div', { class: 'agent-tool-body' });
+    let populated = false, preview = null, closed = false;
+    function populate() {
+    if (populated || !detail.open) return; populated = true;
+    body.append(node('code', { class: 'agent-tool-name', text: item.name }));
     if (item.text) body.append(node('p', { text: item.text }));
     if (item.arguments !== undefined) body.append(code(item.arguments, 'Arguments'));
     if (item.result !== undefined) body.append(item.name === 'workspace_run_javascript' ? codeExecution(item.result) : code(item.result, 'Result'));
     if (item.status === 'approval') {
       const allow = button('Approve once', () => approval(true), { icon: 'check', class: 'agent-primary' });
       const deny = button('Deny', () => approval(false), { class: 'agent-secondary' });
+      let previewReady = item.name !== 'studio_apply_edit_preview';
       const approval = async approved => {
+        if (approved && !previewReady) return;
         allow.disabled = true; deny.disabled = true;
         try { await client.approve(item.requestId, approved); notice(approved ? 'Tool execution approved.' : 'Tool execution denied.'); }
-        catch (error) { allow.disabled = false; deny.disabled = false; notice(error.message, 'error'); }
+        catch (error) { allow.disabled = !previewReady; deny.disabled = false; notice(error.message, 'error'); }
       };
+      if (!previewReady) {
+        allow.disabled = true;
+        preview = mountEditApprovalPreview({ container: body, previewId: item.arguments?.request?.previewId,
+          load: drawingPreview, open: openDrawingPreview,
+          onReady: ready => { previewReady = ready; if (!closed) allow.disabled = !ready; } });
+      }
       body.append(node('div', { class: 'agent-approval-actions' }, [allow, deny]));
     }
+    }
+    detail.addEventListener('toggle', populate); populate();
     detail.append(body); element.replaceChildren(detail);
+    return { dispose() { closed = true; preview?.dispose(); } };
   }
 
   // MCP tool catalog and structured console --------------------------------
@@ -540,8 +588,10 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     tokenValue.textContent = state.contextTokens.toLocaleString(); tokenLimit.textContent = `/ ${state.contextLimit.toLocaleString()} tokens`;
     largeFill.style.width = `${Math.min(100, state.contextTokens / state.contextLimit * 100)}%`;
     const usage = state.usage;
-    const entries = [['Input', usage.inputTokens ?? usage.promptTokens], ['Output', usage.outputTokens ?? usage.completionTokens], ['Cached', usage.cachedInputTokens ?? usage.cachedTokens], ['Model turns', usage.turns ?? usage.modelTurns]];
+    const entries = [['Input', usage.inputTokens ?? usage.promptTokens], ['Output', usage.outputTokens ?? usage.completionTokens], ['Cache read', usage.cachedInputTokens ?? usage.cachedTokens],
+      ['Cache written', usage.cacheWriteTokens], ['Reasoning', usage.reasoningTokens], ['Inferences', usage.inferences ?? usage.turns ?? usage.modelTurns]];
     usageGrid.replaceChildren(...entries.map(([label, value]) => node('div', {}, [node('strong', { text: value == null ? '—' : Number(value).toLocaleString() }), node('span', { text: label })])));
+    if (usage.firstTokenMilliseconds != null) usageGrid.append(node('div', {}, [node('strong', { text: formatDuration(usage.firstTokenMilliseconds) }), node('span', { text: 'Last first token' })]));
     if (state.pins?.length || state.pinsKnown) pins = state.pins;
     pinList.replaceChildren(...pins.map(pin => node('article', { class: 'agent-pin' }, [node('div', { class: 'agent-row' }, [glyph('pin'), node('strong', { text: String(pin.text || pin.content || '').split('\n')[0].slice(0, 80) || 'Pinned instruction' }), node('span', { class: 'grow' }),
       button('Remove pin', () => run(async () => { await client.unpin(pin.id); pins = pins.filter(p => p.id !== pin.id); renderContext(); }), { icon: 'close', compact: true, disabled: client.transcript.running })]),
@@ -558,7 +608,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     persistence.schedule(); await persistence.flush();
     const selected = savedSelect.value;
     const restored = await persistence.restore(selected);
-    timelineNodes.clear(); timeline.replaceChildren(); pins = []; await loadFiles();
+    for (const cached of timelineNodes.values()) { cached.markdown?.dispose(); cached.preview?.dispose(); } timelineNodes.clear(); timeline.replaceChildren(); pins = []; await loadFiles();
     if (restored.draft?.basePath) {
       const existing = (await client.exportFiles()).find(entry => entry.path === restored.draft.basePath);
       if (existing && existing.content === restored.draft.baseContent) file = existing;
@@ -624,6 +674,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const permissionDescription = node('p', { class: 'agent-permission-description' });
   const routingNote = node('p', { class: 'agent-routing-note', hidden: true });
   const providerRuntimeNote = node('p', { class: 'agent-provider-runtime', hidden: true, text: 'The official OpenAI, Anthropic and Google .NET clients run directly in this browser. Keys stay in this page’s memory. Custom provider endpoints must allow browser requests from this site.' });
+  const providerCacheNote = node('p', { class: 'agent-muted' });
   const limits = node('div', { class: 'agent-limits' });
   for (const [key, label, min, max, help] of [
     ['maxTurns', 'Max model turns', 0, 10000, '0 continues until the task completes or needs attention. A positive budget pauses with Resume available.'],
@@ -664,7 +715,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
         connectionInfo.textContent = 'Disconnected · runtime credential cleared'; scheduleRender();
       }), { icon: 'close', compact: true })]), keyHint]),
       field('Endpoint / proxy (optional)', endpointInput, 'Blank uses the provider default. Custom endpoints receive the credential and request content.'), routingNote,
-      providerRuntimeNote, companionPanel, node('hr'), field('Tool permissions', permissionSelect), permissionDescription,
+      providerRuntimeNote, providerCacheNote, companionPanel, node('hr'), field('Tool permissions', permissionSelect), permissionDescription,
       button('Apply permissions', () => run(async () => {
         await client.configure({ ...(client.config || currentConfig), permissionMode: permissionSelect.value });
         currentConfig.permissionMode = permissionSelect.value; notice(`Tool policy applied: ${modeNames[permissionSelect.value]}.`); scheduleRender();
@@ -735,6 +786,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     const provider = providers.find(p => p.id === providerSelect.value), subscription = provider.id === 'chatgpt';
     keyLabel.textContent = provider.hint; apiKeyInput.placeholder = provider.placeholder;
     providerRuntimeNote.hidden = subscription || globalThis.shadowBrowser?.runtime !== 'blazor-webassembly';
+    providerCacheNote.textContent = ({ openai: 'Prompt caching uses a stable session key and the provider’s automatic cache. Cache eligibility and retention depend on the selected model.', anthropic: 'Prompt caching uses a rolling five-minute cache breakpoint. Cache writes and reads have different provider rates.', google: 'Supported Gemini models use automatic implicit caching. Explicit paid cache resources are not created.', chatgpt: 'ChatGPT uses stable conversation prefixes. Cache usage is shown when reported by the subscription service.' })[provider.id] || '';
     companionPanel.hidden = !subscription;
     if (subscription && !endpointInput.value) endpointInput.value = 'http://127.0.0.1:5091';
     connectButton.querySelector('span').textContent = subscription ? 'Connect ChatGPT companion' : 'Connect provider'; updatePermissionDescription(); updateRouting();
@@ -850,11 +902,13 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   });
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') void persistence.flush().catch(() => {}); });
   window.addEventListener('beforeunload', event => {
-    if (client.transcript.running || persistence.pending || persistence.saving) { event.preventDefault(); event.returnValue = ''; }
+    if (client.transcript.running || externalAgents.running || persistence.pending || persistence.saving) { event.preventDefault(); event.returnValue = ''; }
   });
   window.addEventListener('pagehide', event => {
     mcpBridge.disconnect(); void browserMcp.disable().catch(() => {});
     if (!event.persisted) {
+      externalAgents.dispose(); referenceComposer.dispose();
+      for (const cached of timelineNodes.values()) { cached.markdown?.dispose(); cached.preview?.dispose(); }
       disposed = true; authGeneration++; if (authTimer) clearTimeout(authTimer);
       // Saves are normally completed after each idle change and on visibility
       // loss. A final best-effort flush never blocks page navigation.
@@ -863,7 +917,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     }
   });
   window.addEventListener('pageshow', event => { if (event.persisted && connectedOnce) client.schedule(0); });
-  return Object.freeze({ show, hide, toggle: () => opened ? hide() : show(), documentChanged: () => { mcpBridge.documentChanged(); void browserMcp.documentChanged().catch(report); scheduleRender(); }, client,
+  return Object.freeze({ show, hide, toggle: () => opened ? hide() : show(), documentChanged: () => { referenceComposer.changed(); externalAgents.documentChanged(); mcpBridge.documentChanged(); void browserMcp.documentChanged().catch(report); scheduleRender(); }, client,
     snapshot: () => ({ open: opened, tab: selectedTab, status: client.transcript.status, running: client.transcript.running, provider: client.config?.provider, model: client.config?.model, permissionMode: client.config?.permissionMode, mode: client.config?.mode,
       run: client.transcript.run ? { phase: client.transcript.run.phase, turnCount: client.transcript.run.turnCount, totalTurns: client.transcript.run.totalTurns,
         continuationCount: client.transcript.run.continuationCount, outputLimitCount: client.transcript.run.outputLimitCount,

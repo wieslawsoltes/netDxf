@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CommandSession, point } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/core.mjs';
-import { CadClient } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/client.mjs';
-import { CadViewport } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/viewport.mjs';
+import { CommandSession, point } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/core.mjs';
+import { CadClient } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/client.mjs';
+import { CadViewport } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/viewport.mjs';
 
 function deferred() { let resolve, reject; const promise = new Promise((a,b) => { resolve=a; reject=b; }); return {promise,resolve,reject}; }
 const data = () => ({ state: { serverId:'server', documentId:'doc', workspaceId:'live', viewVersion:0, changeVersion:0, revision:0 } });

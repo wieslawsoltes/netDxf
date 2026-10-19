@@ -1,17 +1,19 @@
 /** Typed UI automation boundary. Model-produced text is never executed as JavaScript or HTML. */
 const actionNames = new Set([
-  'properties','layers','blocks','explorer','workspaces','diagnostics','agents','block-edit','block-save','block-close',
+  'properties','layers','blocks','explorer','workspaces','diagnostics','agents','modules','health','edit-previews','workflows','block-edit','block-save','block-close','block-insert', 'layer-manager', 'linetypes', 'text-styles',
   'new','demo','open','save','save-as','font','undo','redo','fit','regen','zoom-in','zoom-out','pan','palette','dock','clean',
   'settings','layer-new','assign-layer','snapshot','snapshots','fork','annotation','linetype','graph','export-png','export-svg',
   'legacy','reset-ui','help','block-create','block-redefine','block-rename','hatch-create','hatch-edit'
 ]);
-const readRoutes = new Set(['state', 'graph', 'hatch/pattern']);
+const readRoutes = new Set(['state', 'graph', 'hatch/pattern', 'resources', 'modules', 'edit-previews', 'workflow/status', 'workflow/export']);
+const readPostRoutes = new Set(['graph/query','modules/symbols','modules/analyze','health','references/capture','references/validate']);
 const editRoutes = new Set([
   'command', 'block/define', 'block/rename', 'hatch/create', 'hatch/pattern', 'select', 'block/create', 'block/begin',
   'block/finish', 'grip', 'layer', 'assign-layer', 'property', 'history/undo', 'history/redo', 'layout', 'retain', 'fork',
-  'workspace', 'merge/preview', 'merge/apply', 'annotation-view', 'linetype-view'
+  'workspace', 'merge/preview', 'merge/apply', 'annotation-view', 'linetype-view','resource',
+  'modules/toggle','modules/command','edit-preview','edit-preview/apply','edit-preview/discard','health/select','workflow/start','workflow/stop','workflow/replay','workflow/roundtrip'
 ]);
-const keys = ['grid', 'snap', 'ortho', 'polar', 'osnap', 'dynamic'];
+const keys = ['grid', 'snap', 'ortho', 'polar', 'osnap', 'dynamic', 'tracking'];
 function finite(value, name, min = -1e12, max = 1e12) {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max)
     throw new Error(`${name} must be finite and between ${min} and ${max}.`);
@@ -32,9 +34,9 @@ export const studioUiActions = Object.freeze([
   { name: 'viewport.pan', description: 'Pan by a delta in drawing units.', arguments: { dx: 10, dy: 0 } },
   { name: 'viewport.zoom', description: 'Zoom by a positive factor.', arguments: { factor: 1.5 } },
   { name: 'viewport.fit', description: 'Fit the current drawing bounds.' },
-  { name: 'palette.show', description: 'Show Properties, Layers, Blocks, Explorer, Workspaces, or Diagnostics.', arguments: { name: 'Properties' } },
+  { name: 'palette.show', description: 'Show Properties, Layers, Blocks, Explorer, Workspaces, Graph, Modules, Health, Edit previews, or Diagnostics.', arguments: { name: 'Properties' } },
   { name: 'ribbon.show', description: 'Select a ribbon tab.', arguments: { name: 'Home' } },
-  { name: 'settings.set', description: 'Set grid, snap, ortho, polar, osnap, dynamic, gridStep or snapModes.' },
+  { name: 'settings.set', description: 'Set grid, snap, ortho, polar, osnap, dynamic, tracking, gridStep, snapModes, polarAngle or polarTolerance.' },
   { name: 'document.activate', description: 'Activate an open drawing.', arguments: { id: 'document ID' } },
   { name: 'document.create', description: 'Create a new drawing or the sample drawing.', arguments: { demo: false } },
   { name: 'layout.set', description: 'Select a model or paper layout.', arguments: { name: 'Model' } },
@@ -42,7 +44,7 @@ export const studioUiActions = Object.freeze([
   { name: 'snapshot.show', description: 'Show a retained revision; null returns to the current drawing.', arguments: { revision: null } },
   { name: 'layer.set', description: 'Set the current drawing layer by name.', arguments: { name: '0' } },
   { name: 'selection.set', description: 'Select source entity IDs or clear selection.', arguments: { entities: [], extend: false } },
-  { name: 'cad.read', description: 'Read a bounded native CAD route: state, graph, or hatch/pattern.', arguments: { path: 'graph' } },
+  { name: 'cad.read', description: 'Read CAD state, resources, graph queries, module discovery/analysis, health or drawing references. Supply body for typed query routes; discover schema first.', arguments: { path: 'graph' } },
   { name: 'cad.edit', description: 'Execute a supported native CAD transaction with revision fencing.', arguments: { path: 'command', body: {} } },
   { name: 'ui.action', description: 'Invoke a named Studio action. Returns a pending task when a dialog needs input.', arguments: { name: 'settings' } },
   { name: 'ui.control', description: 'Click a control or set a value using its ID from inspect.', arguments: { id: 'control-1', operation: 'click' } },
@@ -55,6 +57,8 @@ export function installStudioControl(host) {
   const controlIds = new WeakMap(), controls = new Map(), pending = new Map();
   let nextControl = 1, nextOperation = 1;
   const root = host.document || globalThis.document;
+  const knownAction = name => actionNames.has(name) || typeof name==='string' &&
+    /^module-(?:open|command):[a-z0-9-]+:[a-z0-9-]+$/.test(name) && client.data?.modules?.some(m=>m.enabled&&m.id===name.split(':')[1]);
   const publicNode = node => !!node && !node.closest('[data-agent-private], .agent-workspace') &&
     node.getAttribute('type') !== 'password' && node.getAttribute('type') !== 'file';
   const visible = node => !node.hidden && !node.closest('[hidden]') && (!node.getClientRects || node.getClientRects().length > 0);
@@ -145,19 +149,21 @@ export function installStudioControl(host) {
         viewport.changed(); break;
       case 'viewport.fit': viewport.fit(); break;
       case 'palette.show':
-        if (!['Properties', 'Layers', 'Blocks', 'Explorer', 'Workspaces', 'Diagnostics'].includes(args.name)) throw new Error('Unknown drawing palette.');
+        if (!['Properties', 'Layers', 'Blocks', 'Explorer', 'Workspaces', 'Graph', 'Modules', 'Health', 'Edit previews', 'Workflows', 'Diagnostics'].includes(args.name)) throw new Error('Unknown drawing palette.');
         host.showPalette(args.name); break;
       case 'ribbon.show':
-        if (!['Home', 'Insert', 'Annotate', 'View', 'Manage', 'Output'].includes(args.name)) throw new Error('Unknown ribbon tab.');
+        if (!['Home', 'Insert', 'Annotate', 'View', 'Manage', 'Output'].includes(args.name) && !client.data?.modules?.some(m=>m.enabled&&`module:${m.id}`===args.name)) throw new Error('Unknown ribbon tab.');
         host.showRibbon(args.name); break;
       case 'settings.set': {
         const settings = { ...viewport.settings };
-        for (const key of Object.keys(args)) if (![...keys, 'gridStep', 'snapModes'].includes(key)) throw new Error(`Unknown drafting setting: ${key}`);
+        for (const key of Object.keys(args)) if (![...keys, 'gridStep', 'snapModes', 'polarAngle', 'polarTolerance'].includes(key)) throw new Error(`Unknown drafting setting: ${key}`);
         for (const key of keys) if (args[key] !== undefined) {
           if (typeof args[key] !== 'boolean') throw new Error(`${key} must be a boolean.`);
           settings[key] = args[key];
         }
         if (args.gridStep !== undefined) settings.gridStep = finite(args.gridStep, 'gridStep', 1e-6, 1e9);
+        if (args.polarAngle !== undefined) settings.polarAngle = finite(args.polarAngle, 'polarAngle', 1e-6, 90);
+        if (args.polarTolerance !== undefined) settings.polarTolerance = finite(args.polarTolerance, 'polarTolerance', 0, 15);
         if (args.snapModes !== undefined) {
           if (!Number.isInteger(args.snapModes)) throw new Error('snapModes must be an integer bit mask.');
           settings.snapModes = finite(args.snapModes, 'snapModes', 0, 511);
@@ -179,16 +185,17 @@ export function installStudioControl(host) {
         host.setSnapshot(args.revision); break;
       case 'layer.set':
         if (!client.data?.layers.some(layer => layer.name === args.name)) throw new Error('The requested layer does not exist.');
-        host.setLayer(args.name); break;
+        await host.setLayer(args.name); break;
       case 'selection.set': {
         if (!Array.isArray(args.entities) || args.entities.length > 5000 || args.entities.some(id => typeof id !== 'string'))
           throw new Error('Supply an array of at most 5,000 source entity IDs.');
-        if (!args.extend) await host.edit('select', { mode: 'clear' });
-        for (const id of args.entities) await host.edit('select', { mode: 'entity', entity: id, extend: true, remove: args.remove === true });
+        await host.edit('select', { mode: 'entities', entities: [...new Set(args.entities)].map(value => ({ value })),
+          extend: args.extend === true, remove: args.remove === true });
         break;
       }
       case 'cad.read': {
-        if (!readRoutes.has(args.path)) throw new Error('Unsupported CAD read route. Use state, graph, or hatch/pattern.');
+        if(readPostRoutes.has(args.path))return client.read(args.path,{body:{...object(args.body||{}),revision:client.state.revision}});
+        if (!readRoutes.has(args.path)) throw new Error('Unsupported CAD read route. Discover the available routes first.');
         const query = new URLSearchParams({ revision: client.state.revision });
         return client.read(`${args.path}?${query}`);
       }
@@ -196,14 +203,14 @@ export function installStudioControl(host) {
         if (!editRoutes.has(args.path)) throw new Error('Unsupported native CAD transaction route.');
         return host.edit(args.path, object(args.body || {}), { expectedKey: client.key });
       case 'ui.action':
-        if (!actionNames.has(args.name)) throw new Error('Unknown Studio action.');
+        if (!knownAction(args.name)) throw new Error('Unknown Studio action.');
         return deferred(args.name, () => host.action(args.name));
       case 'ui.control': {
         const node = controls.get(args.id);
         if (!node || !node.isConnected || !publicNode(node) || !visible(node)) throw new Error('The control has changed. Inspect the UI again.');
         if (node.disabled) throw new Error('The requested control is disabled.');
         if (args.operation === 'click') {
-          if (node.dataset.action && actionNames.has(node.dataset.action)) return deferred(node.dataset.action, () => host.action(node.dataset.action));
+          if (node.dataset.action && knownAction(node.dataset.action)) return deferred(node.dataset.action, () => host.action(node.dataset.action));
           if (node.dataset.command) return deferred(node.dataset.command, () => host.submit(node.dataset.command));
           node.click(); await Promise.resolve();
           return { dispatched: true, state: snapshot() };

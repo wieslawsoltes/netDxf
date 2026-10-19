@@ -2,7 +2,7 @@ import { AgentTranscript, configuration, endpointUrl, parseSession, redact } fro
 
 const routes = Object.freeze({
   AgentCapabilities: 'capabilities', AgentConfigure: 'configure', AgentDisconnect: 'disconnect', AgentSetDocument: 'set-document',
-  AgentStart: 'start', AgentRetry: 'retry', AgentPoll: 'poll', AgentUiReply: 'ui-reply', AgentCancel: 'cancel', AgentApprove: 'approve',
+  AgentStart: 'start', AgentStartPrompt: 'start-prompt', AgentRetry: 'retry', AgentPoll: 'poll', AgentUiReply: 'ui-reply', AgentCancel: 'cancel', AgentApprove: 'approve',
   AgentCompact: 'compact', AgentReset: 'reset', AgentExport: 'export', AgentImport: 'import',
   AgentMcpTools: 'mcp-tools', AgentMcpCall: 'mcp-call', AgentWorkspaceFiles: 'workspace-files',
   AgentWorkspaceRead: 'workspace-read', AgentWorkspaceWrite: 'workspace-write', AgentPin: 'pin', AgentUnpin: 'unpin',
@@ -26,7 +26,7 @@ export class AgentClient extends EventTarget {
     try {
       if (this.customInvoke) return await this.customInvoke(method, ...args);
       if (globalThis.shadowAgentRuntime?.invoke) return await globalThis.shadowAgentRuntime.invoke(method, ...args);
-      if (globalThis.DotNet?.invokeMethodAsync) return await globalThis.DotNet.invokeMethodAsync('netDxf.Shadow.Studio.Browser', method, ...args);
+      if (globalThis.DotNet?.invokeMethodAsync) return await globalThis.DotNet.invokeMethodAsync('netDxf.Shadow.Studio.WebAssembly', method, ...args);
       const response = await this.fetcher(`/api/agent/${routes[method]}`, {
         method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json', 'X-Shadow-Studio': '1' },
         body: JSON.stringify({ arguments: args })
@@ -92,7 +92,7 @@ export class AgentClient extends EventTarget {
     if (documentId !== this.getDocument()) throw new Error('The active drawing changed. Start again to bind the new drawing.');
     return documentId;
   }
-  async start(prompt) {
+  async start(prompt, references = []) {
     this.ensureIdle();
     const text = String(prompt ?? '').trim();
     if (!text) throw new Error('Enter a task for the agent.');
@@ -102,7 +102,7 @@ export class AgentClient extends EventTarget {
     try {
       await this.bindDocument(); this.assertOperation(operation);
       dispatched = true;
-      const result = await this.invoke('AgentStart', text); this.assertOperation(operation);
+      const result = references.length ? await this.invoke('AgentStartPrompt', JSON.stringify({ text, references })) : await this.invoke('AgentStart', text); this.assertOperation(operation);
       this.transcript.running = true; this.transcript.status = 'running'; this.lastPrompt = text;
       this.emit('change', this.transcript); this.schedule(0); return result;
     } catch (error) {

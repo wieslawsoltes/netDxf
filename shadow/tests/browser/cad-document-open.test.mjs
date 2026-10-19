@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CadClient, DrawingOpenError } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/client.mjs';
+import { CadClient, DrawingOpenError } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/client.mjs';
 
 const deferred = () => { let resolve; const promise = new Promise(done => { resolve = done; }); return { promise, resolve }; };
 const receipt = (documentId, entities = 0, revision = 0) => ({ state: {

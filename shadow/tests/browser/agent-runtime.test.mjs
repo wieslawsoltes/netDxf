@@ -1,14 +1,36 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { AgentTranscript, configuration, defaultConfiguration, endpointUrl, parseArguments, parseSession, preferences, redact, safeFilePath, toolTemplate } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/contracts.mjs';
-import { AgentClient, ChatGptCompanion } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/client.mjs';
-import { StudioMcpBridge } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/mcp-bridge.mjs';
-import { installStudioControl } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/studio-control.mjs';
+import { AgentTranscript, configuration, defaultConfiguration, endpointUrl, formatDuration, toolActivity, parseArguments, parseSession, preferences, redact, safeFilePath, toolTemplate } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/contracts.mjs';
+import { AgentClient, ChatGptCompanion } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/client.mjs';
+import { StudioMcpBridge } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/mcp-bridge.mjs';
+import { installStudioControl } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/studio-control.mjs';
 
 const gate = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; };
 const tick = () => new Promise(resolve => setImmediate(resolve));
 const status = (events = [], rest = {}) => ({ sessionId: 'session', events, running: false, status: 'idle', contextTokens: 1200, contextLimit: 128000, ...rest });
 const event = (sequence, type, message = '', data = null) => ({ sequence, type, message, data });
+
+test('usage totals survive polling and cumulative events never count tokens twice', () => {
+  const state = new AgentTranscript();
+  const batch = [event(1, 'turn', 'Model turn 1', { turn: 1, maximum: 12 }),
+    event(2, 'usage', '', { inputTokens: 10, outputTokens: 3, cachedTokens: 8 }),
+    event(3, 'usage', '', { inputTokens: 5, outputTokens: 2, cachedTokens: 2 })];
+  state.apply(status(batch)); state.apply(status(batch));
+  assert.equal(state.usage.inputTokens, 15); assert.equal(state.usage.outputTokens, 5); assert.equal(state.usage.cachedTokens, 10);
+  assert.equal(state.usage.inferences, 2); assert.deepEqual(state.turn.current, 1);
+  assert(!state.items.some(item => item.type === 'turn'));
+  state.apply(status([event(4, 'usage', '', { inputTokens: 12, totals: { inputTokens: 27, outputTokens: 9, cachedTokens: 18, inferences: 3 } })]));
+  assert.equal(state.usage.inputTokens, 27); assert.equal(state.lastUsage.inputTokens, 12);
+  state.apply(status([], { usage: { inputTokens: 27, outputTokens: 9, cachedTokens: 18, inferences: 3 } }));
+  assert.equal(state.usage.inputTokens, 27);
+});
+
+test('tool activity describes bounded changes without exposing source-code payloads', () => {
+  assert.deepEqual(toolActivity({ name: 'shadow_edit', arguments: { edits: [1, 2] } }), { label: 'Edit drawing properties', detail: '2 property changes' });
+  assert.deepEqual(toolActivity({ name: 'workspace_write', arguments: { path: 'src/drawing.cs', content: 'large code body' } }), { label: 'Write file', detail: 'src/drawing.cs' });
+  assert.equal(toolActivity({ name: 'graph_summary' }).label, 'Analyze connectivity');
+  assert.equal(formatDuration(1234), '1.2 s'); assert.equal(formatDuration(61234), '1m 1s'); assert.equal(formatDuration(null), '—');
+});
 function fixture(callback) {
   const calls = [], scheduled = [];
   const client = new AgentClient({ getDocument: () => 'drawing', invoke: async (method, ...args) => {
@@ -350,4 +372,13 @@ test('semantic Studio controls validate all settings before mutation and fence t
   await assert.rejects(ui.execute('ui.action', { name: 'eval' }, 'a'), /Unknown Studio action/);
   await assert.rejects(ui.execute('cad.edit', { path: '../agent/configure', body: {} }, 'a'), /Unsupported/);
   await ui.execute('settings.set', { ortho: true, polar: true }, 'a'); assert.equal(settings.ortho, true); assert.equal(settings.polar, false);
+  const selections = []; host.edit = async (route, body) => selections.push({ route, body });
+  const entities = Array.from({ length: 5000 }, (_, index) => `H:${index}`);
+  await ui.execute('selection.set', { entities }, 'a');
+  assert.equal(selections.length, 1, 'large selections use one request without intermediate clears');
+  assert.equal(selections[0].body.entities.length, 5000);
+  await assert.rejects(ui.execute('selection.set', { entities: [...entities, 'extra'] }, 'a'));
+  assert.equal(selections.length, 1, 'invalid selection leaves the current selection untouched');
+  await ui.execute('selection.set', { entities: ['H:1'], remove: true }, 'a');
+  assert.equal(selections.length, 2); assert.equal(selections[1].body.remove, true);
 });

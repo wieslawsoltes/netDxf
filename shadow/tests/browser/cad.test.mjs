@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { number, parsePoint, point, distance, screen, world, zoom, constrain, polygonArea, CommandSession, commandName, commands } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/core.mjs';
-import { CadClient, ApiError } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/client.mjs';
+import { number, parsePoint, point, distance, screen, world, zoom, constrain, polygonArea, CommandSession, commandName, commands } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/core.mjs';
+import { CadClient, ApiError } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/client.mjs';
 
 const near = (actual, expected) => assert(Math.abs(actual - expected) < 1e-8, `${actual} != ${expected}`);
 for (const [source,value] of [['2+3*4',14],['(2+3)*4',20],['-2*-3',6],['1e3/4',250],['pi*2',Math.PI*2],['.5 + .25',.75]])
@@ -95,7 +95,7 @@ test('loading a document does not launch competing refreshes',async()=>{
   const pending=deferred();let calls=0;const c=new CadClient(()=>{calls++;return pending.promise;});const load=c.activate('a');await c.refresh();assert.equal(calls,1);pending.resolve(response(state()));await load;
 });
 test('final grip snap preserves source-selection exclusion after pointer release',async()=>{
-  const { CadViewport }=await import('../../samples/netDxf.Shadow.Studio/wwwroot/cad/viewport.mjs');
+  const { CadViewport }=await import('../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/viewport.mjs');
   let body; const view={settings:{osnap:true,snapModes:23},client:{state:state().state,key:'a',busy:0,read:async(path,options)=>{body=options.body;return null;}},snapshot:null,camera:{scale:2},snapGeneration:0,invalidate(){}};
   await CadViewport.prototype.snapped.call(view,point(10,20),point(),true,true);
   assert.equal(body.excludeSelection,true); assert.equal(body.tolerance,6);

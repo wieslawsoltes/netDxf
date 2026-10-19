@@ -1,0 +1,12 @@
+.module-tabs,.module-actions { display:flex; flex-wrap:wrap; gap:5px; margin:8px 0; }
+.module-tabs button[aria-pressed=true] { background:#36536d; border-color:#7299ba; }
+.module-card { border:1px solid #45515f; border-radius:5px; margin:8px 0; padding:10px; }
+.module-card h3 { margin:0 0 5px; }.module-card p { margin:6px 0; line-height:1.5; }
+.module-card label.module-switch { display:flex; align-items:center; gap:8px; font-weight:600; }
+.module-switch input[type=checkbox] { width:auto; margin:0; }
+.module-search { display:flex; gap:5px; margin:8px 0; }.module-search input { min-width:0; flex:1; }
+.module-card small,.module-caption { color:#9cabbc; line-height:1.5; overflow-wrap:anywhere; }
+.module-card details { margin-top:8px; }.module-card dl { display:grid; grid-template-columns:minmax(65px,1fr) minmax(80px,2fr); gap:4px 8px; font-size:11px; }
+.module-card dt,.module-card dd { margin:0; overflow-wrap:anywhere; }
+.module-issue { border-left:3px solid #d7b46b; }.module-issue.error { border-color:#df8282; }
+.module-dialog { min-width:0; }.module-dialog .form-row { align-items:start; }.module-dialog textarea { width:100%; min-height:70px; }

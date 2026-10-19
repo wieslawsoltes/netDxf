@@ -14,7 +14,7 @@
       <span class="local-badge" title="All drawing operations use your local netDxf host">LOCAL CAD</span>
       <button data-action="help" class="help-button" title="Command help (F1)">?</button>
     </header>
-    <nav id="ribbon-tabs" class="ribbon-tabs" role="tablist" aria-label="Ribbon"></nav>
+    <div class="ribbon-bar"><nav id="ribbon-tabs" class="ribbon-tabs" role="tablist" aria-label="Ribbon"></nav><button id="ribbon-toggle" data-action="ribbon-minimize" aria-label="Minimize ribbon" aria-controls="ribbon" aria-expanded="true" title="Minimize ribbon (double-click a tab)">⌃</button></div>
     <section id="ribbon" class="ribbon" role="tabpanel" aria-label="Home tools"></section>
     <div class="document-bar"><div id="documents" role="tablist" aria-label="Open drawings"></div><button data-action="new" title="New drawing (Ctrl+N)" aria-label="New drawing">＋</button><div class="grow"></div><button data-action="palette" title="Show or hide palettes (Ctrl+1)">▤ Properties</button><button data-action="clean" title="Clean screen (Ctrl+0)">⛶</button></div>
     <main id="workspace" class="workspace">
@@ -38,11 +38,11 @@
     <div id="command-splitter" class="command-splitter" role="separator" tabindex="0" aria-label="Resize command history" aria-orientation="horizontal"></div>
     <section id="command-line" class="command-line" aria-label="Command line">
       <div id="history" class="command-history" role="log" aria-live="polite"></div>
-      <form id="command-form" autocomplete="off"><span class="command-glyph">›</span><label id="prompt" for="command-input">Command:</label><input id="command-input" aria-label="Command input" placeholder="Type a command" spellcheck="false" autocomplete="off"><button type="submit" title="Submit command">↵</button></form>
+      <form id="command-form" autocomplete="off"><button type="button" data-action="command-line" class="command-close" title="Hide command line (Ctrl+9)" aria-label="Hide command line">×</button><button type="button" data-action="command-history" id="command-history-toggle" title="Show or hide command history (F2)" aria-label="Show or hide command history" aria-controls="history" aria-expanded="true">⌃</button><span class="command-glyph">›</span><label id="prompt" for="command-input">Command:</label><input id="command-input" aria-label="Command input" placeholder="Type a command" spellcheck="false" autocomplete="off"><button type="submit" title="Submit command">↵</button></form>
       <div id="suggestions" class="suggestions" hidden></div>
     </section>
     <div class="layout-bar"><div id="layouts" role="tablist" aria-label="Model and paper layouts"></div><div class="grow"></div><span id="selection-count">No selection</span></div>
-    <footer class="statusbar"><span id="coordinates">0.0000, 0.0000, 0.0000</span><div id="drafting-modes"></div><div class="grow"></div><span id="revision">Revision —</span><select id="backend" aria-label="Render backend"><option value="skia">SkiaSharp</option><option value="svg">SVG</option></select><button data-action="settings" title="Drafting settings">⚙</button><span id="connection" role="status">Connecting</span></footer>
+    <footer class="statusbar"><span id="coordinates">0.0000, 0.0000, 0.0000</span><div id="drafting-modes"></div><button id="command-line-toggle" data-action="command-line" aria-label="Show or hide command line" aria-controls="command-line" aria-pressed="true" title="Command line (Ctrl+9)">›_</button><div class="grow"></div><span id="revision">Revision —</span><select id="backend" aria-label="Render backend"><option value="skia">SkiaSharp</option><option value="svg">SVG</option></select><button data-action="settings" title="Drafting settings">⚙</button><span id="connection" role="status">Connecting</span></footer>
   </div>
   <input type="file" id="open-file" accept=".dxf,.dwg" hidden><input type="file" id="font-file" accept=".shx,.shp" hidden>
   <dialog id="dialog"><form method="dialog" id="dialog-form"><header><strong id="dialog-title"></strong><button value="cancel" formnovalidate aria-label="Close dialog">×</button></header><div id="dialog-body"></div><footer><button value="cancel" formnovalidate>Cancel</button><button id="dialog-submit" value="ok" class="primary">OK</button></footer></form></dialog>

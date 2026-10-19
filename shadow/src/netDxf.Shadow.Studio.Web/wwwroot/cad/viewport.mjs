@@ -1,4 +1,4 @@
-import { point, add, sub, distance, screen, world, zoom, fit, constrain, format } from './core.mjs';
+import { point, add, sub, distance, screen, world, zoom, fit, constrain, trackPoint, format } from './core.mjs';
 import { viewKey } from '../studio-state.mjs';
 
 /** A cached page resumes its live viewport, including its frame and resize observer. */
@@ -11,9 +11,14 @@ export class CadViewport {
   constructor(element, canvas, client, hooks = {}) {
     this.element = element; this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.client = client; this.hooks = hooks;
     this.camera = { x: 0, y: 0, scale: 3 }; this.size = { w: 1, h: 1 }; this.dpr = 1;
-    this.settings = { grid: true, snap: false, ortho: false, polar: false, osnap: true, dynamic: true, gridStep: 10, snapModes: 23 };
+    this.settings = { grid: true, snap: false, ortho: false, polar: false, osnap: true, dynamic: true, tracking: false, polarAngle: 15, polarTolerance: 5, gridStep: 10, snapModes: 23 };
     this.backend = 'skia'; this.snapshot = null; this.command = null; this.cursor = point(); this.pixel = null; this.frame = null;
     this.generation = 0; this.pointers = new Map(); this.abort = null; this.snapAbort = null; this.snapGeneration = 0; this.inputVersion = 0; this.pickAbort = null; this.panMode = false;
+    this.trackingOrigins = []; this.trackingGuides = [];
+    this.modifierDown = e => { if (e.key === 'Shift' && !e.target?.closest?.('input,textarea,select')) this.setTemporaryOrtho(true); };
+    this.modifierUp = e => { if (e.key === 'Shift') this.setTemporaryOrtho(false); };
+    this.modifierBlur = () => this.setTemporaryOrtho(false);
+    globalThis.addEventListener?.('keydown', this.modifierDown); globalThis.addEventListener?.('keyup', this.modifierUp); globalThis.addEventListener?.('blur', this.modifierBlur);
     this.resizeObserver = new ResizeObserver(() => this.resize()); this.resizeObserver.observe(element);
     element.addEventListener('pointerdown', e => this.down(e)); element.addEventListener('pointermove', e => this.move(e));
     element.addEventListener('pointerup', e => this.up(e)); element.addEventListener('pointercancel', e => this.cancelPointer(e));
@@ -89,9 +94,20 @@ export class CadViewport {
     } catch (error) { if (generation === this.generation && error.name !== 'AbortError') this.hooks.error?.(error); }
     finally { if (generation === this.generation) this.pendingFrame = null; }
   }
+  setTemporaryOrtho(enabled) {
+    if (!!this.settings.temporaryOrtho === enabled) return;
+    this.settings.temporaryOrtho = enabled; this.snapGeneration++; this.snapAbort?.abort(); this.snapHit = null;
+    this.resolved = constrain(this.cursor, this.command?.anchor || this.drag?.grip?.position, this.settings); this.invalidate();
+  }
   async snapped(p, anchor, force = false, excludeSelection = !!this.drag?.grip) {
-    const constrained = constrain(p, anchor, this.settings);
-    if (!this.settings.osnap || !this.client.state || this.client.busy || this.snapshot !== null) { this.snapHit = null; return constrained; }
+    const modes = this.snapOverride ?? this.settings.snapModes;
+    let constrained = constrain(p, anchor, this.settings);
+    this.trackingGuides = [];
+    if (this.settings.tracking && !this.settings.ortho && !this.settings.temporaryOrtho) {
+      const tracked = trackPoint(constrained, this.trackingOrigins, 8 / this.camera.scale);
+      constrained = tracked.position; this.trackingGuides = tracked.origins;
+    }
+    if (!(this.snapOverride !== undefined ? modes > 0 : this.settings.osnap) || !this.client.state || this.client.busy || this.snapshot !== null) { this.snapHit = null; return constrained; }
     // A final acquisition owns its request. Hover must never abort it and turn
     // an exact snapped pick into an unsnapped fallback.
     const abort = new AbortController();
@@ -101,14 +117,16 @@ export class CadViewport {
     const key = this.client.key, epoch = this.client.epoch;
     try {
       const hit = await this.client.read('snap', { signal: abort.signal,
-        body: { point: constrained, tolerance: 12 / this.camera.scale, modes: this.settings.snapModes, anchor, excludeSelection } });
+        body: { point: constrained, tolerance: 12 / this.camera.scale, modes, anchor, excludeSelection } });
       const current = !abort.signal.aborted && key === this.client.key && epoch === this.client.epoch &&
         !this.client.busy && generation === (force ? this.inputVersion : this.snapGeneration);
       if (!current) {
         if (force) throw new Error('The drawing changed while acquiring a point. Repeat the pick.');
         return constrained;
       }
-      this.snapHit = hit; this.invalidate(); return hit?.position || constrained;
+      this.snapHit = hit;
+      if (hit && this.settings.tracking) this.trackingOrigins = [...(this.trackingOrigins || []).filter(p => distance(p, hit.position) > 1e-9), hit.position].slice(-4);
+      this.invalidate(); return hit?.position || constrained;
     } catch (error) { if (force) throw error; return constrained; }
     finally { if (force && this.pickAbort === abort) this.pickAbort = null; }
   }
@@ -116,7 +134,7 @@ export class CadViewport {
     const cameraActive = !!this.drag?.pan || !!this.pinch;
     this.inputVersion++; this.snapGeneration++;
     clearTimeout(this.snapTimer); this.snapAbort?.abort(); this.pickAbort?.abort();
-    this.snapHit = null; this.drag = null; this.pinch = null;
+    this.snapHit = null; this.drag = null; this.pinch = null; this.snapOverride = undefined; this.trackingOrigins = []; this.trackingGuides = [];
     for (const id of this.pointers.keys()) if (this.element.hasPointerCapture(id)) this.element.releasePointerCapture(id);
     this.pointers.clear(); this.element.classList.remove('panning'); this.invalidate();
     if (cameraActive) this.requestFrame();
@@ -186,7 +204,7 @@ export class CadViewport {
       if (drag.grip && drag.moved) {
         const pos = await this.snapped(p, drag.grip.position, true, true); current(); await this.hooks.grip?.(drag.grip, pos);
       } else if (this.command && !this.command.selecting) {
-        const pos = await this.snapped(p, this.command.anchor, true); current(); await this.hooks.pick?.(pos);
+        const pos = await this.snapped(p, this.command.anchor, true, this.command.name === 'MOVE' && !!this.command.anchor); current(); this.snapOverride = undefined; await this.hooks.pick?.(pos);
       } else if (drag.moved) await this.hooks.box?.(drag.first, p, e.clientX < this.element.getBoundingClientRect().left + drag.pixel.x, drag.extend, drag.remove);
       else await this.hooks.select?.(p, drag.extend || !!this.command?.selecting, drag.remove);
     } catch (error) { this.hooks.error?.(error); }
@@ -204,7 +222,9 @@ export class CadViewport {
     }
     if (this.graph && this.graphKey === viewKey(this.client.state)) {
       c.strokeStyle = '#e2b65b'; c.lineWidth = 1; c.globalAlpha = .7;
-      for (const edge of this.graph.edges) { const a = this.graph.nodes[edge.a], b = this.graph.nodes[edge.b]; if (a && b) this.path(c, [a, b]); }
+      const graphNodes = new Map(this.graph.nodes.map(node => [node.id,node]));
+      for (const edge of this.graph.edges) { const a = graphNodes.get(edge.a), b = graphNodes.get(edge.b); if (a && b) this.path(c, [a, b]); }
+      if (this.graph.highlight) for (const node of this.graph.nodes) { const p = screen(node,this.camera,this.size); c.beginPath(); c.arc(p.x,p.y,4,0,Math.PI*2); c.stroke(); }
       c.globalAlpha = 1;
     }
     if (this.snapshot === null) {
@@ -218,6 +238,11 @@ export class CadViewport {
       const a = screen(this.drag.first, this.camera, this.size), b = this.drag.last, crossing = b.x < a.x;
       c.fillStyle = crossing ? '#5cbd7840' : '#4b95dc40'; c.strokeStyle = crossing ? '#90e6a5' : '#8cbbf4';
       c.setLineDash(crossing ? [5, 3] : []); c.lineWidth = 1; c.fillRect(a.x, a.y, b.x - a.x, b.y - a.y); c.strokeRect(a.x, a.y, b.x - a.x, b.y - a.y); c.setLineDash([]);
+    }
+    if (this.pixel && this.resolved && this.trackingGuides?.length) {
+      c.strokeStyle = '#a8ef68'; c.lineWidth = 1; c.setLineDash([3, 4]);
+      for (const origin of this.trackingGuides) this.path(c, [origin, this.resolved]);
+      c.setLineDash([]);
     }
     if (this.snapHit && this.pixel) {
       const p = screen(this.snapHit.position, this.camera, this.size); c.strokeStyle = '#a8ef68'; c.lineWidth = 1.5; c.strokeRect(p.x - 5, p.y - 5, 10, 10);
@@ -271,5 +296,6 @@ export class CadViewport {
     c.setLineDash([]);
     const q = screen(cursor, this.camera, this.size); c.fillStyle = '#a8c4dd'; c.font = '11px Consolas'; c.fillText(format(distance(p.at(-1), cursor)), q.x + 12, q.y + 19);
   }
-  dispose() { this.cancelInput(); this.generation++; this.pendingFrame = null; this.clearFrame(); this.resizeObserver.disconnect(); this.abort?.abort(); this.snapAbort?.abort(); clearTimeout(this.renderTimer); clearTimeout(this.snapTimer); cancelAnimationFrame(this.raf); }
+  dispose() {
+    globalThis.removeEventListener?.('keydown', this.modifierDown); globalThis.removeEventListener?.('keyup', this.modifierUp); globalThis.removeEventListener?.('blur', this.modifierBlur); this.cancelInput(); this.generation++; this.pendingFrame = null; this.clearFrame(); this.resizeObserver.disconnect(); this.abort?.abort(); this.snapAbort?.abort(); clearTimeout(this.renderTimer); clearTimeout(this.snapTimer); cancelAnimationFrame(this.raf); }
 }

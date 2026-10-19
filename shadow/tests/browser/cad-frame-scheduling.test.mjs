@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CadViewport, bindViewportPageLifetime } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/viewport.mjs';
+import { CadViewport, bindViewportPageLifetime } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/viewport.mjs';
 
 const deferred = () => { let resolve; const promise = new Promise(complete => { resolve = complete; }); return { promise, resolve }; };
 const drain = async () => { for (let i = 0; i < 8; i++) await Promise.resolve(); };

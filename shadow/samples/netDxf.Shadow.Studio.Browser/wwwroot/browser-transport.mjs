@@ -1,4 +1,4 @@
-const ASSEMBLY = 'netDxf.Shadow.Studio.Browser';
+const ASSEMBLY = 'netDxf.Shadow.Studio.WebAssembly';
 const UPLOAD_LIMIT = 20 * 1024 * 1024;
 
 /** Resolve only this application's API. Static assets and other origins are untouched. */

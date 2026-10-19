@@ -158,6 +158,7 @@ export class AgentTranscript {
     this.sessionId = sessionId; this.sequence = 0; this.items = []; this.tools = new Map();
     this.activeAssistant = null; this.running = false; this.status = 'idle'; this.contextTokens = 0;
     this.contextLimit = 128000; this.usage = {}; this.pins = []; this.pinsKnown = false; this.plan = []; this.dropped = 0; this.version = 0;
+    this.lastUsage = {}; this.turn = null; this.startedAt = null;
     this.run = null;
   }
   add(item) {
@@ -175,8 +176,8 @@ export class AgentTranscript {
     let index = 0;
     for (const message of messages) {
       const role = String(message.role).toLowerCase(), contents = message.contents || [];
-      const text = contents.filter(content => content.kind === 'text').map(content => content.text || '').join('\n');
-      if (text && ['assistant', 'user'].includes(role)) this.add({ id: `history-${index++}`, kind: role, text, streaming: false });
+      const text = message.displayText ?? contents.filter(content => content.kind === 'text').map(content => content.text || '').join('\n');
+      if (text && ['assistant', 'user'].includes(role)) this.add({ id: `history-${index++}`, kind: role, text, references: message.references || [], streaming: false });
       for (const content of contents) {
         if (content.kind === 'functionCall' && content.callId) {
           const item = this.add({ id: `history-${index++}`, kind: 'tool', callId: content.callId, name: content.name,
@@ -228,7 +229,8 @@ export class AgentTranscript {
     const id = `event-${sequence}`;
     if (type === 'user') {
       this.activeAssistant = null;
-      this.add({ id, kind: 'user', text: textOf(event), time });
+      this.startedAt = time; this.turn = null;
+      this.add({ id, kind: 'user', text: textOf(event), references: data.references || [], time });
     } else if (type === 'assistantdelta' || type === 'textdelta') {
       if (!this.activeAssistant) this.activeAssistant = this.add({ id, kind: 'assistant', text: '', streaming: true, time });
       this.activeAssistant.text += textOf(event); this.activeAssistant.version = sequence;
@@ -250,7 +252,7 @@ export class AgentTranscript {
         item = this.add({ id, callId, kind: 'tool', name: String(data.name ?? data.toolName ?? data.tool ?? event.message ?? 'Tool'), time });
         this.tools.set(callId, item);
       }
-      if (type === 'toolstarted') { item.status = 'running'; item.arguments = data.arguments ?? data.args ?? data.input; }
+      if (type === 'toolstarted') { item.status = 'running'; item.arguments = data.arguments ?? data.args ?? data.input; item.readOnly = data.readOnly; }
       if (type === 'toolcompleted') {
         item.status = data.isError || data.error ? 'error' : 'complete';
         item.result = data.result ?? data.output ?? data; item.durationMs = data.durationMs ?? data.milliseconds;
@@ -261,10 +263,19 @@ export class AgentTranscript {
       }
       item.version = sequence;
     } else if (type === 'usage') {
-      if (typeof data === 'object') this.usage = { ...this.usage, ...data };
+      if (data && typeof data === 'object') {
+        this.lastUsage = data;
+        if (data.totals && typeof data.totals === 'object') this.usage = { ...this.usage, ...data.totals };
+        else {
+          // Older runtimes emit per-inference usage. Sequence deduplication above
+          // prevents reconnect polling from charging the same inference twice.
+          for (const key of ['inputTokens', 'outputTokens', 'totalTokens', 'cachedTokens', 'cacheWriteTokens', 'reasoningTokens'])
+            if (Number.isFinite(data[key])) this.usage[key] = (this.usage[key] || 0) + Math.max(0, data[key]);
+          this.usage.inferences = (this.usage.inferences || 0) + 1;
+        }
+      }
     } else if (type === 'turn') {
-      this.usage.turns = data.turn ?? this.usage.turns;
-      this.add({ id, kind: 'status', type, text: event.message, data, time });
+      this.turn = { current: data.turn, maximum: data.maximum, time };
     } else if (type === 'plan') {
       if (Array.isArray(data.steps)) this.plan = data.steps;
     } else if (type === 'run') {
@@ -291,6 +302,29 @@ export class AgentTranscript {
 export function formatTokens(number) {
   const n = Number(number) || 0;
   return n >= 1000000 ? `${(n / 1000000).toFixed(1)}m` : n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : Math.round(n).toString();
+}
+
+export function formatDuration(milliseconds) {
+  if (milliseconds == null) return '—';
+  const value = Number(milliseconds);
+  if (!Number.isFinite(value) || value < 0) return '—';
+  return value < 1000 ? `${Math.round(value)} ms` : value < 60000 ? `${(value / 1000).toFixed(1)} s` : `${Math.floor(value / 60000)}m ${Math.floor(value / 1000) % 60}s`;
+}
+
+export function toolActivity(item) {
+  const names = {
+    shadow_state: 'Inspect drawing', shadow_objects: 'Find drawing objects', shadow_read: 'Read drawing properties',
+    shadow_create_entities: 'Create entities', shadow_edit: 'Edit drawing properties', shadow_graph_edit: 'Edit drawing structure',
+    graph_summary: 'Analyze connectivity', graph_path: 'Find shortest path', dxf_types: 'Inspect DXF types',
+    workspace_read: 'Read file', workspace_write: 'Write file', workspace_patch: 'Patch file', workspace_search: 'Search files',
+    workspace_run_javascript: 'Run JavaScript', workspace_execute: 'Run command',
+  };
+  const args = item.arguments || {};
+  const label = names[item.name] || String(item.name || 'Tool').replaceAll('_', ' ').replace(/^./, c => c.toUpperCase());
+  const detail = typeof args.description === 'string' ? args.description : typeof args.path === 'string' ? args.path
+    : Array.isArray(args.entities) ? `${args.entities.length} entities` : Array.isArray(args.edits) ? `${args.edits.length} property changes`
+    : Array.isArray(args.operations) ? `${args.operations.length} operations` : typeof args.type === 'string' ? args.type : '';
+  return { label, detail: detail.slice(0, 120) };
 }
 
 export function safeFilePath(value) {

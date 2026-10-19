@@ -76,57 +76,5 @@ export function codeExecution(value) {
   return element;
 }
 
-function inline(text) {
-  const fragment = document.createDocumentFragment();
-  // Link labels, inline code, and emphasis remain text nodes. No HTML renderer or model-generated attributes.
-  const pattern = /(`[^`\n]+`|\*\*[^*\n]+\*\*|\[[^\]\n]+\]\(https?:\/\/[^\s)]+\))/g;
-  let last = 0;
-  for (const match of text.matchAll(pattern)) {
-    fragment.append(text.slice(last, match.index)); const value = match[0];
-    if (value.startsWith('`')) fragment.append(node('code', { text: value.slice(1, -1) }));
-    else if (value.startsWith('**')) fragment.append(node('strong', { text: value.slice(2, -2) }));
-    else {
-      const parts = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(value);
-      try {
-        const url = new URL(parts[2]);
-        if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error();
-        fragment.append(node('a', { text: parts[1], href: url.href, target: '_blank', rel: 'noopener noreferrer' }));
-      } catch { fragment.append(value); }
-    }
-    last = match.index + value.length;
-  }
-  fragment.append(text.slice(last)); return fragment;
-}
-
-/** Minimal, safe rich text with first-class code artifacts. Streaming calls remain plain text for speed. */
-export function markdown(text, { onCode, onCopy } = {}) {
-  const fragment = document.createDocumentFragment(), lines = String(text).split('\n');
-  let paragraph = [], list = null;
-  const flush = () => { if (paragraph.length) { fragment.append(node('p', {}, [inline(paragraph.join('\n'))])); paragraph = []; } list = null; };
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i], fence = /^\s*```([^`]*)$/.exec(line);
-    if (fence) {
-      flush(); const collected = [];
-      while (++i < lines.length && !/^\s*```\s*$/.test(lines[i])) collected.push(lines[i]);
-      const content = collected.join('\n'), info = fence[1].trim(), language = info.split(/\s+/)[0] || 'text';
-      const toolbar = node('div', { class: 'agent-code-label' }, [node('span', { text: info || 'text' }), node('span', { class: 'grow' })]);
-      if (onCopy) toolbar.append(button('Copy code', () => onCopy(content), { icon: 'copy', compact: true }));
-      if (onCode) toolbar.append(button('Save to workspace', () => onCode(content, info), { icon: 'file', compact: true }));
-      fragment.append(node('div', { class: 'agent-code' }, [toolbar, node('pre', {}, [node('code', { text: content, 'data-language': language })]) ]));
-      continue;
-    }
-    if (!line.trim()) { flush(); continue; }
-    const heading = /^(#{1,4})\s+(.+)$/.exec(line);
-    if (heading) { flush(); fragment.append(node(`h${Math.min(heading[1].length + 2, 6)}`, {}, [inline(heading[2])])); continue; }
-    const bullet = /^\s*(?:[-*]\s+|\d+\.\s+)(.+)$/.exec(line);
-    if (bullet) {
-      if (paragraph.length) flush();
-      if (!list) { list = node(/^\s*\d/.test(line) ? 'ol' : 'ul'); fragment.append(list); }
-      list.append(node('li', {}, [inline(bullet[1])])); continue;
-    }
-    if (/^>\s?/.test(line)) { flush(); fragment.append(node('blockquote', {}, [inline(line.replace(/^>\s?/, ''))])); continue; }
-    if (/^\s*(?:---+|\*\*\*+)\s*$/.test(line)) { flush(); fragment.append(node('hr')); continue; }
-    if (list) flush(); paragraph.push(line);
-  }
-  flush(); return fragment;
-}
+// The independent Markdown library also serves non-agent consumers.
+export { renderMarkdown as markdown, createMarkdownView } from '../markdown/markdown.mjs';

@@ -1,9 +1,15 @@
+import { resourceTools } from './resource-ui.mjs';
+import { moduleTools } from './module-ui.mjs';
+import { analysisTools } from './analysis-ui.mjs';
 import { drawingFileName, inspectDrawing } from './exchange-contracts.mjs';
 import { saveDrawingAs } from './exchange-ui.mjs';
 import { authoringRequest } from './authoring-contracts.mjs';
 import { authoringDialog, isAuthoringAction } from './authoring-ui.mjs';
+import { RibbonLayout, chromePreferences } from './ribbon-layout.mjs';
+import { graphPalette } from './graph-ui.mjs';
 import { CadClient } from './client.mjs';
 import { blockTools } from './block-ui.mjs';
+import { createInsertSession } from './block-contracts.mjs';
 import { CadViewport, bindViewportPageLifetime } from './viewport.mjs';
 import { CommandSession, commands, commandName, number, point, distance, polygonArea, format, fit } from './core.mjs';
 import { $, el, icon, tool, tabs, ribbon } from './ui.mjs';
@@ -23,17 +29,30 @@ const viewport = new CadViewport($('viewport'), $('drawing'), client, {
 let session = null, tab = 'Home', palette = 'Properties', currentLayer = '0', lastCommand = 'LINE';
 let documents = [], viewId = '', stateKey = '', activeIdentity = '', snapshot = null, lastInput = [], historyIndex = 0, toastTimer;
 let agentWorkspace = null;
+const renderGraph = graphPalette({client, viewport, report, snapshot:()=>snapshot});
 const views = new Map(), layers = new Map();
-const blockUi = blockTools({client, edit, dialog, cancel, fit:()=>viewport.fit(), layer:()=>currentLayer});
-function persisted() { try { return JSON.parse(localStorage.getItem('netdxf-cad-ui-v1') || '{}'); } catch { return {}; } }
+const ribbonLayout = new RibbonLayout($('ribbon'));
+let chrome = chromePreferences();
+const blockUi = blockTools({client, edit, dialog, cancel, fit:()=>viewport.fit(), layer:()=>currentLayer, placeInsert:options=>{editable();setSession(createInsertSession(options,currentLayer));lastCommand='INSERT';ensureCommandLine();$('command-input').focus({preventScroll:true});}});
+const resourceUi = resourceTools({client, edit, dialog, run, editable});
+const analysisUi = analysisTools({client,edit,viewport,report,editable});
+const moduleUi = moduleTools({client,edit,dialog,report,editable,viewport,showPalette,
+  place:value=>{cancel(false);setSession(value);ensureCommandLine();$('command-input').focus({preventScroll:true});},
+  changed:()=>{drawRibbonTabs();drawRibbon();renderPalette();}});
+function persisted() { try { const value=JSON.parse(localStorage.getItem('netdxf-cad-ui-v1') || '{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{}; } catch { return {}; } }
 const settings = persisted();
-for (const key of ['grid','snap','ortho','polar','osnap','dynamic']) if (typeof settings[key] === 'boolean') viewport.settings[key]=settings[key];
+chrome = chromePreferences(settings);
+for (const key of ['grid','snap','ortho','polar','osnap','dynamic','tracking']) if (typeof settings[key] === 'boolean') viewport.settings[key]=settings[key];
 if (Number.isFinite(settings.gridStep) && settings.gridStep>=1e-6 && settings.gridStep<=1e9) viewport.settings.gridStep=settings.gridStep;
+if (Number.isFinite(settings.polarAngle) && settings.polarAngle>0 && settings.polarAngle<=90) viewport.settings.polarAngle=settings.polarAngle;
+if (Number.isFinite(settings.polarTolerance) && settings.polarTolerance>=0 && settings.polarTolerance<=15) viewport.settings.polarTolerance=settings.polarTolerance;
 if (Number.isInteger(settings.snapModes) && settings.snapModes>=0 && settings.snapModes<=511) viewport.settings.snapModes=settings.snapModes;
 if (settings.left) $('workspace').classList.add('left');
 if (settings.hidden || innerWidth<700) $('workspace').classList.add('hide-palette');
 if (Number.isFinite(settings.width)) document.documentElement.style.setProperty('--palette-width',`${Math.max(210,Math.min(550,settings.width))}px`);
-function persist() { try { localStorage.setItem('netdxf-cad-ui-v1',JSON.stringify({...viewport.settings,left:$('workspace').classList.contains('left'),hidden:$('workspace').classList.contains('hide-palette'),width:$('palette').getBoundingClientRect().width||290})); } catch { /* Private browsing can disable storage. */ } }
+if(Number.isFinite(settings.commandHeight))document.documentElement.style.setProperty('--command-height',`${Math.max(32,Math.min(innerHeight*.55,settings.commandHeight))}px`);
+applyChrome();
+function persist() { try { const {temporaryOrtho,...drafting}=viewport.settings;localStorage.setItem('netdxf-cad-ui-v1',JSON.stringify({...drafting,...chrome,left:$('workspace').classList.contains('left'),hidden:$('workspace').classList.contains('hide-palette'),width:$('palette').getBoundingClientRect().width||290,commandHeight:parseFloat(document.documentElement.style.getPropertyValue('--command-height'))||90})); } catch { /* Private browsing can disable storage. */ } }
 function log(message, kind='') { const node=el('div',{text:message,class:kind}); $('history').append(node); while($('history').children.length>300) $('history').firstChild.remove(); $('history').scrollTop=$('history').scrollHeight; }
 function report(error) {
   if (error?.name==='AbortError') return;
@@ -51,12 +70,17 @@ async function start(name) {
   setSession(new CommandSession(name,currentLayer,client.data.selectedEntities.length)); lastCommand=session.name;
   log(`${session.name} — ${commands[session.name].label}`,'input');
   if(session.spec.selection && !session.selecting) { session.acceptSelection(client.data.selectedEntities.length); if(session.complete) await complete(); }
-  $('command-input').focus({preventScroll:true});
+  ensureCommandLine();$('command-input').focus({preventScroll:true});
 }
 function updatePrompt() { $('prompt').textContent=session?.prompt || 'Command:'; $('command-input').placeholder=session ? (session.selecting?'Select in the viewport, then Enter':session.step.kind==='point'?'X,Y · @X,Y · @distance<angle':'Enter value'):'Type a command'; }
 async function takePoint(p) { if(!session) return; editable(); session.pick(p); updatePrompt(); viewport.invalidate(); if(session.complete) await complete(); }
 async function complete() {
   const completed=session; if(!completed?.complete) return;
+  if(completed.moduleRequest){
+    try{const request=structuredClone(completed.moduleRequest);request.command.points=structuredClone(completed.command.points);
+      await edit('modules/command',request,{expectedKey:completed.expectedKey});log(`${completed.name} completed — revision ${client.state.revision}.`,'success');}
+    finally{if(session===completed)setSession(null);}return;
+  }
   if(completed.spec.measure) {
     const p=completed.command.points;
     if(completed.name==='DIST') log(`Distance = ${format(distance(p[0],p[1]))}; ΔX = ${format(p[1].x-p[0].x)}; ΔY = ${format(p[1].y-p[0].y)}; angle = ${format(Math.atan2(p[1].y-p[0].y,p[1].x-p[0].x)*180/Math.PI)}°`,'success');
@@ -65,20 +89,26 @@ async function complete() {
   }
   const command=structuredClone(completed.command);
   if(command.name==='INSERT') { const block=client.data.blocks.find(b=>b.name.toLowerCase()===command.block.toLowerCase()); if(!block) { setSession(null); throw new Error(`Unknown block: ${command.block}`); } command.reference={value:block.id}; delete command.block; }
-  try { const authored=authoringRequest(command,client.data); await edit(authored?.path || 'command',authored?.body || {command},authored?{expectedKey:client.key}:{}); log(`${completed.name} completed — revision ${client.state.revision}.`,'success'); }
-  finally { if(session===completed) setSession(null); }
+  let placed=false;
+  try { const authored=authoringRequest(command,client.data); await edit(authored?.path || 'command',authored?.body || {command},authored?{expectedKey:client.key}:{}); log(`${completed.name} completed — revision ${client.state.revision}.`,'success'); placed=true; }
+  finally { if(session===completed) setSession(placed && completed.insertOptions?.repeat ? createInsertSession(completed.insertOptions,currentLayer) : null); }
 }
 async function submit(text) {
   const value=text.trim(); $('suggestions').hidden=true;
   if(value) { lastInput.push(value); if(lastInput.length>100) lastInput.shift(); historyIndex=lastInput.length; log(`› ${value}`,'input'); }
   if(session) {
+    const overrides={END:1,ENDPOINT:1,MID:2,MIDPOINT:2,CEN:4,CENTER:4,QUA:8,INT:16,PER:32,NEA:64,INS:128,TAN:256,NONE:0};
+    if(!session.selecting && Object.hasOwn(overrides,value.toUpperCase())) {
+      viewport.snapOverride=overrides[value.toUpperCase()];viewport.snapGeneration++;viewport.snapAbort?.abort();viewport.snapHit=null;
+      log(`${value.toUpperCase()} — applies to the next picked point.`);return;
+    }
     if(session.selecting) { if(value) throw new Error('Select objects in the viewport, then press Enter.'); session.acceptSelection(client.data.selectedEntities.length); }
     else session.input(value,viewport.resolved || viewport.cursor);
     updatePrompt(); viewport.invalidate(); if(session.complete) await complete(); return;
   }
   if(!value) return start(lastCommand);
   const match=value.match(/^(\S+)(?:\s+([\s\S]*))?$/), name=match[1].toUpperCase(), rest=match[2]||'';
-  const aliases={BEDIT:'block-edit',BE:'block-edit',BSAVE:'block-save',BCLOSE:'block-close',U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save-as',SAVEAS:'save-as',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot'};
+  const aliases={BEDIT:'block-edit',BE:'block-edit',BSAVE:'block-save',BCLOSE:'block-close',U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save-as',SAVEAS:'save-as',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot',GRAPH:'graph-analysis',TOPOLOGY:'graph-analysis'};
   if(name==='Z'||name==='ZOOM') { if(!rest||['E','EXTENTS','A','ALL'].includes(rest.toUpperCase())) viewport.fit(); else if(rest.toUpperCase()==='IN') await action('zoom-in'); else if(rest.toUpperCase()==='OUT') await action('zoom-out'); else throw new Error('ZOOM accepts Extents, In or Out.'); return; }
   if(aliases[name]==='block-edit' && rest.trim()) {
     const text=rest.trim(), quoted=text.length>1 && ['"',"'"].includes(text[0]) && text.at(-1)===text[0];
@@ -107,7 +137,32 @@ function updateTools() {
   document.querySelectorAll('[data-command]').forEach(b=>{b.classList.toggle('active',b.dataset.command===session?.name);b.disabled=!!client.busy||snapshot!==null||!client.state;});
   for(const [name,enabled] of [['undo',client.state?.undoCount],['redo',client.state?.redoCount]]) document.querySelectorAll(`[data-action="${name}"]`).forEach(b=>b.disabled=!enabled||!!client.busy||snapshot!==null);
 }
-function drawRibbon() { $('ribbon').replaceChildren(...ribbon(tab,client.data,currentLayer,value=>{currentLayer=value;layers.set(client.id,value);})); $('ribbon').setAttribute('aria-label',`${tab} tools`); updateTools(); }
+async function setCurrentLayer(name) { const layer=client.data?.layers.find(l=>l.name===name);if(!layer)throw new Error('Choose an existing layer.');await edit('resource',{resource:{kind:'layer',action:'current',id:layer.id}}); }
+function ribbonEntries(){return [...tabs.map(name=>({key:name,name})),...(client.data?.modules||[]).filter(m=>m.enabled).map(m=>({key:`module:${m.id}`,name:m.name}))];}
+function drawRibbonTabs(){
+  const entries=ribbonEntries();if(!entries.some(e=>e.key===tab))tab='Home';
+  $('ribbon-tabs').replaceChildren(...entries.map(({key,name})=>button(name,()=>selectRibbon(key),{id:`ribbon-tab-${key.replaceAll(' ','-')}`,role:'tab','data-tab':key,'aria-controls':'ribbon','aria-selected':key===tab,tabindex:key===tab?0:-1})));
+}
+function drawRibbon() { ribbonLayout.set(tab.startsWith('module:')?moduleUi.ribbon(tab.slice(7)):ribbon(tab,client.data,currentLayer,value=>run(()=>setCurrentLayer(value)))); $('ribbon').setAttribute('aria-label',`${ribbonEntries().find(e=>e.key===tab)?.name||tab} tools`); $('ribbon').setAttribute('aria-labelledby',`ribbon-tab-${tab.replaceAll(' ','-')}`); updateTools(); }
+function selectRibbon(name, focus=false) {
+  tab=name; drawRibbon();
+  $('ribbon-tabs').querySelectorAll('[role=tab]').forEach(button=>{const active=button.dataset.tab===name;button.setAttribute('aria-selected',String(active));button.tabIndex=active?0:-1;if(active){button.scrollIntoView({block:'nearest',inline:'nearest'});if(focus)button.focus({preventScroll:true});}});
+}
+function applyChrome() {
+  $('studio').classList.toggle('ribbon-minimized',chrome.ribbonMinimized);
+  $('studio').classList.toggle('command-line-hidden',!chrome.commandLineVisible);
+  $('studio').classList.toggle('command-history-hidden',!chrome.commandHistoryVisible);
+  $('ribbon-toggle').setAttribute('aria-expanded',String(!chrome.ribbonMinimized));
+  $('ribbon-toggle').setAttribute('aria-label',chrome.ribbonMinimized?'Expand ribbon':'Minimize ribbon');
+  $('ribbon-toggle').title=chrome.ribbonMinimized?'Expand ribbon (double-click a tab)':'Minimize ribbon (double-click a tab)';
+  $('ribbon-toggle').textContent=chrome.ribbonMinimized?'⌄':'⌃';
+  $('command-line-toggle').setAttribute('aria-pressed',String(chrome.commandLineVisible));
+  $('command-history-toggle').setAttribute('aria-expanded',String(chrome.commandHistoryVisible));
+  $('command-history-toggle').textContent=chrome.commandHistoryVisible?'⌄':'⌃';
+  ribbonLayout.close();ribbonLayout.schedule();
+}
+function ensureCommandLine() { if(!chrome.commandLineVisible){chrome.commandLineVisible=true;applyChrome();persist();} }
+
 function showPalette(name) { palette=name; $('workspace').classList.remove('hide-palette'); persist(); renderPalette(); }
 function inputRow(label,input) { return el('label',{class:'form-row'},[el('span',{text:label}),input]); }
 async function dialog(title,content,submitLabel='OK') {
@@ -126,9 +181,13 @@ function read(text) { return el('span',{class:'read-only',text:String(text??'')}
 function toolbar(...children) { return el('div',{class:'toolbar'},children); }
 function renderPalette() {
   $('palette-title').textContent=palette.toUpperCase();
-  $('palette-tabs').replaceChildren(...['Properties','Layers','Blocks','Explorer','Workspaces','Diagnostics'].map(name=>button(name,()=>showPalette(name),{role:'tab','aria-selected':name===palette})));
+  $('palette-tabs').replaceChildren(...['Properties','Layers','Blocks','Explorer','Workspaces','Graph','Modules','Health','Edit previews','Workflows','Diagnostics'].map(name=>button(name,()=>showPalette(name),{role:'tab','aria-selected':name===palette})));
   const content=$('palette-content'), data=client.data; content.replaceChildren(); if(!data) return;
   const state=data.state;
+  if(palette==='Modules'){moduleUi.render(content);return;}
+  if(palette==='Health'){analysisUi.health(content);return;}
+  if(palette==='Edit previews'){analysisUi.previews(content);return;}
+  if(palette==='Workflows'){analysisUi.workflows(content);return;}
   if(palette==='Properties') {
     content.append(el('p',{class:'intro',text:`${data.selectedEntities.length} selected ${data.selectedEntities.length===1?'object':'objects'}`}));
     if(data.properties) {
@@ -165,14 +224,14 @@ function renderPalette() {
     }
     if(data.gripDiagnostic) content.append(el('p',{text:data.gripDiagnostic}));
   } else if(palette==='Layers') {
-    content.append(toolbar(button('＋ New',()=>action('layer-new')),button('Assign current',()=>action('assign-layer'))));
+    content.append(toolbar(button('Manager…',()=>resourceUi.layers()),button('＋ New',()=>action('layer-new')),button('Assign current',()=>action('assign-layer'))));
     for(const layer of data.layers) {
       const card=el('section',{class:`layer-card${currentLayer===layer.name?' current':''}`});
       const mutate=changes=>edit('layer',{layer:{id:layer.id,...changes}});
       const color=el('input',{type:'color',value:layer.color,'aria-label':`${layer.name} color`,onchange:e=>run(()=>mutate({color:e.target.value}))});
       const name=el('input',{type:'text',value:layer.name,'aria-label':`${layer.name} layer name`});
       name.addEventListener('change',()=>run(()=>mutate({name:name.value})));
-      card.append(el('div',{class:'layer-header'},[color,name,button('✓',()=>{currentLayer=layer.name;layers.set(client.id,currentLayer);drawRibbon();renderPalette();},{title:'Set current layer'})]));
+      card.append(el('div',{class:'layer-header'},[color,name,button('✓',()=>setCurrentLayer(layer.name),{title:'Set current layer'}),button('…',()=>resourceUi.layers(layer.id.value),{title:'All layer properties'})]));
       card.append(el('div',{class:'layer-flags'},[['visible','On'],['frozen','Freeze'],['locked','Lock'],['plot','Plot']].map(([key,label])=>el('label',{},[el('input',{type:'checkbox',checked:layer[key],'aria-label':`${layer.name} ${label}`,onchange:e=>run(()=>mutate({[key]:e.target.checked}))}),label]))));
       const line=el('select',{'aria-label':`${layer.name} linetype`,onchange:e=>run(()=>mutate({linetype:e.target.value}))},data.linetypes.filter(n=>!['bylayer','byblock'].includes(n.toLowerCase())).map(n=>el('option',{value:n,text:n}))); line.value=layer.linetype;
       const weight=el('select',{'aria-label':`${layer.name} lineweight`,onchange:e=>run(()=>mutate({lineweight:e.target.value}))},['Default','W0','W5','W9','W13','W15','W18','W20','W25','W30','W35','W40','W50','W53','W60','W70','W80','W90','W100','W106','W120','W140','W158','W200','W211'].map(w=>el('option',{value:w,text:w==='Default'?w:`${Number(w.slice(1))/100} mm`})));
@@ -185,13 +244,15 @@ function renderPalette() {
     if(data.blockEditor) content.append(el('h3',{text:`Editing: ${data.blockEditor.name}`}), toolbar(button('Save block',()=>blockUi.finish(true)),button('Close / discard',()=>blockUi.finish(false))));
     content.append(el('p',{class:'intro',text:'Insert an existing native block definition. The source definition remains shared; each reference is independently selectable.'}));
     for(const block of data.blocks) content.append(el('section',{class:'layer-card'},[
-      el('button',{class:'block-card',onclick:()=>run(async()=>{await start('INSERT');session.input(block.name);updatePrompt();})},[icon('INSERT'),el('b',{text:block.name}),el('small',{text:`${block.entities} definition entities`})]),
+      el('button',{class:'block-card',onclick:()=>run(()=>blockUi.insert(block.id))},[icon('INSERT'),el('b',{text:block.name}),el('small',{text:`${block.entities} definition entities`})]),
       toolbar(button('Edit',()=>blockUi.begin(block.id),{'aria-label':`Edit block ${block.name}`}),button('Rename',()=>blockUi.rename(block.id),{'aria-label':`Rename block ${block.name}`}))]));
     if(!data.blocks.length) content.append(el('p',{text:'No named block definitions in this drawing. Open a DXF containing blocks, or create a sample drawing.'}));
   } else if(palette==='Explorer') {
     const filter=el('input',{type:'search',placeholder:'Filter type, layer or handle','aria-label':'Filter drawing objects'}), list=el('div',{class:'object-list'});
     const update=()=>{const q=filter.value.toLowerCase(), items=data.items.filter(i=>`${i.id} ${i.type} ${i.layer}`.toLowerCase().includes(q));list.replaceChildren(...items.slice(0,500).map(item=>el('button',{class:data.selectedEntities.includes(item.id)?'selected':'',title:`${item.type} on ${item.layer}`,onclick:e=>run(()=>edit('select',{mode:'entity',entity:item.id,extend:e.ctrlKey||e.metaKey,remove:e.shiftKey}))},[el('span',{text:item.type}),el('small',{text:item.id})])));if(items.length>500)list.append(el('p',{text:`Showing 500 of ${items.length} matches. Refine the filter.`}));};
     content.append(toolbar(button('Select all',()=>select('all')),button('Clear',()=>select('clear'))),filter,el('p',{class:'hint',text:`${data.itemCount} visible source objects; explorer enumerates up to 5,000. Selection in the drawing remains geometric.`}),list);filter.addEventListener('input',update);update();
+  } else if(palette==='Graph') {
+    renderGraph(content);
   } else if(palette==='Workspaces') {
     content.append(toolbar(button('Fork branch',()=>action('fork')),button('Retain snapshot',()=>action('snapshot'))),el('h3',{text:'Isolated workspaces'}));
     content.append(button('Live document',()=>switchWorkspace('live'),{class:'block-card'}));
@@ -246,18 +307,25 @@ async function exportImage(backend) {
 }
 async function draftingSettings() {
   const grid=el('input',{type:'text',value:viewport.settings.gridStep,'aria-label':'Grid spacing'}),flags=[];
-  const content=[inputRow('Grid spacing (drawing units)',grid),el('h3',{text:'Running object snaps'})];
+  const polar=el('input',{type:'text',value:viewport.settings.polarAngle,'aria-label':'Polar angle increment'});
+  const aperture=el('input',{type:'text',value:viewport.settings.polarTolerance,'aria-label':'Polar acquisition angle'});
+  const content=[inputRow('Grid spacing (drawing units)',grid),inputRow('Polar angle increment (degrees)',polar),inputRow('Polar acquisition angle (degrees)',aperture),el('h3',{text:'Running object snaps'})];
   for(const [bit,name] of [[1,'Endpoint'],[2,'Midpoint'],[4,'Center'],[8,'Quadrant'],[16,'Intersection'],[32,'Perpendicular'],[64,'Nearest'],[128,'Insertion'],[256,'Tangent']]) {
     const input=el('input',{type:'checkbox',checked:!!(viewport.settings.snapModes&bit),'aria-label':name});flags.push([bit,input]);content.push(inputRow(name,input));
   }
-  content.push(el('p',{class:'hint',text:'Ortho constrains to 90°. Polar uses 15° increments. Explicit typed coordinates take precedence. Native object snap can override grid and angular constraints. Numerical nearest-curve solutions are marked ≈.'}));
-  if(await dialog('Drafting settings',content)) {const n=number(grid.value);if(n<1e-6||n>1e9)throw new Error('Grid spacing must be between 0.000001 and 1,000,000,000.');viewport.settings.gridStep=n;viewport.settings.snapModes=flags.reduce((sum,[bit,input])=>sum+(input.checked?bit:0),0);persist();viewport.invalidate();}
+  content.push(el('p',{class:'hint',text:'Ortho locks X or Y; hold Shift in the viewport to temporarily reverse Ortho. Polar acquires nearby angle increments. F11 tracks horizontal/vertical alignment from up to four recent object snaps. END/MID/CEN/INT/PER/NEA/INS/TAN/NONE override the next picked point. Explicit typed coordinates take precedence.'}));
+  if(await dialog('Drafting settings',content)) {const n=number(grid.value);if(n<1e-6||n>1e9)throw new Error('Grid spacing must be between 0.000001 and 1,000,000,000.');const angle=number(polar.value),tolerance=number(aperture.value);if(angle<=0||angle>90||tolerance<0||tolerance>15)throw new Error('Polar increment must be >0 and ≤90 degrees; acquisition angle 0–15 degrees.');viewport.settings.gridStep=n;viewport.settings.polarAngle=angle;viewport.settings.polarTolerance=tolerance;viewport.settings.snapModes=flags.reduce((sum,[bit,input])=>sum+(input.checked?bit:0),0);persist();viewport.invalidate();}
 }
 async function action(name) {
+  if(name==='modules'||name.startsWith('module-open:')||name.startsWith('module-command:'))return moduleUi.action(name);
   if(isAuthoringAction(name)){cancel(false);return authoringDialog(name,{client,editable,edit,dialog,showPalette,currentLayer});}
   if(['properties','layers','blocks','explorer','workspaces','diagnostics'].includes(name))return showPalette(name[0].toUpperCase()+name.slice(1));
   switch(name) {
     case 'agents':agentWorkspace?.show();return;
+    case 'health':showPalette('Health');return;
+    case 'edit-previews':showPalette('Edit previews');return;
+    case 'workflows':showPalette('Workflows');return;
+    case 'block-insert':editable();return blockUi.insert();
     case 'block-edit':editable();return blockUi.begin();
     case 'block-save':editable();return blockUi.finish(true);
     case 'block-close':editable();return blockUi.finish(false);
@@ -269,9 +337,15 @@ async function action(name) {
     case 'pan':{const next=!viewport.panMode;cancel(false);viewport.panMode=next;log(next?'Pan: drag in the drawing; Escape to exit.':'Pan mode ended.');return;}
     case 'palette':$('workspace').classList.toggle('hide-palette');persist();return;
     case 'dock':$('workspace').classList.toggle('left');persist();return;
-    case 'clean':$('studio').classList.toggle('clean');return;
+    case 'clean':ribbonLayout.close();$('studio').classList.toggle('clean');return;
+    case 'ribbon-minimize':chrome.ribbonMinimized=!chrome.ribbonMinimized;applyChrome();persist();return;
+    case 'command-line':chrome.commandLineVisible=!chrome.commandLineVisible;applyChrome();persist();if(chrome.commandLineVisible)$('command-input').focus({preventScroll:true});else $('viewport').focus({preventScroll:true});return;
+    case 'command-history':chrome.commandHistoryVisible=!chrome.commandLineVisible||!chrome.commandHistoryVisible;chrome.commandLineVisible=true;applyChrome();persist();return;
     case 'settings':return draftingSettings();
-    case 'layer-new':{const value=await ask('New layer','Layer name','Layer1');if(value!==null){await edit('layer',{layer:{name:value}});currentLayer=value;layers.set(client.id,value);drawRibbon();showPalette('Layers');}return;}
+    case 'layer-new':return resourceUi.layers(null,true);
+    case 'layer-manager':return resourceUi.layers();
+    case 'linetypes':return resourceUi.linetypes();
+    case 'text-styles':return resourceUi.textStyles();
     case 'assign-layer':{const layer=client.data.layers.find(l=>l.name===currentLayer);if(!layer)throw new Error('Choose an existing layer.');await edit('assign-layer',{layer:layer.id.value});return;}
     case 'snapshot':await edit('retain');showPalette('Workspaces');return;
     case 'snapshots':showPalette('Workspaces');return;
@@ -280,16 +354,17 @@ async function action(name) {
       const paper=el('input',{value:s.annotationPaperUnits,'aria-label':'Paper units'}),drawing=el('input',{value:s.annotationDrawingUnits,'aria-label':'Drawing units'});
       if(await dialog('Model annotation context',[inputRow('Mode',mode),inputRow('Paper units',paper),inputRow('Drawing units',drawing),el('p',{class:'hint',text:'Presentation-only context; the source drawing header is unchanged.'})]))await edit('annotation-view',{mode:mode.value,paperUnits:number(paper.value),drawingUnits:number(drawing.value)});return;}
     case 'linetype':{const selection=el('select',{},[el('option',{value:'Periodic',text:'Periodic pattern'}),el('option',{value:'A',text:'Fit endpoint dashes'})]);selection.value=client.state.linetypeAlignment;if(await dialog('Linetype pattern alignment',[inputRow('Alignment',selection)]))await edit('linetype-view',{alignment:selection.value});return;}
+    case 'graph-analysis':showPalette('Graph');return;
     case 'graph':if(viewport.graph){viewport.graph=null;viewport.invalidate();}else{const key=viewKey(client.state),graph=await client.read('graph');if(graph){viewport.graph=graph;viewport.graphKey=key;viewport.invalidate();log(`Topology: ${graph.components} components, ${graph.cycleRank} independent cycles, ${graph.deadEnds} dead ends.`);}}return;
     case 'export-png':return exportImage('skia');case 'export-svg':return exportImage('svg');
     case 'legacy':window.open('diagnostics.html','_blank','noopener');return;
-    case 'reset-ui':for(const [key,value] of Object.entries({grid:true,snap:false,ortho:false,polar:false,osnap:true,dynamic:true,gridStep:10,snapModes:23}))viewport.settings[key]=value;$('workspace').className='workspace';$('studio').className='';document.documentElement.style.removeProperty('--palette-width');document.documentElement.style.removeProperty('--command-height');persist();modes();viewport.changed();return;
-    case 'help':await dialog('Shadow CAD command reference',[el('p',{class:'hint',text:'Native netDxf editing on immutable shadow transactions. Enter ends point chains; C closes; U removes the last draft point; Escape cancels. Coordinates: X,Y; @dx,dy; @distance<angle. A bare distance follows the cursor. All edits are undoable.'}),el('table',{class:'help-table'},Object.entries(commands).map(([name,s])=>el('tr',{},[el('td',{text:`${name} (${s.aliases.join(', ')})`}),el('td',{text:s.label})]))),el('p',{class:'hint',text:'TRIM/EXTEND: select target LINE first, then a LINE/CIRCLE boundary, Enter, then pick an endpoint. FILLET/CHAMFER: two intersecting XY lines. EXPLODE: 2D polylines. SPLINE: cubic control points. These commands preserve native source geometry and refuse unsupported combinations. BLOCK creates shared definitions; BLOCKREDEFINE replaces one from selected sources; BLOCKRENAME retains references. HATCH/HATCHEDIT accept built-in name, scale, angle and island style. HATCHPOLY makes a solid polygon. Hatch settings import bounded custom PAT files. DWG import uses signature detection; SAVEAS offers host-declared DWG profiles with strict conversion checks. 3D solids, general curve trimming, AutoLISP and CTB/STB plotting are not implemented.'}),el('p',{class:'hint',text:'Ctrl+N/O/S: new/open/save · Ctrl+Z/Y: undo/redo · Ctrl+1: palettes · Ctrl+0: clean screen · F2: history · F3: object snap · F7: grid · F8: ortho · F9: grid snap · F10: polar · F12: dynamic input. Middle drag pans; wheel zooms about the pointer; right click opens command actions. Two-finger touch pans/zooms.'})],'Close');return;
+    case 'reset-ui':for(const [key,value] of Object.entries({grid:true,snap:false,ortho:false,polar:false,osnap:true,dynamic:true,tracking:false,polarAngle:15,polarTolerance:5,gridStep:10,snapModes:23}))viewport.settings[key]=value;$('workspace').className='workspace';$('studio').className='';chrome=chromePreferences();applyChrome();document.documentElement.style.removeProperty('--palette-width');document.documentElement.style.removeProperty('--command-height');persist();modes();viewport.changed();return;
+    case 'help':await dialog('Shadow CAD command reference',[el('p',{class:'hint',text:'Native netDxf editing on immutable shadow transactions. Enter ends point chains; C closes; U removes the last draft point; Escape cancels. Coordinates: X,Y; @dx,dy; @distance<angle. A bare distance follows the cursor. All edits are undoable.'}),el('table',{class:'help-table'},Object.entries(commands).map(([name,s])=>el('tr',{},[el('td',{text:`${name} (${s.aliases.join(', ')})`}),el('td',{text:s.label})]))),el('p',{class:'hint',text:'TRIM/EXTEND: select target LINE first, then a LINE/CIRCLE boundary, Enter, then pick an endpoint. FILLET/CHAMFER: two intersecting XY lines. EXPLODE: 2D polylines and ordinary unattributed INSERTs, one level at a time. Array inserts, attached data, disabled exploding, and unrepresentable affine geometry are refused. SPLINE: cubic control points. These commands preserve native source geometry and refuse unsupported combinations. BLOCK creates shared definitions; BLOCKREDEFINE replaces one from selected sources; BLOCKRENAME retains references. HATCH/HATCHEDIT accept built-in name, scale, angle and island style. HATCHPOLY makes a solid polygon. Hatch settings import bounded custom PAT files. DWG import uses signature detection; SAVEAS offers host-declared DWG profiles with strict conversion checks. 3D solids, general curve trimming, AutoLISP and CTB/STB plotting are not implemented.'}),el('p',{class:'hint',text:'Ctrl+N/O/S: new/open/save · Ctrl+Z/Y: undo/redo · Ctrl+1: palettes · Ctrl+0: clean screen · Ctrl+9: command line · F2: history · F3: object snap · F7: grid · F8: ortho · F9: grid snap · F10: polar · F11: tracking · F12: dynamic input. Middle drag pans; wheel zooms about the pointer; right click opens command actions. Two-finger touch pans/zooms.'})],'Close');return;
     default:throw new Error(`Unknown workspace action: ${name}`);
   }
 }
 function modes() {
-  $('drafting-modes').replaceChildren(...[['snap','SNAP','F9'],['grid','GRID','F7'],['ortho','ORTHO','F8'],['polar','POLAR','F10'],['osnap','OSNAP','F3'],['dynamic','DYN','F12']].map(([key,label,shortcut])=>button(label,()=>toggle(key),{'aria-pressed':viewport.settings[key],title:`${label} (${shortcut})`})));
+  $('drafting-modes').replaceChildren(...[['snap','SNAP','F9'],['grid','GRID','F7'],['ortho','ORTHO','F8'],['polar','POLAR','F10'],['osnap','OSNAP','F3'],['tracking','OTRACK','F11'],['dynamic','DYN','F12']].map(([key,label,shortcut])=>button(label,()=>toggle(key),{'aria-pressed':viewport.settings[key],title:`${label} (${shortcut})`})));
 }
 function toggle(key) {viewport.settings[key]=!viewport.settings[key];if(key==='ortho'&&viewport.settings.ortho)viewport.settings.polar=false;if(key==='polar'&&viewport.settings.polar)viewport.settings.ortho=false;persist();modes();viewport.invalidate();}
 function cursorChanged(p,pixel) {
@@ -302,7 +377,9 @@ function contextMenu(x,y) {
   menu.style.left=`${Math.min(x,innerWidth-205)}px`;menu.style.top=`${Math.min(y,innerHeight-220)}px`;menu.hidden=false;
 }
 $('quick-access').replaceChildren(...[['new','New (Ctrl+N)'],['open','Open (Ctrl+O)'],['save','Save (Ctrl+S)'],['undo','Undo (Ctrl+Z)'],['redo','Redo (Ctrl+Y)']].map(([name,label])=>{const b=tool(name,label,true);b.querySelector('span').remove();return b;}));
-$('ribbon-tabs').replaceChildren(...tabs.map(name=>button(name,()=>{tab=name;drawRibbon();$('ribbon-tabs').querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',String(b.textContent===name)));},{role:'tab','aria-selected':name===tab})));
+drawRibbonTabs();
+$('ribbon-tabs').addEventListener('keydown',event=>{const entries=ribbonEntries(),key=event.key,index=entries.findIndex(e=>e.key===tab);let next;if(key==='ArrowRight')next=(index+1)%entries.length;else if(key==='ArrowLeft')next=(index+entries.length-1)%entries.length;else if(key==='Home')next=0;else if(key==='End')next=entries.length-1;else return;event.preventDefault();selectRibbon(entries[next].key,true);});
+$('ribbon-tabs').addEventListener('dblclick',event=>{if(event.target.closest('[role=tab]'))run(()=>action('ribbon-minimize'));});
 $('file-menu').addEventListener('click',()=>{const menu=$('context-menu');menu.replaceChildren(...[['new','New drawing'],['demo','New sample drawing'],['open','Open DXF / DWG…'],['save','Save DXF'],['save-as','Save drawing as…'],['export-png','Export PNG'],['export-svg','Export SVG'],['legacy','Advanced diagnostics']].map(([name,label])=>button(label,()=>action(name))));menu.style.left='3px';menu.style.top='32px';menu.hidden=false;});
 document.addEventListener('click',e=>{const command=e.target.closest('[data-command]'),target=e.target.closest('[data-action]');if(command)run(()=>start(command.dataset.command));else if(target)run(()=>action(target.dataset.action));if(!e.target.closest('#file-menu'))$('context-menu').hidden=true;});
 $('command-form').addEventListener('submit',e=>{e.preventDefault();const text=$('command-input').value;$('command-input').value='';run(()=>submit(text));});
@@ -326,9 +403,9 @@ document.addEventListener('keydown',e=>{
   if($('dialog').open)return;
   const input=e.target.closest('input,select,textarea'),control=e.ctrlKey||e.metaKey;
   if(e.key==='Escape'){e.preventDefault();cancel();viewport.panMode=false;$('context-menu').hidden=true;return;}
-  if(control&&['s','o','n','z','y','0','1'].includes(e.key.toLowerCase())){e.preventDefault();run(()=>action({s:'save',o:'open',n:'new',z:e.shiftKey?'redo':'undo',y:'redo','0':'clean','1':'palette'}[e.key.toLowerCase()]));return;}
-  const toggles={F3:'osnap',F7:'grid',F8:'ortho',F9:'snap',F10:'polar',F12:'dynamic'};if(toggles[e.key]){e.preventDefault();toggle(toggles[e.key]);return;}
-  if(e.key==='F1'){e.preventDefault();run(()=>action('help'));return;}if(e.key==='F2'){e.preventDefault();$('studio').classList.toggle('history-expanded');return;}
+  if(control&&['s','o','n','z','y','0','1','9'].includes(e.key.toLowerCase())){e.preventDefault();run(()=>action({s:'save',o:'open',n:'new',z:e.shiftKey?'redo':'undo',y:'redo','0':'clean','1':'palette','9':'command-line'}[e.key.toLowerCase()]));return;}
+  const toggles={F3:'osnap',F7:'grid',F8:'ortho',F9:'snap',F10:'polar',F11:'tracking',F12:'dynamic'};if(toggles[e.key]){e.preventDefault();toggle(toggles[e.key]);return;}
+  if(e.key==='F1'){e.preventDefault();run(()=>action('help'));return;}if(e.key==='F2'){e.preventDefault();run(()=>action('command-history'));return;}
   if(input){
     if(e.target===$('command-input')){
       if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();historyIndex=Math.max(0,Math.min(lastInput.length,historyIndex+(e.key==='ArrowUp'?-1:1)));e.target.value=lastInput[historyIndex]||'';}
@@ -339,7 +416,7 @@ document.addEventListener('keydown',e=>{
   if(control&&e.key.toLowerCase()==='a'){e.preventDefault();run(()=>select('all'));return;}
   if(e.key==='Delete'){e.preventDefault();run(()=>start('ERASE'));return;}
   if(e.key==='Enter'){e.preventDefault();run(()=>submit(''));return;}
-  if(e.key.length===1&&!control&&!e.altKey){e.preventDefault();$('command-input').focus();$('command-input').value+=e.key;$('command-input').dispatchEvent(new Event('input'));}
+  if(e.key.length===1&&!control&&!e.altKey){e.preventDefault();ensureCommandLine();$('command-input').focus();$('command-input').value+=e.key;$('command-input').dispatchEvent(new Event('input'));}
 });
 document.addEventListener('keyup',e=>{if(e.key===' ')viewport.space=false;});window.addEventListener('blur',()=>{viewport.space=false;});
 function splitter(id,vertical){const node=$(id);node.addEventListener('pointerdown',e=>{e.preventDefault();node.setPointerCapture(e.pointerId);const start={x:e.clientX,y:e.clientY,width:$('palette').getBoundingClientRect().width,height:$('command-line').getBoundingClientRect().height};
@@ -350,13 +427,14 @@ splitter('palette-splitter',true);splitter('command-splitter',false);
 client.addEventListener('reset',()=>{viewport.clearFrame();viewport.graph=null;$('loading').hidden=false;viewport.invalidate();});
 client.addEventListener('state',()=>{
   const s=client.state; $('studio').dataset.document=client.id;
+  drawRibbonTabs();void moduleUi.sync().catch(report);
   agentWorkspace?.documentChanged();
   const identity=JSON.stringify([client.id,s.serverId,s.documentId,s.workspaceId,s.viewVersion]);
   if(activeIdentity && identity!==activeIdentity){cancel(false);snapshot=null;viewport.snapshot=null;$('view-notice').hidden=true;}
   activeIdentity=identity;
   const nextView=`${client.id}:${s.documentId}:${s.workspaceId}:${s.layout}`;
   if(nextView!==viewId){const saved=views.get(nextView);viewId=nextView;viewport.camera=saved||fit(s.bounds,viewport.size);}
-  currentLayer=layers.get(client.id)||currentLayer;if(!client.data.layers.some(l=>l.name===currentLayer))currentLayer='0';
+  currentLayer=client.data.currentLayer||layers.get(client.id)||currentLayer;if(!client.data.layers.some(l=>l.name===currentLayer))currentLayer='0';layers.set(client.id,currentLayer);
   $('layouts').replaceChildren(...s.layouts.map(name=>button(name,async()=>{cancel(false);setSnapshot(null);await edit('layout',{name});},{role:'tab','aria-selected':name===s.layout})));
   $('revision').textContent=`r${s.revision}`;
   if(snapshot===null){$('view-notice').hidden=!client.data.blockEditor;$('view-notice').textContent=client.data.blockEditor?`Block Editor: ${client.data.blockEditor.name} — BSAVE to commit, BCLOSE to discard`:'';}
@@ -364,7 +442,7 @@ client.addEventListener('state',()=>{
   if(stateKey!==viewKey(s)){stateKey=viewKey(s);drawRibbon();renderPalette();viewport.setData();}
   $('loading').hidden=true;updatePrompt();updateTools();
 });
-client.addEventListener('busy',()=>{$('connection').textContent=client.busy?'Working…':'Local';$('connection').classList.toggle('busy',!!client.busy);updateTools();if(!client.busy)viewport.requestFrame();});
+client.addEventListener('busy',()=>{$('connection').textContent=client.busy?'Working…':'Local';$('connection').classList.toggle('busy',!!client.busy);updateTools();if(!client.busy){viewport.requestFrame();void moduleUi.sync().catch(report);}});
 window.addEventListener('beforeunload',e=>{if(documents.some(d=>d.dirty)){e.preventDefault();e.returnValue='';}});
 bindViewportPageLifetime(viewport);
 async function pollDocuments() {
@@ -381,14 +459,20 @@ const studioAgentUi = installStudioControl({
   client, viewport, documents:()=>documents, currentLayer:()=>currentLayer, ribbon:()=>tab, palette:()=>palette,
   retainedSnapshot:()=>snapshot,
   command:()=>session?{name:session.name,prompt:session.prompt,selecting:session.selecting,complete:session.complete}:null,
-  showRibbon:name=>{tab=name;drawRibbon();$('ribbon-tabs').querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',String(b.textContent===name)));},
-  setLayer:name=>{currentLayer=name;layers.set(client.id,name);drawRibbon();renderPalette();},
+  showRibbon:name=>selectRibbon(name),
+  setLayer:name=>setCurrentLayer(name),
   submit, cancel, showPalette, persist, modes, activate, newDocument, edit, setSnapshot, switchWorkspace,
   action, documentTabs, report
 });
 agentWorkspace = mountAgentWorkspace({
   workspace:$('workspace'),documentBar:document.querySelector('.document-bar'),getDocument:()=>client.id,
   getDocumentName:()=>documents.find(d=>d.id===client.id)?.name,
+  drawingReferences:{
+    capture:()=>client.read('references/capture',{body:{documentId:client.state.documentId,workspaceId:client.state.workspaceId,viewVersion:client.state.viewVersion,revision:client.state.revision}}),
+    validate:(references,refresh=false)=>client.read('references/validate',{body:{references,refresh}})
+  },
+  drawingPreview:(previewId,after)=>client.read(`edit-preview/render?${new URLSearchParams({previewId,after:String(after),width:640,height:400,backend:'svg'})}`,{blob:true}),
+  openDrawingPreview:()=>showPalette('Edit previews'),
   inspectDrawing:()=>studioAgentUi.snapshot(),refreshDrawing:async()=>{await client.refresh();await documentTabs();},report
 });
 run(async()=>{documents=await client.documents();if(documents.length)await activate(documents[0].id);else await newDocument();});

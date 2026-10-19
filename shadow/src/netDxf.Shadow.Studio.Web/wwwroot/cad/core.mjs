@@ -60,16 +60,35 @@ export function fit(bounds, size) {
   return { x: (bounds.minX + bounds.maxX) / 2, y: (bounds.minY + bounds.maxY) / 2,
     scale: Math.min(size.w / Math.max(20, bounds.maxX - bounds.minX), size.h / Math.max(20, bounds.maxY - bounds.minY)) * .82 };
 }
+/** Ortho is exact; polar tracking only acquires nearby configured angles. Typed coordinates bypass this helper. */
 export function constrain(p, anchor, settings) {
   let value = { ...p };
-  if (anchor && (settings.ortho || settings.polar)) {
-    const d = sub(p, anchor), angle = Math.atan2(d.y, d.x), step = (settings.ortho ? 90 : 15) * Math.PI / 180;
-    const a = Math.round(angle / step) * step, r = settings.ortho ? Math.max(Math.abs(d.x), Math.abs(d.y)) : Math.hypot(d.x, d.y);
-    value = add(anchor, point(Math.cos(a) * r, Math.sin(a) * r));
-  } else if (settings.snap) {
-    const step = Math.max(1e-9, settings.gridStep || 10); value = point(Math.round(p.x / step) * step, Math.round(p.y / step) * step, p.z);
+  if (settings.snap) {
+    const step = Number.isFinite(settings.gridStep) && settings.gridStep > 0 ? settings.gridStep : 10;
+    value = point(Math.round(p.x / step) * step, Math.round(p.y / step) * step, p.z ?? 0);
+  }
+  if (!anchor) return value;
+  const ortho = settings.temporaryOrtho ? !settings.ortho : settings.ortho;
+  const d = sub(value, anchor);
+  if (ortho) return Math.abs(d.x) >= Math.abs(d.y) ? point(value.x, anchor.y, anchor.z ?? 0) : point(anchor.x, value.y, anchor.z ?? 0);
+  if (settings.polar) {
+    const degrees = Number.isFinite(settings.polarAngle) && settings.polarAngle > 0 && settings.polarAngle <= 90 ? settings.polarAngle : 15;
+    const tolerance = Number.isFinite(settings.polarTolerance) && settings.polarTolerance >= 0 && settings.polarTolerance <= 15 ? settings.polarTolerance : 5;
+    const angle = Math.atan2(d.y, d.x), step = degrees * Math.PI / 180, target = Math.round(angle / step) * step;
+    if (Math.abs(angle - target) <= tolerance * Math.PI / 180) {
+      const r = Math.hypot(d.x, d.y); return add(anchor, point(Math.cos(target) * r, Math.sin(target) * r));
+    }
   }
   return value;
+}
+/** Acquire horizontal/vertical alignment from recent object snap points within the pixel aperture. */
+export function trackPoint(p, origins, tolerance) {
+  let x, y;
+  for (const origin of origins || []) {
+    if (Math.abs(p.x - origin.x) <= tolerance && (!x || Math.abs(p.x - origin.x) < Math.abs(p.x - x.x))) x = origin;
+    if (Math.abs(p.y - origin.y) <= tolerance && (!y || Math.abs(p.y - origin.y) < Math.abs(p.y - y.y))) y = origin;
+  }
+  return { position: point(x?.x ?? p.x, y?.y ?? p.y, p.z ?? 0), origins: [...new Set([x,y].filter(Boolean))] };
 }
 export function polygonArea(points) { return Math.abs(points.reduce((sum, p, i) => { const q = points[(i + 1) % points.length]; return sum + p.x * q.y - p.y * q.x; }, 0)) / 2; }
 const P = prompt => ({ kind: 'point', prompt });
@@ -92,7 +111,7 @@ export const commands = Object.freeze({
   DIMALIGNED: spec('DAL', 'Aligned dimension', [P('First extension origin'), P('Second extension origin'), P('Dimension line location')]),
   DIMLINEAR: spec('DLI', 'Linear dimension', [P('First extension origin'), P('Second extension origin'), P('Dimension line location')]),
   INSERT: spec('I', 'Insert block', [T('block', 'Block name'), P('Insertion point'), N('value', 'Uniform scale', 1), N('rotation', 'Rotation in degrees', 0, -1e12)]),
-  MOVE: spec('M', 'Move', [P('Base point'), P('Second point')], { selection: 1 }),
+  MOVE: spec('M', 'Move', [P('Specify base point or [Displacement]'), P('Specify second point or Enter to use base as displacement')], { selection: 1 }),
   COPY: spec('CO CP', 'Copy', [P('Base point'), P('Second point')], { selection: 1 }),
   ROTATE: spec('RO', 'Rotate', [P('Base point'), N('value', 'Rotation in degrees', 90, -1e12)], { selection: 1 }),
   SCALE: spec('SC', 'Scale', [P('Base point'), N('value', 'Scale factor', 2)], { selection: 1 }),
@@ -104,7 +123,7 @@ export const commands = Object.freeze({
   FILLET: spec('F', 'Fillet', [N('value', 'Fillet radius', 5, 0)], { selection: 2, exactSelection: 2 }),
   CHAMFER: spec('CHA', 'Chamfer', [N('value', 'Equal chamfer distance', 5, 0)], { selection: 2, exactSelection: 2 }),
   JOIN: spec('J', 'Join lines', [], { selection: 2 }),
-  EXPLODE: spec('X', 'Explode polyline', [], { selection: 1 }),
+  EXPLODE: spec('X', 'Explode', [], { selection: 1 }),
   ERASE: spec('E DELETE', 'Erase', [], { selection: 1 }),
   DIST: spec('DI MEASURE', 'Distance', [P('First measurement point'), P('Second measurement point')], { measure: true }),
   AREA: spec('AA', 'Area', [P('First area point')], { chain: 3, measure: true })
@@ -123,7 +142,7 @@ export class CommandSession {
   validSelection(count) { return this.spec.exactSelection ? count === this.spec.exactSelection : count >= (this.spec.selection || 0); }
   acceptSelection(count) { if (!this.validSelection(count)) throw new Error(`Select ${this.spec.exactSelection ? 'exactly ' : 'at least '}${this.spec.selection} source objects.`); this.selecting = false; this.complete = this.spec.steps.length === 0; this.version++; }
   get anchor() { return this.command.points.at(-1) || null; }
-  get step() { return this.selecting ? { kind: 'selection', prompt: 'Select objects in order; Enter to continue' } : this.spec.steps[this.index] || { kind: 'point', prompt: 'Next point or [Undo/Close]; Enter to finish' }; }
+  get step() { if (this.displacement && !this.selecting) return { kind: 'point', prompt: 'Specify displacement vector (X,Y,Z)' }; return this.selecting ? { kind: 'selection', prompt: 'Select objects in order; Enter to continue' } : this.spec.steps[this.index] || { kind: 'point', prompt: 'Next point or [Undo/Close]; Enter to finish' }; }
   get prompt() { const s = this.step; return `${this.name} — ${s.prompt}${s.defaultValue !== undefined && s.defaultValue !== '' ? ` <${s.defaultValue}>` : ''}:`; }
   input(text, cursor = null) {
     if (this.selecting || this.complete) throw new Error('The command is not accepting coordinates.');
@@ -135,6 +154,14 @@ export class CommandSession {
       const origin = parsePoint(value, point(), cursor);
       this.spec = { ...this.spec, steps: [...authoringCommands.BLOCK.steps].reverse() };
       return this.pick(origin);
+    }
+    if (this.name === 'MOVE' && this.index === 0 && (!value || ['D','DISPLACEMENT'].includes(value.toUpperCase()))) {
+      this.command.points = [point()]; this.displacement = true; this.index = 1; this.version++; return;
+    }
+    if (this.name === 'MOVE' && this.index === 1 && !this.displacement && !value) {
+      const delta = this.command.points[0];
+      if (distance(delta, point()) < 1e-9) throw new Error('Specify a nonzero displacement.');
+      this.command.points = [point(), delta]; this.complete = true; this.version++; return;
     }
     const step = this.step;
     if (this.spec.chain && ['U', 'UNDO'].includes(value.toUpperCase())) {

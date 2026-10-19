@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { deflateRawSync } from 'node:zlib';
-import { BrowserFolder, importPlan, lineDiff, normalizeFiles, parseWorkspaceBundle, readSelectedFiles, readWorkspaceZip, workspaceBundle, workspaceZip } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/file-transfer.mjs';
-import { BrowserSessionPersistence, IndexedDbAgentStore, checkpointRecord, storageError } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/persistence.mjs';
-import { AgentClient } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/client.mjs';
+import { BrowserFolder, importPlan, lineDiff, normalizeFiles, parseWorkspaceBundle, readSelectedFiles, readWorkspaceZip, workspaceBundle, workspaceZip } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/file-transfer.mjs';
+import { BrowserSessionPersistence, IndexedDbAgentStore, checkpointRecord, storageError } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/persistence.mjs';
+import { AgentClient } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/client.mjs';
 
 const gate = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; };
 const tick = () => new Promise(resolve => setImmediate(resolve));

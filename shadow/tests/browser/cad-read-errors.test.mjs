@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CadClient, ApiError } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/client.mjs';
+import { CadClient, ApiError } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/client.mjs';
 
 function setup() {
   let reply;
