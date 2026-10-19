@@ -126,6 +126,8 @@ public static partial class ShadowAgentProviders
                                     TotalTokenCount = usage.TotalTokenCount,
                                     CachedInputTokenCount = usage.InputTokenDetails?.CachedTokenCount,
                                     ReasoningTokenCount = usage.OutputTokenDetails?.ReasoningTokenCount,
+                                    AdditionalCounts = usage.InputTokenDetails?.CacheWriteTokenCount is { } writes
+                                        ? new() { ["InputTokenDetails.CacheWriteTokenCount"] = writes } : null,
                                 }));
                             completed = true;
                             break;

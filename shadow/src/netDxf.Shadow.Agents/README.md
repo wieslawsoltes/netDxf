@@ -201,6 +201,8 @@ Events cover assistant text deltas and completed messages, turns, usage, retry a
 
 `Poll().Usage` contains cumulative successful-inference totals, including compaction, plus cache-write and reasoning counts when reported, elapsed inference time and the most recent first-token latency. Each usage event has its inference delta and a `totals` snapshot, so cursor replay never needs to sum an already-counted request. Unknown provider fields stay null. Failed or interrupted requests can still be billable and are not represented as complete usage; the opt-in evaluator reserves their upper-bound cost separately. Import/reset starts a new observed usage interval.
 
+OpenAI terminal responses stopped by an output limit retain cache-write counts as well as cache reads and reasoning usage, including through the portable companion bridge. This matters when evaluating whether prefix caching reduced cost: writes can have a different rate from ordinary input. Provider-reported counts remain the evidence; no cache hit or savings estimate is inferred from an enabled hint.
+
 ### Prompt caching and overhead
 
 Tool declarations retain stable ordinal ordering and reuse the same function objects, allowing SDK schema caches and provider prefix caches to reuse them. Context accounting memoizes immutable transcript sizes instead of serializing the entire history on every UI poll. Stable instructions and pinned reference material precede the replaceable compaction summary.
