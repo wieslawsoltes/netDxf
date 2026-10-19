@@ -41,6 +41,8 @@ public static class DraftingGrips
                     var k = 0; foreach (var point in e["ControlPoints"].Items) Add("ControlPoints", point.Vector(), "Control", k++); break;
                 case "Point": case "Text": case "MText": case "Insert": case "Image":
                     Add("Position", e["Position"].Vector(), "Move"); break;
+                case "AttributeDefinition":
+                    Add("Position", netDxf.Shadow.Geometry.CadTextProjection.Read(e).Text.Origin, "Move"); break;
                 case "Viewport": Add("Center", e["Center"].Vector(), "Move"); break;
                 case "AlignedDimension": case "LinearDimension":
                     var frame = Affine3.ObjectCoordinates(e["Normal"].Vector(Vec3.UnitZ));

@@ -50,17 +50,19 @@ public sealed partial class ShxEntityProjector : ICacheableEntityProjector
             geometry = new(glyph.Contours); geometry = geometry.Transform(matrix); return true;
         }
         if (entity.Type is not ("Text" or "MText" or "Attribute" or "AttributeDefinition")) return false;
-        var file = entity["Style"]["FontFile"].Text;
+        var source = CadTextProjection.ReadDisplay(entity);
+        var file = source.Style["FontFile"].Text;
         var resource = fonts.Resolve(file);
         if (resource is null) return false;
         if (!resource.IsFont || resource.Encoding == ShxEncoding.PackedMultibyte)
             throw new NotSupportedException("The primary SHX resource must provide Unicode/legacy metrics; BIGFONT is a companion resource.");
-        var vertical = entity["Style"]["IsVertical"].Boolean();
-        var bigFont = BigFont(fonts, entity["Style"]["BigFont"].Text, vertical);
-        if (!new StandardEntityProjector().TryProject(entity, out var projected, out _) || projected.Text is not { } text) return false;
+        var vertical = source.DrawingDirection == 3 || source.DrawingDirection == 5 && source.Style["IsVertical"].Boolean();
+        var bigFont = BigFont(fonts, source.Style["BigFont"].Text, vertical);
+        var text = source.Text;
         if (text.Content.Length > options.MaximumCharacters) throw new InvalidOperationException("SHX text character budget exceeded.");
         geometry = vertical ? ProjectVerticalText(text with { FontFamily = file }, fonts, resource, out diagnostic, bigFont)
             : ProjectText(text with { FontFamily = file }, fonts, resource, out diagnostic, bigFont);
+        if (source.HasBackground) diagnostic = string.Join(" ", new[] { diagnostic, "The stored text background is not rendered by this projector." }.Where(s => s is not null));
         return true;
     }
 

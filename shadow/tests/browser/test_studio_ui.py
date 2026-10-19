@@ -9,7 +9,7 @@ import re
 from playwright.sync_api import sync_playwright
 
 ROOT=Path(__file__).resolve().parents[3]
-WEB=ROOT/'shadow/samples/netDxf.Shadow.Studio/wwwroot'
+WEB=ROOT/'shadow/src/netDxf.Shadow.Studio.Web/wwwroot'
 
 def run(executable=None):
     with sync_playwright() as playwright:

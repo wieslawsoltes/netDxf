@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CommandSession, point } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/core.mjs';
-import { CadClient } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/client.mjs';
-import { CadViewport } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/viewport.mjs';
+import { CommandSession, point } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/core.mjs';
+import { CadClient } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/client.mjs';
+import { CadViewport } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/viewport.mjs';
 
 function deferred() { let resolve, reject; const promise = new Promise((a,b) => { resolve=a; reject=b; }); return {promise,resolve,reject}; }
 const data = () => ({ state: { serverId:'server', documentId:'doc', workspaceId:'live', viewVersion:0, changeVersion:0, revision:0 } });
@@ -111,6 +111,30 @@ test('a valid crossing gesture uses its original source receipt', async () => {
   const view=viewport(); let args;
   view.hooks={box:(...values)=>args=values}; gesture(view,{moved:true,extend:true,remove:false});
   await view.up({...release,clientX:90}); assert.equal(args[2],true); assert.equal(args[3],true); assert.equal(args[4],false);
+});
+test('selection windows add to the command selection without requiring Ctrl',async()=>{
+  const view=viewport();view.command=new CommandSession('MOVE');let args;
+  view.hooks={box:(...values)=>args=values};gesture(view,{moved:true,extend:false,remove:false});
+  await view.up(release);assert.equal(args[3],true);assert.equal(args[4],false);
+});
+test('object snap queries the raw pointer so exact geometry can override Ortho',async()=>{
+  let request;const view=viewport(async(_,options)=>{request=options.body;return {position:point(10,4)};});
+  view.settings.ortho=true;
+  assert.deepEqual(await view.snapped(point(10,4),point(),true),point(10,4));assert.deepEqual(request.point,point(10,4));
+  view.client.read=async()=>null;assert.deepEqual(await view.snapped(point(10,4),point(),true),point(10,0));
+});
+test('STRETCH drag acquires both raw window corners without running object snaps',async()=>{
+  let reads=0,args;const view=viewport(async()=>{reads++;return {position:point(999,999)};});
+  view.command=new CommandSession('STRETCH');view.settings.ortho=true;view.settings.snap=true;
+  view.hooks={window:(...values)=>args=values};gesture(view,{moved:true});
+  await view.up(release);assert.equal(reads,0);assert.deepEqual(args,[point(5,0),point(10,5)]);
+});
+test('STRETCH two-click window passes raw corners to the command',async()=>{
+  const view=viewport();view.command=new CommandSession('STRETCH');view.settings.snap=true;
+  view.hooks={pick:p=>view.command.pick(p)};gesture(view);await view.up(release);
+  assert.equal(view.command.index,1);assert.deepEqual(view.command.command.points,[point(10,5)]);
+  gesture(view);await view.up({...release,clientX:110,clientY:100});
+  assert(view.command.selecting);assert.deepEqual(view.command.command.points,[point(10,5),point(5,0)]);
 });
 
 

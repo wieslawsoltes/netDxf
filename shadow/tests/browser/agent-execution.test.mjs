@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import fs from 'node:fs/promises';
 import { webcrypto } from 'node:crypto';
-import { createWorkerSource } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/execution-worker.mjs';
-import { BrowserCodeRuntime } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/execution.mjs';
+import { createWorkerSource } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/execution-worker.mjs';
+import { BrowserCodeRuntime } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/execution.mjs';
 
 async function run(code, files = [], extra = {}) {
   const messages = [];
@@ -83,7 +83,7 @@ test('only bootstrap receipts carry the private token even when executed code fo
 });
 
 test('opaque frame rejects forged worker messages and strips its private token from authenticated receipts', async () => {
-  const html = await fs.readFile(new URL('../../samples/netDxf.Shadow.Studio/wwwroot/agents/execution-frame.html', import.meta.url), 'utf8');
+  const html = await fs.readFile(new URL('../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/execution-frame.html', import.meta.url), 'utf8');
   const source = html.match(/<script>([\s\S]*?)<\/script>/u)[1];
   const handlers = new Map(), sent = [], blobs = new Map(), workers = [];
   const parent = { postMessage: message => sent.push(message) };

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark"><title>netDxf · Shadow CAD Studio</title>
+  <link rel="stylesheet" href="cad/cad.css"><script type="module" src="cad/app.mjs"></script>
+</head>
+<body>
+  <div id="studio">
+    <header class="titlebar">
+      <button class="app-menu" id="file-menu" title="Drawing menu" aria-label="Drawing menu">S<span>▾</span></button>
+      <div id="quick-access" class="quick-access" aria-label="Quick access"></div>
+      <span id="title">Drawing — netDxf Shadow Studio</span>
+      <span class="local-badge" title="All drawing operations use your local netDxf host">LOCAL CAD</span>
+      <button data-action="help" class="help-button" title="Command help (F1)">?</button>
+    </header>
+    <div class="ribbon-bar"><nav id="ribbon-tabs" class="ribbon-tabs" role="tablist" aria-label="Ribbon"></nav><button id="ribbon-toggle" data-action="ribbon-minimize" aria-label="Minimize ribbon" aria-controls="ribbon" aria-expanded="true" title="Minimize ribbon (double-click a tab)">⌃</button></div>
+    <section id="ribbon" class="ribbon" role="tabpanel" aria-label="Home tools"></section>
+    <div class="document-bar"><div id="documents" role="tablist" aria-label="Open drawings"></div><button data-action="new" title="New drawing (Ctrl+N)" aria-label="New drawing">＋</button><div class="grow"></div><button data-action="palette" title="Show or hide palettes (Ctrl+1)">▤ Properties</button><button data-action="clean" title="Clean screen (Ctrl+0)">⛶</button></div>
+    <main id="workspace" class="workspace">
+      <div id="viewport" class="viewport" tabindex="0" aria-label="Drawing viewport. Click to select; middle-drag to pan; wheel to zoom.">
+        <canvas id="drawing" aria-label="CAD drawing canvas"></canvas>
+        <div class="viewport-heading"><button data-action="fit">[＋]</button><span>[Top]</span><span>[2D Wireframe]</span></div>
+        <div class="view-compass" aria-label="World view"><span>N</span><button data-action="fit" title="Top view / zoom extents">TOP</button><span>WCS</span></div>
+        <div class="navigation-bar"><button data-action="pan" title="Pan">✥</button><button data-action="zoom-in" title="Zoom in">＋</button><button data-action="zoom-out" title="Zoom out">−</button><button data-action="fit" title="Zoom extents">⌗</button></div>
+        <div class="ucs" aria-hidden="true"><span class="axis-y">Y</span><span class="axis-x">X</span><b>□</b></div>
+        <div id="dynamic-input" class="dynamic-input" hidden></div>
+        <div id="view-notice" class="view-notice" hidden></div>
+        <div id="loading" class="loading" role="status">Connecting to local CAD services…</div>
+      </div>
+      <div id="palette-splitter" class="palette-splitter" role="separator" tabindex="0" aria-label="Resize palettes" aria-orientation="vertical"></div>
+      <aside id="palette" class="palette" aria-label="Drawing palettes">
+        <header class="palette-title"><strong id="palette-title">PROPERTIES</strong><div class="grow"></div><button data-action="dock" title="Dock palette left or right">⇆</button><button data-action="palette" title="Close palette">×</button></header>
+        <div id="palette-tabs" class="palette-tabs" role="tablist" aria-label="Palettes"></div>
+        <div id="palette-content" class="palette-content" role="tabpanel"></div>
+      </aside>
+    </main>
+    <div id="command-splitter" class="command-splitter" role="separator" tabindex="0" aria-label="Resize command history" aria-orientation="horizontal"></div>
+    <section id="command-line" class="command-line" aria-label="Command line">
+      <div id="history" class="command-history" role="log" aria-live="polite"></div>
+      <form id="command-form" autocomplete="off"><button type="button" data-action="command-line" class="command-close" title="Hide command line (Ctrl+9)" aria-label="Hide command line">×</button><button type="button" data-action="command-history" id="command-history-toggle" title="Show or hide command history (F2)" aria-label="Show or hide command history" aria-controls="history" aria-expanded="true">⌃</button><span class="command-glyph">›</span><label id="prompt" for="command-input">Command:</label><input id="command-input" aria-label="Command input" placeholder="Type a command" spellcheck="false" autocomplete="off"><button type="submit" title="Submit command">↵</button></form>
+      <div id="suggestions" class="suggestions" hidden></div>
+    </section>
+    <div class="layout-bar"><div id="layouts" role="tablist" aria-label="Model and paper layouts"></div><div class="grow"></div><span id="selection-count">No selection</span></div>
+    <footer class="statusbar"><span id="coordinates">0.0000, 0.0000, 0.0000</span><div id="drafting-modes"></div><button id="command-line-toggle" data-action="command-line" aria-label="Show or hide command line" aria-controls="command-line" aria-pressed="true" title="Command line (Ctrl+9)">›_</button><div class="grow"></div><span id="revision">Revision —</span><select id="backend" aria-label="Render backend"><option value="skia">SkiaSharp</option><option value="svg">SVG</option></select><button data-action="settings" title="Drafting settings">⚙</button><span id="connection" role="status">Connecting</span></footer>
+  </div>
+  <input type="file" id="open-file" accept=".dxf,.dwg" hidden><input type="file" id="font-file" accept=".shx,.shp" hidden>
+  <dialog id="dialog"><form method="dialog" id="dialog-form"><header><strong id="dialog-title"></strong><button value="cancel" formnovalidate aria-label="Close dialog">×</button></header><div id="dialog-body"></div><footer><button value="cancel" formnovalidate>Cancel</button><button id="dialog-submit" value="ok" class="primary">OK</button></footer></form></dialog>
+  <div id="context-menu" class="context-menu" hidden></div><div id="toast" class="toast" role="alert" hidden></div>
+  <noscript>Shadow CAD Studio requires JavaScript and its local ASP.NET host.</noscript>
+</body>
+</html>

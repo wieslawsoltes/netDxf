@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { AgentTranscript, configuration, defaultConfiguration, preferences, preferenceRecord, restorePreferences } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/contracts.mjs';
-import { AgentClient } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/client.mjs';
-import { presentRun, recoveredRunSelection } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/run-state.mjs';
+import { AgentTranscript, configuration, defaultConfiguration, preferences, preferenceRecord, restorePreferences } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/contracts.mjs';
+import { AgentClient } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/client.mjs';
+import { presentRun, recoveredRunSelection } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/run-state.mjs';
 
 const state = (run, rest = {}) => ({ run, running: false, status: run?.phase || 'idle', items: [{ kind: 'user', text: 'Complete the task' }], ...rest });
 const snapshot = (run, rest = {}) => ({ sessionId: 'session', events: [], running: false, status: run.phase, run, ...rest });

@@ -23,6 +23,12 @@ public sealed partial class ShadowSession
             // sessions that opt into edited-property validation for scalar batches.
             EnsureSourceCurrent();
             var before = current;
+            // Count is a derived membership assertion, never an independent edit.
+            // Reject contradictions before native adoption can allocate handles.
+            foreach (var change in patch.Changes)
+                if (change.After is { } after && after["$items"] is ShadowValue.Sequence items && after["Count"] is ShadowValue.Atom count &&
+                    (!int.TryParse(count.Text, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var declared) || declared != items.Items.Length))
+                    throw new ArgumentException($"Collection {change.Id} Count does not match its proposed membership.");
             var bindings = capture.RetainBindings();
             historyBindings.GetValue(before, _ => bindings);
             Dictionary<ObjectId, object>? historical = null;
@@ -31,6 +37,7 @@ public sealed partial class ShadowSession
             // Undo/redo can restore every binding from history without building an index.
             Dictionary<ObjectId, List<(ObjectId Owner, SourceAccessor Accessor)>>? ownedReferences = null;
             var constructing = new HashSet<ObjectId>();
+            var implicitInserts = new List<(ObjectId Id, netDxf.Entities.Insert Insert)>();
             Resolver resolver = null!;
             resolver = new Resolver(Resolve, (value, type) => ConvertValue(value, type, Resolve));
             var writes = new List<(object Source, SourceAccessor Accessor, object? Before, object? After)>();
@@ -40,17 +47,39 @@ public sealed partial class ShadowSession
             var assertions = new List<(ObjectId Id, string Property, ShadowValue Value)>();
             // Preparation allocates only new objects and detached constructor state.
             foreach (var id in additions.Keys) Resolve(id);
+            var insertDefaults = implicitInserts.Select(entry => SourceImplicitInsertPlan.Prepare(entry.Id, entry.Insert, current, target, Resolve, resolver.Convert)).ToArray();
+            var attributeIdentities = SourceAttributeIdentityPlan.Prepare(patch, target, Resolve, historical is not null ? patch.HistoricalTarget : null);
             foreach (var change in patch.Changes.Where(e => e.After is not null))
             {
                 var source = Resolve(change.Id);
-                if (change.Before is { } oldNode && SourceMethodPlan.Create(source, oldNode, change.After!) is { } method) methods.Add(method);
+                var method = change.Before is { } oldNode
+                    ? SourceMethodPlan.AttributeMembership(source, oldNode, change.After!, current, target, resolver.Convert)
+                        ?? SourceMethodPlan.Create(source, oldNode, change.After!, source is netDxf.Tables.TextStyle && SourceMethodPlan.XDataGraphChanged(current, target, change.Id, patch))
+                    : null;
+                if (method is not null) methods.Add(method);
                 foreach (var (name, value) in change.After!.Properties)
                 {
                     if (change.Before is { } previous && ShadowValue.Equivalent(previous[name], value)) continue;
+                    if (attributeIdentities.Handles(change.Id, name)) continue;
+                    if (method?.Properties?.Contains(name) == true) continue;
                     // Type is read-only entity metadata on some objects, but a writable
                     // semantic enum on HatchPattern and other public data-model types.
                     // Let the accessor contract decide rather than dropping it by name.
                     if (name is "Handle" or "Owner" or "CodeName") continue;
+                    if (name == "Entities" && source is netDxf.Entities.HatchBoundaryPath)
+                    {
+                        // The containing hatch updates sources and reactor links as
+                        // one native operation; writing the backing list bypasses it.
+                        assertions.Add((change.Id, name, value));
+                        continue;
+                    }
+                    if (name == "Reactors" && source is netDxf.Entities.EntityObject)
+                    {
+                        // Native association callbacks own this list. Mutating its
+                        // backing List would duplicate links as hatches are attached.
+                        assertions.Add((change.Id, name, value));
+                        continue;
+                    }
                     if (name == OleRasterPreview.Property && source is netDxf.Entities.Ole2Frame ole)
                     {
                         if (!ShadowValue.Equivalent(OleRasterPreview.Read(ole), value))
@@ -65,7 +94,7 @@ public sealed partial class ShadowSession
                     {
                         if (value is not ShadowValue.Sequence sequence) throw new ArgumentException("Collection membership must be a sequence.");
                         var collectionSource = name == "$items" ? source : accessor!.Get(source);
-                        var plan = SourceCollectionPlan.TryCreate(collectionSource, sequence, resolver.Convert);
+                        var plan = SourceCollectionPlan.TryCreate(collectionSource, sequence, resolver.Convert, attributeIdentities.Tag);
                         if (plan is not null && !plan.IsNoOp && collectionSources.Add(collectionSource!)) collections.Add(plan);
                         else if (plan is null && change.Before is not null) assertions.Add((change.Id, name, value));
                         continue;
@@ -82,6 +111,20 @@ public sealed partial class ShadowSession
                     writes.Add((source, accessor, oldValue, newValue));
                 }
             }
+            // Deleting a definition also deletes its owned collection nodes, so there
+            // is no After node from which to prepare their membership delta. Release
+            // those entity references before removing the block records/resources.
+            // Otherwise deleting [parent, child] tries to remove a still-referenced
+            // child first, and undo of a library import can fail after partial removal.
+            foreach (var change in patch.Changes.Where(e => e.After is null && e.Before?.Kind == ShadowObjectKind.Block))
+            {
+                var block = (netDxf.Blocks.Block)Resolve(change.Id);
+                if (collectionSources.Add(block.Entities))
+                {
+                    var plan = SourceCollectionPlan.TryCreate(block.Entities, new ShadowValue.Sequence([]), resolver.Convert);
+                    if (plan is not null && !plan.IsNoOp) collections.Add(plan);
+                }
+            }
             foreach (var group in writes.GroupBy(w => w.Source, ReferenceEqualityComparer.Instance))
             {
                 if (group.Key is not ICloneable cloneable) continue;
@@ -92,7 +135,22 @@ public sealed partial class ShadowSession
             // then attach referencing entities. Reverse this order when detaching.
             // Within a phase preserve captured membership order and native semantics.
             collections = collections.OrderBy(p => p.AttachmentOrder).ToList();
-            var attempted = 0;
+            var affectedHatches = patch.Changes.Where(change => (change.After ?? change.Before)?.TypeName == "netDxf.Entities.Hatch")
+                .Select(change => change.Id).ToHashSet();
+            var changedPaths = patch.Changes.Where(change => (change.After ?? change.Before)?.TypeName == "netDxf.Entities.HatchBoundaryPath")
+                .Select(change => change.Id).ToHashSet();
+            if (changedPaths.Count != 0)
+                foreach (var node in target.Objects.Values.Where(node => node.TypeName == "netDxf.Entities.Hatch"))
+                    if (target.Read(node.Id)["BoundaryPaths"].Items.Any(path => path.Id is { } id && changedPaths.Contains(id))) affectedHatches.Add(node.Id);
+            var hatchesInCollections = collections.SelectMany(plan => plan.Before.Concat(plan.After)).OfType<netDxf.Entities.Hatch>()
+                .ToHashSet(ReferenceEqualityComparer.Instance);
+            foreach (var pair in bindings)
+                if (pair.Value is netDxf.Entities.Hatch hatch && hatchesInCollections.Contains(hatch) && target.Objects.ContainsKey(pair.Key))
+                    affectedHatches.Add(pair.Key);
+            var hatchSources = affectedHatches.Select(id => new SourceHatchSourcesPlan((netDxf.Entities.Hatch)Resolve(id), target.Read(id), Resolve)).ToArray();
+            // Resource names must exist before setters validate named references.
+            writes = writes.OrderBy(w => w.Source is netDxf.Tables.TableObject && w.Accessor.Name == "Name" ? 0 : 1).ToList();
+            var appliedWrites = new List<(object Source, SourceAccessor Accessor, object? Before)>();
             var attemptedMethods = 0;
             var touchedCollections = false;
             try
@@ -100,17 +158,31 @@ public sealed partial class ShadowSession
                 foreach (var method in methods) { attemptedMethods++; method.Apply(); }
                 foreach (var write in writes)
                 {
-                    attempted++;
+                    var actual = write.Accessor.Get(write.Source);
+                    // Compound native setters can already satisfy a derived write.
+                    // Record the actual intermediate value for reverse-order rollback.
+                    if (ReferenceEquals(actual, write.After) || actual is not null &&
+                        (actual.GetType().IsValueType || actual is string) && actual.Equals(write.After)) continue;
+                    appliedWrites.Add((write.Source, write.Accessor, actual));
                     write.Accessor.Set(write.Source, write.After);
                 }
+                // A native resource rename may already have rekeyed saved layer
+                // state dictionaries. Do not remove stale pre-rename keys again.
+                // Rollback restores this post-write membership first; reversing
+                // the scalar writes then reverses their native side effects.
+                collections = collections.Select(p => p.AfterSourceWrites()).Where(p => !p.IsNoOp).ToList();
                 // Moving entities across owners must release every old owner first.
                 touchedCollections = collections.Count != 0;
                 foreach (var plan in collections.AsEnumerable().Reverse()) plan.RemoveOld();
-                foreach (var plan in collections) plan.AddNew();
+                attributeIdentities.Apply();
+                foreach (var defaults in insertDefaults) defaults.Apply();
+                foreach (var plan in collections.Where(plan => plan.AttachmentOrder < 7)) plan.AddNew();
+                foreach (var plan in hatchSources) plan.Apply();
+                foreach (var plan in collections.Where(plan => plan.AttachmentOrder >= 7)) plan.AddNew();
                 var next = capture.Capture(document, current);
                 foreach (var assertion in assertions)
                 {
-                    if (!next.Objects.TryGetValue(assertion.Id, out var node) || !ShadowValue.Equivalent(node[assertion.Property], assertion.Value))
+                    if (!next.Objects.TryGetValue(assertion.Id, out var node) || !EquivalentDerived(assertion.Property, node[assertion.Property], assertion.Value))
                         throw new NotSupportedException($"Read-only source property {assertion.Id}.{assertion.Property} was not regenerated by this transaction.");
                 }
                 foreach (var change in patch.Changes)
@@ -136,18 +208,38 @@ public sealed partial class ShadowSession
                         try { rollback.Add(plan.PrepareRollback()); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                     foreach (var plan in rollback.AsEnumerable().Reverse())
                         try { plan.RemoveOld(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
-                    foreach (var plan in rollback)
+                    foreach (var defaults in insertDefaults.Reverse())
+                        try { defaults.Rollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    try { attributeIdentities.Rollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    foreach (var plan in rollback.Where(plan => plan.AttachmentOrder < 7))
+                        try { plan.AddNew(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    foreach (var plan in hatchSources)
+                        try { plan.Rollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    foreach (var plan in rollback.Where(plan => plan.AttachmentOrder >= 7))
                         try { plan.AddNew(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                 }
-                for (var index = attempted - 1; index >= 0; index--)
-                    try { writes[index].Accessor.Set(writes[index].Source, writes[index].Before); }
+                else
+                {
+                    foreach (var defaults in insertDefaults.Reverse())
+                        try { defaults.Rollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    try { attributeIdentities.Rollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                }
+                for (var index = appliedWrites.Count - 1; index >= 0; index--)
+                    try { appliedWrites[index].Accessor.Set(appliedWrites[index].Source, appliedWrites[index].Before); }
                     catch (Exception e) { failures.Add(e.GetBaseException()); }
                 for (var index = attemptedMethods - 1; index >= 0; index--)
                     try { methods[index].Rollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                 try
                 {
-                    if (!ReferenceEquals(capture.Capture(document, before), before))
-                        failures.Add(new InvalidOperationException("Structural rollback did not restore the complete public graph."));
+                    var restored = capture.Capture(document, before);
+                    if (!ReferenceEquals(restored, before))
+                    {
+                        var differences = ShadowGraphPatch.Between(before, restored).Changes.Take(8).Select(change =>
+                            $"{change.Id} ({(change.After ?? change.Before)!.Type}): " + (change.Before is null ? "added" : change.After is null ? "removed" :
+                                string.Join(", ", change.Before.Properties.Keys.Union(change.After.Properties.Keys)
+                                    .Where(name => !ShadowValue.Equivalent(change.Before[name], change.After[name])))));
+                        failures.Add(new InvalidOperationException("Structural rollback did not restore the complete public graph. " + string.Join("; ", differences)));
+                    }
                 }
                 catch (Exception e) { failures.Add(e.GetBaseException()); }
                 if (failures.Count > 1)
@@ -187,12 +279,34 @@ public sealed partial class ShadowSession
                             bindings[id] = owned; capture.Bind(id, owned); return owned;
                         }
                     }
-                    source = ObjectFactories.Create(node, resolver!);
+                    // Captured INSERTs expose an owned AttributeCollection reference;
+                    // authored INSERTs may instead supply the sequence inline. Constructor
+                    // arguments must use the proposed members before binding read-only
+                    // owned records such as SEQEND. Resolving the container itself here
+                    // would recurse through its not-yet-constructed insertion owner.
+                    var constructorNode = node;
+                    if (node.TypeName == "netDxf.Entities.Insert" && node["Attributes"] is ShadowValue.Reference attributes
+                        && target.Objects[attributes.Id]["$items"] is ShadowValue.Sequence members)
+                        constructorNode = node with { Properties = node.Properties.SetItem("Attributes", members) };
+                    source = ObjectFactories.Create(constructorNode, resolver!, out var initializeInsertAttributes);
+                    if (initializeInsertAttributes) implicitInserts.Add((id, (netDxf.Entities.Insert)source));
                     bindings[id] = source; capture.Bind(id, source); return source;
                 }
                 finally { constructing.Remove(id); }
             }
         }
+    }
+
+    private static bool EquivalentDerived(string property, ShadowValue actual, ShadowValue expected)
+    {
+        // Managed reactor order follows callback execution, not drawing order.
+        // Preserve every relationship and its multiplicity; persistent stored
+        // reactors continue to use the ordinary exact sequence contract.
+        if (property == "Reactors" && actual is ShadowValue.Sequence a && expected is ShadowValue.Sequence b)
+            return a.Items.Length == b.Items.Length && a.Items.All(v => v is ShadowValue.Reference) && b.Items.All(v => v is ShadowValue.Reference) &&
+                a.Items.Cast<ShadowValue.Reference>().Select(v => v.Id.Value).Order(StringComparer.Ordinal)
+                    .SequenceEqual(b.Items.Cast<ShadowValue.Reference>().Select(v => v.Id.Value).Order(StringComparer.Ordinal));
+        return ShadowValue.Equivalent(actual, expected);
     }
 
     /// <summary>
@@ -214,6 +328,8 @@ public sealed partial class ShadowSession
             foreach (var (name, value) in parent.Properties)
             {
                 if (value is not ShadowValue.Reference reference || !additions.ContainsKey(reference.Id)) continue;
+                // ATTRIB.Definition is a shared semantic dependency, not an owned payload.
+                if (parent.TypeName == "netDxf.Entities.Attribute" && name == "Definition") continue;
                 var accessor = SourceAccessors.Find(type, name);
                 if (accessor is not { CanWrite: false }) continue;
                 if (!result.TryGetValue(reference.Id, out var candidates))

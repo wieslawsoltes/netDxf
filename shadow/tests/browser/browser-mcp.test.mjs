@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MessageChannel } from 'node:worker_threads';
-import { BrowserMcpBridge, MessagePortMcpTransport } from '../../samples/netDxf.Shadow.Studio/wwwroot/agents/browser-mcp.mjs';
+import { BrowserMcpBridge, MessagePortMcpTransport } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/agents/browser-mcp.mjs';
 
 const catalog = [
   { name: 'shadow_state', description: 'Read the drawing', inputSchema: { type: 'object', properties: {} }, annotations: { readOnlyHint: true } },

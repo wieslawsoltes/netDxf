@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -5,10 +6,19 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using netDxf;
 using netDxf.Entities;
 using netDxf.Shadow;
 using netDxf.Shadow.Agents;
+using netDxf.Shadow.Agents.Evaluation;
+using netDxf.Shadow.Health;
+using netDxf.Shadow.Modules;
+using netDxf.Shadow.Symbols;
+using netDxf.Shadow.Workflows;
 using netDxf.Shadow.Mcp;
 using netDxf.Shadow.Dimensions;
 using netDxf.Shadow.Drafting;
@@ -20,6 +30,7 @@ using netDxf.Shadow.NetDxf;
 using netDxf.Shadow.Rendering;
 using netDxf.Shadow.Rendering.Shx;
 using netDxf.Shadow.Rendering.SkiaSharp;
+using netDxf.Shadow.Studio;
 using Viewport = netDxf.Shadow.Rendering.Viewport;
 
 internal static class Program
@@ -39,7 +50,11 @@ internal static class Program
                 ("native-text-raster", NativeRendering),
                 ("dwg-exchange", Dwg),
                 ("mcp-tools", Mcp),
-                ("agent-workspace", Agents)
+                ("agent-workspace", Agents),
+                ("domain-symbols-modules", DomainModules),
+                ("drawing-health-preview", HealthPreview),
+                ("workflow-replay", Workflows),
+                ("agent-evaluation", Evaluation)
             ];
             foreach (var scenario in scenarios)
             {
@@ -51,7 +66,18 @@ internal static class Program
                 typeof(DxfDocument), typeof(ShadowSnapshot), typeof(ShadowSession), typeof(CadSceneBuilder),
                 typeof(RenderCompiler), typeof(TopologyBuilder), typeof(EditorSession), typeof(DimensionEntityProjector),
                 typeof(DraftingPlanner), typeof(ShxFontReader), typeof(SkiaRenderBackend), typeof(DrawingExchange),
-                typeof(McpToolRegistry), typeof(AgentSession)
+                typeof(McpToolRegistry), typeof(AgentSession),
+                typeof(netDxf.Shadow.Samples.StudioSamples), typeof(netDxf.Shadow.Studio.Studio),
+                typeof(netDxf.Shadow.Studio.StudioAgentController), typeof(netDxf.Shadow.Studio.StudioHttp),
+                typeof(netDxf.Shadow.Studio.Browser.BrowserRuntime),
+                typeof(netDxf.Shadow.AgentHost.AgentHostApplication), typeof(netDxf.Shadow.Studio.StudioWebAssets),
+                typeof(netDxf.Shadow.Agents.Codex.CodexAppServerClient), typeof(netDxf.Shadow.Agents.Acp.AcpClient),
+                typeof(netDxf.Shadow.Markdown.MarkdownAssets),
+                typeof(netDxf.Shadow.Health.DrawingHealth), typeof(netDxf.Shadow.Workflows.WorkflowRunner),
+                typeof(netDxf.Shadow.Modules.ICadModule), typeof(netDxf.Shadow.Symbols.SymbolCatalog),
+                typeof(netDxf.Shadow.Disciplines.DomainCadModule), typeof(netDxf.Shadow.Pid.PidModule),
+                typeof(netDxf.Shadow.Piping.PipingModule), typeof(netDxf.Shadow.Electrical.ElectricalModule),
+                typeof(netDxf.Shadow.Agents.Evaluation.EvaluationRunner)
             ];
             var assemblies = entryPoints.Select(type =>
             {
@@ -68,7 +94,7 @@ internal static class Program
                     informational_version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
                 };
             }).ToArray();
-            Require(assemblies.Select(value => value.id).Distinct().Count() == 14, "Missing package assembly.");
+            Require(assemblies.Select(value => value.id).Distinct().Count() == entryPoints.Length, "Missing package assembly.");
             var receipt = new
             {
                 schema = 1, passed = true,
@@ -130,6 +156,168 @@ internal static class Program
             "Installed persistent run contracts or Plan mode enforcement are unavailable.");
         var checkpoint = agent.Export(); agent.Import(checkpoint);
         Require(agent.Workspace.Read("src/example.cs").Content == "public class Example { }", "Installed agent checkpoint lost the source file.");
+        ExtractedStudio();
+    }
+    private static void ExtractedStudio()
+    {
+        Require(netDxf.Shadow.Samples.ProcessDiagramFactory.Create().Entities.All.Any(),
+            "Installed sample factories did not construct a drawing independently of the executable sample.");
+        using var studio = new netDxf.Shadow.Studio.Studio(demo: false);
+        using var documents = new StudioDocumentHub(studio);
+        var controller = new StudioAgentController(id => documents.Use(id, drawing => drawing.CreateMcpRegistry()));
+        try
+        {
+            Require(controller.Catalog().Any(tool => tool.Name == "shadow_create_entities") &&
+                controller.Catalog().Any(tool => tool.Name == "graph_summary"), "Extracted Studio controller omitted shared drawing/graph tools.");
+            var result = controller.Call("shadow_state", McpJson.EmptyObject).GetAwaiter().GetResult();
+            Require(!result.IsError, "Extracted Studio controller could not inspect its document without provider credentials.");
+            var poll = JsonSerializer.SerializeToElement(controller.Poll(0), McpJson.Options);
+            Require(poll.GetProperty("usage").GetProperty("inferences").GetInt32() == 0,
+                "Extracted Studio polling omitted harness usage.");
+        }
+        finally { controller.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+
+        var reply = netDxf.Shadow.Studio.Browser.BrowserReply.Value(new { installed = true });
+        Require(reply.Status == 200 && reply.Bytes is { Length: > 0 } &&
+            JsonDocument.Parse(reply.Bytes).RootElement.GetProperty("installed").GetBoolean(),
+            "Installed browser transport could not serialize a public response contract.");
+        Require(StudioWebAssets.Shell == "studio-shell.html" && StudioWebAssets.Diagnostics == "diagnostics-shell.html",
+            "Installed static asset entry points changed unexpectedly.");
+
+        var builder = WebApplication.CreateSlimBuilder();
+        builder.Logging.ClearProviders();
+        builder.Services.AddSingleton(studio); builder.Services.AddSingleton(documents);
+        var app = builder.Build();
+        try
+        {
+            app.MapStudioLegacy(); app.MapStudioWorkspaces(); app.MapCadWorkspace(); app.MapStudioAgents();
+            var patterns = ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints)
+                .OfType<RouteEndpoint>().Select(endpoint => endpoint.RoutePattern.RawText).ToHashSet();
+            Require(patterns.Contains("/api/agent/{action}") && patterns.Contains("/api/cad/{id}/command") && patterns.Contains("/api/branches"),
+                "Installed hosting library failed to register public routes without sample-source links.");
+        }
+        finally { app.StopAsync().GetAwaiter().GetResult(); app.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+
+        var options = new netDxf.Shadow.AgentHost.AgentHostOptions(5091, ["https://fixture.example"],
+            "package-smoke-bridge-fixture-32-bytes", Path.Combine(Path.GetTempPath(), "package-smoke-unused-state.json"));
+        var rejected = false;
+        try { _ = new netDxf.Shadow.AgentHost.CompanionWorkspace(options); }
+        catch (ArgumentException) { rejected = true; }
+        Require(options.ValidateToken("package-smoke-bridge-fixture-32-bytes") && rejected,
+            "Installed companion API did not preserve explicit workspace grants.");
+    }
+    private static void DomainModules()
+    {
+        var registry = new CadModuleRegistry([new netDxf.Shadow.Pid.PidModule(), new netDxf.Shadow.Piping.PipingModule(), new netDxf.Shadow.Electrical.ElectricalModule()]);
+        foreach (var state in registry.States)
+        {
+            var id = state.Descriptor.Id; var symbol = registry.Catalog(id).Items[0];
+            var document = new DxfDocument(); var source = new ShadowSession(document); var editor = new EditorSession(source);
+            var plan = registry.Plan(id, source.Current, new("place", Points: [new Vec3(25, 10)],
+                SymbolId: symbol.SymbolId, SymbolVersion: symbol.Version,
+                Properties: ImmutableDictionary<string, string>.Empty.Add("tag", "PKG-101")));
+            Require(!document.Entities.All.Any(), "Module planning mutated the native drawing.");
+            plan.Execute(editor);
+            var insert = document.Entities.Inserts.Single(); var metadata = DomainMetadata.Read(insert);
+            Require(metadata?.Module == id && metadata.Tag == "PKG-101" && metadata.SymbolVersion == symbol.Version &&
+                insert.Attributes.AttributeWithTag("TAG").Value == "PKG-101" &&
+                registry.Analyze(id, source.Current).Records.Single().Ports.Length == symbol.Ports.Length,
+                "Installed discipline lost attributed block identity or explicit ports.");
+            editor.Undo(); Require(!document.Entities.Inserts.Any(), "Installed symbol transaction did not undo.");
+            editor.Redo(); Require(document.Entities.Inserts.Count() == 1, "Installed symbol transaction did not redo.");
+            // Native save performs writer housekeeping; finish session edits before testing transport bytes.
+            using var stream = new MemoryStream(); Require(document.Save(stream, true), "Installed symbol DXF save failed."); stream.Position = 0;
+            Require(DomainMetadata.Read(DxfDocument.Load(stream).Entities.Inserts.Single())?.Key == metadata!.Key,
+                "Native DXF round trip lost stable domain identity.");
+            registry.SetEnabled(id, false); var refused = false;
+            try { registry.Catalog(id); } catch (InvalidOperationException) { refused = true; }
+            Require(refused && document.Entities.Inserts.Count() == 1, "Disabling a module did not isolate capabilities from stored data.");
+        }
+        var demo = netDxf.Shadow.Samples.ProcessDiagramFactory.Create();
+        var librarySource = new ShadowSession(demo).Current;
+        var libraryBlock = librarySource.Document["Blocks"].Items.First(block => !block["Name"].Text.StartsWith('*')).Id!.Value;
+        var exportedLibrary = DrawingBlockLibrary.Read(DrawingBlockLibrary.Export(librarySource, libraryBlock));
+        var importedDrawing = new DxfDocument(); var importedSource = new ShadowSession(importedDrawing); var importedEditor = new EditorSession(importedSource);
+        var entry = exportedLibrary.Entries.First(item => !item.ModelSpace);
+        exportedLibrary.Plan(importedSource.Current, entry.Name, "PackageLibrary").Edit.Execute(importedEditor);
+        Require(importedDrawing.Blocks.Contains("PackageLibrary"), "Installed drawing library import failed.");
+        importedEditor.Undo(); importedEditor.Redo();
+        Require(importedDrawing.Blocks.Contains("PackageLibrary"), "Installed drawing library history failed.");
+        var report = new netDxf.Shadow.Pid.PidModule().Analyze(new ShadowSession(demo).Current);
+        Require(report.Complete && report.Records.Length == 26 && report.Issues.IsEmpty,
+            "Installed P&ID sample lost its explicit process network.");
+    }
+    private static void HealthPreview()
+    {
+        var fixture = Fixture(); fixture.Document.Entities.Add(new Line(fixture.Line.StartPoint, fixture.Line.EndPoint));
+        var before = fixture.Session.Refresh(); var report = DrawingHealth.Analyze(before);
+        Require(report.Complete && report.Issues.Any(issue => issue.Code == "geometry.duplicate") &&
+                ReferenceEquals(fixture.Session.Current, before), "Installed health analysis omitted a duplicate or changed the source.");
+        Require(!DrawingHealth.Analyze(before, new(MaximumWork: 1)).Complete, "Health work budget did not mark its report incomplete.");
+        var editor = new EditorSession(fixture.Session);
+        var plan = new DraftingPlanner().Plan(before, new("LINE", Points: [new Vec3(0, 5), new Vec3(10, 5)]));
+        var preview = editor.Preview("Package line preview", plan.Patch);
+        Require(fixture.Document.Entities.Lines.Count() == 2 && editor.State.UndoCount == 0 &&
+            preview.Proposed.DrawingEntities().Count() == 3 && preview.Summary.Added > 0,
+            "Installed preview was not detached from native state/history.");
+        editor.ApplyPreview(preview); Require(fixture.Document.Entities.Lines.Count() == 3 && editor.State.UndoCount == 1, "Preview apply did not form one native transaction.");
+        editor.Undo(); Require(fixture.Document.Entities.Lines.Count() == 2, "Preview apply did not undo.");
+    }
+    private static void Workflows()
+    {
+        using var studio = new Studio(demo: false);
+        studio.CadWorkflowStart(new(studio.CadRevision, "Installed workflow"));
+        studio.CadCommand(new(studio.CadRevision, new("LINE", Points: [new Vec3(0, 0), new Vec3(20, 5)])));
+        studio.CadWorkflowStop(new(studio.CadRevision));
+        var before = JsonSerializer.Serialize(studio.State(), StudioJson.CreateOptions()); var scenario = WorkflowJson.Read(WorkflowJson.Write(studio.CadWorkflowExport()));
+        Require(scenario.Steps.Length == 1 && scenario.Steps[0].Operation == "command", "Installed workflow did not record a real CAD command.");
+        var driver = new StudioWorkflowDriver();
+        try
+        {
+            var report = WorkflowRunner.RunAsync(scenario, driver).GetAwaiter().GetResult();
+            Require(report.Passed && report.Complete && report.Steps.Single().Passed && JsonSerializer.Serialize(studio.State(), StudioJson.CreateOptions()) == before,
+                "Installed workflow replay failed or mutated its recording document.");
+        }
+        finally { driver.DisposeAsync().GetAwaiter().GetResult(); }
+        var rejectedDriver = new StudioWorkflowDriver();
+        try
+        {
+            var rejected = WorkflowRunner.RunAsync(scenario with { Baseline = scenario.Baseline with { Sha256 = "wrong" } }, rejectedDriver).GetAwaiter().GetResult();
+            Require(!rejected.Passed && !rejected.Complete && rejected.Steps.IsEmpty, "Installed workflow accepted a corrupted baseline.");
+        }
+        finally { rejectedDriver.DisposeAsync().GetAwaiter().GetResult(); }
+    }
+    private static void Evaluation()
+    {
+        EvaluationCases.SelfTest();
+        var fixture = EvaluationFixture.Freeze(EvaluationCases.All.Single(c => c.Id == "edit"));
+        Require(new EvaluationFixture(fixture.Scenario, fixture.ExportSeed()).Fingerprint == fixture.Fingerprint,
+            "Installed evaluation fixture did not preserve its frozen identity.");
+        var runner = new EvaluationRunner();
+        var report = runner.RunAsync(fixture, new PackageEvaluationTarget()).GetAwaiter().GetResult();
+        Require(report.Passed && report.ToolCalls == 1 && report.ToolErrors == 0 && report.UndoTransactions == 1 &&
+            report.Telemetry.InputTokens is null && fixture.CreateDrawing().Entities.Circles.Count(c => c.Radius == 1.5) == 6,
+            "Installed evaluation did not grade actual tool edits independently from its frozen seed.");
+        var control = runner.RunAsync(fixture, new PackageEvaluationTarget { SkipEdits = true }).GetAwaiter().GetResult();
+        Require(!control.Passed && control.ToolCalls == 0, "Installed evaluation accepted an unchanged drawing as task completion.");
+    }
+    private sealed class PackageEvaluationTarget : IAgentEvaluationTarget
+    {
+        internal bool SkipEdits { get; init; }
+        public EvaluationTarget Target => new("package-fixture", "fixture", "local", "explicit-fixture", "not-applicable");
+        public async Task<EvaluationExecution> RunAsync(EvaluationContext context, CancellationToken cancellationToken = default)
+        {
+            if (!SkipEdits)
+            {
+                var snapshot = context.Editor.Snapshot;
+                var edits = snapshot.DrawingEntities().Where(entity => entity.Type == "Circle" && entity["Layer"]["Name"].Text == "Target")
+                    .SelectMany(entity => new object[] { new { id = entity.Id!.Value.Value, path = "Radius", value = 3 },
+                        new { id = entity.Id!.Value.Value, path = "Center/Y", value = 15 } }).ToArray();
+                var response = await context.Tools.ExecuteAsync("shadow_edit", McpJson.Element(new { revision = snapshot.Revision, edits }), cancellationToken);
+                Require(!response.IsError, "Installed evaluation tool edit failed: " + response.Text);
+            }
+            return new("completed");
+        }
     }
     private static void Require(bool condition, string message)
     {
@@ -165,6 +353,10 @@ internal static class Program
         Require(geometry.Occurrences.Length == 2 && topology.Edges.Length == 4 && topology.Nodes.Length == 5,
             "Crossing geometry/topology failed.");
         Require(topology.Junctions.Single().Edges.Length == 4, "Missing topology junction.");
+        var subset = new RenderCompiler().Compile(fixture.Session.Current,
+            new() { RootEntities = [Id(fixture.Line)] });
+        Require(subset.Items.Length == 1 && subset.Items[0].Entity == Id(fixture.Line),
+            "Installed renderer did not isolate the requested native root.");
     }
 
     private static void Editing()
@@ -180,6 +372,37 @@ internal static class Program
         Require(editor.Snapshot.DrawingEntities().Count() == 1, "Drafting undo failed.");
         editor.Redo();
         Require(editor.Snapshot.DrawingEntities().Count() == 2, "Drafting redo failed.");
+
+        var document = new DxfDocument(netDxf.Header.DxfVersion.AutoCad2018);
+        var source = new ShadowSession(document); var nativeEditor = new EditorSession(source);
+        var owner = source.Current.Layout()["AssociatedBlock"].Id!.Value;
+        var definitionPlan = DraftingAttributeDefinitions.Plan(source.Current, owner,
+            new(Add: [new("TAG", Value: "Cooling\nwater", Position: new(5, 10), Multiline: true)]));
+        var definitionId = definitionPlan.Created.Single();
+        Require(new CadSceneBuilder().Build(definitionPlan.Patch.Apply(source.Current)).Occurrences.Single().Geometry.Text!.Content == "TAG",
+            "Installed standalone attribute preview did not render its tag.");
+        definitionPlan.Execute(nativeEditor);
+        var definition = document.Layouts["Model"].AssociatedBlock.AttributeDefinitions["TAG"];
+        var grip = DraftingGrips.Read(source.Current, [definitionId]).Single();
+        DraftingGrips.Move(source.Current, definitionId, grip.Id, new(15, 30)).Execute(nativeEditor);
+        Require(definition.Position == new Vector3(15, 30, 0) && definition.GetMText().Position == definition.Position,
+            "Installed attribute grip lost an independent text frame.");
+        nativeEditor.Undo(); nativeEditor.Redo();
+        Require(ReferenceEquals(document.Layouts["Model"].AssociatedBlock.AttributeDefinitions["TAG"], definition) &&
+            definition.GetMText().Value == "Cooling\\Pwater", "Installed attribute history lost identity or content.");
+
+        var block = new netDxf.Blocks.Block("Preview");
+        block.Entities.Add(new Line(Vector2.Zero, new Vector2(10, 0)));
+        block.AttributeDefinitions.Add(new("TAG") { Value = "P-101", Position = new(0, 2, 0), Height = 1 });
+        document.Blocks.Add(block);
+        using var stream = new MemoryStream(); Require(document.Save(stream), "Installed preview fixture did not save."); stream.Position = 0;
+        using var studio = new Studio(false); studio.Load(stream);
+        var before = JsonSerializer.Serialize(studio.CadState(), StudioJson.CreateOptions());
+        var preview = studio.CadInsertPreview(new(studio.CadRevision,
+            new(new("INSERT", [Vec3.Zero], Reference: Id(block)))));
+        Require(preview.Items == 2 && preview.Svg.Contains("P-101") &&
+            JsonSerializer.Serialize(studio.CadState(), StudioJson.CreateOptions()) == before,
+            "Installed transient insertion preview lost attributes or changed the drawing.");
     }
 
     private static void Dimensions()

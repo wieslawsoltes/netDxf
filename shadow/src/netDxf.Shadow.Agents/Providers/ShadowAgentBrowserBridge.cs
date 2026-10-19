@@ -21,7 +21,8 @@ public static partial class ShadowAgentProviders
         _ = GetEndpoint(options.Endpoint); // Preserve explicitly configured HTTPS/loopback SDK endpoints.
         if (options.Provider.Trim().ToLowerInvariant() is not ("openai" or "anthropic" or "google" or "gemini"))
             throw new ArgumentException("The API-key companion bridge supports OpenAI, Anthropic and Google; use the separate ChatGPT sign-in bridge for subscriptions.", nameof(options));
-        return new CompanionChatClient(options, new Uri(address.AbsoluteUri.TrimEnd('/') + "/providers/stream"), token, httpClient);
+        return new CompanionChatClient(options with { PromptCacheKey = options.PromptCacheKey ?? "shadow-" + Guid.NewGuid().ToString("N") },
+            new Uri(address.AbsoluteUri.TrimEnd('/') + "/providers/stream"), token, httpClient);
     }
 
     private sealed class CompanionChatClient(ShadowAgentProviderOptions configuration, Uri endpoint, string bridgeToken, HttpClient? supplied) : IChatClient
@@ -96,6 +97,8 @@ public sealed class ShadowAgentBridgeRequest
     public string Model { get; init; } = "";
     public string ApiKey { get; init; } = "";
     public string? Endpoint { get; init; }
+    public bool OptimizePromptCaching { get; init; } = true;
+    public string? PromptCacheKey { get; init; }
     public IReadOnlyList<ChatMessage> Messages { get; init; } = [];
     public ChatOptions Options { get; init; } = new();
     public IReadOnlyList<ShadowAgentBridgeTool> Tools { get; init; } = [];
@@ -114,6 +117,7 @@ public sealed class ShadowAgentBridgeRequest
         {
             Provider = configuration.Provider.Trim().ToLowerInvariant(), Model = copied.ModelId ?? configuration.Model,
             ApiKey = configuration.ApiKey, Endpoint = configuration.Endpoint, Messages = messages.ToArray(), Options = copied, Tools = tools,
+            OptimizePromptCaching = configuration.OptimizePromptCaching, PromptCacheKey = configuration.PromptCacheKey,
         };
         request.Validate();
         return request;
@@ -125,6 +129,8 @@ public sealed class ShadowAgentBridgeRequest
             || Model is null || Model.Length > 256 || Options is null || Messages is null || Messages.Count is < 1 or > 20000
             || Tools is null || Tools.Count > 512)
             throw new ArgumentException("Invalid provider, credential, model, message or tool budget in the companion request.");
+        if (PromptCacheKey is { } key && (key.Length is < 1 or > 64 || key.Any(char.IsControl)))
+            throw new ArgumentException("A prompt cache key requires 1–64 non-control characters.");
         if (Options.RawRepresentationFactory is not null || Options.AllowBackgroundResponses == true || Options.ContinuationToken is not null)
             throw new ArgumentException("The companion accepts stateless portable inference options.");
         var names = new HashSet<string>(StringComparer.Ordinal);
@@ -146,6 +152,7 @@ public sealed class ShadowAgentBridgeRequest
 
     private sealed class BridgeFunction(ShadowAgentBridgeTool tool) : AIFunctionDeclaration
     {
+        public override IReadOnlyDictionary<string, object?> AdditionalProperties { get; } = new Dictionary<string, object?> { ["strict"] = false };
         public override string Name => tool.Name;
         public override string Description => tool.Description ?? "";
         public override JsonElement JsonSchema => tool.InputSchema;

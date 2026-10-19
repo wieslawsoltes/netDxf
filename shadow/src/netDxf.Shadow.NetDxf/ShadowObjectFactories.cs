@@ -25,8 +25,9 @@ public sealed class ShadowObjectFactories
         lock (gate) factories[typeof(T)] = (node, resolver) => factory(node, resolver);
     }
 
-    internal object Create(ShadowObject node, IShadowObjectResolver resolver)
+    internal object Create(ShadowObject node, IShadowObjectResolver resolver, out bool initializeInsertAttributes)
     {
+        initializeInsertAttributes = false;
         var type = typeof(DxfDocument).Assembly.GetType(node.TypeName, throwOnError: false, ignoreCase: false)
             ?? throw new NotSupportedException($"Unknown netDxf data-model type {node.TypeName}.");
         Func<ShadowObject, IShadowObjectResolver, object>? factory;
@@ -53,6 +54,28 @@ public sealed class ShadowObjectFactories
                 return Transparency.FromAlphaValue((int)resolver.Convert(node["StoredAlphaValue"], typeof(int))!);
             if (node["Value"] is ShadowValue.Atom)
                 return Transparency.FromCadIndex((short)resolver.Convert(node["Value"], typeof(short))!);
+        }
+        if (type == typeof(XData) && node["ApplicationRegistry"] is ShadowValue.Reference registry)
+            return new XData((netDxf.Tables.ApplicationRegistry)resolver.Resolve(registry.Id));
+        if (type == typeof(netDxf.Blocks.Block) && node["Name"] is ShadowValue.Atom blockName)
+        {
+            if (node["IsXRef"] is ShadowValue.Atom xref && bool.TryParse(xref.Text, out var external) && external)
+            {
+                var flags = (netDxf.Blocks.BlockTypeFlags)resolver.Convert(node["Flags"], typeof(netDxf.Blocks.BlockTypeFlags))!;
+                return new netDxf.Blocks.Block(blockName.Text, (string)resolver.Convert(node["XrefFile"], typeof(string))!,
+                    (flags & netDxf.Blocks.BlockTypeFlags.XRefOverlay) != 0);
+            }
+            if (blockName.Text.StartsWith('*')) return netDxf.Blocks.Block.CreateAnonymous(blockName.Text);
+        }
+        if (type == typeof(netDxf.Entities.Attribute) && node["Definition"] is ShadowValue.Reference attributeDefinition)
+        {
+            var attribute = new netDxf.Entities.Attribute((netDxf.Entities.AttributeDefinition)resolver.Resolve(attributeDefinition.Id));
+            // A retained definition may be renamed later in the same transaction.
+            // Construct the new instance with its explicit proposed tag; the identity
+            // phase binds the actual definition after the prepared rename is applied.
+            if (node["Tag"] is ShadowValue.Atom tag && !string.Equals(tag.Text, attribute.Tag, StringComparison.Ordinal))
+                attribute.PrepareDefinitionBinding(tag.Text, null).Apply();
+            return attribute;
         }
         if (type == typeof(netDxf.Objects.DxfSortOrderEntry) && node["Target"] is ShadowValue.Reference target)
             return new netDxf.Objects.DxfSortOrderEntry((DxfObject)resolver.Resolve(target.Id),
@@ -99,8 +122,42 @@ public sealed class ShadowObjectFactories
                 IsClosed = node["IsClosed"] is ShadowValue.Atom closed && bool.TryParse(closed.Text, out var flag) && flag
             };
         if (type == typeof(netDxf.Entities.HatchBoundaryPath) && node["Edges"] is ShadowValue.Sequence)
-            return new netDxf.Entities.HatchBoundaryPath(
-                (netDxf.Entities.HatchBoundaryPath.Edge[])resolver.Convert(node["Edges"], typeof(netDxf.Entities.HatchBoundaryPath.Edge[]))!);
+        {
+            var edges = (netDxf.Entities.HatchBoundaryPath.Edge[])resolver.Convert(node["Edges"], typeof(netDxf.Entities.HatchBoundaryPath.Edge[]))!;
+            // Authored paths omit the storage flags. Let the native constructor
+            // derive the polyline representation instead of assuming edge records.
+            var pathType = node["PathType"] is ShadowValue.NullValue
+                ? new netDxf.Entities.HatchBoundaryPath(edges).PathType
+                : (netDxf.Entities.HatchBoundaryPathTypeFlags)resolver.Convert(node["PathType"], typeof(netDxf.Entities.HatchBoundaryPathTypeFlags))!;
+            return netDxf.Entities.HatchBoundaryPath.FromStoredEdges(edges, pathType,
+                node["Entities"] is ShadowValue.NullValue ? Array.Empty<netDxf.Entities.EntityObject>()
+                    : (netDxf.Entities.EntityObject[])resolver.Convert(node["Entities"], typeof(netDxf.Entities.EntityObject[]))!);
+        }
+        if (type == typeof(netDxf.Entities.Insert) && node["Block"] is ShadowValue.Reference explicitBlock && node["Attributes"] is ShadowValue.Sequence)
+        {
+            var insert = netDxf.Entities.Insert.CreateWithAttributes((netDxf.Blocks.Block)resolver.Resolve(explicitBlock.Id),
+                Array.Empty<netDxf.Entities.Attribute>());
+            // Stored drawings can contain distinct attributes with equal tags. Exact
+            // graph reconstruction preserves those instances, unlike default authoring.
+            insert.ReplaceAttributes((netDxf.Entities.Attribute[])resolver.Convert(node["Attributes"], typeof(netDxf.Entities.Attribute[]))!);
+            if (node["EndSequenceRecord"] is ShadowValue.Reference) insert.EnsureAttributeSequenceEnd();
+            return insert;
+        }
+        if (type == typeof(netDxf.Entities.Insert) && node["Block"] is ShadowValue.Reference definition && node["Attributes"] is ShadowValue.NullValue)
+        {
+            // Definition edits in this same patch have not reached the live block yet.
+            // The session prepares defaults from the proposed snapshot before mutation,
+            // then adopts them after definition names are updated and before registration.
+            var block = (netDxf.Blocks.Block)resolver.Resolve(definition.Id);
+            var position = node["Position"] is ShadowValue.NullValue ? Vector3.Zero : (Vector3)resolver.Convert(node["Position"], typeof(Vector3))!;
+            var insert = netDxf.Entities.Insert.CreateWithAttributes(block, Array.Empty<netDxf.Entities.Attribute>());
+            insert.Position = position;
+            if (node["Scale"] is not ShadowValue.NullValue) insert.Scale = (Vector3)resolver.Convert(node["Scale"], typeof(Vector3))!;
+            if (node["Rotation"] is not ShadowValue.NullValue) insert.Rotation = (double)resolver.Convert(node["Rotation"], typeof(double))!;
+            if (node["Normal"] is not ShadowValue.NullValue) insert.Normal = (Vector3)resolver.Convert(node["Normal"], typeof(Vector3))!;
+            initializeInsertAttributes = true;
+            return insert;
+        }
         var empty = type.GetConstructor(Type.EmptyTypes);
         if (empty is not null) return empty.Invoke(null);
         // Constructor arguments are matched by their semantic property names. This handles

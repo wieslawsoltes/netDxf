@@ -4,6 +4,7 @@ namespace netDxf.Shadow.Geometry;
 
 public sealed partial class CadSceneBuilder
 {
+    private (ShadowValue Entities, ShadowValue Definitions, ShadowValue Membership)? rootMembership;
     private CadScene BuildCore(ShadowSnapshot snapshot, SceneOptions options, CancellationToken cancellationToken)
     {
         if (options.MaximumDepth < 1 || options.MaximumOccurrences < 1 || !(options.LinetypeScale > 0) || !double.IsFinite(options.LinetypeScale)) throw new ArgumentOutOfRangeException(nameof(options));
@@ -16,13 +17,28 @@ public sealed partial class CadSceneBuilder
         var activeBlocks = new HashSet<ObjectId>();
         var visits = 0;
         if (options.RootBlock is { } activeRoot) activeBlocks.Add(activeRoot);
-        var entities = options.RootBlock is { } blockRoot ? snapshot.Read(blockRoot)["Entities"] :
-            snapshot.Layout(options.Layout)["AssociatedBlock"]["Entities"];
-        var membership = entities.Value is ShadowValue.Sequence ? entities.Value : entities["$items"].Value;
+        var owner = options.RootBlock is { } blockRoot ? snapshot.Read(blockRoot) : snapshot.Layout(options.Layout)["AssociatedBlock"];
+        var entities = owner["Entities"];
+        var definitions = owner["AttributeDefinitions"];
+        var entityMembership = entities.Value is ShadowValue.Sequence ? entities.Value : entities["$items"].Value;
+        var definitionMembership = definitions.Value is ShadowValue.Sequence ? definitions.Value : definitions["$items"].Value;
+        var membership = rootMembership is { } previous && ReferenceEquals(previous.Entities, entityMembership) && ReferenceEquals(previous.Definitions, definitionMembership)
+            ? previous.Membership : new ShadowValue.Sequence([entityMembership, definitionMembership]);
+        rootMembership = (entityMembership, definitionMembership, membership);
+        var roots = entities.Items.Concat(definitions.Items.Select(entry => entry["Value"]));
+        if (!options.RootEntities.IsDefault)
+        {
+            if (options.RootEntities.Length > options.MaximumOccurrences || options.RootEntities.Distinct().Count() != options.RootEntities.Length)
+                throw new ArgumentException("Choose a bounded set of unique display roots.", nameof(options));
+            var members = roots.Select(item => item.Id).ToHashSet();
+            if (options.RootEntities.Any(id => !members.Contains(id)))
+                throw new ArgumentException("Every display root must belong to the displayed block or layout.", nameof(options));
+            roots = options.RootEntities.Select(snapshot.Read);
+        }
         var projectionVersion = ProjectionVersion;
         var rootTransaction = rootCache.Begin(snapshot, options, projectionVersion, membership, IsSnapshotCacheable);
         ShadowReadSet? rootReads = null;
-        foreach (var entity in entities.Items)
+        foreach (var entity in roots)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (entity.Id is not { } rootId) continue;

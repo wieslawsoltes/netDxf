@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Bounded drawing diagnostics for geometry, relationships, resources and topology.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow/netDxf.Shadow.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Geometry/netDxf.Shadow.Geometry.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CadViewport, bindViewportPageLifetime } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/viewport.mjs';
+import { CadViewport, bindViewportPageLifetime } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/viewport.mjs';
 
 const deferred = () => { let resolve; const promise = new Promise(complete => { resolve = complete; }); return { promise, resolve }; };
 const drain = async () => { for (let i = 0; i < 8; i++) await Promise.resolve(); };
@@ -16,6 +16,7 @@ function fixture(t, read = async () => new Blob(['frame'], { type: 'image/png' }
     camera: { x: 0, y: 0, scale: 2 }, size: { w: 80, h: 60 }, dpr: 1,
     canvas: { width: 80, height: 60 }, backend: 'skia', snapshot: null, generation: 0,
     pointers: new Map(), inputVersion: 0, snapGeneration: 0, hooks: { error: error => errors.push(error) }, invalidate() {},
+    insertionPreview: {clear(){}},
     client: { key: 'document:revision:selection', epoch: 0, busy: 0, state: { revision: 0 },
       read: async (...args) => { requests.push(args); return read(...args); } }
   });

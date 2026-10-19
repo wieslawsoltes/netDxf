@@ -62,6 +62,19 @@ jobs:
           dotnet run --project shadow/tests/netDxf.Shadow.AgentProviders.Verification -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
           dotnet run --project shadow/tests/netDxf.Shadow.AgentStudio.Verification -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
           dotnet run --project shadow/samples/netDxf.Shadow.AgentHost/Verification -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+      - name: Verify graph analysis, sample drawings and offline model evaluation
+        shell: bash
+        run: |
+          dotnet run --project shadow/tests/netDxf.Shadow.Samples.Verification -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+          dotnet run --project shadow/tests/netDxf.Shadow.Codex.Verification -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+          dotnet run --project shadow/tests/netDxf.Shadow.Agents.Acp.Verification -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+          dotnet run --project shadow/tests/netDxf.Shadow.ExternalAgents.Verification -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+          dotnet run --project shadow/tests/netDxf.Shadow.Graph.Verification -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+          dotnet run --project shadow/tests/netDxf.Shadow.Modules.Verification -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+          dotnet run --project shadow/tests/netDxf.Shadow.Disciplines.Verification -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+          dotnet run --project shadow/tests/netDxf.Shadow.References.Verification -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+          dotnet run --project shadow/tests/netDxf.Shadow.Agents.Evaluation.Verification -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+          dotnet run --project shadow/tests/netDxf.Shadow.Agents.LiveEvaluation -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591 -- --self-test
       - name: Smoke-test synthetic performance workloads (Linux)
         if: runner.os == 'Linux'
         run: |
@@ -148,7 +161,7 @@ jobs:
         env:
           REQUESTED_VERSION: ${{ inputs.version }}
         run: python tools/ci/pipeline.py metadata --version "$REQUESTED_VERSION"
-      - name: Build all fourteen packages with one version and portable symbols
+      - name: Build all library packages with one version and portable symbols
         env:
           VERSION: ${{ steps.metadata.outputs.version }}
         run: python tools/ci/pipeline.py pack --version "$VERSION"

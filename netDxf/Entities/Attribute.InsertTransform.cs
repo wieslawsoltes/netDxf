@@ -30,6 +30,7 @@ namespace netDxf.Entities
             next.position = definition.Position; next.normal = definition.Normal;
             next.height = definition.Height; next.width = definition.Width; next.widthFactor = definition.WidthFactor;
             next.obliqueAngle = definition.ObliqueAngle; next.rotation = definition.Rotation;
+            next.alignment = definition.Alignment;
             next.isBackward = definition.IsBackward; next.isUpsideDown = definition.IsUpsideDown;
             if(next.TextState?.Content != null && definition.TextState?.Content != null)
                 next.TextState.Content.CopyLayoutFrom(definition.TextState.Content);

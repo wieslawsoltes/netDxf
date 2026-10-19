@@ -1,6 +1,5 @@
 using System.Text;
 using System.Text.Json;
-using Microsoft.AspNetCore.Http;
 using netDxf;
 using netDxf.Blocks;
 using netDxf.Entities;
@@ -46,12 +45,11 @@ internal static class DwgExchangeVerification
         {
             using var studio = new Studio(false); using var hub = new StudioDocumentHub(studio);
             studio.CadCommand(new(studio.CadRevision, new("CIRCLE", [new(0,0)], Value:5)));
-            var state = Json(studio.CadState()).GetProperty("state"); var context = new DefaultHttpContext();
-            context.Request.Headers["X-Shadow-Document"] = state.GetProperty("documentId").GetString();
-            context.Request.Headers["X-Shadow-Workspace"] = state.GetProperty("workspaceId").GetString();
-            context.Request.Headers["X-Shadow-View"] = state.GetProperty("viewVersion").GetInt64().ToString(System.Globalization.CultureInfo.InvariantCulture);
+            var state = Json(studio.CadState()).GetProperty("state");
+            var identity = new StudioRequestIdentity(state.GetProperty("documentId").GetGuid(),
+                state.GetProperty("workspaceId").GetString()!, state.GetProperty("viewVersion").GetInt64());
             var invoked = false; var sentinel = new IOException("Synthetic encoder failure");
-            try { hub.Save("demo",context.Request,studio.CadRevision, _ => { invoked = true; throw sentinel; }); throw new InvalidOperationException("Encoding should fail"); }
+            try { hub.Save("demo",identity,studio.CadRevision, _ => { invoked = true; throw sentinel; }); throw new InvalidOperationException("Encoding should fail"); }
             catch (IOException error) { Require(ReferenceEquals(error,sentinel), "Preserve original encoder exception"); }
             Require(invoked && Json(hub.Documents())[0].GetProperty("dirty").GetBoolean(), "Failed encoding must not mark saved");
             studio.History("undo",studio.CadRevision);
@@ -66,8 +64,9 @@ internal static class DwgExchangeVerification
         Require(Encoding.ASCII.GetString(encoded.Content.AsSpan()[..6])==version && encoded.Encoding==DrawingEncoding.Dwg, "Real DWG signature");
         Require(encoded.OutputVersion == version, "Validation transport must not replace output profile identity");
         var decoded = codec.Convert(encoded.Content.ToArray(),DrawingEncoding.Dwg,DrawingEncoding.Dxf);
-        using var stream = new MemoryStream(decoded.Content.ToArray()); var loaded = DxfDocument.Load(stream)!;
-        Require(loaded is not null && loaded.Entities.All.Count()==4, "Model-space root inventory");
+        using var stream = new MemoryStream(decoded.Content.ToArray());
+        var loaded = DxfDocument.Load(stream) ?? throw new InvalidOperationException("Converted DXF did not load.");
+        Require(loaded.Entities.All.Count()==4, "Model-space root inventory");
         Require(loaded.Layouts.Any(l => l.IsPaperSpace && l.Viewport is not null), "Paper-space metadata viewport survives native transport");
         var line = loaded.Entities.Lines.Single(); Near(line.StartPoint.X,-12.5); Near(line.StartPoint.Y,17.25); Near(line.EndPoint.X,42.5);
         Require(line.Layer.Name=="GEOMETRY", "Layer assignment");

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup><Description>Browser transport, JavaScript interop and in-process Studio runtime.</Description>
+    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+    <BrowserFontDirectory>$(BaseIntermediateOutputPath)studio-fonts/</BrowserFontDirectory>
+    <NotoFontSource>https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac</NotoFontSource>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow.Studio.Core/netDxf.Shadow.Studio.Core.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Studio.Agents/netDxf.Shadow.Studio.Agents.csproj" />
+    <PackageReference Include="Microsoft.JSInterop" Version="8.0.21" />
+  </ItemGroup>
+  <ItemGroup>
+    <BrowserFont Include="NotoSans-Regular.ttf;NotoSans-Bold.ttf;NotoSans-Italic.ttf;NotoSans-BoldItalic.ttf" />
+    <Content Include="@(BrowserFont->'$(BrowserFontDirectory)%(Identity)')" Link="wwwroot/fonts/%(Filename)%(Extension)" />
+    <Content Include="$(BrowserFontDirectory)OFL.txt" Link="wwwroot/fonts/OFL.txt" />
+  </ItemGroup>
+  <!-- Font restoration is build-time only, pinned to an immutable upstream commit.
+       No host system fonts or runtime CDN requests are used by the browser app. -->
+  <Target Name="RestoreStudioBrowserFonts" BeforeTargets="PrepareForBuild">
+    <MakeDir Directories="$(BrowserFontDirectory)" />
+    <DownloadFile SourceUrl="$(NotoFontSource)/hinted/ttf/NotoSans/%(BrowserFont.Identity)"
+                  DestinationFolder="$(BrowserFontDirectory)" DestinationFileName="%(BrowserFont.Identity)"
+                  Condition="!Exists('$(BrowserFontDirectory)%(BrowserFont.Identity)')" />
+    <DownloadFile SourceUrl="$(NotoFontSource)/LICENSE" DestinationFolder="$(BrowserFontDirectory)" DestinationFileName="OFL.txt"
+                  Condition="!Exists('$(BrowserFontDirectory)OFL.txt')" />
+  </Target>
+</Project>

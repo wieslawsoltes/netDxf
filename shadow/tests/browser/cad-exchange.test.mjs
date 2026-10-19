@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { drawingFormat, inspectDrawing, drawingFileName, exchangeCapabilities, saveRequest, maximumDrawingBytes } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/exchange-contracts.mjs';
-import { CadClient } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/client.mjs';
+import { drawingFormat, inspectDrawing, drawingFileName, exchangeCapabilities, saveRequest, maximumDrawingBytes } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/exchange-contracts.mjs';
+import { CadClient } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/client.mjs';
 
 const bytes = text => new TextEncoder().encode(text);
 const capabilities = () => ({provider:'Fixture codec',dwgWriteVersions:['AC1015','AC1032'],defaultDwgVersion:'AC1032'});

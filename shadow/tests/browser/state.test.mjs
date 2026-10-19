@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { StateGate, identityHeaders, sameReceipt, viewKey, presentationKey } from '../../samples/netDxf.Shadow.Studio/wwwroot/studio-state.mjs';
+import { StateGate, identityHeaders, sameReceipt, viewKey, presentationKey } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/studio-state.mjs';
 
 const state = (changeVersion = 0, extra = {}) => ({ serverId: 'server-a', documentId: 'document-a',
   workspaceId: 'live', viewVersion: 0, revision: 0, layout: 'Model', fontRevision: 0, changeVersion, ...extra });

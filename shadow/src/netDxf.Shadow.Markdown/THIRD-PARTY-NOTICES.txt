@@ -1,0 +1,4 @@
+Marked 18.1.1 (MIT), https://github.com/markedjs/marked
+Vendored unchanged from the official npm distribution.
+Package SHA-256: c05b3cff890d35e1208805a01fd0501571d09a81e725de0559b10bdfae90adad
+License: wwwroot/vendor/MARKED-LICENSE.md

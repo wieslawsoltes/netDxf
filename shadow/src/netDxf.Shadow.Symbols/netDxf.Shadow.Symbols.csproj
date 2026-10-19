@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Versioned CAD symbol catalogs, native blocks and persistent domain ports and references.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow.NetDxf/netDxf.Shadow.NetDxf.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Drafting/netDxf.Shadow.Drafting.csproj" />
+  </ItemGroup>
+</Project>

@@ -33,6 +33,20 @@ var source = new ShadowSession(document); var editor = new EditorSession(source)
 var model = ShadowMcpTools.Create(new(() => editor, () => source));
 var circleId = source.Current.EntityIds.Single().Value;
 var editArguments = Args(new { revision = source.Current.Revision, edits = new[] { new { id = circleId, path = "/Radius", value = 9 } } });
+// Visible reasoning and opaque provider signatures consume the same retained stream budget as assistant text.
+foreach (var protectedReasoning in new[] { false, true })
+using (var client = new ScriptedChatClient())
+using (var agent = new AgentSession(client, model, full, ownsClient: false))
+{
+    var oversized = new string('x', 1000001);
+    var reasoning = new TextReasoningContent(protectedReasoning ? null : oversized) { ProtectedData = protectedReasoning ? oversized : null };
+    client.EnqueueResponse(reasoning, new FunctionCallContent("oversized-reasoning", "shadow_edit", editArguments));
+    var before = source.Current;
+    await agent.RunAsync("Inspect then edit the circle.");
+    Assert(agent.Poll().Status == "error" && client.Calls == 1 && ReferenceEquals(before, source.Current),
+        "Oversized reasoning bypassed the response budget or executed its tool batch.");
+    Assert(!agent.Export().Contains(oversized, StringComparison.Ordinal), "Rejected reasoning was retained in the checkpoint.");
+}
 using (var client = new ScriptedChatClient())
 using (var agent = new AgentSession(client, model, full, ownsClient: false))
 {
@@ -286,6 +300,97 @@ Assert(workspace.Read("src/main.cs").Version == version && workspace.List().Coun
 Throws<InvalidOperationException>(() => workspace.Write("src/main.cs", new string('x', 5000), version), "Workspace capacity limit was not enforced.");
 Assert(workspace.Read("src/main.cs").Version == version && workspace.Read("src/main.cs").Content == "class C {}", "Oversized write was not atomic.");
 
+// A completed but output-limited response cannot execute a partial tool batch.
+foreach (var lengthLimited in new[] { true, false })
+{
+    var guarded = new McpToolRegistry();
+    var writes = 0;
+    guarded.Register(new("mutate", "Mutation probe", emptySchema), (_, _) => { writes++; return ValueTask.FromResult(new McpToolResult("done")); });
+    using var client = new ScriptedChatClient();
+    using var agent = new AgentSession(client, guarded, full with { MaxToolCallsPerTurn = 1 }, ownsClient: false);
+    var calls = new AIContent[] { new FunctionCallContent("guarded-1", "mutate", Args(new { })), new FunctionCallContent("guarded-2", "mutate", Args(new { })) };
+    client.Enqueue((_, _, token) => ScriptedChatClient.Response(calls, token, finishReason: lengthLimited ? ChatFinishReason.Length : ChatFinishReason.ToolCalls));
+    if (lengthLimited) client.EnqueueResponse(new TextContent("Stopped the partial batch and verified no changes."));
+    await agent.RunAsync("Make bounded edits.");
+    Assert(agent.Poll().Status == (lengthLimited ? "completed" : "error") && writes == 0, "A truncated or oversized tool batch executed mutations.");
+    Assert(agent.Transcript().SelectMany(message => message.Contents).All(content => content.Kind != "functionCall" || content.Name == "agent_finish"), "Rejected tool batch left orphaned calls in the checkpoint.");
+}
+
+// Read-only context budgeting and guidance match the tools actually advertised.
+var filtered = new McpToolRegistry();
+filtered.Register(new("shadow_state", "Current drawing state", emptySchema, true), (_, _) => ValueTask.FromResult(new McpToolResult("{}")));
+filtered.Register(new("shadow_create_entities", new string('x', 40000), emptySchema), (_, _) => ValueTask.FromResult(new McpToolResult("{}")));
+using (var client = new ScriptedChatClient())
+using (var agent = new AgentSession(client, filtered, full with { PermissionMode = AgentPermissionMode.ReadOnly, ContextWindowTokens = 4096, MaxOutputTokens = 256 }, ownsClient: false))
+{
+    client.EnqueueResponse(new TextContent("Ready."));
+    await agent.RunAsync("Inspect this drawing.");
+    Assert(agent.Poll().Status == "completed", "Hidden mutating tools incorrectly exhausted the read-only context budget.");
+    var instructions = string.Join("\n", client.Inputs.Single().Where(message => message.Role == ChatRole.System).Select(message => message.Text));
+    Assert(instructions.Contains("begin with shadow_state", StringComparison.Ordinal) && !instructions.Contains("shadow_create_entities", StringComparison.Ordinal),
+        "Workflow guidance advertised absent or forbidden editing capabilities.");
+}
+
+// Reused schema declarations and cumulative usage keep caching and UI accounting stable.
+using (var client = new ScriptedChatClient())
+using (var agent = new AgentSession(client, contextTools, full, ownsClient: false))
+{
+    AITool? declaration = null;
+    client.Enqueue((_, options, token) =>
+    {
+        declaration = options!.Tools!.OfType<AIFunctionDeclaration>().Single(t => t.Name == "inspect");
+        return ScriptedChatClient.Response([
+            new UsageContent(new() { InputTokenCount = 11, OutputTokenCount = 4, TotalTokenCount = 15, CachedInputTokenCount = 7,
+                AdditionalCounts = new() { ["CacheCreationInputTokens"] = 2 } }),
+            new FunctionCallContent("usage-inspect", "inspect", Args(new { })),
+        ], token);
+    });
+    client.Enqueue((_, options, token) =>
+    {
+        Assert(ReferenceEquals(declaration, options!.Tools!.OfType<AIFunctionDeclaration>().Single(t => t.Name == "inspect")), "Stable tool declarations were allocated anew between inferences.");
+        return ScriptedChatClient.Response([new UsageContent(new() { InputTokenCount = 6, OutputTokenCount = 3, TotalTokenCount = 9, CachedInputTokenCount = 2 }), new TextContent("Verified.")], token, finish: true);
+    });
+    await agent.RunAsync("Inspect once.");
+    var usage = agent.Poll().Usage!;
+    Assert(usage.Inferences == 2 && usage.InputTokens == 17 && usage.OutputTokens == 7 && usage.TotalTokens == 24 && usage.CachedTokens == 9 && usage.CacheWriteTokens == 2,
+        "Usage totals lost or double-counted inference/cache tokens.");
+    Assert(usage.InferenceMilliseconds >= 0 && usage.FirstTokenMilliseconds >= 0, "Inference timing was not retained.");
+    Assert(agent.Poll().Events.Count(entry => entry.Type == "usage") == 2, "One inference emitted duplicate usage events.");
+    agent.Reset();
+    Assert(agent.Poll().Usage!.Inferences == 0 && agent.Poll().Usage!.InputTokens is null, "Reset displayed old-session usage as current.");
+}
+
+// Typed drawing context must survive persistent modes, steering, receipts and checkpoints.
+var reference = new DrawingObjectReference(Guid.NewGuid(), "live", 0, 0, "fixture-object", "A", "netDxf.Entities.Circle", "Model", "fixture-occurrence");
+var referenceRegistry = new McpToolRegistry(); var referenceReads = 0;
+referenceRegistry.Register(new(DrawingReferences.ValidationTool, "Authoritative fixture validation", McpJson.Parse("""{"type":"object"}"""), true), (_, _) =>
+    ValueTask.FromResult(McpToolResult.FromObject(new DrawingReferenceValidation(new(reference.DocumentId, reference.WorkspaceId, 0, 0), true,
+        [new(reference, "current", reference, "Current fixture")]))));
+referenceRegistry.Register(new("inspect", "Count actual executions", emptySchema, true), (_, _) => { referenceReads++; return ValueTask.FromResult(new McpToolResult("observed")); });
+using (var client = new ScriptedChatClient())
+using (var agent = new AgentSession(client, referenceRegistry, full with { Mode = AgentRunMode.Goal, MaxTurns = 1 }, ownsClient: false))
+{
+    client.EnqueueResponse(new FunctionCallContent("reference-inspect", "inspect", Args(new { })));
+    await agent.RunAsync(new AgentPrompt("Inspect selected object", [reference]));
+    Assert(agent.RunState.Resumable && agent.Poll().Status == "paused", "Typed prompt bypassed the bounded persistent goal state.");
+    var receipt = JsonSerializer.Deserialize<AgentCheckpoint>(agent.Export(), McpJson.Options)!;
+    Assert(receipt.Run?.Mode == AgentRunMode.Goal && receipt.Receipts?.Count == 1 && receipt.Messages.Any(m => m.References?.Count == 1), "Checkpoint lost mode, authoritative receipt or reference metadata.");
+    using var resumedClient = new ScriptedChatClient();
+    using var resumed = new AgentSession(resumedClient, referenceRegistry, full with { Mode = AgentRunMode.Goal, MaxTurns = 1 }, ownsClient: false);
+    resumed.Import(agent.Export());
+    resumedClient.EnqueueResponse(new FunctionCallContent("reference-inspect", "inspect", Args(new { })));
+    await resumed.RunAsync(new AgentPrompt("Also keep this selection", [reference]));
+    Assert(referenceReads == 1 && resumed.Transcript().Count(m => m.References?.Count == 1) == 2, "Steering replayed an existing receipt or discarded typed context.");
+    Assert(resumed.Poll().Usage?.Inferences == 1 && resumed.Poll().Events.Any(e => e.Type == "toolCompleted" && e.Data?.TryGetProperty("cached", out var cached) == true && cached.GetBoolean()),
+        "Historical tool receipts must still retain the new inference usage and an observable cached result.");
+    var steered = JsonSerializer.Deserialize<AgentCheckpoint>(resumed.Export(), McpJson.Options)!;
+    Assert(steered.ActiveTask.Contains("Inspect selected object", StringComparison.Ordinal) && steered.ActiveTask.Contains("Also keep this selection", StringComparison.Ordinal), "Steering replaced the original goal.");
+    resumedClient.EnqueueResponse(new FunctionCallContent("reference-plan", "agent_plan", Args(new { steps = new[] { new { step = "Inspect selected object", status = "completed" } } })));
+    await resumed.ResumeAsync();
+    resumedClient.EnqueueResponse(new TextContent("Verified selected object.")); await resumed.ResumeAsync();
+    Assert(resumed.Poll().Status == "completed" && resumed.RunState.Verification.Count > 0, "Typed goal could not finish through the intrinsic controls.");
+}
+
 checks += await BrowserCodeVerification.RunAsync();
 checks += await AgentRunVerification.RunAsync();
 checks += await AgentReceiptVerification.RunAsync();
@@ -310,7 +415,7 @@ sealed class ScriptedChatClient : IChatClient
         GetStreamingResponseAsync(messages, options, cancellationToken).ToChatResponseAsync(cancellationToken);
     public object? GetService(Type serviceType, object? serviceKey = null) => serviceType == typeof(IChatClient) ? this : null;
     public void Dispose() { }
-    public static async IAsyncEnumerable<ChatResponseUpdate> Response(IList<AIContent> contents, [EnumeratorCancellation] CancellationToken token, bool finish = false)
+    public static async IAsyncEnumerable<ChatResponseUpdate> Response(IList<AIContent> contents, [EnumeratorCancellation] CancellationToken token, bool finish = false, ChatFinishReason? finishReason = null)
     {
         token.ThrowIfCancellationRequested(); await Task.Yield();
         if (finish && !contents.Any(content => content is FunctionCallContent))
@@ -322,7 +427,7 @@ sealed class ScriptedChatClient : IChatClient
         yield return new(ChatRole.Assistant, contents)
         {
             MessageId = Guid.NewGuid().ToString("N"), ResponseId = Guid.NewGuid().ToString("N"),
-            FinishReason = contents.Any(c => c is FunctionCallContent) ? ChatFinishReason.ToolCalls : ChatFinishReason.Stop
+            FinishReason = finishReason ?? (contents.Any(c => c is FunctionCallContent) ? ChatFinishReason.ToolCalls : ChatFinishReason.Stop)
         };
     }
     public static async IAsyncEnumerable<ChatResponseUpdate> Interrupted(FunctionCallContent call, [EnumeratorCancellation] CancellationToken token)

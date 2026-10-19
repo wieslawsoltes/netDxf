@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Reusable ASP.NET Core agent companion, provider relay and MCP hosting.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow.Agents.Codex/netDxf.Shadow.Agents.Codex.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Agents.Acp/netDxf.Shadow.Agents.Acp.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Agents/netDxf.Shadow.Agents.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Mcp/netDxf.Shadow.Mcp.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.2.0" />
+  </ItemGroup>
+</Project>

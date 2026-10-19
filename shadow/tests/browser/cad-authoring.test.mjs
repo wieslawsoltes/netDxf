@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CommandSession } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/core.mjs';
-import { authoringRequest, blockName, islandStyle, parsePat } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/authoring-contracts.mjs';
-import { CadClient } from '../../samples/netDxf.Shadow.Studio/wwwroot/cad/client.mjs';
+import { CommandSession } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/core.mjs';
+import { authoringRequest, blockName, islandStyle, parsePat } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/authoring-contracts.mjs';
+import { CadClient } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/client.mjs';
 const data = { selectedEntities: ['H:1','H:2'], blocks: [{id:'H:99',name:'Part'}] };
 function execute(name, inputs, selected = 2) {
   const session = new CommandSession(name, 'Walls', selected);

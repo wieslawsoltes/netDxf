@@ -347,6 +347,41 @@ or a different branch. Native edits use the existing serialized editor and undo
 history. UI actions also check the currently active drawing before changing it.
 The generic dispatcher does not expose the agent's own credential/lifecycle routes.
 
+## Local Codex and ACP agents
+
+The **Local coding agents** panel connects to a companion whose owner configured
+the executable and workspace at startup. These processes own their inference,
+tools and sign-in; they are separate from the built-in provider agent loop. The
+reusable [Codex client](../src/netDxf.Shadow.Agents.Codex/README.md) and
+[ACP client](../src/netDxf.Shadow.Agents.Acp/README.md) document their supported
+protocol surfaces and explicit limits.
+
+For an active Codex turn, enter follow-up text and choose **Steer active turn**.
+The request carries the observed `expectedTurnId`; a stale or finished turn is
+rejected without starting another. Selected drawing attachments are validated
+against the current document and occurrence before dispatch. Rejected steering
+keeps the draft and attachments, and changing drawings invalidates pending work.
+The control becomes available only after Codex supplies its actual turn ID.
+
+Choose **Compact context** on an idle Codex session to ask the agent to summarize
+its retained context. Studio keeps the transcript visible and waits for the
+compaction item activity and terminal turn notification; the immediate response
+does not mean compaction completed. **Stop** uses the observed compaction turn ID
+when available. Compaction is a request to the configured agent and may invoke
+its model; there is no hidden automatic compaction request from this control.
+These actions follow the [official Codex app-server contract](https://learn.chatgpt.com/docs/app-server)
+and cannot override the companion's workspace, sandbox or approval policy.
+
+ACP exposes its advertised session lifecycle, modes/configuration, permissions
+and streamed updates. It does not receive Codex steering or compaction methods.
+Framework-dependent ACP executables inherit the configured .NET runtime roots
+and roll-forward setting while ambient provider keys remain excluded. Unexpected
+process exit is reported as a transport error, including during initialization.
+
+Local fixture tests cover typed protocol calls, authoritative attachment checks,
+stale steering, parameter restrictions, acknowledgement/completion ordering and
+UI races. They launch no installed coding agent and use no account or API key.
+
 ## Runtime and recovery
 
 The harness consumes streaming `IChatClient` updates, collects a complete provider
@@ -464,7 +499,7 @@ optional native file/process tools. Native tests exercise actual temporary files
 processes, HTTP, WebSocket and official MCP connections. Tests do not make paid
 inference calls or sign in to a real user's ChatGPT account.
 
-The ordinary release pipeline packs all fourteen repository packages and consumes
+The ordinary release pipeline packs all twenty-four repository packages and consumes
 the exact candidate assemblies in an isolated NuGet feed. GitHub Pages runs the
 agent browser verification alongside the existing CAD and layout regressions
 before deploying the application.

@@ -3,5 +3,5 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
-  <ItemGroup><ProjectReference Include="../netDxf.Shadow.AgentHost.csproj" /></ItemGroup>
+  <ItemGroup><ProjectReference Include="../../../src/netDxf.Shadow.Agents.Hosting/netDxf.Shadow.Agents.Hosting.csproj" /></ItemGroup>
 </Project>

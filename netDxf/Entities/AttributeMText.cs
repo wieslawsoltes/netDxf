@@ -12,7 +12,7 @@ namespace netDxf.Entities
     /// <remarks>Use GetMText/SetMText on the host to edit snapshots. This is not a database entity.
     /// Optional fields and both ordered orientation representations are retained. No font measurement,
     /// wrapping, column layout or automatic single-line fallback regeneration is performed.</remarks>
-    public sealed class AttributeMText : ICloneable
+    public sealed partial class AttributeMText : ICloneable
     {
         private readonly Dictionary<short, object> fields = new Dictionary<short, object>();
         private readonly List<short> order = new List<short>();

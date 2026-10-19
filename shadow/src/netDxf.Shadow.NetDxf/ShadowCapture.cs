@@ -226,6 +226,8 @@ internal sealed class ShadowCapture
             return ShadowCaptureValues.Vector(vector3);
         }
         if (value is string text) return ShadowValue.From(text);
+        if (value is AttributeTextData or AttributeMText)
+            return AttributeTextValues.Read(value, (item, offset) => ReadValue(item, depth + offset), options.MaximumCollectionItems);
         if (ReferenceEquals(value, StringComparer.Ordinal)) return new ShadowValue.Atom("System.StringComparer", "Ordinal");
         if (ReferenceEquals(value, StringComparer.OrdinalIgnoreCase)) return new ShadowValue.Atom("System.StringComparer", "OrdinalIgnoreCase");
         if (type.IsEnum || type.IsPrimitive || value is decimal or Guid or DateTime or DateTimeOffset or TimeSpan)

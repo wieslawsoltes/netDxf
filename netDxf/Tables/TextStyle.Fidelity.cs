@@ -115,9 +115,14 @@ namespace netDxf.Tables
             return data.XDataRecord.Count >= 2 && data.XDataRecord[0].Code == XDataCode.String && data.XDataRecord[1].Code == XDataCode.Int32;
         }
 
-        // File names read from DXF are stored independently of the optional font prefix.
-        internal void SetStoredFontFiles(string font, string bigFontFile)
+        /// <summary>Replaces the stored font filenames without modifying extended font data or resolving any resource.</summary>
+        /// <param name="font">The stored primary font filename, including an empty or extensionless value.</param>
+        /// <param name="bigFontFile">The independently stored Big Font filename.</param>
+        /// <remarks>Use the authoring properties for format validation. This fidelity operation preserves unrelated XData and accepts the same strings as FromStoredFontFiles.</remarks>
+        public void SetStoredFontFiles(string font, string bigFontFile)
         {
+            ValidateStoredFontString(font, nameof(font));
+            ValidateStoredFontString(bigFontFile, nameof(bigFontFile));
             this.file = font;
             this.bigFont = bigFontFile;
         }

@@ -67,22 +67,13 @@ public sealed partial class StandardEntityProjector : IEntityProjector
             case "MText":
             case "Attribute":
             case "AttributeDefinition":
-                var multiline = entity.Type == "MText";
-                var axes = basis * Affine3.RotateZ(entity["Rotation"].Number() * Degrees);
-                var x = axes.X * entity["WidthFactor"].Number(1) * (entity["IsBackward"].Boolean() ? -1 : 1);
-                var y = (axes.Y + axes.X * Math.Tan(entity["ObliqueAngle"].Number() * Degrees)) * (entity["IsUpsideDown"].Boolean() ? -1 : 1);
-                var family = entity["Style"]["FontFamilyName"].Text;
-                if (family.Length == 0) family = "sans-serif";
-                var content = entity["Value"].Text;
-                var alignment = entity[multiline ? "AttachmentPoint" : "Alignment"].Text;
-                var text = new CadText(content, entity["Position"].Vector(), x, y, entity["Height"].Number(1), family, alignment, multiline, entity["RectangleWidth"].Number(entity["Width"].Number()))
-                {
-                    LineSpacing = multiline ? new CadLineSpacing(entity["LineSpacingFactor"].Number(1),
-                        entity["LineSpacingStyle"].Text is "Exact" or "Exactly") : null
-                };
-                geometry = new([], Text: text);
-                if (entity["HasMText"].Boolean()) diagnostic = "Embedded multiline attribute metadata is retained; ordinary attribute text is projected.";
-                if (entity["Style"]["FontFile"].Text.EndsWith(".shx", StringComparison.OrdinalIgnoreCase)) diagnostic = "SHX text requires an external font projector; the default backend substitutes a system font.";
+                var source = CadTextProjection.ReadDisplay(entity);
+                geometry = new([], Text: source.Text);
+                var issues = new List<string>();
+                if (source.Style["FontFile"].Text.EndsWith(".shx", StringComparison.OrdinalIgnoreCase)) issues.Add("SHX text requires an external font projector; the default backend substitutes a system font.");
+                if (source.DrawingDirection == 3 || source.DrawingDirection == 5 && source.Style["IsVertical"].Boolean()) issues.Add("Vertical text requires an external vertical-font projector.");
+                if (source.HasBackground) issues.Add("The stored text background is not rendered by this projector.");
+                diagnostic = issues.Count == 0 ? null : string.Join(" ", issues);
                 return true;
             case "Face3D":
             case "Solid":

@@ -9,7 +9,13 @@ public sealed partial class CadSceneBuilder
     {
         var basis = Affine3.ObjectCoordinates(entity["Normal"].Vector(Vec3.UnitZ));
         var rotation = Affine3.RotateZ(entity["Rotation"].Number() * Math.PI / 180);
-        var factor = UnitMeters(block["Record"]["Units"].Text) / UnitMeters(entity["Owner"]["Record"]["Units"].Text);
+        var owner = entity["Owner"]["Record"];
+        // Layout insertions use INSUNITS, while nested definitions use the owning
+        // block's units. Resolve through the observed reader so header changes
+        // invalidate cached occurrences as well as direct geometry changes.
+        var destinationUnits = owner["Layout"].Id is not null
+            ? entity.Resolve(entity.Snapshot!.Root)["DrawingVariables"]["InsUnits"].Text : owner["Units"].Text;
+        var factor = DrawingUnitConversion.Factor(block["Record"]["Units"].Text, destinationUnits);
         var local = basis * rotation * Affine3.Scale(entity["Scale"].Vector(new(1, 1, 1)) * factor) * Affine3.Move(-block["Origin"].Vector());
         var rowValue = Math.Max(1, entity["RowCount"].Number(1));
         var columnValue = Math.Max(1, entity["ColumnCount"].Number(1));

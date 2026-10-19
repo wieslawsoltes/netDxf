@@ -29,11 +29,12 @@ public static class EditOperations
                             changes[(edit.Object, edit.Property)] = edit;
                     Move(entity, "Center", delta); break;
                 case "Circle": case "Arc": case "Ellipse": Move(entity, "Center", delta); break;
-                case "Text": case "MText": case "Point": case "Attribute": case "AttributeDefinition": case "Image":
+                case "Attribute": case "AttributeDefinition": MoveAttribute(entity); break;
+                case "Text": case "MText": case "Point": case "Image":
                     Move(entity, "Position", delta); break;
                 case "Insert":
                     Move(entity, "Position", delta);
-                    foreach (var attribute in entity["Attributes"].Items) Move(attribute, "Position", delta);
+                    foreach (var attribute in entity["Attributes"].Items) MoveAttribute(attribute);
                     break;
                 case "Polyline2D":
                     var basis = Affine3.ObjectCoordinates(entity["Normal"].Vector(Vec3.UnitZ));
@@ -58,6 +59,14 @@ public static class EditOperations
             }
         }
         return new(snapshot.DocumentId, snapshot.Revision, changes.Values.ToImmutableArray());
+
+        void MoveAttribute(ShadowReader attribute)
+        {
+            var patch = AffineEditOperations.Plan(snapshot, [attribute.Id!.Value], Affine3.Move(delta));
+            foreach (var item in patch.Changes)
+                foreach (var property in item.After!.Properties)
+                    if (!ShadowValue.Equivalent(item.Before![property.Key], property.Value)) Change(snapshot.Read(item.Id), property.Key, property.Value);
+        }
 
         void Change(ShadowReader reader, string property, ShadowValue after)
         {

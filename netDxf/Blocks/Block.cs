@@ -217,7 +217,7 @@ namespace netDxf.Blocks
         {
         }
 
-        internal Block(string name, IEnumerable<EntityObject> entities, IEnumerable<AttributeDefinition> attributes, bool checkName)
+        internal Block(string name, IEnumerable<EntityObject> entities, IEnumerable<AttributeDefinition> attributes, bool checkName, string xrefFile = "")
             : base(name, DxfObjectCode.Block, checkName)
         {
             if (string.IsNullOrEmpty(name))
@@ -230,7 +230,7 @@ namespace netDxf.Blocks
             this.description = string.Empty;
             this.origin = Vector3.Zero;
             this.layer = Layer.Default;
-            this.xrefFile = string.Empty;
+            this.xrefFile = xrefFile;
             this.Owner = new BlockRecord(name);
             this.flags = BlockTypeFlags.None;
             this.end = new EndBlock(this);
@@ -435,7 +435,8 @@ namespace netDxf.Blocks
         /// <param name="doc">A <see cref="DxfDocument">DxfDocument</see> instance.</param>
         /// <param name="name">Name of the new block.</param>
         /// <returns>The block build from the <see cref="DxfDocument">document</see> content.</returns>
-        /// <remarks>Only the entities contained in ModelSpace will make part of the block.</remarks>
+        /// <remarks>Only model-space entities and attribute definitions are copied. The source
+        /// document is not modified. Copied hatches are nonassociative, as in Hatch.Clone.</remarks>
         public static Block Create(DxfDocument doc, string name)
         {
             if (doc == null)
@@ -450,13 +451,8 @@ namespace netDxf.Blocks
             };
             block.Record.Units = doc.DrawingVariables.InsUnits;
 
-            // When a Block is created form a DxfDocument or DXF file, any Hatch entity that it may contain will have its associative property set to false.
-            // This will avoid problems when the same entity its associated to multiple hatches,
-            // or when any of any of its paths is defined by the intersection of several entities.
-            foreach (Hatch hatch in doc.Entities.Hatches)
-            {
-                hatch.UnLinkBoundary();
-            }
+            // Hatch.Clone makes only the copied hatch nonassociative. Never unlink
+            // source boundaries: importing a document must not mutate its geometry.
 
             // copy the entities of the document,
             // only entities in the ModelSpace will be part of a block
@@ -542,6 +538,8 @@ namespace netDxf.Blocks
             }
 #endif
 
+            if (dwg == null) return null;
+
             string blkName = string.IsNullOrEmpty(name) ? dwg.Name : name;
             return Create(dwg, blkName);
         }
@@ -566,28 +564,7 @@ namespace netDxf.Blocks
         /// <returns>Return true if the file has been successfully save, false otherwise.</returns>
         public bool Save(string file, DxfVersion version, bool isBinary)
         {
-            DxfOpaqueEntity.RejectBlockGeometry(this);
-            DxfDocument dwg = new DxfDocument(version);
-            dwg.DrawingVariables.InsBase = this.origin;
-            dwg.DrawingVariables.InsUnits = this.Record.Units;
-
-            foreach (AttributeDefinition attdef in this.attributes.Values)
-            {
-                if (!dwg.Layouts[Layout.ModelSpaceName].AssociatedBlock.AttributeDefinitions.ContainsTag(attdef.Tag))
-                {
-                    dwg.Layouts[Layout.ModelSpaceName].AssociatedBlock.AttributeDefinitions.Add((AttributeDefinition) attdef.Clone());
-                }
-            }
-
-            var copies = new Dictionary<EntityObject, EntityObject>();
-            foreach (EntityObject entity in this.entities)
-            {
-                EntityObject copy = (EntityObject)entity.Clone();
-                copies.Add(entity, copy); dwg.Layouts[Layout.ModelSpaceName].AssociatedBlock.Entities.Add(copy);
-            }
-            MText.RelinkClonedColumns(copies);
-
-            return dwg.Save(file, isBinary);
+            return this.ToDocument(version).Save(file, isBinary);
         }
 
         #endregion
@@ -650,13 +627,17 @@ namespace netDxf.Blocks
                 throw new ArgumentException("*Model_Space and *Paper_Space# blocks can only be cloned with a new valid name.");
             }
 
-            Block copy = new Block(newName, null, null, checkName)
+            Block copy = new Block(newName, null, null, checkName, block.xrefFile)
             {
                 Description = block.description,
                 Flags = block.flags,
                 Layer = (Layer) block.Layer.Clone(),
                 Origin = block.origin
             };
+
+            copy.Record.Units = block.Record.Units;
+            copy.Record.AllowExploding = block.Record.AllowExploding;
+            copy.Record.ScaleUniformly = block.Record.ScaleUniformly;
 
             // remove anonymous flag for renamed anonymous blocks
             if (checkName)

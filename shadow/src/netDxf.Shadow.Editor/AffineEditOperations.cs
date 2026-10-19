@@ -86,7 +86,7 @@ public static partial class AffineEditOperations
         internal void Visit(ShadowReader entity, Affine3 transform)
         {
             cancellation.ThrowIfCancellationRequested(); Validate(transform);
-            if (entity.Id is not { } id || entity.Object is not { } node || (node.Kind & ShadowObjectKind.Entity) == 0 && node.Type != "Attribute")
+            if (entity.Id is not { } id || entity.Object is not { } node || (node.Kind & ShadowObjectKind.Entity) == 0 && node.Type is not ("Attribute" or "AttributeDefinition"))
                 throw new ArgumentException("Affine targets must be existing entities.");
             if (visited.TryGetValue(id, out var previous))
             {

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Host-independent CAD workspaces, document operations, rendering, discovery schemas and graph analysis.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow.Samples/netDxf.Shadow.Samples.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Mcp/netDxf.Shadow.Mcp.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Exchange.Dwg/netDxf.Shadow.Exchange.Dwg.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Drafting/netDxf.Shadow.Drafting.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Symbols/netDxf.Shadow.Symbols.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Dimensions/netDxf.Shadow.Dimensions.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Health/netDxf.Shadow.Health.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Modules/netDxf.Shadow.Modules.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Pid/netDxf.Shadow.Pid.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Piping/netDxf.Shadow.Piping.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Electrical/netDxf.Shadow.Electrical.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Workflows/netDxf.Shadow.Workflows.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Rendering.SkiaSharp/netDxf.Shadow.Rendering.SkiaSharp.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Rendering.Shx/netDxf.Shadow.Rendering.Shx.csproj" />
+
+  </ItemGroup>
+</Project>

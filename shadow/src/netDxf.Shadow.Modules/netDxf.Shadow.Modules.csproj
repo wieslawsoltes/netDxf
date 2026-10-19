@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Host-independent CAD discipline module contracts, discovery, and enablement.</Description></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../netDxf.Shadow.Drafting/netDxf.Shadow.Drafting.csproj" /></ItemGroup>
+</Project>

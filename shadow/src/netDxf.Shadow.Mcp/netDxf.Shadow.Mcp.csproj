@@ -3,6 +3,7 @@
     <Description>Model Context Protocol access to the complete netDxf shadow graph, revision-checked editing and extensible CAD application tools.</Description>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow.Graph/netDxf.Shadow.Graph.csproj" />
     <ProjectReference Include="../netDxf.Shadow.NetDxf/netDxf.Shadow.NetDxf.csproj" />
     <ProjectReference Include="../netDxf.Shadow.Editor/netDxf.Shadow.Editor.csproj" />
     <PackageReference Include="ModelContextProtocol.Core" Version="2.2.0" />

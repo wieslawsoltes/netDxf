@@ -7,6 +7,7 @@ from collections import Counter
 from pathlib import Path
 import ezdxf
 from playwright.sync_api import expect
+from browser_ui import ribbon_action
 
 
 def verify_authoring(page, url: str, output: Path, state, command, wait_state, idle, check):
@@ -39,7 +40,7 @@ def verify_authoring(page, url: str, output: Path, state, command, wait_state, i
 
     check('HATCHEDIT stores scale angle and native island policy',
           pattern()['name'] == 'CROSS' and pattern()['scale'] == 4 and pattern()['angle'] == 30 and pattern()['islands'] == 1)
-    page.locator('[data-action="hatch-edit"]').first.click()
+    ribbon_action(page, 'hatch-edit', 'Home', 'Hatch')
     expect(page.locator('#dialog-title')).to_have_text('Hatch Edit')
     expect(page.get_by_role('textbox', name='Hatch scale', exact=True)).to_have_value('4')
     expect(page.get_by_role('textbox', name='Hatch angle', exact=True)).to_have_value('30')
@@ -56,14 +57,14 @@ def verify_authoring(page, url: str, output: Path, state, command, wait_state, i
     command('U')
     check('hatch pattern undo retains previous source pattern', pattern()['name'] == 'CROSS' and pattern()['scale'] == 4)
     command('REDO')
-    page.locator('[data-action="hatch-edit"]').first.click()
+    ribbon_action(page, 'hatch-edit', 'Home', 'Hatch')
     expect(page.get_by_role('combobox', name='Hatch type', exact=True)).to_have_value('0')
     expect(page.get_by_role('checkbox', name='Double hatch', exact=True)).to_be_checked()
     page.get_by_role('button', name='Cancel', exact=True).click()
     idle()
 
     # Import original synthetic line-family data; never rely on copyrighted font/pattern payloads.
-    page.locator('[data-action="hatch-edit"]').first.click()
+    ribbon_action(page, 'hatch-edit', 'Home', 'Hatch')
     # set_input_files does not auto-wait for visibility. The previous closed
     # dialog still has an input while Hatch Edit awaits its native pattern read.
     # Upload only after the new dialog and its current file input are visible.

@@ -3,9 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../src/netDxf.Shadow.Agents/netDxf.Shadow.Agents.csproj" />
-    <ProjectReference Include="../../src/netDxf.Shadow.Mcp/netDxf.Shadow.Mcp.csproj" />
-    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.2.0" />
+    <ProjectReference Include="../../src/netDxf.Shadow.Agents.Hosting/netDxf.Shadow.Agents.Hosting.csproj" />
     <Compile Remove="Verification/**/*.cs" />
     <Content Remove="Verification/**" />
     <None Remove="Verification/**" />

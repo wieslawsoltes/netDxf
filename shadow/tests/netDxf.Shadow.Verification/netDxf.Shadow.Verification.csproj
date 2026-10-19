@@ -1,4 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
-  <ItemGroup><ProjectReference Include="../../samples/netDxf.Shadow.Studio/netDxf.Shadow.Studio.csproj" /></ItemGroup>
+  <ItemGroup><ProjectReference Include="../../src/netDxf.Shadow.Studio.Core/netDxf.Shadow.Studio.Core.csproj" /></ItemGroup>
 </Project>

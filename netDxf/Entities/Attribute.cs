@@ -107,7 +107,7 @@ namespace netDxf.Entities
         private Vector3 normal;
 
         private AttributeDefinition definition;
-        private readonly string tag;
+        private string tag;
         private string attValue;
         private TextStyle style;
         private Vector3 position;
@@ -481,7 +481,6 @@ namespace netDxf.Entities
         /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
         public void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            AttributeTextState nextText = this.PrepareAttributeTextTransform(transformation, translation);
             bool mirrText;
             if (this.Owner == null)
             {
@@ -496,6 +495,12 @@ namespace netDxf.Entities
                 mirrText = this.Owner.Owner.Record.Owner.Owner.DrawingVariables.MirrText;
             }
 
+            this.TransformBy(transformation, translation, mirrText);
+        }
+
+        private void TransformBy(Matrix3 transformation, Vector3 translation, bool mirrText)
+        {
+            AttributeTextState nextText = this.PrepareAttributeTextTransform(transformation, translation);
             Vector3 newPosition = transformation * this.Position + translation;
             Vector3 newNormal = transformation * this.Normal;
             if (Vector3.Equals(Vector3.Zero, newNormal))

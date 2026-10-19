@@ -41,7 +41,7 @@ namespace netDxf.Entities
     /// All edges that make a HatchBoundaryPath are 2d objects, only have X and Y coordinates.
     /// This is why to avoid unexpected results, it is important that all entities that define the paths have the same normal, same reference plane.
     /// </remarks>
-    public class HatchBoundaryPath :
+    public partial class HatchBoundaryPath :
         ICloneable
     {
         #region Hatch boundary path edge classes

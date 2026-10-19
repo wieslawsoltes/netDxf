@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Reusable DXF example document and P&amp;ID factories without a Studio host.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow.Pid/netDxf.Shadow.Pid.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Rendering.Shx/netDxf.Shadow.Rendering.Shx.csproj" />
+    <ProjectReference Include="../../../netDxf/netDxf.csproj" />
+  </ItemGroup>
+</Project>

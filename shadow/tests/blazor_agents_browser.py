@@ -28,7 +28,7 @@ from browser_storage_checks import verify_browser_recovery_storage
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / 'artifacts/blazor-agents'
-ASSEMBLY = 'netDxf.Shadow.Studio.Browser'
+ASSEMBLY = 'netDxf.Shadow.Studio.WebAssembly'
 KEY = 'verification-only-credential-never-use-for-inference'
 BRIDGE_TOKEN = 'verification-only-loopback-companion-token'
 STREAM_IDS = itertools.count(1)
@@ -246,10 +246,35 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
         check('agent edits participate in native Studio redo', call('shadow_read', {'id': circle, 'path': '/Center/X'})['data']['value']['value'] == '45')
         ui = call('studio_ui_inspect')
         check('semantic Studio inspection omits credential controls', KEY not in json.dumps(ui) and 'availableActions' in ui)
-        routes = call('studio_routes')
-        check('complete Studio route and request schema discovery', len(routes['routes']) >= 64 and len(routes['requestTypes']) > 20)
+        routes = call('studio_routes', {'includeRequestTypes': True})
+        discovered_routes = list(routes['routes'])
+        next_offset = routes['nextOffset']
+        while next_offset is not None:
+            route_page = call('studio_routes', {'offset': next_offset})
+            discovered_routes.extend(route_page['routes'])
+            next_offset = route_page['nextOffset']
+        check('complete Studio route and request schema discovery',
+              len(discovered_routes) == routes['total'] and routes['total'] >= 64 and
+              len(routes['requestTypes']) > 20)
         document_id = page.locator('#studio').get_attribute('data-document')
-        check('read-only Studio dispatcher reaches real CAD state', 'state' in call('studio_read', {'path': f'/api/cad/{document_id}/state'}))
+        cad_state = call('studio_read', {'path': f'/api/cad/{document_id}/state'})
+        if cad_state.get('truncated'):
+            # Large CAD receipts are archived to keep model context bounded. Read
+            # the same immutable result through the advertised workspace paging.
+            receipt = cad_state
+            chunks = []
+            offset = 0
+            while offset < receipt['totalCharacters']:
+                part = call('workspace_read', {'path': receipt['path'], 'offset': offset, 'length': 1000})
+                if not part['content'] or part['offset'] != offset:
+                    raise AssertionError('CAD result archive did not advance')
+                chunks.append(part['content'])
+                offset += len(part['content'])
+            check('large CAD tool results remain available through bounded paging', offset == receipt['totalCharacters'])
+            cad_state = json.loads(''.join(chunks))
+        check('read-only Studio dispatcher reaches real CAD state',
+              cad_state['state']['documentId'] == before['documentId'] and
+              cad_state['state']['revision'] == call('shadow_state')['revision'])
 
         page.get_by_role('tab', name='Files', exact=True).click()
         page.get_by_role('button', name='src/analysis.cs', exact=True).click()

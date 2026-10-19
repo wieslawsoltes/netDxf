@@ -72,7 +72,9 @@ public sealed partial class ShadowMcpTools
             Fields(("handle", String(128)), ("path", String(8192)), ("depth", Integer(0, 4)), ("offset", Integer(0, 1000000)), ("limit", Integer(1, 100)),
                 ("textOffset", Integer(0)), ("textLimit", Integer(1, 16384))), [], SourceInspect);
         InstallEditing(registry);
+        InstallDrawing(registry);
         InstallSnapshots(registry);
+        InstallGraph(registry);
     }
 
     private object Objects(JsonElement args, EditorSession editor, ShadowSnapshot snapshot, CancellationToken token)

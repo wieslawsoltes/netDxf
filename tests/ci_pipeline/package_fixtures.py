@@ -27,8 +27,25 @@ def write_package(path: Path, item=package_catalog.PACKAGES[0], selected='3.0.2'
         if not symbols:
             archive.writestr('README.md', 'Synthetic validator fixture.')
             archive.writestr('LICENSE', 'MIT test fixture.')
-            if item.id == 'netDxf.Shadow.Exchange.Dwg':
+            if item.id in ('netDxf.Shadow.Exchange.Dwg', 'netDxf.Shadow.Markdown'):
                 archive.writestr('THIRD-PARTY-NOTICES.txt', 'Synthetic third-party notice fixture.')
+        if not symbols and (assets := pipeline.static_web_assets(item)):
+            for name, source in assets.items():
+                archive.writestr('staticwebassets/' + name, source.read_bytes())
+            for name, target in {
+                'build/' + item.id + '.props': 'Microsoft.AspNetCore.StaticWebAssets.props',
+                'buildMultiTargeting/' + item.id + '.props': '../build/' + item.id + '.props',
+                'buildTransitive/' + item.id + '.props': '../buildMultiTargeting/' + item.id + '.props',
+            }.items():
+                project = ET.Element('Project'); ET.SubElement(project, 'Import', Project=target)
+                archive.writestr(name, ET.tostring(project))
+            project = ET.Element('Project'); group = ET.SubElement(project, 'ItemGroup')
+            for name in assets:
+                entry = ET.SubElement(group, 'StaticWebAsset')
+                for key, value in {'RelativePath': name, 'BasePath': 'markdown' if item.id.endswith('.Markdown') else '/',
+                                   'SourceId': item.id, 'SourceType': 'Package', 'CopyToPublishDirectory': 'PreserveNewest'}.items():
+                    ET.SubElement(entry, key).text = value
+            archive.writestr('build/Microsoft.AspNetCore.StaticWebAssets.props', ET.tostring(project))
         for target in frameworks:
             stem = f'lib/{target}/{item.assembly}'
             if symbols:

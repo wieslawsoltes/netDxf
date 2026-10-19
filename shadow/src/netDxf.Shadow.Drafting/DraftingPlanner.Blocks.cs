@@ -44,7 +44,8 @@ public sealed partial class DraftingPlanner
             throw new ArgumentException("Block descriptions are limited to 4096 characters.");
         var ids = request.Entities.IsDefault ? [] : request.Entities.Distinct().ToImmutableArray();
         if (ids.IsEmpty || ids.Length > limits.MaximumEntities) throw new ArgumentException("Select a bounded, nonempty set of source entities.");
-        var ownerMembers = snapshot.Read(owner)["Entities"].Items.Select(e => e.Id).ToHashSet();
+        var ownerMembers = snapshot.Read(owner)["Entities"].Items.Select(e => e.Id)
+            .Concat(snapshot.Read(owner)["AttributeDefinitions"].Items.Select(entry => entry["Value"].Id)).ToHashSet();
         foreach (var id in ids)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -72,7 +73,16 @@ public sealed partial class DraftingPlanner
                 ["Origin"] = V(Vec3.Zero), ["Description"] = ShadowValue.From(request.Description ?? ""),
                 ["Entities"] = new ShadowValue.Sequence([]) });
         if (request.Redefine is null)
+        {
+            var record = edit.Create("netDxf.Blocks.BlockRecord", ShadowObjectKind.Object, new Dictionary<string, ShadowValue>
+            {
+                ["Name"] = ShadowValue.From(request.Name),
+                ["Units"] = snapshot.Layouts.Any(item => item["AssociatedBlock"].Id == owner)
+                    ? snapshot.Document["DrawingVariables"]["InsUnits"].Value : snapshot.Read(owner)["Record"]["Units"].Value
+            });
+            edit.Set(block, "Record", new ShadowValue.Reference(record));
             edit.ReplaceSequence(snapshot.Root, "Blocks", blocks.Select(b => b.Value).Append(new ShadowValue.Reference(block)));
+        }
         else
         {
             if (request.Description is not null) edit.Set(block, "Description", ShadowValue.From(request.Description));

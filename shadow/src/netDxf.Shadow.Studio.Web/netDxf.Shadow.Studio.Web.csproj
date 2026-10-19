@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <Description>Reusable static web assets for the Shadow Studio CAD workspace and agent chat.</Description>
+    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="../netDxf.Shadow.Markdown/netDxf.Shadow.Markdown.csproj" /></ItemGroup>
+</Project>

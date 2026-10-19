@@ -4,9 +4,10 @@ using System.Globalization;
 namespace netDxf.Shadow.Drafting;
 
 public sealed record DraftingLayer(ObjectId Id, string Name, string Color, bool Visible, bool Frozen, bool Locked,
-    bool Plot, string Linetype, string Lineweight);
+    bool Plot, string Linetype, string Lineweight, string Description, int Transparency, bool FrozenInNewViewports, int ColorIndex, bool TrueColor);
 public sealed record LayerEdit(ObjectId? Id, string? Name = null, string? Color = null, bool? Visible = null,
-    bool? Frozen = null, bool? Locked = null, bool? Plot = null, string? Linetype = null, string? Lineweight = null);
+    bool? Frozen = null, bool? Locked = null, bool? Plot = null, string? Linetype = null, string? Lineweight = null,
+    string? Description = null, int? Transparency = null, bool? FrozenInNewViewports = null, int? ColorIndex = null);
 
 /// <summary>Layer edits remain ordinary immutable graph transactions and are reusable by any host.</summary>
 public static class DraftingLayers
@@ -15,7 +16,8 @@ public static class DraftingLayers
         .Select(l => new DraftingLayer(l.Id!.Value, l["Name"].Text,
             $"#{(int)l["Color"]["R"].Number():X2}{(int)l["Color"]["G"].Number():X2}{(int)l["Color"]["B"].Number():X2}",
             l["IsVisible"].Boolean(true), l["IsFrozen"].Boolean(), l["IsLocked"].Boolean(), l["Plot"].Boolean(true),
-            l["Linetype"]["Name"].Text, l["Lineweight"].Text))
+            l["Linetype"]["Name"].Text, l["Lineweight"].Text, l["Description"].Text, (int)l["Transparency"]["Value"].Number(),
+            l["IsFrozenInNewViewports"].Boolean(), (int)l["Color"]["Index"].Number(), l["Color"]["UseTrueColor"].Boolean()))
         .OrderBy(l => l.Name, StringComparer.OrdinalIgnoreCase).ToImmutableArray();
 
     public static DraftingPlan Plan(ShadowSnapshot snapshot, LayerEdit request)
@@ -44,8 +46,31 @@ public static class DraftingLayers
             }, id);
             edit.ReplaceSequence(snapshot.Root, "Layers", layers.Select(l => l.Value).Append(new ShadowValue.Reference(id)));
         }
-        if (request.Name is not null) edit.Set(id, "Name", ShadowValue.From(request.Name));
-        foreach (var (property, value) in new[] { ("IsVisible", request.Visible), ("IsFrozen", request.Frozen), ("IsLocked", request.Locked), ("Plot", request.Plot) })
+        if (request.Name is not null)
+        {
+            edit.Set(id, "Name", ShadowValue.From(request.Name));
+            if (!creating && current["Name"].Text.Equals(DraftingResources.Current(snapshot, "layer"), StringComparison.OrdinalIgnoreCase))
+                edit.Set(snapshot.Document["DrawingVariables"].Id!.Value, "CLayer", ShadowValue.From(request.Name));
+        }
+        if (!creating && current["Name"].Text.Equals(DraftingResources.Current(snapshot, "layer"), StringComparison.OrdinalIgnoreCase) && request.Frozen == true)
+            throw new ArgumentException("Choose another current layer before freezing this layer.");
+        if (request.Description is { } description)
+        { if (description.Length > 1024) throw new ArgumentException("Layer descriptions are limited to 1024 characters."); edit.Set(id, "Description", ShadowValue.From(description)); }
+        if (request.Transparency is { } transparency)
+        {
+            if (transparency < 0 || transparency > 90) throw new ArgumentException("Layer transparency must be from 0 to 90 percent.");
+            var alpha = edit.Create("netDxf.Transparency", ShadowObjectKind.Object, new Dictionary<string, ShadowValue>
+                { ["Value"] = new ShadowValue.Atom("System.Int16", transparency.ToString(CultureInfo.InvariantCulture)) });
+            edit.Set(id, "Transparency", new ShadowValue.Reference(alpha));
+        }
+        if (request.ColorIndex is { } index)
+        {
+            if (request.Color is not null || index < 1 || index > 255) throw new ArgumentException("Choose either RGB or an indexed layer color from 1 to 255.");
+            var colorId = edit.Create("netDxf.AciColor", ShadowObjectKind.Object, new Dictionary<string, ShadowValue>
+                { ["Index"] = new ShadowValue.Atom("System.Int16", index.ToString(CultureInfo.InvariantCulture)) });
+            edit.Set(id, "Color", new ShadowValue.Reference(colorId));
+        }
+        foreach (var (property, value) in new[] { ("IsVisible", request.Visible), ("IsFrozen", request.Frozen), ("IsFrozenInNewViewports", request.FrozenInNewViewports), ("IsLocked", request.Locked), ("Plot", request.Plot) })
             if (value is { } flag) edit.Set(id, property, ShadowValue.From(flag));
         if (request.Color is { } color)
         {

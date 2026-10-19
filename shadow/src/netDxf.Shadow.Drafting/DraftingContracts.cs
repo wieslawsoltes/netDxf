@@ -8,7 +8,7 @@ namespace netDxf.Shadow.Drafting;
 public sealed record DraftingCommand(string Name, ImmutableArray<Vec3> Points = default,
     ImmutableArray<ObjectId> Entities = default, double Value = 0, double Secondary = 0,
     string? Text = null, string Layer = "0", bool Closed = false, int Count = 6, double Rotation = 0,
-    ObjectId? Reference = null);
+    ObjectId? Reference = null, Vec3? Scale = null, Vec3? BasePoint = null);
 
 public sealed record DraftingLimits(int MaximumPoints = 10_000, int MaximumEntities = 10_000,
     int MaximumClonedObjects = 100_000, double MaximumCoordinate = 1e12, double MinimumLength = 1e-9);
@@ -39,8 +39,11 @@ public static class DraftingGuard
     public static ShadowReader Entity(ShadowSnapshot snapshot, ObjectId id, bool writable = true)
     {
         var entity = snapshot.Read(id);
-        if (entity.Object is not { } node || (node.Kind & ShadowObjectKind.Entity) == 0)
+        if (entity.Object is not { } node || (node.Kind & ShadowObjectKind.Entity) == 0 && node.Type != "AttributeDefinition")
             throw new ArgumentException($"{id} is not a drawing entity.");
+        if (node.Type == "AttributeDefinition" && (entity["Owner"].Id is not { } owner ||
+            !DraftingAttributeDefinitions.Owner(snapshot, owner)["AttributeDefinitions"].Items.Any(entry => entry["Value"].Id == id)))
+            throw new ArgumentException("The attribute definition is not owned by an editable drawing space.");
         if (writable && entity["Layer"]["IsLocked"].Boolean())
             throw new InvalidOperationException($"Layer '{entity["Layer"]["Name"].Text}' is locked.");
         return entity;

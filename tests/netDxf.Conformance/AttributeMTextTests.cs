@@ -17,7 +17,7 @@ internal static partial class Program
         {
             for(int profile=0;profile<6;profile++){int p=profile;Run($"attribute-mtext/independent/{p}/{binary}",()=>AmIndependent(p,binary));}
             for(int attachment=1;attachment<=9;attachment++){int a=attachment;Run($"attribute-mtext/wire/{a}/{binary}",()=>AmWire(a,binary));}
-            for(int fault=0;fault<20;fault++){int f=fault;Run($"attribute-mtext/malformed/{f}/{binary}",()=>AmMalformed(f,binary));}
+            for(int fault=0;fault<21;fault++){int f=fault;Run($"attribute-mtext/malformed/{f}/{binary}",()=>AmMalformed(f,binary));}
             foreach(var version in SupportedVersions.Where(v=>v!=DxfVersion.AutoCad2018))
                 Run($"attribute-mtext/downsave/{version}/{binary}",()=>AmDownsave(version,binary));
         }
@@ -128,6 +128,7 @@ internal static partial class Program
             case 17:tags.RemoveRange(start,tags.Count-start);break;
             case 18:tags.Add(new DxfTag(75,(short)1));break;
             case 19:tags.InsertRange(start,new DxfTag[]{new(100,"AcDbXrecord"),new(340,"ABC")});break;
+            case 20:tags.InsertRange(start,new DxfTag[]{new(100,"AcDbXrecord"),new(1005,"ABC")});break;
         }
         var changed=raw.WithRecord(row,tags);using var output=new MemoryStream();changed.Save(output,binary);output.Position=0;
         bool refused=false;

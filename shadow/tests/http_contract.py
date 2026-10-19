@@ -232,6 +232,12 @@ def run(dotnet: str, configuration: str) -> None:
             live = post('workspace', disabled, id='live')
             assert live['perspectiveMode'] == 'TargetPlaneHeight' and live['perspectiveWorkPlaneZ'] == 5
             passed('perspective context no-op branch inheritance and workspace isolation')
+            for action in ('reset', 'cancel'):
+                acknowledgement = request('agent/' + action, {'arguments': []}, custom={'X-Shadow-Studio': '1'})
+                assert acknowledgement is None
+            checkpoint = request('agent/export', {'arguments': []}, custom={'X-Shadow-Studio': '1'})
+            assert request('agent/import', {'arguments': [checkpoint]}, custom={'X-Shadow-Studio': '1'}) is None
+            passed('agent void operations and conversation import return valid JSON acknowledgements')
             complete = True
         finally:
             for stream in streams: stream.close()

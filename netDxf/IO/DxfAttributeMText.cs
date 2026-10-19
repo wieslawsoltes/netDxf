@@ -44,7 +44,7 @@ namespace netDxf.IO
                     {
                         code = this.chunk.Code;
                         if (code == 100) throw new NotSupportedException("Unknown attribute subclass after AcDbXrecord.");
-                        if (code == 5 || code == 105 || (code >= 320 && code <= 369) || (code >= 390 && code <= 399) || code == 480 || code == 481)
+                        if (code == 5 || code == 105 || code == 1005 || (code >= 320 && code <= 369) || (code >= 390 && code <= 399) || code == 480 || code == 481)
                             throw new NotSupportedException("Pointer-bearing attribute auxiliary records require explicit graph mapping.");
                         object v = this.chunk.Value;
                         if (v is string text) v = this.DecodeEncodedNonAsciiCharacters(text);

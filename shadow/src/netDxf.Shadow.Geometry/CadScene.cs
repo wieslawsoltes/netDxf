@@ -78,6 +78,9 @@ public sealed record SceneOptions(string Layout = "Model", int MaximumDepth = 64
     /// <summary>Optional source block root for definition editors. Geometry stays in definition
     /// coordinates; Layout remains presentation metadata and no source ownership is changed.</summary>
     public ObjectId? RootBlock { get; init; }
+    /// <summary>Optional exact subset of displayed root objects. Default includes all roots;
+    /// an explicit empty array includes none. Nested references still expand normally.</summary>
+    public ImmutableArray<ObjectId> RootEntities { get; init; }
     /// <summary>Consumer scale multiplied with authored LTSCALE and entity scale; never writes source state.</summary>
     public double LinetypeScale { get; init; } = 1;
     public CadLinetypeAlignment LinetypeAlignment { get; init; }

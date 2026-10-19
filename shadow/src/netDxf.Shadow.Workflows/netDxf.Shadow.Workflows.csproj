@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Portable recorded operation workflows with bounded replay and semantic verification.</Description></PropertyGroup>
+</Project>

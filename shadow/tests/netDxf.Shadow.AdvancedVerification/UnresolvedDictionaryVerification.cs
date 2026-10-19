@@ -99,13 +99,13 @@ internal static class UnresolvedDictionaryVerification
         // dictionary collection or exposing adapter internals as public API.
         var create = typeof(ShadowObjectFactories).GetMethod("Create", BindingFlags.Instance | BindingFlags.NonPublic)!;
         var factories = new ShadowObjectFactories(); var resolver = new ScalarResolver();
-        var copy = (DxfDictionaryEntry)create.Invoke(factories, [node, resolver])!;
+        var copy = (DxfDictionaryEntry)create.Invoke(factories, [node, resolver, false])!;
         Require(copy.Name == EntryName && copy.TargetHandle == TargetHandle && copy.Target is null
             && !copy.IsHardOwner && !copy.IsResolved, "Source construction changed the soft reference.");
         foreach (var flag in new[] { ShadowValue.From(true), ShadowValue.Null })
         {
             var invalid = node with { Properties = node.Properties.SetItem("IsHardOwner", flag) };
-            try { create.Invoke(factories, [invalid, resolver]); }
+            try { create.Invoke(factories, [invalid, resolver, false]); }
             catch (TargetInvocationException error) when (error.InnerException is NotSupportedException) { continue; }
             throw new InvalidOperationException("Source construction accepted an unresolved link without explicit soft ownership.");
         }

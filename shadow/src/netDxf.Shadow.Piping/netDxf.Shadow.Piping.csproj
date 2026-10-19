@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Reusable Piping symbol authoring, explicit port relations and drawing validation.</Description></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../netDxf.Shadow.Disciplines/netDxf.Shadow.Disciplines.csproj" /></ItemGroup>
+</Project>
