@@ -30,7 +30,7 @@ async Task Error(string name, object args)
 {
     var result = await registry.ExecuteAsync(name, McpJson.Element(args)); Check(result.IsError, name + " accepted invalid arguments.");
 }
-Check(registry.Tools.Count(t => t.Name.StartsWith("graph_", StringComparison.Ordinal) && t.ReadOnly) == 8, "Graph catalog incomplete.");
+Check(registry.Tools.Count(t => t.Name.StartsWith("graph_", StringComparison.Ordinal) && t.ReadOnly) == 11, "Graph catalog incomplete.");
 var summary = await Data("graph_summary");
 Check(Number(summary, "nodeCount") == 10 && Number(summary, "edgeCount") == 9 && Number(summary, "componentCount") == 2, "Crossing/component counts incorrect.");
 Check(Number(summary, "cycleRank") == 1 && Number(summary, "bridgeCount") == 5 && Number(summary, "articulationPointCount") == 2 && Number(summary, "deadEndCount") == 5, "Feature summary incorrect.");
@@ -54,6 +54,15 @@ Check(Number(await Data("graph_edges", new { entity = firstEdge.GetProperty("ent
 var components = await Data("graph_components", new { limit = 1 }); var component = components.GetProperty("items")[0];
 Check(Number(component, "nodeCount") == 8 && Number(component, "cycleRank") == 1, "Component analysis incorrect.");
 Check(Number(await Data("graph_nodes", new { component = 1 }), "total") == 2, "Component member filter incorrect.");
+var cyclePage = await Data("graph_cycles", new { limit = 1 });
+Check(Number(cyclePage, "total") == 1 && Number(cyclePage.GetProperty("items")[0], "edgeCount") == 4, "Cycle basis did not recover the square.");
+var cyclePath = await Data("graph_cycle", new { cycle = 0, limit = 2 });
+Check(cyclePath.GetProperty("length").GetDouble() == 40 && Number(cyclePath, "nodeCount") == 5 && Number(cyclePath.GetProperty("steps"), "nextOffset") == 2, "Cycle geometry or pagination incorrect.");
+var cycleEnd = (await Data("graph_cycle", new { cycle = 0, offset = 4 })).GetProperty("steps").GetProperty("items")[0];
+Check(Number(cycleEnd.GetProperty("node"), "id") == Number(cyclePath.GetProperty("steps").GetProperty("items")[0].GetProperty("node"), "id") && cycleEnd.GetProperty("viaEdge").ValueKind == JsonValueKind.Object, "Cycle did not close with its incoming edge.");
+var forestPage = await Data("graph_spanning_forest", new { limit = 2 });
+Check(Number(forestPage, "edgeCount") == 8 && Number(forestPage, "componentCount") == 2 && forestPage.GetProperty("length").GetDouble() == 60 && Number(forestPage.GetProperty("steps"), "nextOffset") == 2, "Minimum spanning forest result incorrect.");
+await Error("graph_cycle", new { cycle = 1 }); await Error("graph_cycle", new { cycle = -1 });
 var start = Number((await Data("graph_nearest", new { x = 0, y = 0 })).GetProperty("node"), "id");
 var end = Number((await Data("graph_nearest", new { x = 20, y = 10 })).GetProperty("node"), "id");
 var path = await Data("graph_path", new { source = start, target = end, limit = 2 });
@@ -112,17 +121,64 @@ for (var attempt = 0; attempt < 100; attempt++)
     var count = graph.ConnectedComponents().Length;
     var expected = Enumerable.Range(0, 12).Where(n => ComponentsWithout(graph, n) > count);
     Check(graph.ArticulationPoints().SequenceEqual(expected), "Articulation points differ from independent removal oracle.");
+    var basis = graph.CycleBasis();
+    Check(basis.Cycles.Length == graph.Edges.Length - graph.Nodes.Length + count, "Fundamental basis rank is incorrect.");
+    var pivots = new Dictionary<int, ulong>();
+    foreach (var descriptor in basis.Cycles)
+    {
+        var cycle = basis.Path(descriptor.Id);
+        Check(cycle.Nodes[0] == cycle.Nodes[^1] && cycle.Nodes.Length == cycle.Edges.Length + 1 && cycle.Edges.Length == descriptor.EdgeCount, "Invalid closed cycle dimensions.");
+        Check(cycle.Nodes.SkipLast(1).Distinct().Count() == cycle.Nodes.Length - 1 && cycle.Edges.Distinct().Count() == cycle.Edges.Length, "Cycle repeats an interior node or edge.");
+        ulong vector = 0;
+        for (var i = 0; i < cycle.Edges.Length; i++)
+        {
+            var e = graph.Edges[cycle.Edges[i]]; var a = cycle.Nodes[i]; var b = cycle.Nodes[i + 1];
+            Check(e.A == a && e.B == b || e.A == b && e.B == a, "Cycle contains a nonadjacent edge.");
+            vector ^= 1UL << e.Id;
+        }
+        while (vector != 0)
+        {
+            var pivot = System.Numerics.BitOperations.Log2(vector);
+            if (pivots.TryGetValue(pivot, out var previous)) vector ^= previous;
+            else { pivots.Add(pivot, vector); break; }
+        }
+        Check(vector != 0, "Cycle basis is linearly dependent over GF(2).");
+    }
 }
 var parallel = Graph(3, (0, 1), (0, 1), (1, 2), (1, 1));
 Check(parallel.Bridges().SequenceEqual([2]) && parallel.ArticulationPoints().SequenceEqual([1]), "Parallel edges/self loops broke cut analysis.");
+Check(parallel.CycleBasis().Cycles.Select(c => c.EdgeCount).SequenceEqual([2, 1]), "Parallel edges/self loops lost their independent cycles.");
+Check(parallel.MinimumSpanningForest().Edges.SequenceEqual([0, 2]), "Minimum forest tie order or self-loop exclusion is incorrect.");
+Throws<ArgumentOutOfRangeException>(() => parallel.CycleBasis().Path(-1));
+Throws<ArgumentOutOfRangeException>(() => parallel.CycleBasis().Path(2));
+for (var attempt = 0; attempt < 30; attempt++)
+{
+    var g = Graph(5, Enumerable.Range(0, 8).Select(_ => (random.Next(5), random.Next(5))).ToArray());
+    g = g with { Edges = g.Edges.Select(e => e with { Length = random.Next(1, 20) }).ToImmutableArray() };
+    var componentsCount = g.ConnectedComponents().Length; var minimum = double.PositiveInfinity;
+    for (var mask = 0; mask < 1 << g.Edges.Length; mask++)
+    {
+        if (System.Numerics.BitOperations.PopCount((uint)mask) != g.Nodes.Length - componentsCount) continue;
+        var subset = g.Edges.Where(e => (mask & 1 << e.Id) != 0).ToArray();
+        var subgraph = Graph(5, subset.Select(e => (e.A, e.B)).ToArray());
+        if (subgraph.ConnectedComponents().Length == componentsCount) minimum = Math.Min(minimum, subset.Sum(e => e.Length));
+    }
+    var forest = g.MinimumSpanningForest();
+    Check(forest.ComponentCount == componentsCount && forest.Length == minimum && forest.Edges.Length == 5 - componentsCount, "Minimum spanning forest differs from exhaustive subset oracle.");
+}
 var deep = Graph(20000, Enumerable.Range(0, 19999).Select(i => (i, i + 1)).ToArray());
 Check(deep.ArticulationPoints().Length == 19998 && deep.Bridges().Length == 19999, "Iterative deep graph traversal failed.");
+var deepCycle = Graph(20000, Enumerable.Range(0, 20000).Select(i => (i, (i + 1) % 20000)).ToArray()).CycleBasis();
+Check(deepCycle.Cycles.Length == 1 && deepCycle.Path(0).Edges.Length == 20000, "Deep cycle expansion is not stack safe.");
+Check(deep.CycleBasis().Cycles.IsEmpty && deep.MinimumSpanningForest().Edges.Length == 19999, "Deep tree forest/basis is incorrect.");
 using (var cancellation = new CancellationTokenSource())
 {
     cancellation.Cancel(); var token = cancellation.Token;
     Throws<OperationCanceledException>(() => deep.ArticulationPoints(token)); Throws<OperationCanceledException>(() => deep.Bridges(token));
     Throws<OperationCanceledException>(() => deep.ConnectedComponents(token)); Throws<OperationCanceledException>(() => deep.ShortestPath(0, 3, token));
     Throws<OperationCanceledException>(() => deep.Traverse(0, cancellationToken: token));
+    Throws<OperationCanceledException>(() => deep.CycleBasis(token)); Throws<OperationCanceledException>(() => deep.MinimumSpanningForest(token));
+    Throws<OperationCanceledException>(() => deepCycle.Path(0, token));
 }
 var occurrence = new CadOccurrence("presentation", new("E:1"), [], CadStyle.Default, new([new([new LineCurve(Vec3.Zero, Vec3.UnitX)])])) { IsPresentationOnly = true };
 Check(new TopologyBuilder().Build(new CadScene(Guid.NewGuid(), 0, "Model", [occurrence], [])).Edges.IsEmpty, "Presentation-only geometry leaked into topology.");
@@ -135,6 +191,7 @@ JsonElement StudioData(string tool, object? arguments = null)
     return response.GetProperty("result").GetProperty("data");
 }
 Check(Number(StudioData("graph_summary"), "edgeCount") == 0, "Empty Studio graph was not empty.");
+Check(Number(StudioData("graph_cycles"), "total") == 0 && Number(StudioData("graph_spanning_forest"), "componentCount") == 0, "Empty graph cycle/forest result is incorrect.");
 studio.Add(new(0, "line", 0, 0));
 Check(Number(StudioData("graph_summary"), "edgeCount") == 1, "Studio graph query did not follow source.");
 var studioState = McpJson.Element(studio.State()); var revision = studioState.GetProperty("revision").GetInt64();

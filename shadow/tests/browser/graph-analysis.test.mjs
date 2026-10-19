@@ -19,6 +19,13 @@ test('graph filters and path/traversal operations emit only supported schema fie
   assert.equal(graphRequest('traverse',{source:3,depth:0},state).arguments.depth,0);
   assert.equal(graphRequest('traverse',{},state).arguments.offset,undefined);
   assert.equal(graphRequest('nearest',{x:1,y:2},state).arguments.z,0);
+  assert.equal(graphRequest('cycle',{cycle:3},state).arguments.cycle,3);
+  assert.equal(graphRequest('cycles',{},state).tool,'graph_cycles');
+  assert.equal(graphRequest('spanning_forest',{},state).tool,'graph_spanning_forest');
+  assert.equal(graphRequest('edges',{edge:4,node:2,occurrence:' exact '},state).arguments.occurrence,'exact');
+  assert.equal(graphRequest('edges',{edge:4,node:2},state).arguments.node,2);
+  assert.equal(graphRequest('nodes',{node:7},state).arguments.node,7);
+  assert.throws(()=>graphRequest('cycle',{cycle:-1},state));
 });
 test('graph receipts reject stale identities and propagate model-visible errors',()=>{
   const response={isError:false,result:{...state,data:{layout:'Model',nodeCount:5}}};

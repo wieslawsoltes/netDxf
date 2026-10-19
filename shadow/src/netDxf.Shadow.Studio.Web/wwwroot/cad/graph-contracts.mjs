@@ -3,7 +3,8 @@ import { viewKey } from '../studio-state.mjs';
 export const graphOperations = Object.freeze({
   summary: 'Summary', nodes: 'Nodes', edges: 'Edges', components: 'Components', deadEnds: 'Dead ends',
   junctions: 'Junctions', bridges: 'Bridges', articulationPoints: 'Articulation points', isolated: 'Isolated nodes',
-  path: 'Shortest path', traverse: 'Traversal', nearest: 'Nearest node', diagnostics: 'Diagnostics'
+  path: 'Shortest path', traverse: 'Traversal', nearest: 'Nearest node', diagnostics: 'Diagnostics',
+  cycles: 'Independent cycles', cycle: 'Inspect cycle', spanning_forest: 'Minimum spanning forest'
 });
 const features = new Set(['deadEnds','junctions','bridges','articulationPoints','isolated','diagnostics']);
 export function graphRequest(operation, values, state, offset = 0) {
@@ -23,9 +24,14 @@ export function graphRequest(operation, values, state, offset = 0) {
   args.splitIntersections = values.splitIntersections !== false; args.respectElevation = values.respectElevation !== false;
   if (!['summary','nearest'].includes(operation)) numeric('limit', 50, 1, 200, true);
   if (!['summary','nearest','traverse'].includes(operation)) args.offset = offset;
-  if (['nodes','edges'].includes(operation)) numeric('component', undefined, 0, 2147483647, true);
+  if (['nodes','edges'].includes(operation)) { numeric('component', undefined, 0, 2147483647, true); numeric('node', undefined, 0, 2147483647, true); }
   if (operation === 'nodes') { numeric('minimumDegree', undefined, 0, 2147483647, true); numeric('maximumDegree', undefined, 0, 2147483647, true); }
-  if (operation === 'edges' && values.entity?.trim()) args.entity = values.entity.trim();
+  if (operation === 'edges') {
+    numeric('edge', undefined, 0, 2147483647, true);
+    if (values.entity?.trim()) args.entity = values.entity.trim();
+    if (values.occurrence?.trim()) args.occurrence = values.occurrence.trim();
+  }
+  if (operation === 'cycle') numeric('cycle', 0, 0, 2147483647, true);
   if (operation === 'path' || operation === 'traverse') numeric('source', 0, 0, 2147483647, true);
   if (operation === 'path') numeric('target', 0, 0, 2147483647, true);
   if (operation === 'traverse') numeric('depth', 8, 0, 128, true);

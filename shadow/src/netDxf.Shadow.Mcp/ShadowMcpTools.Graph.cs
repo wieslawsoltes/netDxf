@@ -46,6 +46,21 @@ public sealed partial class ShadowMcpTools
             foreach (var edge in g.Edges) { ct.ThrowIfCancellationRequested(); counts[membership[edge.A]]++; lengths[membership[edge.A]] += edge.Length; }
             return GraphPage(Enumerable.Range(0, components.Length), a, i => new { id = i, nodeCount = components[i].Length, edgeCount = counts[i], totalLength = lengths[i], cycleRank = counts[i] - components[i].Length + 1 }, ct);
         });
+        GraphTool("graph_cycles", "Page an independent fundamental cycle basis. Each closing edge identifies one cycle, including self loops and parallel-edge loops. Expand an individual cycle with graph_cycle. This does not enumerate every simple cycle or compute a minimum cycle basis.", Paging(), [], (g, a, ct) =>
+            GraphPage(g.CycleBasis(ct).Cycles, a, cycle => new { cycle.Id, cycle.ClosingEdge, cycle.Start, cycle.Ancestor, cycle.EdgeCount }, ct));
+        GraphTool("graph_cycle", "Inspect one fundamental cycle as a paged ordered closed path with source entities and occurrences. The final node repeats the start; its incoming edge closes the loop. Cycle IDs come from graph_cycles with the same identity and topology options.",
+            Paging(("cycle", Integer(0))), ["cycle"], (g, a, ct) =>
+            {
+                var cycle = a.GetProperty("cycle").GetInt32(); var path = g.CycleBasis(ct).Path(cycle, ct);
+                return new { cycle, path.Length, nodeCount = path.Nodes.Length, edgeCount = path.Edges.Length,
+                    steps = GraphPage(Enumerable.Range(0, path.Nodes.Length), a, i => new { index = i, node = DescribeNode(g.Nodes[path.Nodes[i]]), viaEdge = i == 0 ? null : DescribeEdge(g, g.Edges[path.Edges[i - 1]]) }, ct) };
+            });
+        GraphTool("graph_spanning_forest", "Find a minimum spanning forest weighted by sampled length and page its source-linked edges. Retains disconnected and isolated components, excludes self loops and breaks equal-weight ties by edge ID. Read-only analysis; no drawing edges are removed.", Paging(), [], (g, a, ct) =>
+        {
+            var forest = g.MinimumSpanningForest(ct);
+            return new { forest.ComponentCount, forest.Length, edgeCount = forest.Edges.Length,
+                steps = GraphPage(forest.Edges, a, id => DescribeEdge(g, g.Edges[id]), ct) };
+        });
         GraphTool("graph_features", "Page through dead ends, junctions, isolated nodes, articulation points (cut vertices), bridge edges, or topology/geometry diagnostics. Bridges identify single-edge disconnections; cycleRank is the number of independent cycles, not a list of simple cycles.",
             Paging(("kind", Enum("deadEnds", "junctions", "isolated", "bridges", "articulationPoints", "diagnostics"))), ["kind"], (g, a, ct) => RequiredString(a, "kind") switch
             {
