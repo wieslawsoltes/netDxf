@@ -1,5 +1,5 @@
 /** Renderer-independent graph presentation. Graph IDs are keys, never array indices. */
-export const graphLimits = Object.freeze({nodes:10000,edges:20000,resultItems:4000,resultPages:40,labels:300});
+export const graphLimits = Object.freeze({nodes:10000,edges:20000,projectionPages:40,resultItems:4000,resultPages:40,labels:300});
 export const graphColors = Object.freeze(['#5bc0eb','#ffba49','#9bc53d','#e879b9','#a99af5','#48d6bb','#fa9075','#a8c5ff','#d6d16e','#c39c79','#75cfec','#f7a8a8']);
 export const graphModes = Object.freeze({components:'Components',features:'Topology features',result:'Analysis result',topology:'Uniform topology'});
 const validId = value => Number.isSafeInteger(value) && value >= 0;

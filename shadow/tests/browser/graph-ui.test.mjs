@@ -169,3 +169,22 @@ test('graph thumbnails use revocable Blob URLs and legends require no inline sty
   const third=image().getAttribute('src');f.render.hide();assert.ok(revoked.includes(third));
   assert.equal(new Set(revoked).size,revoked.length);assert.deepEqual(created,revoked);
 });
+test('load remaining topology follows adaptive short-page cursors for both streams',async t=>{
+  const f=fixture(t),small=offset=>projection({nodes:{items:[{id:offset,x:offset,y:0}],total:4,nextOffset:offset<3?offset+1:null},edges:{items:[{id:offset,a:offset,b:offset+1,start:{x:offset,y:0},end:{x:offset+1,y:0},entity:'H:'+offset,length:1}],total:4,nextOffset:offset<3?offset+1:null}});
+  await loadProjection(f,small(0));const pending=byText(f.root,'Load remaining topology (bounded)').click();
+  for(let offset=1;offset<4;offset++){await tick();const request=f.reads.at(-1);assert.equal(request.options.body.arguments.nodeOffset,offset);assert.equal(request.options.body.arguments.edgeOffset,offset);assert.equal(request.options.body.arguments.graphKey,'build-a');request.resolve(f.receipt(small(offset)));}
+  await pending;assert.deepEqual(f.errors,[]);assert.equal(f.viewport.graph.nodes.length,4);assert.equal(f.viewport.graph.edges.length,4);assert.match(f.root.textContent,/Complete filtered topology/);assert.equal(byText(f.root,'Load remaining topology (bounded)').disabled,true);
+});
+test('load remaining respects forty-page budget and retains an honest resumable partial projection',async t=>{
+  const root=installDom(t),state={documentId:'d',workspaceId:'w',viewVersion:1,revision:0,layout:'Model'},requests=[],errors=[];
+  const client={state,key:'a',async read(path,{body}){const offset=body.arguments.nodeOffset;requests.push(offset);return {result:{...state,data:{layout:'Model',...projection({nodes:{items:[{id:offset,x:offset,y:0}],total:100,nextOffset:offset+1},edges:{items:[],total:0,nextOffset:null}})}}};}};
+  const viewport={camera:{},invalidate(){}},render=graphPalette({client,viewport,snapshot:()=>null,report:e=>errors.push(e)});render(root);
+  await byText(root,'Load topology').click();await byText(root,'Load remaining topology (bounded)').click();assert.equal(requests.length,41);assert.equal(viewport.graph.nodes.length,41);assert.match(root.textContent,/Stopped after 40 continuation pages/);assert.equal(byText(root,'Load remaining topology (bounded)').disabled,false);assert.deepEqual(errors,[]);
+});
+test('clear, hide, parameter and drawing changes fence load-remaining continuations',async t=>{
+  for(const change of ['clear','hide','input','drawing']){
+    const f=fixture(t);await loadProjection(f,projection({nodes:{items:[],total:2,nextOffset:0}}));const pending=byText(f.root,'Load remaining topology (bounded)').click();await tick();
+    if(change==='clear')f.render.clearOverlay();else if(change==='hide')f.render.hide();else if(change==='input'){const input=byLabel(f.root,'Endpoint tolerance');input.value='.2';await input.dispatch('input');}else f.client.key='new';
+    f.reads.at(-1).resolve(f.receipt(projection()));await pending;assert.equal(f.reads.length,2);assert.ok(f.viewport.graph===null||f.viewport.graph.nodes.length===0);assert.deepEqual(f.errors,[]);
+  }
+});

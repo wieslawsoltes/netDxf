@@ -95,6 +95,58 @@ def verify_graph_analysis(page, output, state, command, wait_state, idle, check)
     expect(content).to_contain_text('Minimum forest length 50 · 2 components · 5 edges')
     page.screenshot(path=str(output / 'graph-analysis.png'))
     verify_palette_ribbon(page, output, check)
+    verify_large_graph_projection(page, output, state, command, wait_state, idle, check)
+
+
+def verify_large_graph_projection(page, output, state, command, wait_state, idle, check):
+    """Use the real typed authoring API, then prove adaptive pages retain every source edge."""
+    before = state()['state']
+    created = page.evaluate('''() => shadowStudioAgentUi.execute('cad.edit', {
+      path:'command', body:{command:{name:'PLINE',points:Array.from({length:1301},(_,x)=>({x,y:100,z:0}))}}
+    })''')
+    wait_state(lambda data: data['state']['revision'] > before['revision'])
+    idle()
+    baseline = state()['state']
+    check('large graph source is one native undo transaction',
+          baseline['undoCount'] == before['undoCount'] + 1 and len(created['selectedEntities']) == 1)
+    page.evaluate("shadowStudioAgentUi.execute('palette.show', {name:'Graph'})")
+    content = page.locator('[data-palette="Graph"] .palette-content')
+    content.get_by_text('Projection filters', exact=True).click()
+    content.get_by_label('Projection root entity', exact=True).fill(created['selectedEntities'][0])
+    content.get_by_role('button', name='Load topology', exact=True).click()
+    expect(content).to_contain_text('Partial topology.')
+    expect(content).to_contain_text('/ 1301 nodes')
+    expect(content).to_contain_text('/ 1300 edges')
+    with page.expect_download() as downloaded:
+        content.get_by_role('button', name='Export graph JSON', exact=True).click()
+    first = json.loads(open(downloaded.value.path(), encoding='utf-8').read())['projection']
+    check('registry response budget returns honest adaptive graph pages',
+          first['partial'] and 0 < len(first['nodes']) < 1301 and 0 < len(first['edges']) < 1300)
+    content.get_by_role('button', name='Load remaining topology (bounded)', exact=True).click()
+    expect(content).to_contain_text('1301 / 1301 nodes', timeout=60000)
+    expect(content).to_contain_text('1300 / 1300 edges', timeout=60000)
+    expect(content).to_contain_text('Complete filtered topology loaded.')
+    expect(content.get_by_role('button', name='Load remaining topology (bounded)', exact=True)).to_be_disabled()
+    with page.expect_download() as downloaded:
+        content.get_by_role('button', name='Export graph JSON', exact=True).click()
+    complete = json.loads(open(downloaded.value.path(), encoding='utf-8').read())['projection']
+    check('adaptive graph continuation preserves all 1300 source edges without gaps or duplicates',
+          not complete['partial'] and len({node['id'] for node in complete['nodes']}) == 1301 and
+          len({edge['id'] for edge in complete['edges']}) == 1300 and
+          all(edge['rootEntity'] == created['selectedEntities'][0] for edge in complete['edges']))
+    after = state()['state']
+    check('large projection paging preserves source revision and undo history',
+          after['revision'] == baseline['revision'] and after['undoCount'] == baseline['undoCount'])
+    content.get_by_role('button', name='Fit graph', exact=True).click()
+    check('large graph overview decodes under CSP', content.locator('.graph-thumbnail').evaluate(
+        'async image => { await image.decode(); return image.complete && image.naturalWidth > 0; }'))
+    page.screenshot(path=str(output / 'graph-large-projection.png'))
+    content.get_by_role('button', name='Clear overlay', exact=True).click()
+    command('U')
+    check('large graph fixture restores the original drawing in one undo', state()['state']['undoCount'] == before['undoCount'])
+    page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette-reset'})")
+    expect(page.locator('[data-palette="Graph"]')).to_have_count(0)
+    page.get_by_role('tab', name='Home', exact=True).click()
 
 
 

@@ -91,14 +91,19 @@ export function graphPalette({client, viewport, report, snapshot, selectSources,
     loadCurrent=()=>loadTopology(false);
 
     function projectionValues(){return {...values,graphKey:undefined,component:values.projectionComponent,entity:values.projectionEntity,rootEntity:values.projectionRootEntity,occurrence:values.projectionOccurrence};}
-    async function loadTopology(more) {
-      const sequence=++projectionSequence,key=client.key,identity=graphIdentity(client.state),previous=more?projection:null;
+    function hasMore(scene){return scene&&((scene.nextNode!==null&&scene.nodes.length<graphLimits.nodes)||(scene.nextEdge!==null&&scene.edges.length<graphLimits.edges));}
+    async function loadTopology(more,remaining=false) {
+      const sequence=++projectionSequence,key=client.key,identity=graphIdentity(client.state),settings=projectionValues();let previous=more?projection:null,pages=0;
       requestSequence++;runButton.disabled=true;loadButton.disabled=true;overview.replaceChildren(el('p',{text:'Loading graph projection…'}));
       try{
-        const offsets=previous?{nodeOffset:previous.nodes.length>=graphLimits.nodes?previous.nodeTotal:previous.nextNode??previous.nodeTotal,edgeOffset:previous.edges.length>=graphLimits.edges?previous.edgeTotal:previous.nextEdge??previous.edgeTotal}:{};
-        const body=graphProjectionRequest({...projectionValues(),graphKey:previous?.graphKey},client.state,offsets),response=await client.read('graph/query',{body});
-        if(sequence!==projectionSequence||!current()||key!==client.key||!response)return;
-        const data=graphData(response,client.state);projection=mergeGraphProjection(previous,data);projectionIdentity=identity;buildKey=data.graphKey;buildIdentity=identity;overlayShown=true;
+        do{
+          const offsets=previous?{nodeOffset:previous.nodes.length>=graphLimits.nodes?previous.nodeTotal:previous.nextNode??previous.nodeTotal,edgeOffset:previous.edges.length>=graphLimits.edges?previous.edgeTotal:previous.nextEdge??previous.edgeTotal}:{};
+          const body=graphProjectionRequest({...settings,graphKey:previous?.graphKey},client.state,offsets),response=await client.read('graph/query',{body});
+          if(sequence!==projectionSequence||!current()||key!==client.key||!response)return;
+          const data=graphData(response,client.state);projection=mergeGraphProjection(previous,data);projectionIdentity=identity;buildKey=data.graphKey;buildIdentity=identity;overlayShown=true;previous=projection;pages++;
+          if(remaining)overview.replaceChildren(el('p',{class:'hint',text:`Loading remaining topology: ${pages} / ${graphLimits.projectionPages} pages · ${projection.nodes.length} / ${projection.nodeTotal} nodes · ${projection.edges.length} / ${projection.edgeTotal} edges. Clear overlay cancels.`}));
+        }while(remaining&&hasMore(projection)&&pages<graphLimits.projectionPages);
+        if(remaining&&hasMore(projection)&&pages===graphLimits.projectionPages)projection={...projection,pageBudgetReached:true};
         if(!more){result=null;selected=null;saved=null;output.replaceChildren(el('p',{class:'hint',text:'Topology loaded. Choose an analysis or inspect an item.'}));}
         apply();showVisual();
       }catch(error){if(sequence===projectionSequence&&current()&&key===client.key){overview.replaceChildren(el('p',{class:'diagnostic',text:error.message}));report(error);}}
@@ -111,13 +116,13 @@ export function graphPalette({client, viewport, report, snapshot, selectSources,
       const key=client.key,identity=projectionIdentity;
       const use=action=>()=>{if(!current()||identity!==graphIdentity(client.state)||key!==client.key)throw new Error('The drawing changed. Reload topology before using this view.');return action();};
       overview.append(el('div',{class:'graph-stats'},[el('strong',{text:`${projection.nodes.length} / ${projection.nodeTotal} nodes`}),el('strong',{text:`${projection.edges.length} / ${projection.edgeTotal} edges`}),el('span',{text:`Graph total: ${projection.componentCount??'—'} components · ${projection.cycleRank??'—'} independent cycles`})]));
-      overview.append(el('p',{class:projection.partial?'graph-partial':'hint',text:projection.partial?`Partial topology. Only loaded nodes and edges can be inspected or exported.${projection.capped?' Workspace display budget reached. Narrow the projection filters.':''}`:'Complete filtered topology loaded.'}));
+      overview.append(el('p',{class:projection.partial?'graph-partial':'hint',text:projection.partial?`Partial topology. Only loaded nodes and edges can be inspected or exported.${projection.capped?' Workspace display budget reached. Narrow the projection filters.':''}${projection.pageBudgetReached?` Stopped after ${graphLimits.projectionPages} continuation pages. Load remaining again to continue, or narrow the filters.`:''}`:'Complete filtered topology loaded.'}));
       const overviewScene=graphPresentation(projection,result,visual);
       thumbnailUrl=URL.createObjectURL(new Blob([graphSvg(overviewScene,{title:'Loaded graph overview',maximumEdges:1200,maximumNodes:600})],{type:'image/svg+xml'}));
       overview.append(el('img',{class:'graph-thumbnail',src:thumbnailUrl,alt:'Loaded graph overview. Use Fit graph to explore in the drawing.'}));
       if(overviewScene.edges.length>1200||overviewScene.nodes.length>600)overview.append(el('small',{class:'hint',text:'Overview thumbnail limited to 1,200 edges / 600 nodes; main viewport uses all loaded items.'}));
-      const more=(projection.nextNode!==null&&projection.nodes.length<graphLimits.nodes)||(projection.nextEdge!==null&&projection.edges.length<graphLimits.edges);
-      const actions=[button('Load more topology',use(()=>loadTopology(true)),{disabled:!more})];
+      const more=hasMore(projection);
+      const actions=[button('Load more topology',use(()=>loadTopology(true)),{disabled:!more}),button('Load remaining topology (bounded)',use(()=>loadTopology(true,true)),{disabled:!more})];
       if(download)actions.push(button('Export graph JSON',use(()=>download('graph-topology.json',JSON.stringify({identity:client.state,projection,result,visual},null,2),'application/json'))),button('Export graph SVG',use(()=>download('graph-topology.svg',graphSvg(graphPresentation(projection,result,visual)),'image/svg+xml'))));
       overview.append(el('div',{class:'toolbar'},actions));
       for(const entry of graphLegend(graphPresentation(projection,result,visual)))legend.append(el('span',{class:'graph-legend-item'},[el('i',{class:`graph-color-${entry.color.slice(1)}`,'aria-hidden':'true'}),el('span',{text:entry.label})]));
