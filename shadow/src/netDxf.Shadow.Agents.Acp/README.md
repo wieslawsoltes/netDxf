@@ -34,7 +34,7 @@ var result = await client.RequestAsync("session/prompt", JsonSerializer.Serializ
 }), cancellationToken);
 ```
 
-`AcpClient` also accepts caller-owned readable/writable streams and exposes `InitializeAsync`, which supports transport fixtures and custom transport hosting. `Completion` ends when the read transport closes; `IsConnected` exposes current liveness. JSON-RPC failures preserve the code, message and optional data in `AcpException`.
+`AcpClient` also accepts caller-owned readable/writable streams and exposes `InitializeAsync`, which supports transport fixtures and custom transport hosting. `Completion` ends when the read transport closes; `IsConnected` exposes current liveness and `ConnectionError` retains the first transport failure. An unexpected exit before initialization reports EOF rather than an apparent request cancellation. JSON-RPC failures preserve the code, message and optional data in `AcpException`.
 
 ## Supported protocol surfaces
 
@@ -61,7 +61,7 @@ The client does not aggregate tool patches or render rich content. Hosts retain/
 
 Configure the installed executable, argument array, workspace and optional environment **at companion startup**. Do not accept executable paths or process arguments from browser requests. The executable and working directory must be absolute. `ProcessStartInfo.ArgumentList` and `UseShellExecute = false` keep argument boundaries intact; there is no shell concatenation or automatic package installation.
 
-Only ordinary runtime/location environment variables are inherited (PATH, HOME, OS and XDG locations, temporary directories and locale). Provider keys and companion bridge tokens are not automatically copied. A host may explicitly supply environment entries in `AcpProcessOptions.Environment`; they must not be serialized into browser status, transcripts or logs. Agent-owned authentication storage remains owned by the configured agent: this client does not read or convert credential files.
+Only ordinary runtime/location environment variables are inherited (PATH, HOME, OS and XDG locations, temporary directories, locale, `DOTNET_ROOT` and architecture-specific variants, and `DOTNET_ROLL_FORWARD`). Preserving runtime locations allows framework-dependent agents to use an explicitly installed .NET runtime, including setup-dotnet installations on CI. Provider keys and companion bridge tokens are not automatically copied. A host may explicitly supply environment entries in `AcpProcessOptions.Environment`; they must not be serialized into browser status, transcripts or logs. Agent-owned authentication storage remains owned by the configured agent: this client does not read or convert credential files. Connection limits, arguments and explicit environment entries are validated before starting a child process.
 
 For Studio tools, the host may supply an authorized Studio MCP server in `session/new`/`load`/`resume`. ACP v1 stdio MCP entries contain `name`, absolute `command`, `args` and `env` and **omit `type`**. HTTP/SSE entries use a `type` field and require the agent to advertise the corresponding MCP capability. The companion remains responsible for authorization and scope of that MCP endpoint.
 

@@ -36,6 +36,8 @@ internal static class Fixture
                         agentCapabilities = scenario == "minimal" ? J(new { }) : J(new { loadSession = true, auth = new { logout = new { } }, sessionCapabilities = new { list = new { }, delete = new { }, resume = new { }, close = new { } } }),
                         authMethods = new object[] { new { id = "login", name = "Agent login" }, new { id = "interactive", name = "External interactive login", type = "terminal", args = new[] { "--login" } } },
                         secretInherited = Environment.GetEnvironmentVariable("SHADOW_AGENT_BRIDGE_TOKEN") is not null,
+                        runtimeEnvironment = new[] { "DOTNET_ROOT", "DOTNET_ROOT_X64", "DOTNET_ROOT_X86", "DOTNET_ROOT_ARM64", "DOTNET_ROOT(x86)", "DOTNET_ROLL_FORWARD" }
+                            .ToDictionary(name => name, Environment.GetEnvironmentVariable),
                         clientCaps = p.GetProperty("clientCapabilities")
                     }); break;
                 case "authenticate": authenticated = true; await Respond(requestId, new { }); break;

@@ -144,6 +144,13 @@ foreach (var failure in new[] { "malformed", "oversized", "eof" })
     await client.RequestAsync("session/new", Setup());
     await Throws<Exception>(() => client.RequestAsync("session/prompt", Prompt(failure)), "Transport rejects " + failure);
     Check(!client.IsConnected, "Transport failure is visible to host.");
+    Check(client.ConnectionError is not null, "Transport preserves the original failure for diagnostics.");
+    if (failure == "eof") Check(client.ConnectionError is EndOfStreamException, "Unexpected process exit is identified as EOF rather than a request timeout.");
+}
+await using (var disconnected = new AcpClient(Stream.Null, new MemoryStream()))
+{
+    await disconnected.Completion.WaitAsync(TimeSpan.FromSeconds(5));
+    await Throws<EndOfStreamException>(() => disconnected.InitializeAsync(), "A peer that exits before initialization reports its disconnect, not cancellation.");
 }
 await using (var client = await AcpClient.StartAsync(Launch("normal"), new()
 {
@@ -182,6 +189,24 @@ try
     Check(!client.Initialization.GetProperty("secretInherited").GetBoolean(), "Companion credentials not inherited by child.");
 }
 finally { Environment.SetEnvironmentVariable("SHADOW_AGENT_BRIDGE_TOKEN", oldSecret); }
+// Reexecute the framework-dependent apphost with only an explicit runtime installation,
+// as setup-dotnet does on macOS. Assert inheritance even on machines with a global runtime.
+var runtimeNames = new[] { "DOTNET_ROOT", "DOTNET_ROOT_X64", "DOTNET_ROOT_X86", "DOTNET_ROOT_ARM64", "DOTNET_ROOT(x86)", "DOTNET_ROLL_FORWARD" };
+var previousRuntime = runtimeNames.ToDictionary(name => name, Environment.GetEnvironmentVariable);
+var runtimeRoot = Directory.GetParent(System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory().TrimEnd(Path.DirectorySeparatorChar))!.Parent!.Parent!.FullName;
+try
+{
+    foreach (var name in runtimeNames) Environment.SetEnvironmentVariable(name, name == "DOTNET_ROLL_FORWARD" ? "LatestPatch" : runtimeRoot);
+    var apphost = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, OperatingSystem.IsWindows() ? ".exe" : null);
+    await using var client = await AcpClient.StartAsync(new(apphost, Path.GetTempPath(), ["--fixture", "environment"]));
+    var inherited = client.Initialization.GetProperty("runtimeEnvironment");
+    foreach (var name in runtimeNames)
+        Check(inherited.GetProperty(name).GetString() == Environment.GetEnvironmentVariable(name), "Inherits required runtime setting " + name);
+}
+finally { foreach (var (name, value) in previousRuntime) Environment.SetEnvironmentVariable(name, value); }
+await Throws<ArgumentOutOfRangeException>(() => AcpClient.StartAsync(Launch("normal"), options: new() { MaximumMessageBytes = 0 }), "Rejects invalid connection limits before launching a child.");
+await Throws<ArgumentException>(() => AcpClient.StartAsync(Launch("normal") with { Arguments = ["bad\0argument"] }), "Rejects invalid process arguments before launch.");
+await Throws<ArgumentException>(() => AcpClient.StartAsync(Launch("normal") with { Environment = new Dictionary<string, string> { ["invalid=name"] = "value" } }), "Rejects malformed child environment before launch.");
 Console.WriteLine($"{checks} ACP verification checks passed (local protocol fixtures; no provider credentials or network inference).");
 
 void Check(bool condition, string message) { Interlocked.Increment(ref checks); if (!condition) throw new InvalidOperationException(message); }

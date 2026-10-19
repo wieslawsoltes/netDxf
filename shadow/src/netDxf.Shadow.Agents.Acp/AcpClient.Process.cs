@@ -9,9 +9,16 @@ public sealed partial class AcpClient
     public static async Task<AcpClient> StartAsync(AcpProcessOptions launch, AcpClientServices? services = null,
         AcpConnectionOptions? options = null, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(launch);
+        (options ??= new()).Validate();
         AbsolutePath(launch.Executable, nameof(launch.Executable)); AbsolutePath(launch.WorkingDirectory, nameof(launch.WorkingDirectory));
         if (!File.Exists(launch.Executable)) throw new FileNotFoundException("ACP executable was not found.", launch.Executable);
         if (!Directory.Exists(launch.WorkingDirectory)) throw new DirectoryNotFoundException("ACP working directory was not found.");
+        if (launch.Arguments is { } arguments && (arguments.Count > 128 || arguments.Any(value => value is null || value.Length > 65536 || value.Contains('\0'))))
+            throw new ArgumentException("Invalid startup arguments.", nameof(launch));
+        if (launch.Environment is { } environment && (environment.Count > 128 || environment.Any(item =>
+            string.IsNullOrWhiteSpace(item.Key) || item.Key.Length > 256 || item.Key.Contains('=') || item.Key.Contains('\0') || item.Value is null || item.Value.Length > 65536 || item.Value.Contains('\0'))))
+            throw new ArgumentException("Invalid child environment.", nameof(launch));
         cancellationToken.ThrowIfCancellationRequested();
         var start = new ProcessStartInfo(launch.Executable)
         {
@@ -20,14 +27,19 @@ public sealed partial class AcpClient
             StandardInputEncoding = new UTF8Encoding(false), StandardOutputEncoding = new UTF8Encoding(false), StandardErrorEncoding = new UTF8Encoding(false)
         };
         // Carry only ordinary runtime/location settings. API keys and companion bridge tokens are not automatically inherited.
-        var runtimeEnvironment = new[] { "PATH", "HOME", "USER", "LOGNAME", "TMPDIR", "TMP", "TEMP", "LANG", "LC_ALL", "LC_CTYPE", "SystemRoot", "WINDIR", "USERPROFILE", "HOMEDRIVE", "HOMEPATH", "APPDATA", "LOCALAPPDATA", "PATHEXT", "COMSPEC", "XDG_CONFIG_HOME", "XDG_CACHE_HOME", "XDG_DATA_HOME", "XDG_RUNTIME_DIR" };
+        var runtimeEnvironment = new[] { "PATH", "HOME", "USER", "LOGNAME", "TMPDIR", "TMP", "TEMP", "LANG", "LC_ALL", "LC_CTYPE", "SystemRoot", "WINDIR", "USERPROFILE", "HOMEDRIVE", "HOMEPATH", "APPDATA", "LOCALAPPDATA", "PATHEXT", "COMSPEC", "XDG_CONFIG_HOME", "XDG_CACHE_HOME", "XDG_DATA_HOME", "XDG_RUNTIME_DIR", "DOTNET_ROOT", "DOTNET_ROOT_X64", "DOTNET_ROOT_X86", "DOTNET_ROOT_ARM64", "DOTNET_ROOT(x86)", "DOTNET_ROLL_FORWARD" };
         start.Environment.Clear();
         foreach (var name in runtimeEnvironment) if (System.Environment.GetEnvironmentVariable(name) is { } value) start.Environment[name] = value;
         foreach (var argument in launch.Arguments ?? []) start.ArgumentList.Add(argument);
         foreach (var (name, value) in launch.Environment ?? new Dictionary<string, string>()) start.Environment[name] = value;
-        var process = new Process { StartInfo = start };
-        if (!process.Start()) { process.Dispose(); throw new IOException("Could not start the ACP agent."); }
-        var client = new AcpClient(process.StandardOutput.BaseStream, process.StandardInput.BaseStream, services, options);
+        var process = Process.Start(start) ?? throw new IOException("Could not start the ACP agent.");
+        AcpClient client;
+        try { client = new AcpClient(process.StandardOutput.BaseStream, process.StandardInput.BaseStream, services, options); }
+        catch
+        {
+            try { if (!process.HasExited) process.Kill(entireProcessTree: true); } catch (InvalidOperationException) { }
+            process.Dispose(); throw;
+        }
         var errorPump = Task.Run(async () =>
         {
             var buffer = new char[4096];

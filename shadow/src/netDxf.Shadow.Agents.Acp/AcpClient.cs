@@ -16,6 +16,8 @@ public sealed partial class AcpClient : IAsyncDisposable
     private int initialized, disposed;
     public JsonElement Initialization { get; private set; }
     public Task Completion => rpc.Completion;
+    /// <summary>The first transport failure, if any, including unexpected EOF or a partial frame write.</summary>
+    public Exception? ConnectionError => rpc.ConnectionError;
     public bool IsConnected => Volatile.Read(ref disposed) == 0 && !rpc.Lifetime.IsCancellationRequested;
 
     /// <summary>Connects readable agent stdout and writable agent stdin. Call InitializeAsync before session methods.</summary>

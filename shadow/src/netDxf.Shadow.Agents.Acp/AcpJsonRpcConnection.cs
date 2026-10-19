@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Text.Json;
 
@@ -20,8 +21,10 @@ internal sealed class AcpJsonRpcConnection : IAsyncDisposable
     private long nextId, nextHandler;
     private readonly Task reader;
     private int disposed, pendingCount;
+    private Exception? failure;
     internal Task Completion => reader;
     internal CancellationToken Lifetime => stop.Token;
+    internal Exception? ConnectionError => Volatile.Read(ref failure);
     internal bool HasPending(JsonElement id) => id.ValueKind == JsonValueKind.String && pending.ContainsKey(id.GetString()!);
 
     internal AcpJsonRpcConnection(Stream input, Stream output, AcpConnectionOptions options,
@@ -36,7 +39,7 @@ internal sealed class AcpJsonRpcConnection : IAsyncDisposable
     internal async Task<JsonElement> RequestAsync(string method, JsonElement parameters, CancellationToken cancellationToken)
     {
         ObjectDisposedException.ThrowIf(Volatile.Read(ref disposed) != 0, this);
-        stop.Token.ThrowIfCancellationRequested(); cancellationToken.ThrowIfCancellationRequested();
+        ThrowIfFailed(); stop.Token.ThrowIfCancellationRequested(); cancellationToken.ThrowIfCancellationRequested();
         if (Interlocked.Increment(ref pendingCount) > options.MaximumPendingRequests)
         {
             Interlocked.Decrement(ref pendingCount);
@@ -49,6 +52,11 @@ internal sealed class AcpJsonRpcConnection : IAsyncDisposable
             if (!pending.TryAdd(id, result)) throw new InvalidOperationException("Duplicate request ID.");
             await SendAsync(new { jsonrpc = "2.0", id, method, @params = parameters }, cancellationToken).ConfigureAwait(false);
             return await result.Task.WaitAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (stop.IsCancellationRequested && ConnectionError is not null)
+        {
+            // Transport EOF must not be disguised as caller cancellation when the lifetime token wins the race.
+            ThrowIfFailed(); throw;
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested && !stop.IsCancellationRequested)
         {
@@ -73,7 +81,7 @@ internal sealed class AcpJsonRpcConnection : IAsyncDisposable
             await output.WriteAsync(new byte[] { 10 }, linked.Token).ConfigureAwait(false);
             await output.FlushAsync(linked.Token).ConfigureAwait(false);
         }
-        catch { stop.Cancel(); throw; } // A partial frame cannot safely be followed by another request.
+        catch (Exception error) { Fail(error); throw; } // A partial frame cannot safely be followed by another request.
         finally { writeGate.Release(); }
     }
 
@@ -107,8 +115,8 @@ internal sealed class AcpJsonRpcConnection : IAsyncDisposable
         catch (Exception error) { failure = error; }
         finally
         {
-            stop.Cancel();
-            foreach (var task in pending.Values) task.TrySetException(failure ?? new EndOfStreamException("ACP connection closed."));
+            if (!stop.IsCancellationRequested) Fail(failure ?? new EndOfStreamException("ACP connection closed."));
+            foreach (var task in pending.Values) task.TrySetException(ConnectionError ?? failure ?? new EndOfStreamException("ACP connection closed."));
             foreach (var cancellation in incoming.Values) CancelSafely(cancellation);
         }
     }
@@ -170,6 +178,14 @@ internal sealed class AcpJsonRpcConnection : IAsyncDisposable
         else throw new AcpException(-32600, "ACP response has neither result nor error.");
     }
     private static string IdKey(JsonElement id) => id.ValueKind == JsonValueKind.String ? "s:" + id.GetString() : "n:" + id.GetRawText();
+    private void Fail(Exception error)
+    {
+        Interlocked.CompareExchange(ref failure, error, null);
+        foreach (var task in pending.Values) task.TrySetException(ConnectionError!);
+        stop.Cancel();
+    }
+    private void ThrowIfFailed()
+    { if (ConnectionError is { } error) ExceptionDispatchInfo.Capture(error).Throw(); }
     private static void CancelSafely(CancellationTokenSource source) { try { source.Cancel(); } catch (ObjectDisposedException) { } }
 
     public async ValueTask DisposeAsync()
