@@ -267,46 +267,7 @@ namespace netDxf.Entities
         /// </remarks>
         public void Sync()
         {
-            var document = this.Owner?.Record.Owner?.Owner;
-            if (document != null)
-                foreach (Attribute attribute in this.attributes)
-                    if (!this.block.AttributeDefinitions.ContainsTag(attribute.Tag) && document.StoredTableReferencesRemoval(attribute))
-                        throw new InvalidOperationException("A stored TABLE references an attribute that synchronization would remove.");
-            List<Attribute> atts = new List<Attribute>();
-
-            // remove all attributes that have no attribute definition in the block
-            foreach (Attribute att in this.attributes)
-            {
-                string tag = att.Tag;
-                if (this.block.AttributeDefinitions.ContainsTag(tag))
-                {
-                    atts.Add(att);
-                }
-                else
-                {
-                    this.OnAttributeRemovedEvent(att);
-                    att.Handle = null;
-                    att.Owner = null;
-                }
-            }
-
-            // add any new attributes from the attribute definitions of the block
-            foreach (AttributeDefinition attdef in this.block.AttributeDefinitions.Values)
-            {
-                if (this.attributes.AttributeWithTag(attdef.Tag) == null)
-                {
-                    Attribute att = new Attribute(attdef)
-                    {
-                        Owner = this
-                    };
-
-                    atts.Add(att);
-                    this.OnAttributeAddedEvent(att);
-                }
-            }
-            this.attributes = new AttributeCollection(atts);
-
-            this.TransformAttributes();
+            this.SynchronizeAttributes();
         }
 
         /// <summary>
