@@ -107,7 +107,7 @@ namespace netDxf.Entities
         private Vector3 normal;
 
         private AttributeDefinition definition;
-        private readonly string tag;
+        private string tag;
         private string attValue;
         private TextStyle style;
         private Vector3 position;

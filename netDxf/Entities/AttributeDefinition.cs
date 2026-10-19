@@ -98,7 +98,7 @@ namespace netDxf.Entities
         private bool isVisible;
         private Vector3 normal;
 
-        private readonly string tag;
+        private string tag;
         private string prompt;
         private string attValue;
         private TextStyle style;

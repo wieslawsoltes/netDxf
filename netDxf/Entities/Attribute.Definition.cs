@@ -12,7 +12,7 @@ namespace netDxf.Entities
             this.layer = layer; this.linetype = linetype; this.style = style;
         }
 
-        /// <summary>Rebinds the definition without changing the instance's immutable tag, values or appearance.</summary>
+        /// <summary>Rebinds the definition without changing the instance's tag, values or appearance.</summary>
         /// <param name="definition">A definition with the same tag (case insensitive), or null to retain an orphan instance.</param>
         /// <remarks>This method does not add the definition to a block or transform geometry.
         /// It supports prepared block edits where definitions are attached later in the transaction.</remarks>

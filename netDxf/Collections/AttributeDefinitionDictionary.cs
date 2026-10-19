@@ -96,7 +96,7 @@ namespace netDxf.Collections
 
         #region private fields
 
-        private readonly Dictionary<string, AttributeDefinition> innerDictionary;
+        private Dictionary<string, AttributeDefinition> innerDictionary;
         private readonly List<AttributeDefinition> orderedDefinitions;
         private readonly ICollection<AttributeDefinition> orderedValues;
         private readonly List<string> orderedTags;
