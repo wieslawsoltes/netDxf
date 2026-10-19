@@ -59,9 +59,12 @@ exact pushed revision, including each operating-system and package-consumer job.
   values and membership, avoiding duplicate key edits during undo; a later
   rejected collection update also restores the original identities and session.
 - Fresh .NET 8 verification: 1,243 Advanced, 18 Shadow and 83 AgentNative checks.
-  Browser units: 397. Published native Chromium: 84. Published WebAssembly:
-  123 CAD checks across root/subpath hosting, with no API server requests.
+  Browser units: 397. Published native Chromium: 86. Published WebAssembly:
+  127 CAD checks across root/subpath hosting, with no API server requests.
   Independent ezdxf audit accepts the saved layer-state drawing without repairs.
+- Agent request schemas expose restore flags/defaults; semantic UI tools can
+  open the manager and submit the same identity-fenced layer-state transaction.
+  Graph analysis and command/ribbon visibility controls are also exposed.
 - Native and browser publishes and all 88 route contracts pass. These local
   results supplement the prior CI baseline; the next pushed revision requires
   its own complete hosted checks.

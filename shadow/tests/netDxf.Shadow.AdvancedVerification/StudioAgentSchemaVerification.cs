@@ -34,6 +34,11 @@ internal static class StudioAgentSchemaVerification
             var snap = Read(tools, new { type = "CadSnapRequest" }).GetProperty("schema").GetProperty("$defs")
                 .GetProperty("netDxf.Shadow.Studio.CadSnapRequest").GetProperty("properties").GetProperty("modes");
             Require(snap.GetProperty("type").GetString() == "integer" && !snap.TryGetProperty("enum", out _));
+            var layerState = Read(tools, new { type = "CadLayerStateRequest" }).GetProperty("schema").GetProperty("$defs")
+                .GetProperty("netDxf.Shadow.Drafting.LayerStateEdit").GetProperty("properties");
+            var fields = layerState.GetProperty("fields");
+            Require(fields.GetProperty("type").GetString() == "integer" && !fields.TryGetProperty("enum", out _));
+            Require(fields.GetProperty("default").GetInt32() == 991 && layerState.GetProperty("restoreCurrentLayer").GetProperty("default").GetBoolean());
         }));
         tests.Add(("Studio agent schema catalog is bounded searchable and complete", () =>
         {

@@ -87,3 +87,15 @@ def verify_layer_states(page, output, state, command, wait_state, idle, check):
     check('saved states survive reopen and can be deleted through the manager', not resources()['layerStates'])
     command('U')
     check('deleted layer states can be restored with undo', resources()['layerStates'][0]['name'] == 'Reviewed layers')
+    page.evaluate('''async () => await shadowStudioAgentUi.execute('ui.action', {name:'layer-states'},
+      document.getElementById('studio').dataset.document)''')
+    expect(page.get_by_label('Layer state name', exact=True)).to_have_value('Reviewed layers')
+    page.get_by_role('button', name='Cancel', exact=True).click()
+    check('agent UI tools can open the layer-state manager')
+    saved = resources()['layerStates'][0]
+    page.evaluate('''async id => await shadowStudioAgentUi.execute('cad.edit',
+      {path:'layer-state',body:{state:{action:'rename',id,name:'Agent layers'}}},
+      document.getElementById('studio').dataset.document)''', saved['id'])
+    idle()
+    check('agent CAD tools edit saved states through the same fenced transaction', resources()['layerStates'][0]['name'] == 'Agent layers')
+    command('U')
