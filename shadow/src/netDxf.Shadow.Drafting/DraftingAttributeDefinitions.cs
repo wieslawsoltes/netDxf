@@ -17,6 +17,18 @@ public sealed record AttributeDefinitionChanges(ImmutableArray<AttributeDefiniti
 public static class DraftingAttributeDefinitions
 {
     private const int Maximum = 10_000;
+    /// <summary>Resolves a local named definition or a real model/paper layout owner.</summary>
+    public static ShadowReader Owner(ShadowSnapshot snapshot, ObjectId block)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        if (snapshot.Layouts.Any(layout => layout["AssociatedBlock"].Id == block))
+        {
+            var root = snapshot.Read(block);
+            if (root.Object?.Kind == ShadowObjectKind.Block && snapshot.Document["Blocks"].Items.Any(item => item.Id == block)) return root;
+            throw new ArgumentException("The layout has no valid attribute owner.");
+        }
+        return DraftingBlocks.Definition(snapshot, block);
+    }
     public static ImmutableArray<DraftingAttributeDefinition> Read(ShadowSnapshot snapshot, ObjectId block) =>
         Definitions(snapshot, block).Select(d => new DraftingAttributeDefinition(DraftingAttributes.ReadFields(d),
             (DraftingAttributes.Flags(d) & 4) != 0, (DraftingAttributes.Flags(d) & 8) != 0,
@@ -36,7 +48,7 @@ public static class DraftingAttributeDefinitions
         if (edits.Any(e => e is null || !owned.Contains(e.Definition)) || edits.Select(e => e.Definition).Distinct().Count() != edits.Length
             || removals.Any(id => !owned.Contains(id)) || removals.Distinct().Count() != removals.Length
             || edits.Any(e => removed.Contains(e.Definition))) throw new ArgumentException("Choose unique, owned definitions to edit or remove.");
-        if (removals.Length > 0 && definitions.Length - removals.Length + additions.Length < 1)
+        if (removals.Length > 0 && definitions.Length - removals.Length + additions.Length < 1 && !snapshot.Layouts.Any(layout => layout["AssociatedBlock"].Id == block))
             throw new ArgumentException("A block attribute manager cannot remove the last definition.");
         foreach (var definition in definitions.Where(d => removed.Contains(d.Id!.Value) || edited.Contains(d.Id!.Value)))
             if (definition["Layer"]["IsLocked"].Boolean()) throw new InvalidOperationException("A definition is on a locked layer.");
@@ -69,6 +81,7 @@ public static class DraftingAttributeDefinitions
             ids = request.Order.ToList();
         }
         foreach (var id in removals) edit.Set(id, "Owner", ShadowValue.Null);
+        var created = ImmutableArray.CreateBuilder<ObjectId>();
         foreach (var creation in additions)
         {
             token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(creation);
@@ -98,7 +111,7 @@ public static class DraftingAttributeDefinitions
                 ("IsPositionLocked", creation.PositionLocked ? ShadowValue.From(true) : ShadowValue.Null), ("HasMText", ShadowValue.From(creation.Multiline)),
                 ("TextData", TextData(creation, style.Value)));
             var id = edit.Create("netDxf.Entities.AttributeDefinition", ShadowObjectKind.Object, properties);
-            ids.Add(id); tags.Add(id, tag);
+            ids.Add(id); tags.Add(id, tag); created.Add(id);
         }
         if (ids.Select(id => tags[id]).Distinct(StringComparer.OrdinalIgnoreCase).Count() != ids.Count)
             throw new ArgumentException("Attribute definition tags must be unique, ignoring case.");
@@ -118,12 +131,13 @@ public static class DraftingAttributeDefinitions
                     && !removed.Contains(definition.Id) && node["Tag"] is ShadowValue.Atom old && old.Text != tag)
                     edit.Set(node.Id, "Tag", S(tag));
         token.ThrowIfCancellationRequested(); edit.PruneUnreachable(); working = edit.Build().Apply(working);
-        return new("EDIT ATTRIBUTE DEFINITIONS", ShadowGraphPatch.Between(snapshot, working), []);
+        return new("EDIT ATTRIBUTE DEFINITIONS", ShadowGraphPatch.Between(snapshot, working),
+            snapshot.Layouts.Any(layout => layout["AssociatedBlock"].Id == block) ? created.ToImmutable() : []);
     }
 
     private static ShadowReader[] Definitions(ShadowSnapshot snapshot, ObjectId block)
     {
-        var root = DraftingBlocks.Definition(snapshot, block);
+        var root = Owner(snapshot, block);
         var definitions = root["AttributeDefinitions"].Items.Take(Maximum + 1).Select(e => e["Value"]).ToArray();
         if (definitions.Length > Maximum || definitions.Any(d => d.Type != "AttributeDefinition" || d["Owner"].Id != block)
             || definitions.Select(d => d.Id).Distinct().Count() != definitions.Length) throw new ArgumentException("The block has invalid or excessive attribute membership.");
@@ -143,7 +157,7 @@ public static class DraftingAttributeDefinitions
     private static ShadowValue TextData(AttributeDefinitionCreation input, ShadowValue style)
     {
         if (!input.Multiline && !input.PositionLocked) return ShadowValue.Null;
-        var fields = P(("Version", ShadowValue.Null), ("Kind", input.Multiline ? new ShadowValue.Atom("System.Int16", "4") : ShadowValue.Null),
+        var fields = P(("Version", input.Multiline ? new ShadowValue.Atom("System.Int16", "0") : ShadowValue.Null), ("Kind", input.Multiline ? new ShadowValue.Atom("System.Int16", "4") : ShadowValue.Null),
             ("SecondaryFlag", ShadowValue.Null), ("FieldLength", ShadowValue.Null), ("Locked", input.PositionLocked ? ShadowValue.From(true) : ShadowValue.Null),
             ("SecondaryAlignment", ShadowValue.Null), ("Auxiliary", new ShadowValue.Sequence([])), ("Content", ShadowValue.Null));
         if (input.Multiline)

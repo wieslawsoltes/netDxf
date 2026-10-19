@@ -11,6 +11,13 @@ public static class CadTextProjection
     private static readonly string[] Attachments = ["TopLeft", "TopCenter", "TopRight", "MiddleLeft", "MiddleCenter",
         "MiddleRight", "BottomLeft", "BottomCenter", "BottomRight"];
 
+    /// <summary>Drawing presentation uses the ATTDEF tag; editing still reads the stored default.</summary>
+    public static CadTextSource ReadDisplay(ShadowReader entity)
+    {
+        var source = Read(entity);
+        return entity.Type == "AttributeDefinition" ? source with { Text = source.Text with { Content = entity["Tag"].Text } } : source;
+    }
+
     public static CadTextSource Read(ShadowReader entity)
     {
         if (entity.Type is not ("Text" or "MText" or "Attribute" or "AttributeDefinition"))

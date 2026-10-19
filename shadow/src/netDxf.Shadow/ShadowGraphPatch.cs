@@ -150,11 +150,46 @@ public sealed class ShadowGraphEdit
         var owner = nodes[ownerBlock];
         if ((owner.Kind & ShadowObjectKind.Block) == 0) throw new ArgumentException("An entity must be owned by a block.");
         var values = properties.ToImmutableDictionary(StringComparer.Ordinal).SetItem("Owner", new ShadowValue.Reference(ownerBlock));
+        if (typeName == "netDxf.Entities.AttributeDefinition")
+        {
+            // Native ATTDEF is graphical but stored in the owner's keyed definition
+            // collection, not its EntityCollection. Preserve its captured Object kind.
+            var definitions = DefinitionMembers(ownerBlock);
+            if (values.GetValueOrDefault("Tag") is not ShadowValue.Atom tag || string.IsNullOrEmpty(tag.Text))
+                throw new ArgumentException("Attribute definitions require a tag.");
+            if (definitions.Any(value => value is ShadowValue.Structure pair && pair.Fields["Key"] is ShadowValue.Atom key && key.Text.Equals(tag.Text, StringComparison.OrdinalIgnoreCase)))
+                throw new ArgumentException("The destination already has this attribute tag. Edit the tag before copying the definition.");
+            var definition = Create(typeName, ShadowObjectKind.Object, values, identity);
+            var pairType = definitions.FirstOrDefault() is ShadowValue.Structure first ? first.TypeName :
+                "System.Collections.Generic.KeyValuePair`2[[System.String],[netDxf.Entities.AttributeDefinition]]";
+            ReplaceDefinitions(ownerBlock, definitions.Add(new ShadowValue.Structure(pairType,
+                ImmutableDictionary<string, ShadowValue>.Empty.Add("Key", tag).Add("Value", new ShadowValue.Reference(definition)))));
+            return definition;
+        }
         var id = Create(typeName, ShadowObjectKind.Entity, values, identity);
         var collection = owner["Entities"] is ShadowValue.Reference reference ? nodes[reference.Id]["$items"] : owner["Entities"];
         if (collection is not ShadowValue.Sequence sequence) throw new ArgumentException("Block entity collection is unavailable.");
         ReplaceSequence(ownerBlock, "Entities", sequence.Items.Add(new ShadowValue.Reference(id)));
         return id;
+    }
+
+    private ImmutableArray<ShadowValue> DefinitionMembers(ObjectId block)
+    {
+        var value = nodes[block]["AttributeDefinitions"];
+        if (value is ShadowValue.Reference reference) value = nodes[reference.Id]["$items"];
+        return value is ShadowValue.Sequence sequence ? sequence.Items : [];
+    }
+    private void ReplaceDefinitions(ObjectId block, ImmutableArray<ShadowValue> values)
+    {
+        if (nodes[block]["AttributeDefinitions"] is ShadowValue.Reference collection)
+        {
+            ReplaceSequence(collection.Id, "$items", values);
+            if (nodes[collection.Id]["Values"] is ShadowValue.Sequence)
+                ReplaceSequence(collection.Id, "Values", values.Cast<ShadowValue.Structure>().Select(pair => pair.Fields["Value"]));
+            if (nodes[collection.Id]["Tags"] is ShadowValue.Sequence)
+                ReplaceSequence(collection.Id, "Tags", values.Cast<ShadowValue.Structure>().Select(pair => pair.Fields["Key"]));
+        }
+        else Set(block, "AttributeDefinitions", new ShadowValue.Sequence(values));
     }
 
     /// <summary>
@@ -167,8 +202,14 @@ public sealed class ShadowGraphEdit
         ArgumentNullException.ThrowIfNull(identities);
         var removed = identities.ToImmutableHashSet();
         foreach (var id in removed)
-            if (!nodes.TryGetValue(id, out var node) || (node.Kind & ShadowObjectKind.Entity) == 0)
+            if (!nodes.TryGetValue(id, out var node) || (node.Kind & ShadowObjectKind.Entity) == 0 && node.Type != "AttributeDefinition")
                 throw new ArgumentException($"{id} is not an entity.");
+        foreach (var block in nodes.Values.Where(node => node.Kind == ShadowObjectKind.Block).Select(node => node.Id).ToArray())
+        {
+            var before = DefinitionMembers(block);
+            var after = before.Where(value => value is not ShadowValue.Structure pair || pair.Fields.GetValueOrDefault("Value") is not ShadowValue.Reference reference || !removed.Contains(reference.Id)).ToImmutableArray();
+            if (before.Length != after.Length) ReplaceDefinitions(block, after);
+        }
         foreach (var (id, node) in nodes.ToArray())
         {
             if (removed.Contains(id)) { nodes.Remove(id); continue; }

@@ -42,7 +42,7 @@ public static class DraftingAttributes
     }
 
     internal static DraftingPlan PlanDefinitionFields(ShadowSnapshot snapshot, ObjectId block, ImmutableArray<AttributeEdit> requests, CancellationToken token) =>
-        PlanFields(snapshot, DraftingBlocks.Definition(snapshot, block), requests, true, token);
+        PlanFields(snapshot, DraftingAttributeDefinitions.Owner(snapshot, block), requests, true, token);
 
     private static DraftingPlan PlanFields(ShadowSnapshot snapshot, ShadowReader root, ImmutableArray<AttributeEdit> requests, bool definitions, CancellationToken token)
     {

@@ -67,7 +67,7 @@ public sealed partial class StandardEntityProjector : IEntityProjector
             case "MText":
             case "Attribute":
             case "AttributeDefinition":
-                var source = CadTextProjection.Read(entity);
+                var source = CadTextProjection.ReadDisplay(entity);
                 geometry = new([], Text: source.Text);
                 var issues = new List<string>();
                 if (source.Style["FontFile"].Text.EndsWith(".shx", StringComparison.OrdinalIgnoreCase)) issues.Add("SHX text requires an external font projector; the default backend substitutes a system font.");

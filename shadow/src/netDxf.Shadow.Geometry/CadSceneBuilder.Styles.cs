@@ -32,7 +32,8 @@ public sealed partial class CadSceneBuilder
         var complex = byBlock ? parent?.Linetype?.MultiplyScale(entityScale) : CadLinetype.Read(linetype, entityScale * globalScale, normal);
         if (complex is not null && complex.Normal != normal) complex = complex with { Normal = normal };
         var visible = entity["IsVisible"].Boolean(true) && layer["IsVisible"].Boolean(true) && !layer["IsFrozen"].Boolean() && (parent?.Visible ?? true);
-        if (entity["Flags"].Text.Contains("Hidden", StringComparison.Ordinal)) visible = false;
+        // ATTDEF tags remain visible while authoring; Invisible controls inserted ATTRIBs.
+        if (entity.Type != "AttributeDefinition" && entity["Flags"].Text.Contains("Hidden", StringComparison.Ordinal)) visible = false;
         return new(argb, width, dash, visible, layer["Name"].Text) { Linetype = complex };
     }
 

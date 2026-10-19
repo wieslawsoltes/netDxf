@@ -39,8 +39,11 @@ public static class DraftingGuard
     public static ShadowReader Entity(ShadowSnapshot snapshot, ObjectId id, bool writable = true)
     {
         var entity = snapshot.Read(id);
-        if (entity.Object is not { } node || (node.Kind & ShadowObjectKind.Entity) == 0)
+        if (entity.Object is not { } node || (node.Kind & ShadowObjectKind.Entity) == 0 && node.Type != "AttributeDefinition")
             throw new ArgumentException($"{id} is not a drawing entity.");
+        if (node.Type == "AttributeDefinition" && (entity["Owner"].Id is not { } owner ||
+            !DraftingAttributeDefinitions.Owner(snapshot, owner)["AttributeDefinitions"].Items.Any(entry => entry["Value"].Id == id)))
+            throw new ArgumentException("The attribute definition is not owned by an editable drawing space.");
         if (writable && entity["Layer"]["IsLocked"].Boolean())
             throw new InvalidOperationException($"Layer '{entity["Layer"]["Name"].Text}' is locked.");
         return entity;

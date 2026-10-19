@@ -50,7 +50,7 @@ public sealed partial class ShxEntityProjector : ICacheableEntityProjector
             geometry = new(glyph.Contours); geometry = geometry.Transform(matrix); return true;
         }
         if (entity.Type is not ("Text" or "MText" or "Attribute" or "AttributeDefinition")) return false;
-        var source = CadTextProjection.Read(entity);
+        var source = CadTextProjection.ReadDisplay(entity);
         var file = source.Style["FontFile"].Text;
         var resource = fonts.Resolve(file);
         if (resource is null) return false;

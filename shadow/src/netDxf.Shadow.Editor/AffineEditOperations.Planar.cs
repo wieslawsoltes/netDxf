@@ -71,7 +71,8 @@ public static partial class AffineEditOperations
         }
         private void Text(ShadowReader entity, Affine3 transform)
         {
-            if (entity["HasMText"].Boolean()) throw new NotSupportedException("Embedded multiline attributes need a coordinated text-frame planner.");
+            if (entity["TextData"]["Content"].Exists) EmbeddedAttributeText(entity, transform);
+            else if (entity["HasMText"].Boolean()) throw new NotSupportedException("Embedded multiline attributes require their complete stored text packet.");
             var plane = Plane(entity, transform);
             var rotation = Affine3.RotateZ(entity["Rotation"].Number() * Math.PI / 180);
             var u = plane.Local.Direction(rotation.X);
@@ -84,6 +85,7 @@ public static partial class AffineEditOperations
             Number(entity, "WidthFactor", entity["WidthFactor"].Number(1) * u.Length / heightScale);
             Number(entity, "ObliqueAngle", Math.Atan2(Vec3.Dot(v, x), heightScale) * 180 / Math.PI);
             Thickness(entity, transform, plane.Normal);
+            if (entity["ProxyGraphics"].Exists) Set(entity, "ProxyGraphics", ShadowValue.Null);
         }
         private void MultilineText(ShadowReader entity, Affine3 transform)
         {
