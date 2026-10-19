@@ -368,6 +368,24 @@ internal static class Program
         Require(editor.Snapshot.DrawingEntities().Count() == 1, "Drafting undo failed.");
         editor.Redo();
         Require(editor.Snapshot.DrawingEntities().Count() == 2, "Drafting redo failed.");
+
+        var document = new DxfDocument(netDxf.Header.DxfVersion.AutoCad2018);
+        var source = new ShadowSession(document); var nativeEditor = new EditorSession(source);
+        var owner = source.Current.Layout()["AssociatedBlock"].Id!.Value;
+        var definitionPlan = DraftingAttributeDefinitions.Plan(source.Current, owner,
+            new(Add: [new("TAG", Value: "Cooling\nwater", Position: new(5, 10), Multiline: true)]));
+        var definitionId = definitionPlan.Created.Single();
+        Require(new CadSceneBuilder().Build(definitionPlan.Patch.Apply(source.Current)).Occurrences.Single().Geometry.Text!.Content == "TAG",
+            "Installed standalone attribute preview did not render its tag.");
+        definitionPlan.Execute(nativeEditor);
+        var definition = document.Layouts["Model"].AssociatedBlock.AttributeDefinitions["TAG"];
+        var grip = DraftingGrips.Read(source.Current, [definitionId]).Single();
+        DraftingGrips.Move(source.Current, definitionId, grip.Id, new(15, 30)).Execute(nativeEditor);
+        Require(definition.Position == new Vector3(15, 30, 0) && definition.GetMText().Position == definition.Position,
+            "Installed attribute grip lost an independent text frame.");
+        nativeEditor.Undo(); nativeEditor.Redo();
+        Require(ReferenceEquals(document.Layouts["Model"].AssociatedBlock.AttributeDefinitions["TAG"], definition) &&
+            definition.GetMText().Value == "Cooling\\Pwater", "Installed attribute history lost identity or content.");
     }
 
     private static void Dimensions()
