@@ -26,6 +26,7 @@ from blazor_studio_browser import static_host
 from browser_folder_checks import verify_browser_folder
 from browser_storage_checks import verify_browser_recovery_storage
 from browser_chat_layout_checks import verify_compact_chat_layout
+from browser_model_discovery_checks import verify_model_discovery
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / 'artifacts/blazor-agents'
@@ -138,7 +139,7 @@ def companion_fixture(origin, executable):
 def verify(base, mount, browser, passed, companion=None, upstream=None, native_workspace=None, upstream_requests=None):
     context = browser.new_context(viewport={'width': 1600, 'height': 1000}, accept_downloads=True)
     page = context.new_page(); page.set_default_timeout(30000)
-    errors, requests, replies, network = [], [], deque(), []
+    errors, requests, replies, network, discovery_requests = [], [], deque(), [], []
     page.on('pageerror', lambda error: errors.append(str(error)))
     page.on('request', lambda request: network.append(request.url))
     tag = 'root' if mount == '/' else 'subpath'
@@ -150,9 +151,28 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
 
     def provider(route):
         headers = {'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*',
-                   'Access-Control-Allow-Methods': 'POST,OPTIONS'}
+                   'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'}
         if route.request.method == 'OPTIONS':
             route.fulfill(status=204, headers=headers); return
+        if route.request.method == 'GET':
+            discovery_requests.append({'url': route.request.url, 'headers': route.request.headers})
+            if route.request.url.startswith('https://generativelanguage.googleapis.com/'):
+                payload = {'models': [
+                    {'name': 'models/fixture-gemini', 'displayName': 'Fixture Gemini',
+                     'inputTokenLimit': 131072, 'outputTokenLimit': 8192,
+                     'supportedGenerationMethods': ['generateContent']},
+                    {'name': 'models/fixture-embedding', 'displayName': 'Embedding only',
+                     'inputTokenLimit': 2048, 'supportedGenerationMethods': ['embedContent']}]}
+            elif route.request.url.startswith('https://api.openai.com/'):
+                payload = {'object': 'list', 'data': [{'id': 'fixture-manual', 'object': 'model',
+                                                      'owned_by': 'verification', 'created': 1}]}
+            else:
+                payload = {'data': [{'id': 'fixture-claude', 'display_name': 'Fixture Claude',
+                                    'type': 'model', 'created_at': '2026-01-01T00:00:00Z'},
+                                   {'id': 'fixture-claude-limits', 'display_name': 'Fixture Claude with limits',
+                                    'type': 'model', 'created_at': '2026-01-01T00:00:00Z',
+                                    'max_input_tokens': 200000, 'max_tokens': 8192}], 'has_more': False}
+            route.fulfill(status=200, headers=headers, json=payload); return
         requests.append({'url': route.request.url, 'headers': route.request.headers, 'body': route.request.post_data_json})
         if not replies:
             route.fulfill(status=400, headers=headers, json={'error': {'message': 'Unexpected provider request in verification.'}}); return
@@ -215,6 +235,7 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
               {'shadow_graph_edit', 'shadow_read', 'dxf_source_inspect', 'studio_routes', 'studio_ui',
                'studio_read', 'workspace_write', 'agent_plan'} <= names)
         check('tool schemas are available to the model and JSON console', all(tool['inputSchema']['type'] == 'object' for tool in catalog))
+        verify_model_discovery(page, invoke, check, discovery_requests, KEY, OUTPUT, tag)
         configure()
         replies.extend(['rate_limit', openai_stream(tool=('shadow_state', {}), call_id='state_1'),
                         openai_stream(tool=('workspace_write', {'path': 'src/analysis.cs', 'content': '// Built in .NET WASM\n', 'expectedVersion': 0}), call_id='file_1'),
@@ -228,6 +249,26 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
         check('provider token usage is visualized', any(event['type'] == 'usage' for event in state['events']))
         check('provider API credential is absent from browser storage and checkpoint',
               KEY not in invoke('AgentExport') and page.evaluate('(key) => !JSON.stringify({...localStorage,...sessionStorage}).includes(key)', KEY))
+
+        replies.extend([openai_stream(tool=('workspace_read', {'path': 'missing-error-fixture.txt'}), call_id='collapsed_error'),
+                        openai_stream('Missing file error recorded.')])
+        send('Inspect a missing workspace file and report the error.')
+        expect(page.get_by_role('log', name='Agent conversation and tool activity')).to_contain_text('Missing file error recorded.')
+        check('failed tool call completes its deterministic test turn', wait_idle()['status'] == 'completed')
+        error_card = page.locator('details.agent-tool-card.error').last
+        expect(error_card).to_be_visible()
+        expect(error_card).not_to_have_attribute('open', '')
+        check('failed tool arguments and results start collapsed')
+        error_card.locator('summary').click()
+        expect(error_card).to_have_attribute('open', '')
+        expect(error_card.locator('.agent-tool-body')).to_contain_text('missing-error-fixture.txt')
+        page.get_by_role('tab', name='Settings', exact=True).click()
+        page.get_by_role('tab', name='Conversation', exact=True).click()
+        expect(error_card).to_have_attribute('open', '')
+        check('manually opened tool error remains expanded across conversation renders')
+        error_card.locator('summary').click()
+        expect(error_card).not_to_have_attribute('open', '')
+        page.screenshot(path=str(OUTPUT / f'{tag}-collapsed-tool-error.png'), full_page=True)
 
         before = call('shadow_state'); original_count = before['data']['entities']
         created = call('shadow_graph_edit', {**identity(), 'description': 'Browser agent native CAD verification', 'operations': [
