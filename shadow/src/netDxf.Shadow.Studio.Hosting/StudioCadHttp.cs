@@ -24,6 +24,8 @@ public static class StudioCadHttp
                 ? StudioHttp.Presentation(context, state) : Results.Text("null", "application/json")));
         routes.MapPost("/{id}/command", (string id, StudioDocumentHub hub, HttpRequest http, CadCommandRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadCommand(request, token))));
+        routes.MapPost("/{id}/insert", (string id, StudioDocumentHub hub, HttpRequest http, CadInsertRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadInsert(request, token))));
         routes.MapGet("/{id}/modules", (string id, StudioDocumentHub hub, HttpRequest http) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadModules())));
         routes.MapPost("/{id}/modules/toggle", (string id, StudioDocumentHub hub, HttpRequest http, CadModuleToggleRequest request) =>

@@ -16,6 +16,7 @@ internal sealed partial class BrowserApplication
         Map("POST", "/api/cad/{id}/close", r => BrowserReply.Value(documents.Close(r.Parameter("id"), r.Identity(), r.Body<CadCloseDocumentRequest>())));
         Map("GET", "/api/cad/{id}/state", r => documents.Use(r.Parameter("id"), s => BrowserReply.Value(s.CadStateIfChanged(r.Optional("knownServer"), r.OptionalLong("knownChange")))));
         Cad("POST", "/api/cad/{id}/command", (s, r) => s.CadCommand(r.Body<CadCommandRequest>(), Token));
+        Cad("POST", "/api/cad/{id}/insert", (s, r) => s.CadInsert(r.Body<CadInsertRequest>(), Token));
         Cad("GET", "/api/cad/{id}/modules", (s, r) => s.CadModules());
         Cad("POST", "/api/cad/{id}/modules/toggle", (s, r) => s.CadSetModule(r.Body<CadModuleToggleRequest>()));
         Cad("POST", "/api/cad/{id}/modules/symbols", (s, r) => s.CadModuleSymbols(r.Body<CadModuleCatalogRequest>()));

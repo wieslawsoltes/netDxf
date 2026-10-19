@@ -63,6 +63,7 @@ public sealed partial class Studio
                     var proposal = JsonSerializer.SerializeToElement(CadEditPreview(Read<CadEditPreviewRequest>() with { Revision = Current.Revision }, token), StudioJson.CreateOptions());
                     CadEditPreviewApply(new(Current.Revision, proposal.GetProperty("previewId").GetString()!)); break;
                 case "command": CadCommand(new(Current.Revision, Read<DraftingCommand>()), token); break;
+                case "insert": CadInsert(Read<CadInsertRequest>() with { Revision = Current.Revision }, token); break;
                 case "layer": CadLayer(new(Current.Revision, Read<LayerEdit>())); break;
                 case "layer-state": CadLayerState(new(Current.Revision, Read<LayerStateEdit>()), token); break;
                 case "attributes": CadEditAttributes(Read<CadAttributeRequest>() with { Revision = Current.Revision }, token); break;

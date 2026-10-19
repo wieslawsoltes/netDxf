@@ -15,7 +15,7 @@ public sealed record CadAttributeSyncSummary(ObjectId Block, string BlockName, i
     int RemovedXData, int TextConversions, bool DetailsTruncated, ImmutableArray<AttributeSynchronizationReference> References);
 public sealed record CadEditOperation(string Kind, DraftingCommand? Command = null, ResourceEdit? Resource = null,
     LayerEdit? Layer = null, CadPreviewProperty? Property = null, string? Module = null, CadModuleCommandRequest? ModuleCommand = null,
-    CadAttributeSyncOperation? AttributeSync = null, CadAttributeDefinitionOperation? AttributeDefinitions = null);
+    CadAttributeSyncOperation? AttributeSync = null, CadAttributeDefinitionOperation? AttributeDefinitions = null, CadInsertOperation? Insert = null);
 public sealed record CadEditPreviewRequest(long Revision, string Description, ImmutableArray<CadEditOperation> Operations);
 public sealed record CadEditPreviewTokenRequest(long Revision, string PreviewId);
 
@@ -46,8 +46,10 @@ public sealed partial class Studio
                         if (SelectionCommands.Contains(command.Name?.Trim() ?? ""))
                             command = command with { Entities = AuthoringSelection(command.Entities, selected) };
                         else command = command with { Entities = [] };
-                        plan = activeBranch?.BlockRoot is { } root ? drafting.PlanInBlock(branch.Snapshot, command, root, token) : drafting.Plan(branch.Snapshot, command, layout, token);
+                        plan = PlanCadCommand(branch.Snapshot, command, token);
                         break;
+                    case "insert" when operation.Insert is { } insertion:
+                        plan = PlanInsert(branch.Snapshot, insertion, token); break;
                     case "module" when operation.Module is { } module && operation.ModuleCommand is { } moduleCommand:
                         if (activeBranch?.BlockRoot is not null) throw new InvalidOperationException("Finish block editing before previewing discipline objects.");
                         moduleCommand = moduleCommand with { Entities = AuthoringSelection(moduleCommand.Entities, selected) };
@@ -69,7 +71,7 @@ public sealed partial class Studio
                         var entity = DraftingGuard.Entity(branch.Snapshot, property.Entity);
                         branch.SetProperty(property.Entity, property.Property, ConvertInput(entity[property.Property].Value, property.Value));
                         break;
-                    default: throw new ArgumentException("Choose a typed command, module, resource, layer, property, attribute-sync or attribute-definitions preview operation with its matching payload.");
+                    default: throw new ArgumentException("Choose a typed command, insert, module, resource, layer, property, attribute-sync or attribute-definitions preview operation with its matching payload.");
                 }
                 if (plan is not null)
                 {

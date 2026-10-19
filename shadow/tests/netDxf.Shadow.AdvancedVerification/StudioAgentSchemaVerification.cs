@@ -88,6 +88,10 @@ internal static class StudioAgentSchemaVerification
             var preview = Read(tools, new { type = "CadEditPreviewRequest" }).GetProperty("schema").GetProperty("$defs");
             Require(preview.GetProperty("netDxf.Shadow.Studio.CadEditOperation").GetProperty("properties").TryGetProperty("attributeDefinitions", out _));
             Require(preview.TryGetProperty("netDxf.Shadow.Drafting.AttributeDefinitionCreation", out _));
+            var insertion = Read(tools, new { type = "CadInsertRequest" }).GetProperty("schema").GetProperty("$defs");
+            var assignment = insertion.GetProperty("netDxf.Shadow.NetDxf.InsertAttributeAssignment");
+            Require(assignment.GetProperty("required").EnumerateArray().Select(v => v.GetString()).ToHashSet().SetEquals(new[] { "definition", "value" }));
+            Require(preview.GetProperty("netDxf.Shadow.Studio.CadEditOperation").GetProperty("properties").TryGetProperty("insert", out _));
         }));
     }
     private static JsonElement Read(McpToolRegistry tools, object args)

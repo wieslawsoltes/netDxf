@@ -29,6 +29,19 @@ public static class AttributeSynchronization
 
     public static AttributeSynchronizationPlan Plan(ShadowSnapshot snapshot, ObjectId blockId,
         AttributeSynchronizationOptions? options = null, CancellationToken cancellationToken = default)
+        => PlanCore(snapshot, blockId, options, cancellationToken);
+
+    internal static ShadowGraphPatch Initialize(ShadowSnapshot snapshot, ObjectId insertId, CancellationToken token)
+    {
+        var insert = snapshot.Read(insertId);
+        if (insert.Type != "Insert" || insert["Attributes"].Items.Any())
+            throw new ArgumentException("Attribute initialization requires an empty INSERT.");
+        return PlanCore(snapshot, insert["Block"].Id ?? throw new ArgumentException("INSERT has no block definition."),
+            new(MaximumReferences: 1), token, insertId).Patch;
+    }
+
+    private static AttributeSynchronizationPlan PlanCore(ShadowSnapshot snapshot, ObjectId blockId,
+        AttributeSynchronizationOptions? options, CancellationToken cancellationToken, ObjectId? initializeInsert = null)
     {
         ArgumentNullException.ThrowIfNull(snapshot); cancellationToken.ThrowIfCancellationRequested(); options ??= new();
         if (options.MaximumReferences is < 1 or > 100_000 || options.MaximumAttributes is < 1 or > 1_000_000)
@@ -37,13 +50,14 @@ public static class AttributeSynchronization
         if (block.Type != "Block" || block["Name"].Text.StartsWith('*') || block["IsXRef"].Boolean()
             || !snapshot.Document["Blocks"].Items.Any(b => b.Id == blockId))
             throw new ArgumentException("Choose a local named block definition.");
-        var definitions = block["AttributeDefinitions"]["Values"].Items.Take(options.MaximumAttributes + 1).ToArray();
+        var definitions = block["AttributeDefinitions"].Items.Take(options.MaximumAttributes + 1).Select(e => e["Value"]).ToArray();
         if (definitions.Length > options.MaximumAttributes) throw new ArgumentException("Attribute definition budget exceeded.");
         var tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var definition in definitions)
             if (definition.Type != "AttributeDefinition" || definition["Owner"].Id != blockId || !tags.Add(definition["Tag"].Text))
                 throw new ArgumentException("The block has inconsistent attribute definitions.");
-        var inserts = snapshot.EntityIds.Select(snapshot.Read).Where(e => e.Type == "Insert" && e["Block"].Id == blockId)
+        var candidates = initializeInsert is { } initial ? new[] { snapshot.Read(initial) } : snapshot.EntityIds.Select(snapshot.Read);
+        var inserts = candidates.Where(e => e.Type == "Insert" && e["Block"].Id == blockId)
             .Take(options.MaximumReferences + 1).OrderBy(e => e.Id!.Value.Value, StringComparer.Ordinal).ToArray();
         if (inserts.Length > options.MaximumReferences) throw new ArgumentException("Block reference budget exceeded.");
         var conversion = new DetachedTextConversion(snapshot);
@@ -71,7 +85,7 @@ public static class AttributeSynchronization
             if (attributes.Any(a => a.Type != "Attribute" || a["Owner"].Id != insert.Id)
                 || attributes.Select(a => a.Id).Distinct().Count() != attributes.Length)
                 throw new ArgumentException("An INSERT has inconsistent attribute ownership.");
-            if (attributes.Any(a => a["Layer"]["IsLocked"].Boolean()) || lockedDefinitions)
+            if (initializeInsert is null && (attributes.Any(a => a["Layer"]["IsLocked"].Boolean()) || lockedDefinitions))
                 throw new InvalidOperationException("An attribute or destination definition uses a locked layer.");
             var nativeInsert = Insert.CreateWithAttributes(frame, Array.Empty<Att>());
             nativeInsert.Position = conversion.Value<Vector3>(insert["Position"]);
@@ -141,10 +155,11 @@ public static class AttributeSynchronization
             }
             var removed = attributes.Where(a => !tags.Contains(a["Tag"].Text)).Select(a => new AttributeSynchronizationRemoval(
                 a.Id!.Value, a["Tag"].Text, a["Value"].Text, a["TextData"]["Content"].Exists ? a["TextData"]["Content"]["Value"].Text : null)).ToImmutableArray();
-            edit.ReplaceSequence(insert.Id!.Value, "Attributes", membership);
+            if (insert["Attributes"].Exists) edit.ReplaceSequence(insert.Id!.Value, "Attributes", membership);
+            else edit.Set(insert.Id!.Value, "Attributes", new ShadowValue.Sequence(membership.ToImmutableArray()));
             edit.Set(insert.Id.Value, "ProxyGraphics", ShadowValue.Null);
             var xdata = insert["XData"]; var appIds = xdata["AppIds"].Items.Select(v => v.Text).ToImmutableArray();
-            if (appIds.Length > 0)
+            if (initializeInsert is null && appIds.Length > 0)
             {
                 edit.ReplaceSequence(insert.Id.Value, "XData", []);
                 edit.ReplaceSequence(xdata.Id!.Value, "Values", []);

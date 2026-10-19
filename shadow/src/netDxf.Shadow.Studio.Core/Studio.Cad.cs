@@ -69,8 +69,7 @@ public sealed partial class Studio
                 command = command with { Entities = command.Entities.IsDefaultOrEmpty ? selected : command.Entities };
             }
             else command = command with { Entities = [] };
-            var plan = activeBranch?.BlockRoot is { } root ? drafting.PlanInBlock(Current, command, root, token) :
-                drafting.Plan(Current, command, layout, token);
+            var plan = PlanCadCommand(Current, command, token);
             plan.Execute(editor);
             cadSelectionOrder = plan.Created.IsEmpty ? selected.Where(id => Current.Objects.ContainsKey(id)).ToImmutableArray() : plan.Created;
             editor.Select(DraftingQueries.Expand(Scene(), cadSelectionOrder));
