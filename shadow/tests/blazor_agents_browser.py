@@ -36,6 +36,39 @@ BRIDGE_TOKEN = 'verification-only-loopback-companion-token'
 STREAM_IDS = itertools.count(1)
 
 
+def read_tool_result(call, result, *, forbidden=()):
+    """Read the harness's bounded-result archive without skipping privacy checks."""
+    def check_private(value):
+        if any(secret in json.dumps(value, ensure_ascii=False) for secret in forbidden):
+            raise AssertionError('Credential appeared in a public tool result or archive page')
+
+    check_private(result)
+    if not result.get('truncated'):
+        return result
+    path, total = result['path'], result['totalCharacters']
+    if not isinstance(total, int) or not 0 < total <= 16 * 1024 * 1024:
+        raise AssertionError('Invalid tool result archive size')
+    chunks, offset, version = [], 0, None
+    while offset < total:
+        part = call('workspace_read', {'path': path, 'offset': offset, 'length': 1000})
+        check_private(part)
+        if version is None:
+            version = part['version']
+        # Workspace offsets count .NET UTF-16 code units, not Python code points.
+        count = len(part['content'].encode('utf-16-le', errors='surrogatepass')) // 2
+        if (part['path'] != path or part['offset'] != offset or part['totalCharacters'] != total
+                or part['version'] != version or not 0 < count <= min(1000, total - offset)
+                or part['hasMore'] != (offset + count < total)):
+            raise AssertionError('Tool result archive changed or did not advance consistently')
+        chunks.append(part['content'])
+        offset += count
+    text = ''.join(chunks)
+    check_private(text)  # Includes secrets that could straddle two archive pages.
+    value = json.loads(text)
+    check_private(value)
+    return value
+
+
 def openai_stream(text='Complete.', tool=None, call_id=None, *, finish=True, limited=False):
     call_id = call_id or f'call_browser_{next(STREAM_IDS)}'
     if tool is None and finish and not limited:
@@ -286,8 +319,13 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
         check('agent edits participate in native Studio undo', call('shadow_read', {'id': circle, 'path': '/Center/X'})['data']['value']['value'] == '20')
         call('shadow_redo', identity())
         check('agent edits participate in native Studio redo', call('shadow_read', {'id': circle, 'path': '/Center/X'})['data']['value']['value'] == '45')
-        ui = call('studio_ui_inspect')
-        check('semantic Studio inspection omits credential controls', KEY not in json.dumps(ui) and 'availableActions' in ui)
+        raw_ui = page.evaluate('() => shadowStudioAgentUi.snapshot()')
+        ui_receipt = call('studio_ui_inspect')
+        ui = read_tool_result(call, ui_receipt, forbidden=(KEY,))
+        check('semantic Studio inspection omits credential controls before runtime redaction',
+              KEY not in json.dumps(raw_ui) and 'availableActions' in raw_ui)
+        check('semantic Studio inspection remains readable through bounded tool results',
+              KEY not in json.dumps(ui) and 'availableActions' in ui and ui['ui']['controls'])
         routes = call('studio_routes', {'includeRequestTypes': True})
         discovered_routes = list(routes['routes'])
         next_offset = routes['nextOffset']
@@ -301,19 +339,8 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
         document_id = page.locator('#studio').get_attribute('data-document')
         cad_state = call('studio_read', {'path': f'/api/cad/{document_id}/state'})
         if cad_state.get('truncated'):
-            # Large CAD receipts are archived to keep model context bounded. Read
-            # the same immutable result through the advertised workspace paging.
-            receipt = cad_state
-            chunks = []
-            offset = 0
-            while offset < receipt['totalCharacters']:
-                part = call('workspace_read', {'path': receipt['path'], 'offset': offset, 'length': 1000})
-                if not part['content'] or part['offset'] != offset:
-                    raise AssertionError('CAD result archive did not advance')
-                chunks.append(part['content'])
-                offset += len(part['content'])
-            check('large CAD tool results remain available through bounded paging', offset == receipt['totalCharacters'])
-            cad_state = json.loads(''.join(chunks))
+            cad_state = read_tool_result(call, cad_state, forbidden=(KEY,))
+            check('large CAD tool results remain available through bounded paging')
         check('read-only Studio dispatcher reaches real CAD state',
               cad_state['state']['documentId'] == before['documentId'] and
               cad_state['state']['revision'] == call('shadow_state')['revision'])
@@ -671,8 +698,11 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
             check('browser commits optional versioned native file changes', (native_workspace / f'{tag}.txt').read_text() == 'Native browser write')
             executed = call('companion_workspace_execute', {'executable': 'dotnet', 'arguments': ['--version'], 'timeoutSeconds': 20})
             check('browser can execute the explicitly enabled native process tool', executed['exitCode'] == 0 and executed['standardOutput'].strip())
+            raw_ui = page.evaluate('() => shadowStudioAgentUi.snapshot()')
+            ui = read_tool_result(call, call('studio_ui_inspect'), forbidden=(KEY, BRIDGE_TOKEN))
             check('companion token is absent from checkpoint, public UI and browser storage',
-                  BRIDGE_TOKEN not in invoke('AgentExport') and BRIDGE_TOKEN not in json.dumps(call('studio_ui_inspect'))
+                  BRIDGE_TOKEN not in invoke('AgentExport') and BRIDGE_TOKEN not in json.dumps(ui)
+                  and BRIDGE_TOKEN not in json.dumps(raw_ui)
                   and page.evaluate('(key) => !JSON.stringify({...localStorage,...sessionStorage}).includes(key)', BRIDGE_TOKEN))
 
         page.get_by_role('tab', name='Conversation', exact=True).click()
