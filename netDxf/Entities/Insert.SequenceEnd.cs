@@ -14,6 +14,36 @@ namespace netDxf.Entities
         /// metadata and XData are editable through DxfObject; private SEQEND payloads are not modeled.</remarks>
         public DxfObject EndSequenceRecord { get { return this.SequenceEnd; } }
 
+        /// <summary>Restores an existing sequence terminator, or removes an unreferenced empty sequence.</summary>
+        /// <remarks>This supports identity-preserving edit history. The record must be a SEQEND
+        /// previously obtained from an INSERT, detached or already owned by this insertion.
+        /// A nonempty attribute sequence cannot have a null terminator.</remarks>
+        public void SetAttributeSequenceEnd(DxfObject record)
+        {
+            if (this.replacingAttributes) throw new InvalidOperationException("The attribute sequence cannot be changed from an attribute notification.");
+            var end = record as EndSequence;
+            if (record != null && end == null || end != null && end.Owner != null && !ReferenceEquals(end.Owner, this))
+                throw new ArgumentException("Choose a detached SEQEND or this insertion's existing terminator.", nameof(record));
+            if (end == null && this.attributes.Count != 0) throw new InvalidOperationException("A nonempty attribute sequence requires a terminator.");
+            if (ReferenceEquals(this.sequenceEnd, end)) return;
+            var document = this.Owner?.Record.Owner?.Owner;
+            var previous = this.sequenceEnd;
+            if (previous != null)
+            {
+                if (document != null && (previous.ExtensionDictionary != null || document.StoredTableReferencesRemoval(previous)
+                    || document.ExposedObjectReferences(previous).Count != 0))
+                    throw new InvalidOperationException("Stored drawing references prevent removing the sequence terminator.");
+                document?.UnregisterInsertSequenceEnd(this);
+                previous.Owner = null; previous.Handle = null;
+            }
+            this.sequenceEnd = end;
+            if (end != null)
+            {
+                end.Owner = this;
+                document?.RegisterInsertSequenceEnd(this);
+            }
+        }
+
         // Codec inspection must not materialize a source-owned sequence record.
         internal EndSequence ExistingSequenceEnd { get { return this.sequenceEnd; } }
 

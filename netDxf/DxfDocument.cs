@@ -937,8 +937,6 @@ namespace netDxf
                         this.textStyles.References[attribute.Style.Name].Add(attribute);
                         attribute.TextStyleChanged += this.Entity_TextStyleChanged;
                     }
-                    insert.AttributeAdded += this.Insert_AttributeAdded;
-                    insert.AttributeRemoved += this.Insert_AttributeRemoved;
                     //insert.BlockChanged += this.Insert_BlockChanged;
                     break;
                 case EntityType.Line:
@@ -1185,8 +1183,6 @@ namespace netDxf
             this.textStyles.References[att.Style.Name].Remove(att);
                         att.TextStyleChanged -= this.Entity_TextStyleChanged;
                     }
-                    insert.AttributeAdded -= this.Insert_AttributeAdded;
-                    insert.AttributeRemoved -= this.Insert_AttributeRemoved;
                     //insert.BlockChanged -= this.Insert_BlockChanged;
                     break;
                 case EntityType.Line:
@@ -1738,39 +1734,40 @@ namespace netDxf
             this.layers.References[e.NewValue.Name].Add(sender);
         }
 
-        private void Insert_AttributeAdded(Insert sender, AttributeChangeEventArgs e)
+        internal void RegisterInsertAttribute(Insert sender, Attribute attribute)
         {
             sender.EnsureSequenceEnd();
             this.RegisterInsertSequenceEnd(sender);
-            this.BindMetadataObject(e.Item);
-            this.NumHandles = e.Item.AssignHandle(this.NumHandles);
+            this.BindMetadataObject(attribute);
+            this.NumHandles = attribute.AssignHandle(this.NumHandles);
 
-            e.Item.Layer = this.layers.Add(e.Item.Layer);
-            this.layers.References[e.Item.Layer.Name].Add(e.Item);
-            e.Item.LayerChanged += this.Entity_LayerChanged;
+            var layer = this.layers.Add(attribute.Layer);
+            var linetype = this.linetypes.Add(attribute.Linetype);
+            var style = this.textStyles.Add(attribute.Style);
+            attribute.SetCanonicalResources(layer, linetype, style);
+            this.layers.References[attribute.Layer.Name].Add(attribute);
+            attribute.LayerChanged += this.Entity_LayerChanged;
 
-            e.Item.Linetype = this.linetypes.Add(e.Item.Linetype);
-            this.linetypes.References[e.Item.Linetype.Name].Add(e.Item);
-            e.Item.LinetypeChanged += this.Entity_LinetypeChanged;
+            this.linetypes.References[attribute.Linetype.Name].Add(attribute);
+            attribute.LinetypeChanged += this.Entity_LinetypeChanged;
 
-            this.RegisterAttributeMText(e.Item, e.Item.TextState, true);
-            e.Item.Style = this.textStyles.Add(e.Item.Style);
-            this.textStyles.References[e.Item.Style.Name].Add(e.Item);
-            e.Item.TextStyleChanged += this.Entity_TextStyleChanged;
+            this.RegisterAttributeMText(attribute, attribute.TextState, true);
+            this.textStyles.References[attribute.Style.Name].Add(attribute);
+            attribute.TextStyleChanged += this.Entity_TextStyleChanged;
         }
 
-        private void Insert_AttributeRemoved(Insert sender, AttributeChangeEventArgs e)
+        internal void UnregisterInsertAttribute(Attribute attribute)
         {
-            this.UnbindMetadataObject(e.Item);
-            this.layers.References[e.Item.Layer.Name].Remove(e.Item);
-            e.Item.LayerChanged -= this.Entity_LayerChanged;
+            this.UnbindMetadataObject(attribute);
+            this.layers.References[attribute.Layer.Name].Remove(attribute);
+            attribute.LayerChanged -= this.Entity_LayerChanged;
 
-            this.linetypes.References[e.Item.Linetype.Name].Remove(e.Item);
-            e.Item.LinetypeChanged -= this.Entity_LinetypeChanged;
+            this.linetypes.References[attribute.Linetype.Name].Remove(attribute);
+            attribute.LinetypeChanged -= this.Entity_LinetypeChanged;
 
-            this.UnregisterAttributeMText(e.Item, e.Item.TextState);
-            this.textStyles.References[e.Item.Style.Name].Remove(e.Item);
-            e.Item.TextStyleChanged -= this.Entity_TextStyleChanged;
+            this.UnregisterAttributeMText(attribute, attribute.TextState);
+            this.textStyles.References[attribute.Style.Name].Remove(attribute);
+            attribute.TextStyleChanged -= this.Entity_TextStyleChanged;
         }
 
         //private void Insert_BlockChanged(Insert sender, TableObjectChangedEventArgs<Block> e)

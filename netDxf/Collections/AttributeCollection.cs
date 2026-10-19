@@ -40,6 +40,12 @@ namespace netDxf.Collections
 
         private readonly List<Attribute> innerArray;
 
+        internal void ReplaceContents(IEnumerable<Attribute> attributes)
+        {
+            this.innerArray.Clear();
+            this.innerArray.AddRange(attributes);
+        }
+
         #endregion
 
         #region constructor
@@ -65,9 +71,17 @@ namespace netDxf.Collections
             this.innerArray = new List<Attribute>(attributes);
         }
 
+        internal AttributeCollection(IEnumerable<Attribute> attributes, netDxf.Entities.Insert owner) : this(attributes)
+        {
+            this.Owner = owner ?? throw new ArgumentNullException(nameof(owner));
+        }
+
         #endregion
 
         #region public properties
+
+        /// <summary>Gets the insertion owning this collection, or null for a standalone collection.</summary>
+        public netDxf.Entities.Insert Owner { get; }
 
         /// <summary>
         /// Gets the number of object contained in the collection.

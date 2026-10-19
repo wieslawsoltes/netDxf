@@ -25,6 +25,7 @@ internal static partial class Program
         RegisterAttributeMTextTests();
         RegisterAttributeTextDataTests();
         RegisterAttributeSynchronizationTests();
+        RegisterAttributeReplacementTests();
         RegisterDrawingCompatibilityTests();
         RegisterOpaqueObjectCode5Tests();
         RegisterHatchExplicitPeriodicTests();

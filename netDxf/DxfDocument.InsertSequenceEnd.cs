@@ -26,7 +26,7 @@ namespace netDxf
             }
             this.AddedObjects.Add(end.Handle, end);
         }
-        private void UnregisterInsertSequenceEnd(Insert insert)
+        internal void UnregisterInsertSequenceEnd(Insert insert)
         {
             EndSequence end = insert?.SequenceEnd;
             if (end == null) return;

@@ -1,7 +1,6 @@
 // Copyright (c) netDxf contributors. Licensed under the MIT License.
 using System;
 using System.Collections.Generic;
-using netDxf.Collections;
 
 namespace netDxf.Entities
 {
@@ -9,11 +8,10 @@ namespace netDxf.Entities
     {
         private void SynchronizeAttributes()
         {
+            if (this.replacingAttributes) throw new InvalidOperationException("Attribute synchronization cannot run from an attribute notification.");
             var document = this.Owner?.Record.Owner?.Owner;
-            var removed = new List<Attribute>();
             var retained = new List<Attribute>();
             var definitions = new List<AttributeDefinition>();
-            var added = new HashSet<Attribute>();
             var tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (Attribute attribute in this.attributes)
             {
@@ -21,7 +19,6 @@ namespace netDxf.Entities
                 {
                     if (document != null && document.StoredTableReferencesRemoval(attribute))
                         throw new InvalidOperationException("A stored TABLE references an attribute that synchronization would remove.");
-                    removed.Add(attribute);
                 }
                 else { retained.Add(attribute); definitions.Add(definition); tags.Add(attribute.Tag); }
             }
@@ -29,7 +26,7 @@ namespace netDxf.Entities
                 if (tags.Add(definition.Tag))
                 {
                     var attribute = new Attribute(definition) { Owner = this };
-                    retained.Add(attribute); definitions.Add(definition); added.Add(attribute);
+                    retained.Add(attribute); definitions.Add(definition);
                 }
             // Validate every transform before publishing membership or rebinding a
             // surviving attribute. Values and resource overrides remain independent.
@@ -38,19 +35,14 @@ namespace netDxf.Entities
             var prepared = new Attribute[retained.Count];
             for (int i = 0; i < retained.Count; i++)
                 prepared[i] = retained[i].PrepareDefinitionTransform(definitions[i], matrix, translation);
-            foreach (Attribute attribute in removed)
-            {
-                this.OnAttributeRemovedEvent(attribute); attribute.Handle = null; attribute.Owner = null;
-            }
+            var replacement = this.PrepareAttributeReplacement(retained);
             for (int i = 0; i < retained.Count; i++)
             {
                 Attribute attribute = retained[i];
                 attribute.Definition = definitions[i];
                 if (attribute.CommitInsertTransform(prepared[i])) this.ClearProxyGraphics();
-                if (added.Contains(attribute)) this.OnAttributeAddedEvent(attribute);
             }
-            this.attributes = new AttributeCollection(retained);
-            if (removed.Count != 0 || added.Count != 0) this.ClearProxyGraphics();
+            replacement.Apply();
         }
     }
 }

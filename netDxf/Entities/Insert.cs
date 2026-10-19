@@ -99,7 +99,7 @@ namespace netDxf.Entities
                 throw new ArgumentNullException(nameof(attributes));
             }
 
-            this.attributes = new AttributeCollection(attributes);
+            this.attributes = new AttributeCollection(attributes, this);
             foreach (Attribute att in this.attributes)
             {
                 if (att.Owner != null)
@@ -158,7 +158,7 @@ namespace netDxf.Entities
                 atts.Add(att);
             }
 
-            this.attributes = new AttributeCollection(atts);
+            this.attributes = new AttributeCollection(atts, this);
         }
 
         #endregion
@@ -328,51 +328,21 @@ namespace netDxf.Entities
         /// </remarks>
         public void TransformAttributes()
         {
-            // if the insert does not contain attributes there is nothing to do
-            if (this.attributes.Count == 0)
-            {
-                return;
-            }
-
+            if (this.replacingAttributes) throw new InvalidOperationException("Attribute geometry cannot be synchronized from an attribute notification.");
+            if (this.attributes.Count == 0) return;
             Matrix3 transformation = this.GetTransformation();
             Vector3 translation = this.Position - transformation * this.block.Origin;
-
-            if (this.attributes.Any(a => a.HasMText))
+            // Prepare every attribute before publishing any geometry, including
+            // single-line text. A late invalid definition must not partially edit.
+            var prepared = new Attribute[this.attributes.Count];
+            for (int i = 0; i < prepared.Length; i++)
             {
-                var prepared = new Attribute[this.attributes.Count];
-                for (int i = 0; i < prepared.Length; i++)
-                {
-                    Attribute current = this.attributes[i];
-                    if (current.Definition != null)
-                        prepared[i] = current.PrepareDefinitionTransform(current.Definition, transformation, translation);
-                }
-                for (int i = 0; i < prepared.Length; i++)
-                    if (prepared[i] != null && this.attributes[i].CommitInsertTransform(prepared[i])) this.ClearProxyGraphics();
-                return;
+                Attribute current = this.attributes[i];
+                if (current.Definition != null)
+                    prepared[i] = current.PrepareDefinitionTransform(current.Definition, transformation, translation);
             }
-            foreach (Attribute att in this.attributes)
-            {
-                AttributeDefinition attDef = att.Definition;
-                if (attDef == null)
-                {
-                    // do not modify attributes with no attribute definition.
-                    // They will need to be handle manually
-                    continue;
-                }
-
-                // reset the attribute to its default values
-                att.Position = attDef.Position;
-                att.Height = attDef.Height;
-                att.Width = attDef.Width;
-                att.WidthFactor = attDef.WidthFactor;
-                att.ObliqueAngle = attDef.ObliqueAngle;
-                att.Rotation = attDef.Rotation;
-                att.Normal = attDef.Normal;
-                att.IsBackward = attDef.IsBackward;
-                att.IsUpsideDown = attDef.IsUpsideDown;
-
-                att.TransformBy(transformation, translation);
-            }
+            for (int i = 0; i < prepared.Length; i++)
+                if (prepared[i] != null && this.attributes[i].CommitInsertTransform(prepared[i])) this.ClearProxyGraphics();
         }
 
         /// <summary>
