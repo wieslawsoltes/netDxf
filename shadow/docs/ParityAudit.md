@@ -94,14 +94,31 @@ exact pushed revision, including each operating-system and package-consumer job.
 ## Current implementation order
 
 1. Preserve green CI on every new pushed increment. Process-launch and browser
-   regressions were corrected; all 23 checks passed on `4565d7d5`, including the
-   attribute editor and membership/history APIs. Each new pushed revision needs its own checks.
-2. STRETCH/BREAK, graph cycle/forest access and external-agent context controls
-   have landed. Extend their coverage as related workflows are implemented.
-3. Continue block attributes, remaining layer workflows, drafting command/entity coverage and reusable
-   symbol/module workflows against the remaining rows above.
-4. Broaden per-feature regressions and provider interoperability evidence; repeat
-   the requirement audit before claiming overall completion.
+   regressions were corrected; all 23 checks passed on `0d768115`, including the
+   attribute editor, synchronization and definition ordering. Each new pushed revision needs its own checks.
+2. Finish definition identity/default construction, then implement shared
+   `BATTMAN`/`ATTDEF` authoring and explicit default-attribute insertion previews.
+   Continue block-library transfer, insertion/array workflows and supported
+   attributed/nonuniform explode cases with native and browser history tests.
+3. Complete remaining layers/styles and drafting workflows: filters/isolation,
+   layer-state transfer/restore settings, resource repair, viewport overrides,
+   text formatting, curve edits, transform variants, arrays and acquisition modes.
+   Extend ribbon discovery, keyboard navigation and accessibility with each command.
+4. Expand reusable symbols and toggleable P&ID/electrical/piping modules with
+   discipline authoring, tags/specifications/circuits, reports and project workflows.
+   Review the pump/tank drawing against authoritative standards editions and clauses.
+5. Build the native entity/property/method coverage inventory; close unsupported
+   Studio/MCP operations and preview paths. Expand reference-graph exploration,
+   query-to-selection, large-drawing evidence and geometry/health validation.
+6. Continue coding-chat editing/branching/search and long-conversation usability;
+   qualify installed-agent login/reconnect/protocol compatibility and repeatable
+   provider efficiency only through an explicitly permitted credential source.
+   Existing fixtures do not replace live account or cache-performance evidence.
+7. Review every requirement row, package boundary and supported workflow. Require
+   native/browser draw-edit-undo-save-reload evidence, independent DXF checks and
+   passing hosted CI on the exact final revision. Put reusable functionality in
+   shared libraries, using separate projects where appropriate, with host/module glue
+   in the application. Granular review, commits and CI apply throughout this sequence.
 
 Credentials supplied in conversation are neither used nor persisted. Paid testing
 remains disabled, with actual spend USD 0. Any later opt-in evaluation must retain
@@ -215,3 +232,37 @@ the user's cumulative USD 20 ceiling. There is no credential material in this au
 - The current focus remains the definition-attribute manager: tag rename, complete
   definition editing and shared `BATTMAN`/`ATTDEF` UI still need implementation.
   This foundation is not a claim that those workflows or full block parity are done.
+
+### Definition tag and binding foundation
+
+- Native prepared block tag renames support swaps and case changes while retaining
+  indexed objects, order, handles, defaults and resource registrations. Plans reject
+  destination collisions and changed source membership. Reversible native instance
+  binding changes preserve assigned values and independent embedded text packets.
+- Shadow structural patches coordinate definition keys and instance bindings after
+  removals and before additions. Branch previews, all-reference synchronization,
+  reuse of removed tags, insertion under a renamed definition's old tag and exact
+  rollback are covered. Retained objects keep native handles across undo/redo.
+- History can restore an exact stored instance binding that predates a definition-only
+  rename. An unrelated mismatched binding cannot be authorized by supplying a history
+  hint. New implicit INSERT attributes use proposed defaults, geometry, units, text modes,
+  renamed resources and MIRRTEXT; unsupported frames fail during preparation.
+- Review also repaired native block cloning so it retains insertion units, uniform-scale
+  and explode settings, plus external-reference paths. INSERT clones retain their unit
+  conversion. Text/binary fixtures exercise the copied metadata.
+- Definition-only edits deliberately leave instance tags unchanged. Renaming while
+  moving a definition between blocks is refused. These APIs are prerequisites for
+  the requested shared `BATTMAN`/`ATTDEF` UI; that UI and the remaining block workflows
+  are still open, as are the broader parity requirements above.
+- Detached insertion previews still need explicit expansion of omitted default attribute
+  nodes; source-side default construction is not evidence of complete preview geometry.
+- Embedded style copies are refreshed after resource edits and before registration,
+  preventing same-batch insertion from recreating a renamed style. Repeated undo/redo
+  retains the original canonical style identity.
+- Local verification: 1,370 Advanced checks, 190 native attribute cases, 688 INSERT
+  cases and nine block-clone cases pass. All five native target frameworks build.
+  Independent text/binary renamed-attribute DXF audits find no errors or repairs.
+  Published native Chromium passes 103 checks; clean standalone WASM passes 161
+  across root/subpath hosting. All 90 routes and 972 published assets validate.
+  Shadow and AgentNative pass 18 and 83 checks. The new revision still requires
+  its own hosted CI qualification.

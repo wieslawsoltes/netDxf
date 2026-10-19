@@ -60,6 +60,10 @@ cache separation, undo/redo and Studio save/discard have dedicated verification.
 The real-origin Chromium test authors, edits, saves, undoes and independently
 audits the resulting DXF using the real native backend.
 
+Native block and INSERT clones preserve block insertion units, uniform-scale and
+explode settings. Block clones also retain external-reference paths and modes;
+cloning does not attach the copy to the original document or layout.
+
 ## Integration contracts
 
 The existing `BlockSourceDisposition` numeric values remain Retain=0,
@@ -95,7 +99,49 @@ and removals. Pure reordering therefore preserves native handles through preview
 branch merge and undo/redo, including definitions referenced by other objects.
 Duplicate or mismatched dictionary tags are rejected before native membership edits.
 This is a reusable foundation for the forthcoming definition-attribute manager;
-it does not itself provide `BATTMAN`, `ATTDEF`, or tag renaming in Studio.
+it does not itself provide the shared `BATTMAN` or `ATTDEF` dialogs.
+
+`block.PrepareAttributeDefinitionRenames(renames)` accepts current-to-new tag
+pairs and returns a single-use `Apply()` plan. `RenameAttributeDefinitions` prepares
+and applies directly. The complete destination index is checked before changing
+anything, so tag swaps and case changes preserve definition objects, order,
+handles, resource references and defaults. Preparation refuses unknown, empty or
+colliding tags; applying refuses changed definition membership, order or tags.
+Membership notifications are not raised for renaming.
+
+For an instance that should follow a renamed definition, prepare
+`attribute.PrepareDefinitionBinding(newTag, definition)`, rename the definition,
+then call the binding change's `Apply()`. Assigned values, independent embedded
+text, appearance, object identity and handles remain intact. `Rollback()` restores
+the exact captured binding, including a binding that predates a definition-only
+rename. Changed instance bindings are refused. Definition-only renames leave
+instance tags unchanged; DXF reload resolves definition bindings by their tags.
+Native import/history consumers can explicitly set `allowTagMismatch` when preparing
+a stored binding. Shadow permits this only for the exact tag and definition pair
+in a source-owned historical snapshot; a history hint does not authorize arbitrary
+mismatched bindings.
+
+The source adapter handles these compound identities in structural graph patches.
+Update definition tags together with the owning dictionary's keys and tag view;
+explicitly update instance tags/bindings when those instances should follow. The
+adapter validates proposed names, releases actual removed membership, renames
+retained definitions and updates bindings, then adopts additions. This supports
+swaps, reuse of removed tags and adding a definition under a retained definition's
+old tag in one history operation. Undo restores the corresponding native objects.
+Renaming a definition while moving it to another block is currently refused.
+The shared definition-manager UI and `ATTDEF` authoring remain subsequent work.
+
+New source INSERTs with omitted attributes prepare their defaults from the proposed
+definition state. A single batch can edit tags, defaults, geometry, text modes,
+resource names or units and then insert the result. Preparation uses the proposed
+owner units and drawing MIRRTEXT policy and rejects unsupported text frames before
+live mutation. Attributes bind to the retained definitions before registration;
+custom registered INSERT factories keep their authored defaults. Unused definition
+XData, extension dictionaries and proxy payloads are not cloned for this preparation.
+Embedded styles are refreshed after resource edits, before registration, so their
+detached text packets do not recreate an old style name after a same-batch rename.
+This source construction step does not expand omitted attribute nodes in a detached
+preview; authoring planners must include those nodes for an explicit attribute preview.
 
 `EATTEDIT`, `ATTEDIT` and `ATE` open the shared instance editor. Its Attribute,
 Text options and Properties tabs edit values and supported appearance fields;
