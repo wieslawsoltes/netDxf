@@ -82,6 +82,21 @@ actual membership and does not clear unchanged reserved table entries.
 
 ## Instance attributes
 
+Native consumers can change definition order with
+`block.AttributeDefinitions.Reorder(definitions)`. Supply every current definition
+exactly once. Enumeration, tag/value views, cloned blocks and new insertions follow
+that order. Existing definitions retain their objects, handles, owners and resource
+registrations; existing INSERT attributes keep their current order until explicitly
+synchronized. No membership notifications are raised for a reorder. The native API
+allows constant definitions in the ordering; a prompt-oriented UI can restrict them.
+
+Shadow collection edits use this operation after applying only actual additions
+and removals. Pure reordering therefore preserves native handles through preview,
+branch merge and undo/redo, including definitions referenced by other objects.
+Duplicate or mismatched dictionary tags are rejected before native membership edits.
+This is a reusable foundation for the forthcoming definition-attribute manager;
+it does not itself provide `BATTMAN`, `ATTDEF`, or tag renaming in Studio.
+
 `EATTEDIT`, `ATTEDIT` and `ATE` open the shared instance editor. Its Attribute,
 Text options and Properties tabs edit values and supported appearance fields;
 Apply submits all authored differences as one undo operation. Multiline content

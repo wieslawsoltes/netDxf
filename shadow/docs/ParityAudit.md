@@ -198,3 +198,20 @@ the user's cumulative USD 20 ceiling. There is no credential material in this au
   authoring, extended transform coverage, annotation contexts, block-library
   transfer and the other remaining scope above are still open. CI must qualify
   the next pushed revision separately from the green `4565d7d5` baseline.
+
+### Definition ordering foundation
+
+- Native attribute-definition order is now explicit rather than dependent on
+  dictionary allocation slots. Reorder, live views, clone, new insertion and
+  text/binary DXF retain the requested order. Reordering preserves definition
+  objects, handles, ownership and resource references without membership events.
+- Shadow applies only actual definition additions/removals, then updates order.
+  Preview, branch synchronization and repeated undo/redo preserve retained native
+  identities. Duplicate or mismatched tag keys are rejected before detachment.
+- Local validation passes 184 attribute conformance cases, 688 INSERT cases,
+  1,355 Advanced checks and Release builds for all five native target frameworks.
+  Mixed addition/removal/order history and failed membership plans are covered.
+  Hosted CI still needs to qualify the new pushed revision separately.
+- The current focus remains the definition-attribute manager: tag rename, complete
+  definition editing and shared `BATTMAN`/`ATTDEF` UI still need implementation.
+  This foundation is not a claim that those workflows or full block parity are done.
