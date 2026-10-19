@@ -91,6 +91,20 @@ public sealed partial class ShadowSession
                     writes.Add((source, accessor, oldValue, newValue));
                 }
             }
+            // Deleting a definition also deletes its owned collection nodes, so there
+            // is no After node from which to prepare their membership delta. Release
+            // those entity references before removing the block records/resources.
+            // Otherwise deleting [parent, child] tries to remove a still-referenced
+            // child first, and undo of a library import can fail after partial removal.
+            foreach (var change in patch.Changes.Where(e => e.After is null && e.Before?.Kind == ShadowObjectKind.Block))
+            {
+                var block = (netDxf.Blocks.Block)Resolve(change.Id);
+                if (collectionSources.Add(block.Entities))
+                {
+                    var plan = SourceCollectionPlan.TryCreate(block.Entities, new ShadowValue.Sequence([]), resolver.Convert);
+                    if (plan is not null && !plan.IsNoOp) collections.Add(plan);
+                }
+            }
             foreach (var group in writes.GroupBy(w => w.Source, ReferenceEqualityComparer.Instance))
             {
                 if (group.Key is not ICloneable cloneable) continue;
@@ -219,7 +233,16 @@ public sealed partial class ShadowSession
                             bindings[id] = owned; capture.Bind(id, owned); return owned;
                         }
                     }
-                    source = ObjectFactories.Create(node, resolver!, out var initializeInsertAttributes);
+                    // Captured INSERTs expose an owned AttributeCollection reference;
+                    // authored INSERTs may instead supply the sequence inline. Constructor
+                    // arguments must use the proposed members before binding read-only
+                    // owned records such as SEQEND. Resolving the container itself here
+                    // would recurse through its not-yet-constructed insertion owner.
+                    var constructorNode = node;
+                    if (node.TypeName == "netDxf.Entities.Insert" && node["Attributes"] is ShadowValue.Reference attributes
+                        && target.Objects[attributes.Id]["$items"] is ShadowValue.Sequence members)
+                        constructorNode = node with { Properties = node.Properties.SetItem("Attributes", members) };
+                    source = ObjectFactories.Create(constructorNode, resolver!, out var initializeInsertAttributes);
                     if (initializeInsertAttributes) implicitInserts.Add((id, (netDxf.Entities.Insert)source));
                     bindings[id] = source; capture.Bind(id, source); return source;
                 }

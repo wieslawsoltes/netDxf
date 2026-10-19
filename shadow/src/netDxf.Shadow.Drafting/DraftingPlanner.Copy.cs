@@ -55,7 +55,9 @@ public sealed partial class DraftingPlanner
             var source = snapshot.Objects[old];
             // These are source identity/ownership bookkeeping, never copied as authored values.
             var properties = source.Properties.Where(p => p.Key is not ("Handle" or "Owner"))
-                .ToDictionary(p => p.Key, p => Value(p.Value, depth + 1), StringComparer.Ordinal);
+                .ToDictionary(p => p.Key, p => source.TypeName == "netDxf.Entities.Attribute" && p.Key == "Definition"
+                    ? p.Value // The copied INSERT shares its block, including its attribute definitions.
+                    : Value(p.Value, depth + 1), StringComparer.Ordinal);
             if (rootSet.Contains(old)) edit.AddEntity(owner, source.TypeName, properties, id);
             else edit.Create(source.TypeName, source.Kind, properties, id);
             return id;

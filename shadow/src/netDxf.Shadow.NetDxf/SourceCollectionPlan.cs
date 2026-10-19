@@ -28,7 +28,16 @@ internal sealed class SourceCollectionPlan
     {
         this.source = source;
         this.elementType = elementType;
-        AttachmentOrder = source is netDxf.Collections.ApplicationRegistries ? -1 : source is netDxf.Collections.EntityCollection ? 2 : IsTable(source.GetType()) ? 1 : 0;
+        AttachmentOrder = source switch
+        {
+            netDxf.Collections.ApplicationRegistries => -1,
+            netDxf.Collections.EntityCollection => 7,
+            netDxf.Collections.DimensionStyles or netDxf.Collections.MLineStyles => 6,
+            netDxf.Collections.BlockRecords => 5,
+            netDxf.Collections.Layers => 4,
+            netDxf.Collections.Linetypes => 3,
+            _ => IsTable(source.GetType()) ? 2 : 0
+        };
         array = source as Array;
         Before = ((IEnumerable)source).Cast<object?>().ToArray();
         After = after;

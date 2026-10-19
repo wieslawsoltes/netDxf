@@ -115,8 +115,15 @@ public sealed class ShadowObjectFactories
             return new netDxf.Entities.HatchBoundaryPath(
                 (netDxf.Entities.HatchBoundaryPath.Edge[])resolver.Convert(node["Edges"], typeof(netDxf.Entities.HatchBoundaryPath.Edge[]))!);
         if (type == typeof(netDxf.Entities.Insert) && node["Block"] is ShadowValue.Reference explicitBlock && node["Attributes"] is ShadowValue.Sequence)
-            return netDxf.Entities.Insert.CreateWithAttributes((netDxf.Blocks.Block)resolver.Resolve(explicitBlock.Id),
-                (netDxf.Entities.Attribute[])resolver.Convert(node["Attributes"], typeof(netDxf.Entities.Attribute[]))!);
+        {
+            var insert = netDxf.Entities.Insert.CreateWithAttributes((netDxf.Blocks.Block)resolver.Resolve(explicitBlock.Id),
+                Array.Empty<netDxf.Entities.Attribute>());
+            // Stored drawings can contain distinct attributes with equal tags. Exact
+            // graph reconstruction preserves those instances, unlike default authoring.
+            insert.ReplaceAttributes((netDxf.Entities.Attribute[])resolver.Convert(node["Attributes"], typeof(netDxf.Entities.Attribute[]))!);
+            if (node["EndSequenceRecord"] is ShadowValue.Reference) insert.EnsureAttributeSequenceEnd();
+            return insert;
+        }
         if (type == typeof(netDxf.Entities.Insert) && node["Block"] is ShadowValue.Reference definition && node["Attributes"] is ShadowValue.NullValue)
         {
             // Definition edits in this same patch have not reached the live block yet.
