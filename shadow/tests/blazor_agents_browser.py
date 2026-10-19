@@ -543,7 +543,7 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
         check('Task mode, progress and verification survive a browser checkpoint',
               saved_run['mode'].lower() == 'goal' and saved_run['phase'] == 'completed'
               and saved_run['verification'] == achieved['run']['verification'])
-        verify_compact_chat_layout(page, check, OUTPUT, tag)
+        verify_compact_chat_layout(page, check, OUTPUT, tag, circle)
         set_mode('normal')
 
         runtime = call('workspace_runtime')

@@ -8,7 +8,7 @@ import json
 from playwright.sync_api import expect
 
 
-def verify_compact_chat_layout(page, check, output, tag):
+def verify_compact_chat_layout(page, check, output, tag, attachment_entity):
     dock = page.locator('.agent-workspace')
     panel = page.locator('.agent-panel-chat')
     transcript = page.get_by_role('log', name='Agent conversation and tool activity')
@@ -18,6 +18,9 @@ def verify_compact_chat_layout(page, check, output, tag):
     mode = page.locator('details.agent-mode-menu')
     mode_summary = page.locator('.agent-mode-toggle')
     mode_popover = page.locator('.agent-mode-popover')
+    attachments = page.locator('details.agent-attachment-menu')
+    attachment_summary = page.locator('.agent-attachment-toggle')
+    attachment_popover = page.locator('.agent-attachment-popover')
     prompt = page.get_by_label('Message to coding agent', exact=True)
     metrics = []
 
@@ -34,6 +37,7 @@ def verify_compact_chat_layout(page, check, output, tag):
         expect(mode).not_to_have_attribute('open', '')
         expect(run_popover).not_to_be_visible()
         expect(mode_popover).not_to_be_visible()
+        expect(attachment_popover).not_to_be_visible()
         expect(page.get_by_label('Goal success criteria', exact=True)).not_to_be_visible()
 
     def inside_viewport(locator):
@@ -43,6 +47,10 @@ def verify_compact_chat_layout(page, check, output, tag):
 
     def capture(name):
         page.screenshot(path=str(output / f'{tag}-compact-{name}.png'), full_page=True)
+
+    def inside_transcript(locator):
+        value, area = locator.bounding_box(), transcript.bounding_box()
+        return value and value['x'] >= area['x'] - 1 and value['y'] >= area['y'] - 1 and value['x'] + value['width'] <= area['x'] + area['width'] + 1 and value['y'] + value['height'] <= area['y'] + area['height'] + 1
 
     try:
         page.get_by_role('tab', name='Conversation', exact=True).click()
@@ -74,7 +82,9 @@ def verify_compact_chat_layout(page, check, output, tag):
             metrics.append({'layout': name, 'viewport': page.viewport_size, 'dock': dock.bounding_box(),
                             'chat': area, 'transcript': conversation, 'transcriptHeightRatio': ratio})
             (output / f'{tag}-compact-layout.json').write_text(json.dumps(metrics, indent=2) + '\n', encoding='utf-8')
-            check(f'{name}: transcript occupies at least 45 percent of the conversation panel', ratio >= .45)
+            check(f'{name}: transcript occupies at least 65 percent of the conversation panel', ratio >= .65)
+            toolbar = panel.locator('.agent-chat-toolbar').bounding_box()
+            check(f'{name}: model, progress and context share one compact strip', toolbar['height'] <= 36 and run_summary.bounding_box()['y'] >= toolbar['y'] - 1 and panel.locator('.agent-context-meter').bounding_box()['y'] >= toolbar['y'] - 1)
             check(f'{name}: transcript and composer remain inside the viewport', inside_viewport(transcript) and inside_viewport(panel.locator('.agent-composer')))
             check(f'{name}: no persistent progress or mode overlay', not run.evaluate('(element) => element.open') and not mode.evaluate('(element) => element.open'))
             attach = page.get_by_role('button', name='Attach selected objects', exact=True)
@@ -90,9 +100,11 @@ def verify_compact_chat_layout(page, check, output, tag):
             page.keyboard.press('Enter')
             expect(run_popover).to_be_visible()
             same_transcript(conversation, f'{name}: opening progress does not shrink or move the transcript')
-            check(f'{name}: progress popover is contained in the viewport', inside_viewport(run_popover))
+            check(f'{name}: progress popover stays over the transcript, away from Stop and composer', inside_transcript(run_popover))
             expect(run_popover.locator('.agent-plan')).to_be_visible()
             expect(run_popover.locator('.agent-usage-strip')).to_be_visible()
+            expect(page.get_by_role('button', name='Import conversation', exact=True)).to_be_enabled()
+            expect(page.get_by_role('button', name='Export conversation', exact=True)).to_be_enabled()
             capture(name + '-progress')
             run_popover.locator('.agent-usage-strip').focus()
             page.keyboard.press('Escape')
@@ -113,7 +125,7 @@ def verify_compact_chat_layout(page, check, output, tag):
             expect(page.get_by_role('button', name='Apply mode', exact=True)).to_be_visible()
             same_transcript(conversation, f'{name}: opening goal controls does not shrink or move the transcript')
             check(f'{name}: mode popover opens above its composer control', mode_popover.bounding_box()['y'] + mode_popover.bounding_box()['height'] <= mode_summary.bounding_box()['y'] + 2)
-            check(f'{name}: mode popover is contained in the viewport', inside_viewport(mode_popover))
+            check(f'{name}: mode popover is contained in the transcript', inside_transcript(mode_popover))
             capture(name + '-mode')
             page.get_by_label('Goal success criteria', exact=True).focus()
             page.keyboard.press('Escape')
@@ -141,6 +153,38 @@ def verify_compact_chat_layout(page, check, output, tag):
             expect(prompt).to_be_focused()
             collapsed()
             same_transcript(conversation, f'{name}: dismissing popovers preserves conversation geometry')
+
+            # Select an actual native circle created by this fixture. Capture and
+            # remove it through production controls; no DOM/state injection.
+            page.evaluate("id => shadowStudioAgentUi.execute('selection.set', {entities:[id]})", attachment_entity)
+            attach.click()
+            expect(attachment_summary).to_have_attribute('aria-label', 'Review 1 attached drawing object')
+            expect(attachment_popover).not_to_be_visible()
+            same_transcript(conversation, f'{name}: capturing selection adds no composer height')
+            attachment_summary.focus()
+            page.keyboard.press('Enter')
+            expect(attachment_popover).to_be_visible()
+            check(f'{name}: attachment popover stays inside transcript', inside_transcript(attachment_popover))
+            attachment_popover.locator('.agent-reference>summary').click()
+            expect(attachment_popover.locator('.agent-reference[open] pre')).to_be_visible()
+            same_transcript(conversation, f'{name}: inspecting attachment metadata never shrinks chat')
+            capture(name + '-attachments')
+            mode_summary.click()
+            expect(attachment_popover).not_to_be_visible()
+            expect(mode_popover).to_be_visible()
+            attachment_summary.click()
+            expect(mode_popover).not_to_be_visible()
+            page.keyboard.press('Escape')
+            expect(attachment_popover).not_to_be_visible()
+            expect(attachment_summary).to_be_focused()
+            attachment_summary.click()
+            remove = attachment_popover.get_by_role('button', name='Remove Circle ', exact=False)
+            remove.focus()
+            page.keyboard.press('Enter')
+            expect(attachments).not_to_be_visible()
+            expect(attach).to_be_focused()
+            check(f'{name}: removing the final focused attachment restores Attach keyboard focus')
+            same_transcript(conversation, f'{name}: attachment removal preserves transcript geometry')
             if name == 'expanded-1600':
                 page.get_by_role('button', name='Restore docked workspace', exact=True).click()
     finally:

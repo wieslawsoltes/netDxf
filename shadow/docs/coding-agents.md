@@ -67,9 +67,15 @@ agent is working.
 | **Plan** | Investigate with read-only tools and publish a concrete plan. Drawing edits, file mutations, code execution and native commands remain blocked, including with Full access. | A published plan is ready for review; its implementation steps may remain pending. **Execute plan** explicitly switches to Normal and continues the same task. |
 | **Goal** | Work toward the entered **Goal success criteria**, using the task itself when that field is empty. Build a plan, perform the work and verify the result. | A nonempty plan has every step completed, and the agent supplies verification alongside its completion report. |
 
-The compact **Agent run progress** strip retains the outcome after a run stops.
-Open it to inspect the plan, activity, usage, outcome and Resume/Execute actions.
-Its scrollable details overlay the conversation instead of reserving chat space.
+The conversation has one compact toolbar for model, **Agent run progress** and
+context usage. Progress retains the outcome after a run stops. Open it to inspect
+the plan, activity, usage, outcome and Resume/Execute actions, or import/export a
+conversation. The two-row composer keeps Send/Stop beside the prompt and drawing,
+attachment and execution-mode controls below it. Attached drawing objects appear
+as a count; open that count to review, reveal or remove references.
+The scrollable progress, task-settings and attachment panels overlay the
+transcript instead of reserving chat space. They stay within its bounds when the
+dock is resized, keeping the composer accessible.
 Only one details panel opens at a time; Escape or its Close button dismisses it
 and restores focus to the control. Clicking elsewhere dismisses it without moving
 focus. Escape inside an open panel does not stop the agent. Send/Stop stay beside
