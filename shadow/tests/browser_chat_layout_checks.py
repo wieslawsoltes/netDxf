@@ -49,8 +49,14 @@ def verify_compact_chat_layout(page, check, output, tag, attachment_entity):
         page.screenshot(path=str(output / f'{tag}-compact-{name}.png'), full_page=True)
 
     def inside_transcript(locator):
-        value, area = locator.bounding_box(), transcript.bounding_box()
-        return value and value['x'] >= area['x'] - 1 and value['y'] >= area['y'] - 1 and value['x'] + value['width'] <= area['x'] + area['width'] + 1 and value['y'] + value['height'] <= area['y'] + area['height'] + 1
+        # Details visibility precedes its queued toggle event, which positions the
+        # overlay. Wait for that geometry, not just visibility or an arbitrary delay.
+        page.wait_for_function('''({overlay, conversation}) => {
+            const value = overlay.getBoundingClientRect(), area = conversation.getBoundingClientRect();
+            return value.width > 0 && value.height > 0 && value.left >= area.left - 1 &&
+                value.top >= area.top - 1 && value.right <= area.right + 1 && value.bottom <= area.bottom + 1;
+        }''', arg={'overlay': locator.element_handle(), 'conversation': transcript.element_handle()}, timeout=5000)
+        return True
 
     try:
         page.get_by_role('tab', name='Conversation', exact=True).click()
