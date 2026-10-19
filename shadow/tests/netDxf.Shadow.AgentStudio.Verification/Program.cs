@@ -29,6 +29,7 @@ async Task ExpectAsync<TException>(Func<Task> operation, string description) whe
 JsonElement Json(object value) => JsonSerializer.SerializeToElement(value, McpJson.Options);
 
 const string apiKey = "fixture-provider-credential-not-a-real-key";
+const string discoveryKey = "model-controller-fixture-only-key";
 const string companionToken = "fixture-companion-credential-not-a-real-token";
 var companionStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
 var companionCanceled = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -37,6 +38,8 @@ var builder = WebApplication.CreateSlimBuilder();
 builder.Logging.ClearProviders(); builder.WebHost.UseUrls("http://127.0.0.1:0");
 await using var host = builder.Build();
 // Provider calls in this executable are local fixtures, never requests to a billed service.
+host.MapGet("/v1/models", (HttpContext context) => context.Request.Headers.Authorization == "Bearer " + discoveryKey
+    ? Results.Json(new { data = new[] { new { id = "controller-fixture-model" } } }) : Results.Unauthorized());
 host.MapPost("/v1/responses", () => Results.Json(new { error = new { code = "invalid_api_key", message = "Fixture rejected inference.", type = "invalid_request_error" } }, statusCode: 401));
 host.MapGet("/workspace/tools", (HttpContext context) =>
 {
@@ -191,6 +194,7 @@ Assert((await routed.ExecuteAsync("studio_read", McpJson.Element(new { path = "/
     "callers cannot override the read alias with a mutating method");
 checks += await BrowserMcpVerification.RunAsync(endpoint, companionToken, () => Volatile.Read(ref companionExecutions));
 checks += await RunModeVerification.RunAsync();
+checks += await ModelDiscoveryControllerVerification.RunAsync(endpoint, discoveryKey);
 checks += await EditPreviewApprovalVerification.RunAsync();
 await host.StopAsync();
 Console.WriteLine($"Studio agent verification passed: {checks} checks covering lifecycle faults, stale drawing bindings, credential cleanup, native cancellation, browser MCP sessions and canonical route permissions.");

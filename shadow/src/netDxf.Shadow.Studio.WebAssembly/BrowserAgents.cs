@@ -10,6 +10,7 @@ public static partial class BrowserRuntime
 {
     [JSInvokable] public static object AgentCapabilities() => StudioAgentController.Capabilities();
     [JSInvokable] public static object AgentConfigure(StudioAgentConfiguration options) => App.Agents.Configure(options);
+    [JSInvokable] public static Task<AgentModelDiscoveryResult> AgentModels(string request) => App.Agents.ModelsAsync(request);
     [JSInvokable] public static object AgentSetDocument(string documentId) => App.Agents.SetDocument(documentId);
     [JSInvokable] public static object AgentStart(string prompt) => App.Agents.Start(prompt);
     [JSInvokable] public static Task<object> AgentStartPrompt(string prompt) => App.Agents.StartPromptAsync(JsonSerializer.Deserialize<AgentPrompt>(prompt, McpJson.Options) ?? throw new ArgumentException("Missing prompt."));

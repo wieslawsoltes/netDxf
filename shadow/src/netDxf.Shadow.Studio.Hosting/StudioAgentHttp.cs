@@ -77,6 +77,7 @@ public static class StudioAgentHttp
             {
                 case "capabilities": value = StudioAgentController.Capabilities(); break;
                 case "configure": value = agent.Configure(Get<StudioAgentConfiguration>(0)); break;
+                case "models": value = await agent.ModelsAsync(Get<string>(0), context.RequestAborted); break;
                 case "set-document": value = agent.SetDocument(Get<string>(0)); break;
                 case "start": value = agent.Start(Get<string>(0)); break;
                 case "start-prompt": value = await agent.StartPromptAsync(JsonSerializer.Deserialize<AgentPrompt>(Get<string>(0), McpJson.Options) ?? throw new ArgumentException("Missing prompt."), context.RequestAborted); break;
