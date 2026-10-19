@@ -13,7 +13,7 @@ corresponding end-to-end evidence cover their stated scope.
 | Rapid drawing creation, editing and a complete MCP toolset | Generic source/schema/collection/method tools, atomic drawing batches, typed Studio routes; MCP and AgentStudio verification programs | Build a per-native-entity/property/method coverage inventory, close unsupported authoring/editing shapes, and exercise them through actual Studio/MCP workflows. Generic reflection access alone does not prove safe full editing support. |
 | Full graph analysis in Studio | Nodes, edges, components, path/traversal, cut vertices/bridges, nearest node, diagnostics, fundamental cycles and minimum spanning forests share reusable algorithms and MCP tools | Broaden source-reference graph exploration and query-to-selection workflows; validate large real drawings and export/import analysis receipts. Geometric topology does not imply discipline connectivity. |
 | AutoCAD-like ribbon and command/log visibility | Adaptive ribbon panels, keyboard command workflow, independent command/history visibility, clean screen; browser tests | Continue command discoverability, keyboard navigation, focus/accessibility and small-screen validation as commands are added. |
-| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; native same-tag attribute rebinding; exact embedded-text snapshot editing/history | Dedicated attribute editor and undoable definition synchronization, block-library import/export, richer insertion previews, array references and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
+| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; native same-tag attribute rebinding; exact embedded-text snapshot editing/history; shared instance attribute editor with native/WASM save/reopen evidence | Undoable definition synchronization and definition-attribute editing, block-library import/export, richer insertion previews, array references and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
 | MOVE and other editing tools with drafting aids | MOVE/COPY/ROTATE/SCALE/MIRROR, basic topology edits, STRETCH/BREAK/BREAKATPOINT increment, object/grid snap, Ortho/polar/tracking; native and browser regressions | Extend entity/coordinate-system coverage for each command, curve trim/extend/offset, reference/copy variants of transforms, richer arrays, selection cycling and additional acquisition modes. Existing planar restrictions remain material. |
 | Full line, text style and layer UI | Managers expose supported table fields, complex linetypes, LIN import, fixed-height/font metadata, layer color/plot/lock/freeze/transparency; native layer-state save/update/rename/delete/selective restore with history and DXF persistence | Layer filters/isolation, saved-layer editing, persisted restore masks, LAS transfer, unresolved-resource repair, individual viewport overrides, plot-style workflows, text editing/formatting and externally referenced resource behavior. |
 | Token-efficient coding harness and provider caching | Bounded context/tool batches, caching configuration and usage, stable prefixes, checkpoint/compaction behavior; provider/agent fixtures | Verify supported provider/model combinations with opt-in real accounts, measure cache hits on repeated identical tasks, and compare quality/latency/cost. Fixtures do not establish actual provider cache performance. |
@@ -94,7 +94,8 @@ exact pushed revision, including each operating-system and package-consumer job.
 ## Current implementation order
 
 1. Preserve green CI on every new pushed increment. Process-launch and browser
-   regressions were corrected; all 23 checks passed on `8a52aa4a`.
+   regressions were corrected; all 23 checks passed on `61dab0da` before the
+   attribute-editor increment. Each new pushed revision needs its own checks.
 2. STRETCH/BREAK, graph cycle/forest access and external-agent context controls
    have landed. Extend their coverage as related workflows are implemented.
 3. Continue block attributes, remaining layer workflows, drafting command/entity coverage and reusable
@@ -105,3 +106,31 @@ exact pushed revision, including each operating-system and package-consumer job.
 Credentials supplied in conversation are neither used nor persisted. Paid testing
 remains disabled, with actual spend USD 0. Any later opt-in evaluation must retain
 the user's cumulative USD 20 ceiling. There is no credential material in this audit.
+
+### Attribute renderer and instance editor increment
+
+- Reusable text projection now uses the embedded attribute packet's content,
+  style, WCS position, normal, ordered direction/rotation, wrapping, attachment
+  and spacing. Native MTEXT conversion comparisons cover three normals, both
+  orientation orders and all nine attachments. SHX font lookup and projection
+  cache dependencies also follow the embedded style. Unsupported backgrounds and
+  vertical system-font text remain explicitly diagnosed.
+- `DraftingAttributes` produces immutable, previewable instance edits with one
+  undo operation. It validates ownership, selected INSERT, resource names,
+  locked layers, constant values, finite dimensions and supported field ranges.
+  Visible edits invalidate stale proxies; embedded edits retain fallback text.
+  The shared `EATTEDIT`/`ATTEDIT`/`ATE` dialog has Attribute, Text options and
+  Properties tabs, multi-attribute drafts, Apply, search and duplicate-tag notices.
+- Native and WASM routes, agent read/edit controls, request schema discovery and
+  portable owned-attribute workflow references use the same planner. Real browser
+  checks cover Apply/OK, undo/redo, agent edits, SVG output and DXF save/reopen.
+  Independent ezdxf audits report no errors or repairs and confirm separate
+  fallback text and unchanged definition defaults.
+- Local verification: 1,332 Advanced, 18 Shadow and 83 AgentNative checks;
+  406 browser unit checks; 97 published native Chromium checks; 149 standalone
+  WASM checks across root/subpath hosting without CAD API server requests.
+  Both Release publishes pass, with all 90 routes and 972 published assets checked.
+- This closes the dedicated instance-editor gap. Undoable Studio `ATTSYNC`,
+  definition-attribute authoring, multiline transform coverage, background fills,
+  annotation contexts and plot-style editing remain open. Full AutoCAD block
+  parity is not established by these tests.
