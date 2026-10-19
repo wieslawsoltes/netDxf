@@ -7,6 +7,7 @@ import urllib.error
 import urllib.request
 import ezdxf
 from playwright.sync_api import expect
+from browser_ui import ribbon_action
 
 
 def verify_exchange(page, url: str, output: Path, state, command, wait_state, idle, check):
@@ -16,7 +17,7 @@ def verify_exchange(page, url: str, output: Path, state, command, wait_state, id
     signature = lambda data: Counter((i['type'], i['layer'], i['count']) for i in data['items'])
     expected = signature(original)
     page.get_by_role('tab', name='Output', exact=True).click()
-    page.locator('[data-action="save-as"]').click()
+    ribbon_action(page, 'save-as', 'Output', 'Drawing')
     expect(page.locator('#dialog-title')).to_have_text('Save drawing as')
     page.get_by_role('combobox', name='Drawing format', exact=True).select_option('dwg')
     page.get_by_role('combobox', name='DWG version', exact=True).select_option('AC1032')

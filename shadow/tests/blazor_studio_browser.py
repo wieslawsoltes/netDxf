@@ -13,6 +13,8 @@ import time
 import traceback
 from urllib.parse import urlsplit
 import ezdxf
+from cad_modify_browser import verify_modify
+from graph_analysis_browser import verify_graph_analysis
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -156,7 +158,7 @@ def verify(base, mount, browser, passed):
         }''', {'path': f'/api/cad/{identifier}/state?knownServer={s["serverId"]}&knownChange={s["changeVersion"]}', 'headers': headers(s)})
         check('unchanged local state poll is a four-byte response', unchanged == 'null')
         json_transport = page.evaluate('''async path => {
-          const reply=await DotNet.invokeMethodAsync('netDxf.Shadow.Studio.Browser','Dispatch',
+          const reply=await DotNet.invokeMethodAsync('netDxf.Shadow.Studio.WebAssembly','Dispatch',
             {method:'GET',path,headers:{},body:null},null);
           if(!(reply.bytes instanceof Uint8Array))return false;
           const text=new TextDecoder('utf-8',{fatal:true}).decode(reply.bytes);
@@ -231,6 +233,8 @@ def verify(base, mount, browser, passed):
         command('U'); command('REDO')
         command('C 150,30 10'); command('H LINE 3 15 Normal'); command('HE CROSS 4 30 Outer')
         check('hatch authoring and editing', any(item['type'] == 'Hatch' for item in state()['items']))
+        verify_modify(page, OUTPUT, state, command, wait_state, idle, check)
+        verify_graph_analysis(page, OUTPUT, state, command, wait_state, idle, check)
         command('Z E', False)
         # Let the debounced render and image decode complete before recording evidence.
         # Correctness is asserted independently by the native state and render checks.

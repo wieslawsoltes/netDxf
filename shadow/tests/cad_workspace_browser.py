@@ -18,8 +18,11 @@ import time
 import traceback
 import urllib.request
 import ezdxf
+from browser_ui import ribbon_action, ribbon_item
 from cad_authoring_browser import verify_authoring
 from cad_exchange_browser import verify_exchange
+from cad_modify_browser import verify_modify
+from graph_analysis_browser import verify_graph_analysis
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -163,9 +166,14 @@ def verify(url: str, executable: str | None = None):
             check('held native center grip survives idle refresh and updates source coordinates',
                   abs(float(center['X'])-160) <= input_tolerance and
                   abs(float(center['Y'])-55) <= input_tolerance)
-            page.locator('[data-action="layer-new"]').first.click()
+            ribbon_action(page, 'layer-new', 'Home', 'Layers')
             page.get_by_role('textbox', name='Layer name', exact=True).fill('Fabrication')
             page.locator('#dialog-submit').click()
+            wait_state(lambda data: any(layer['name'] == 'Fabrication' for layer in data['layers']))
+            idle()
+            ribbon_item(page, '#current-layer', 'Home', 'Layers').select_option('Fabrication')
+            wait_state(lambda data: data['currentLayer'] == 'Fabrication')
+            command('LAYER', False)
             expect(page.get_by_role('checkbox', name='Fabrication Lock', exact=True)).to_be_visible()
             command('C 350,170 20')
             check('new entities use the chosen native layer', state()['items'][-1]['layer']=='Fabrication')
@@ -243,7 +251,7 @@ def verify(url: str, executable: str | None = None):
                 command('REGEN', False)
             page.get_by_role('tab', name='Output', exact=True).click()
             with page.expect_download() as download:
-                page.locator('[data-action="export-svg"]').click()
+                ribbon_action(page, 'export-svg', 'Output', 'Render export')
             svg = OUTPUT/'edited.svg'
             download.value.save_as(str(svg))
             check('native SVG export', b'<svg' in svg.read_bytes())
@@ -305,7 +313,7 @@ def verify(url: str, executable: str | None = None):
             check('independent block DXF audit has no errors or repairs',
                   not block_audit.errors and not block_audit.fixes and len(block_drawing.blocks['BrowserPart']) == 3 and
                   len(block_drawing.modelspace().query('INSERT')) == 1)
-            page.locator('[data-action="blocks"]').first.click()
+            ribbon_action(page, 'blocks', 'Insert', 'Blocks')
             page.get_by_role('button', name='Rename block BrowserPart', exact=True).click()
             page.get_by_role('textbox', name='New block name', exact=True).fill('RenamedBrowserPart')
             page.locator('#dialog-submit').click()
@@ -326,6 +334,8 @@ def verify(url: str, executable: str | None = None):
                   next(b for b in state()['blocks'] if b['name'] == 'RenamedBrowserPart')['entities'] == 5 and
                   next(b for b in state()['blocks'] if b['name'] == 'EditorHatch')['entities'] == 1)
             page.screenshot(path=str(OUTPUT/'blocks-workspace.png'))
+            verify_modify(page, OUTPUT, state, command, wait_state, idle, check)
+            verify_graph_analysis(page, OUTPUT, state, command, wait_state, idle, check)
             check('no uncaught JavaScript errors or CSP violations', not errors and not violations)
         except Exception:
             failure = traceback.format_exc()
