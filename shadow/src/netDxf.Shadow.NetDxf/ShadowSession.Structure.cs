@@ -43,7 +43,10 @@ public sealed partial class ShadowSession
             foreach (var change in patch.Changes.Where(e => e.After is not null))
             {
                 var source = Resolve(change.Id);
-                var method = change.Before is { } oldNode ? SourceMethodPlan.Create(source, oldNode, change.After!, source is netDxf.Tables.TextStyle && SourceMethodPlan.XDataGraphChanged(current, target, change.Id, patch)) : null;
+                var method = change.Before is { } oldNode
+                    ? SourceMethodPlan.AttributeMembership(source, oldNode, change.After!, current, target, resolver.Convert)
+                        ?? SourceMethodPlan.Create(source, oldNode, change.After!, source is netDxf.Tables.TextStyle && SourceMethodPlan.XDataGraphChanged(current, target, change.Id, patch))
+                    : null;
                 if (method is not null) methods.Add(method);
                 foreach (var (name, value) in change.After!.Properties)
                 {
