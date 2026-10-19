@@ -1,4 +1,7 @@
 using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using netDxf.Shadow.Graph;
 
@@ -10,9 +13,21 @@ public sealed partial class ShadowMcpTools
     private string? topologyLayout;
     private TopologyOptions? topologyOptions;
     private TopologyGraph? topology;
+    private sealed record GraphBuildKey(string Value);
+    private static readonly ConditionalWeakTable<TopologyGraph, GraphBuildKey> graphBuildKeys = new();
 
     private void InstallGraph(McpToolRegistry registry)
     {
+        GraphTool("graph_visualization", "Get bounded node and edge geometry pages with global component/feature annotations and exact source roots, definition entities and INSERT occurrences. Edge endpoints are embedded independently of node pagination. Page totals describe filters; summary counts describe the entire graph. Reuse graphKey and identity/options for every continuation or analysis highlight; refresh after a stale-key error.",
+            Fields(("nodeOffset", Integer(0)), ("nodeLimit", Integer(1, 5000)), ("edgeOffset", Integer(0)), ("edgeLimit", Integer(1, 10000)),
+                ("component", Integer(0)), ("entity", String()), ("rootEntity", String()), ("occurrence", String(8192))), [],
+            (g, a, ct) => g.Visualize(new()
+            {
+                NodeOffset = GetInt(a, "nodeOffset", 0), NodeLimit = GetInt(a, "nodeLimit", 2000),
+                EdgeOffset = GetInt(a, "edgeOffset", 0), EdgeLimit = GetInt(a, "edgeLimit", 4000), Component = OptionalInt(a, "component"),
+                Entity = GetString(a, "entity") is { } entity ? new ObjectId(entity) : null,
+                RootEntity = GetString(a, "rootEntity") is { } root ? new ObjectId(root) : null, Occurrence = GetString(a, "occurrence")
+            }, ct));
         GraphTool("graph_summary", "Analyze semantic drawing topology: connected components, independent cycle rank, bridges, articulation points, dead ends, junctions and total sampled length. Graph IDs are local to this receipt, layout and options; reuse those options and revision for follow-up queries.", [], [], (g, a, ct) =>
         {
             var components = g.ConnectedComponents(ct);
@@ -30,13 +45,13 @@ public sealed partial class ShadowMcpTools
                 return GraphPage(g.Nodes.Where(n => (node is null || n.Id == node) && (members is null || members.Contains(n.Id)) && n.Edges.Length >= minimum && n.Edges.Length <= maximum), a, DescribeNode, ct);
             });
         GraphTool("graph_edges", "Page through topology edges, endpoint coordinates, sampled lengths, source entity IDs and occurrence keys. Filter by edge, adjacent node, component, source entity or exact occurrence. Parallel edges and self loops are retained.",
-            Paging(("edge", Integer(0)), ("node", Integer(0)), ("component", Integer(0)), ("entity", String()), ("occurrence", String(8192))), [], (g, a, ct) =>
+            Paging(("edge", Integer(0)), ("node", Integer(0)), ("component", Integer(0)), ("entity", String()), ("rootEntity", String()), ("occurrence", String(8192))), [], (g, a, ct) =>
             {
                 var edge = OptionalInt(a, "edge"); if (edge is { } e && (uint)e >= (uint)g.Edges.Length) throw new ArgumentException("Unknown topology edge.");
                 var node = OptionalInt(a, "node"); if (node is { } n) CheckNode(g, n);
-                var members = ComponentMembers(g, a, ct); var entity = GetString(a, "entity"); var occurrence = GetString(a, "occurrence");
+                var members = ComponentMembers(g, a, ct); var entity = GetString(a, "entity"); var rootEntity = GetString(a, "rootEntity"); var occurrence = GetString(a, "occurrence");
                 return GraphPage(g.Edges.Where(e => (edge is null || e.Id == edge) && (node is null || e.A == node || e.B == node) &&
-                    (members is null || members.Contains(e.A)) && (entity is null || e.Entity.Value == entity) && (occurrence is null || e.Occurrence == occurrence)), a, e => DescribeEdge(g, e), ct);
+                    (members is null || members.Contains(e.A)) && (entity is null || e.Entity.Value == entity) && (rootEntity is null || e.RootEntity.Value == rootEntity) && (occurrence is null || e.Occurrence == occurrence)), a, e => DescribeEdge(g, e), ct);
             });
         GraphTool("graph_components", "Page through connected component summaries, node/edge counts, lengths and cycle ranks. Component IDs follow deterministic node order; query graph_nodes or graph_edges with component to page through members.", Paging(), [], (g, a, ct) =>
         {
@@ -103,6 +118,7 @@ public sealed partial class ShadowMcpTools
 
         void GraphTool(string name, string description, Dictionary<string, object> fields, string[] required, Func<TopologyGraph, JsonElement, CancellationToken, object> operation)
         {
+            fields.Add("graphKey", String(128));
             fields.Add("layout", String()); fields.Add("endpointTolerance", GraphNumber(0, true)); fields.Add("curveTolerance", GraphNumber(0, true));
             fields.Add("splitIntersections", Boolean()); fields.Add("respectElevation", Boolean());
             fields.Add("maximumSegments", Integer(1, 250000)); fields.Add("maximumCandidatePairs", Integer(1, 20000000));
@@ -125,9 +141,19 @@ public sealed partial class ShadowMcpTools
                         }
                         else graph = topology!;
                     }
+                    // A graph key identifies this exact cached build as well as its workspace/view/options.
+                    // Competing topology builds may expire it; never silently reinterpret numeric IDs.
+                    var identity = context.GetIdentity(snapshot);
+                    var graphKey = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
+                    {
+                        build = graphBuildKeys.GetValue(graph, _ => new(Guid.NewGuid().ToString("N"))).Value,
+                        identity.DocumentId, identity.WorkspaceId, identity.ViewVersion, snapshot.Revision, layout, options
+                    }, McpJson.Options))));
+                    if (GetString(args, "graphKey") is { } expectedKey && expectedKey != graphKey)
+                        throw new ShadowConflictException("The topology scope changed. Refresh graph visualization before reusing graph IDs.");
                     var result = McpJson.Element(operation(graph, args, ct));
                     var data = result.EnumerateObject().ToDictionary(p => p.Name, p => (object)p.Value, StringComparer.Ordinal);
-                    data.Add("layout", layout); data.Add("options", options);
+                    data.Add("layout", layout); data.Add("options", options); data.Add("graphKey", graphKey);
                     return data;
                 });
         }
@@ -145,7 +171,7 @@ public sealed partial class ShadowMcpTools
     private static int? OptionalInt(JsonElement args, string name) => args.TryGetProperty(name, out var value) ? value.GetInt32() : null;
     private static void CheckNode(TopologyGraph graph, int node) { if ((uint)node >= (uint)graph.Nodes.Length) throw new ArgumentException("Unknown topology node."); }
     private static object DescribeNode(GraphNode node) => new { node.Id, node.Position.X, node.Position.Y, node.Position.Z, degree = node.Edges.Length };
-    private static object DescribeEdge(TopologyGraph graph, GraphEdge edge) => new { edge.Id, edge.A, edge.B, edge.Length, entity = edge.Entity.Value, edge.Occurrence, start = graph.Nodes[edge.A].Position, end = graph.Nodes[edge.B].Position };
+    private static object DescribeEdge(TopologyGraph graph, GraphEdge edge) => new { edge.Id, edge.A, edge.B, edge.Length, entity = edge.Entity.Value, rootEntity = edge.RootEntity.Value, insertPath = edge.InsertPath.IsDefaultOrEmpty ? System.Array.Empty<string>() : edge.InsertPath.Select(id => id.Value).ToArray(), edge.Occurrence, start = graph.Nodes[edge.A].Position, end = graph.Nodes[edge.B].Position };
     private static HashSet<int>? ComponentMembers(TopologyGraph graph, JsonElement args, CancellationToken token)
     {
         if (OptionalInt(args, "component") is not { } component) return null;
