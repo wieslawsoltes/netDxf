@@ -24,7 +24,7 @@ public sealed partial class ShadowMcpTools
                 ("owner", String()), ("layout", String()), ("path", String(8192)), ("value", valueSchema), ("items", Array(valueSchema, 0, 10000)), ("ids", Array(String(), 1, 1000))),
             required = new[] { "op" }, additionalProperties = false
         };
-        Add(registry, "shadow_graph_edit", "Plan and apply ONE atomic structural editor transaction over ANY linked netDxf graph layer. Operations create/addEntity/set/replaceCollection/removeEntities/removeObject/pruneUnreachable. New nodes can have alias '@name' referenced by later ids or {$ref:'@name'}. Creation properties infer declared CLR types (e.g. Vector3 {X,Y,Z}); schema discovery lists constructor requirements. Ordered operations must maintain valid references. Native source adapter owns construction, collection ownership, validation, rollback and undo. preview checks the immutable graph only.", false,
+        Add(registry, "shadow_graph_edit", "Plan and apply ONE atomic structural editor transaction over ANY linked netDxf graph layer. Operations create/addEntity/set/replaceCollection/removeEntities/removeObject/pruneUnreachable. New nodes can have alias '@name' referenced by later ids or {$ref:'@name'}. Creation properties infer declared CLR types and construct inline objects/arrays; $type selects assignable public subtypes. At most 4096 new objects including inline children. Schema discovery lists constructor requirements. Ordered operations must maintain valid references. Native source adapter owns construction, collection ownership, validation, rollback and undo. preview checks the immutable graph only.", false,
             Fields(("description", String(512)), ("operations", Array(operation, 1, 256)), ("preview", Boolean())), ["operations"], GraphEdit);
         Add(registry, "shadow_undo", "Undo the last transaction in the active workspace, preserving native source synchronization and revision checks.", false, [], [],
             (a, e, s, ct) => { ct.ThrowIfCancellationRequested(); var after = e.Undo(); return new { changed = !ReferenceEquals(s, after), history = e.State }; });
@@ -76,6 +76,7 @@ public sealed partial class ShadowMcpTools
         var working = snapshot;
         var aliases = new Dictionary<string, ObjectId>(StringComparer.Ordinal);
         var operationCount = 0;
+        var createdCount = 0;
         foreach (var operation in args.GetProperty("operations").EnumerateArray())
         {
             token.ThrowIfCancellationRequested();
@@ -86,7 +87,10 @@ public sealed partial class ShadowMcpTools
                 case "addEntity":
                     var type = DxfTypeCatalog.Resolve(RequiredString(operation, "type"));
                     if (!DxfTypeCatalog.IsSourceConstructible(type)) throw new ArgumentException($"{type.FullName} cannot be constructed as a source object.");
-                    var properties = DxfTypeCatalog.ReadProperties(type, operation.TryGetProperty("properties", out var supplied) ? supplied : McpJson.EmptyObject, Resolve);
+                    var construction = new Construction(graphEdit, Resolve, token, createdCount);
+                    construction.CountObject();
+                    var properties = construction.Properties(type, operation.TryGetProperty("properties", out var supplied) ? supplied : McpJson.EmptyObject);
+                    createdCount = construction.Count;
                     ObjectId created;
                     if (op == "addEntity")
                     {
@@ -131,6 +135,7 @@ public sealed partial class ShadowMcpTools
         }
         var patch = ShadowGraphPatch.Between(snapshot, working);
         token.ThrowIfCancellationRequested();
+        ValidateCreatedAttachments(snapshot, patch, token);
         var preview = GetBool(args, "preview");
         var result = preview ? patch.Apply(snapshot) : editor.Execute(GetString(args, "description") ?? "Agent structural edit", patch);
         return new

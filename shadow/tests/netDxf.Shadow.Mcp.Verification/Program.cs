@@ -55,7 +55,8 @@ async Task<JsonElement> Success(string name, object? args = null, bool mutation 
     return Parse(result.Text);
 }
 
-Assert(registry.Tools.Count == 19, "Complete base MCP catalog is missing tools.");
+Assert(registry.Tools.Count >= 23 && new[] { "shadow_create_entities", "shadow_collection_edit", "dxf_methods", "dxf_method_call" }
+    .All(name => registry.Tools.Any(tool => tool.Name == name)), "Complete base MCP catalog is missing tools.");
 var state = await Success("shadow_state");
 Assert(state.GetProperty("documentId").GetGuid() == source.Current.DocumentId && state.GetProperty("data").GetProperty("objects").GetInt32() == source.Current.Objects.Count, "State omitted source identity/count.");
 Assert(state.GetProperty("data").GetProperty("mutationIdentityRequired").GetBoolean(), "Workspace identity requirement is not discoverable.");
@@ -233,4 +234,5 @@ var observedEdit = await observed.ExecuteAsync("shadow_edit", McpJson.Element(ne
 Assert(!observedEdit.IsError && circle.Radius == 7 && observedEditor.State.UndoCount == 1,
     "A host observation failure was incorrectly reported as a failed committed source mutation.");
 
-Console.WriteLine($"MCP verification passed: {checks} checks covering source/branch transactions, typed paths, schema discovery, bounded output, official MCP resources/prompts, concurrency and cancellation.");
+await DrawingVerification.Run(Assert);
+Console.WriteLine($"MCP verification passed: {checks} checks covering source/branch transactions, rapid drawing creation, inline construction, collection edits, method discovery, typed paths, bounded output, official MCP resources/prompts, concurrency and cancellation.");

@@ -1,4 +1,5 @@
 using netDxf.Shadow.Editor;
+using netDxf.Shadow.Graph;
 using netDxf.Shadow.NetDxf;
 
 namespace netDxf.Shadow.Mcp;
@@ -18,6 +19,10 @@ public sealed class ShadowMcpContext(Func<EditorSession> editor, Func<ShadowSess
     public Func<Func<McpToolResult>, McpToolResult>? Synchronize { get; init; }
     /// <summary>Optional host invalidation callback. Observer failures do not invalidate committed editor transactions.</summary>
     public Action? Changed { get; init; }
+    /// <summary>Active semantic layout; defaults to Model when no host is supplied.</summary>
+    public Func<string>? Layout { get; init; }
+    /// <summary>Optional host topology builder preserving its active block root and projector resources.</summary>
+    public Func<string, TopologyOptions, CancellationToken, TopologyGraph>? Topology { get; init; }
     public bool RequireWorkspaceIdentity { get; init; }
 
     internal ShadowMcpIdentity GetIdentity(ShadowSnapshot snapshot) => Identity?.Invoke() ?? new(snapshot.DocumentId, "live", 0);

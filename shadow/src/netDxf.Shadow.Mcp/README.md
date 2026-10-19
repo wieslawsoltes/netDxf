@@ -44,6 +44,9 @@ tools.Register(
 | `dxf_source_read`, `dxf_source_inspect` | Detached canonical source graph and serialized public source inspection, including when a branch is active. |
 | `shadow_edit` | Atomic property transactions, including several changes to the same nested structure. |
 | `shadow_graph_edit` | Atomic node construction, entity attachment, structural values, collection replacement, deletion and pruning. |
+| `shadow_create_entities` | Up to 1024 entities with shared defaults, resources, aliases and inline nested objects in one native transaction. |
+| `shadow_collection_edit` | Ordered insert/append/remove/replace slices with typed inline members, rollback and undo. |
+| `dxf_methods`, `dxf_method_call` | Paged public method/overload metadata and explicitly audited transactional method adapters. |
 | `shadow_undo`, `shadow_redo`, `shadow_select` | Existing editor history and selection. |
 | `shadow_checkpoint`, `shadow_checkpoints`, `shadow_diff` | O(1) immutable snapshot retention and paged changes across revisions or branches of one document. |
 
@@ -93,6 +96,29 @@ Use IDs and identity receipts obtained from the current drawing; the values abov
 ```
 
 Other structural operations are `set` (`id`, `path`, `value`), `replaceCollection` (`id`, `path`, `items`), `removeEntities` (`ids`), `removeObject` (`id`) and `pruneUnreachable`. Ordered operations must maintain valid references. A source object must ultimately be attached to the public document graph. Constructor requirements, native ownership rules and unsupported semantic changes are reported through the existing source adapter; callers may register audited `ShadowObjectFactories` for custom construction.
+
+For rapid drawing creation, `shadow_create_entities` plans one graph patch and publishes one undoable native transaction. Optional `type`, `properties`, `layout` and `owner` provide defaults; each item may override them. `resources` are constructed first and can be referenced by alias. Each resource must ultimately attach to the document, for example by an entity's `Layer` or `Block` reference. Up to 1024 entities and 256 resources are accepted, with a combined ceiling of 4096 newly constructed objects including nested children and a 1 MiB request limit. Responses include `count`, ordered `entities` receipts, `aliases`, `createdObjects`, `atomic` and the resulting revision. The registry's bounded-response receipt reports if a very large result exceeds its output budget; inspect the resulting graph for full object details.
+
+```json
+{
+  "revision": 12,
+  "resources": [{"type":"Layer","alias":"@layer","properties":{"Name":"Outline"}}],
+  "properties": {"Layer":{"$ref":"@layer"}},
+  "entities": [
+    {"type":"Polyline2D","alias":"@outline","properties":{
+      "IsClosed":true,
+      "Vertexes":[{"Position":{"X":0,"Y":0}},{"Position":{"X":100,"Y":0}},{"Position":{"X":100,"Y":50}}]
+    }},
+    {"type":"Circle","properties":{"Center":{"X":50,"Y":25,"Z":0},"Radius":10}}
+  ]
+}
+```
+
+Both creation tools infer nested object and array element types from public metadata. Existing objects use `{"$ref":"id"}`. An inline object can select an assignable public subtype with `$type`, for example `{"$type":"netDxf.Entities.HatchBoundaryPath+Line","Start":{"X":0,"Y":0},"End":{"X":10,"Y":0}}` in `HatchBoundaryPath.Edges`. Incompatible types, unavailable constructors, unattached objects and native validation failures reject the complete transaction.
+
+`shadow_collection_edit` accepts `edits:[{id,path,index,deleteCount,items}]`. An index equal to the current length appends; omit `items` to delete or omit `deleteCount` to insert. Edits compose in order and require an in-range slice. Typed inline members work for declared collections such as `/Vertexes`; `$ref` inserts an existing object. Removed unreachable owned objects are pruned. The source adapter enforces membership and ownership; fixed-size arrays cannot change length. Up to 256 edits are committed in one history entry.
+
+`dxf_methods` accepts a full/short `type` or captured `id`, optional `search`/`callableOnly`, and `offset`/`limit`. Every public non-accessor method overload is discoverable, including inherited and static methods. Each signature includes parameters, return type and a truthful `callable` flag. Type schemas link to this method catalog and describe public collection indexers. `dxf_method_call` deliberately supports only registered audited adapters: currently `Ellipse.SetAxis`, taking `calls:[{id,method:"SetAxis",arguments:{axis1:30,axis2:10}}]`. Up to 256 calls share one transaction; sorted axes, validation, native rollback, branch isolation and undo are preserved. Unsupported methods return explicit errors before publication. Discovery does not imply arbitrary reflection execution, file/network access or unrestricted code evaluation.
 
 Property and structural writes pass through `EditorSession` and `ShadowSession`; native preparation, validation, canonicalization, rollback and undo remain authoritative. `preview: true` validates the immutable proposal without publishing a source change. Its result explicitly states that native setter/constructor validation runs when applying the transaction.
 
