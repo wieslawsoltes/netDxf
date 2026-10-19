@@ -16,6 +16,7 @@ import ezdxf
 from cad_modify_browser import verify_modify
 from graph_analysis_browser import verify_graph_analysis
 from cad_layer_states_browser import verify_layer_states
+from cad_attributes_browser import verify_attributes
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -237,6 +238,7 @@ def verify(base, mount, browser, passed):
         verify_modify(page, OUTPUT, state, command, wait_state, idle, check)
         verify_graph_analysis(page, OUTPUT, state, command, wait_state, idle, check)
         verify_layer_states(page, OUTPUT, state, command, wait_state, idle, check)
+        verify_attributes(page, OUTPUT, state, command, wait_state, idle, check)
         command('Z E', False)
         # Let the debounced render and image decode complete before recording evidence.
         # Correctness is asserted independently by the native state and render checks.

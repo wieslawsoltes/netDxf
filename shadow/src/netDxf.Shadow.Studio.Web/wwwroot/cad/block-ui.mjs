@@ -33,7 +33,7 @@ export function blockTools({ client, edit, dialog, cancel, fit, placeInsert }) {
       function update() {
         const selected = blocks.find(b=>b.id===select.value);
         const origin=selected?.origin || {x:0,y:0,z:0};
-        details.textContent=selected ? `${selected.entities} definition objects · ${selected.units || 'Unitless'} · base ${origin.x}, ${origin.y}, ${origin.z}. ${selected.description || ''}${selected.scaleUniformly ? ' Uniform scaling required.' : ''}${selected.allowExploding===false ? ' Definition disallows exploding.' : ''}${selected.attributes ? ` ${selected.attributes} attributes keep their default values; edit them through Properties after placement.` : ''}` : 'No matching definitions.';
+        details.textContent=selected ? `${selected.entities} definition objects · ${selected.units || 'Unitless'} · base ${origin.x}, ${origin.y}, ${origin.z}. ${selected.description || ''}${selected.scaleUniformly ? ' Uniform scaling required.' : ''}${selected.allowExploding===false ? ' Definition disallows exploding.' : ''}${selected.attributes ? ` ${selected.attributes} attributes keep their default values; use Edit attributes after placement.` : ''}` : 'No matching definitions.';
         constrain(selected);
       }
       search.addEventListener('input',filter); select.addEventListener('change',update); filter();

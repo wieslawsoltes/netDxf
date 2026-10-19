@@ -143,3 +143,5 @@ dialog:has(.resource-manager) { width:min(1020px,96vw); }
 .resource-complex { margin-top:12px; }
 .resource-complex .form-row { margin-bottom:7px; }
 @media(max-width:650px) { .resource-manager { grid-template-columns:1fr; } .resource-manager aside>select { min-height:100px; max-height:150px; } .resource-segment-heading { flex-wrap:wrap; } }
+
+.attribute-tabs{display:flex;gap:4px;margin-bottom:12px}.attribute-tabs [aria-selected="true"]{background:var(--accent,#385f91);color:white}.attribute-warning{color:#e89b62}.attribute-editor textarea{width:100%;resize:vertical;min-height:64px}.attribute-editor [role="tabpanel"][hidden]{display:none}

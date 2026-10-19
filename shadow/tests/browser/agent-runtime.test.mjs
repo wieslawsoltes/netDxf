@@ -382,9 +382,9 @@ test('semantic Studio controls validate all settings before mutation and fence t
   await ui.execute('selection.set', { entities: ['H:1'], remove: true }, 'a');
   assert.equal(selections.length, 2); assert.equal(selections[1].body.remove, true);
   const actions=[]; host.action=async name=>actions.push(name);
-  for (const name of ['layer-states','graph-analysis','ribbon-minimize','command-line','command-history'])
+  for (const name of ['layer-states','attributes','graph-analysis','ribbon-minimize','command-line','command-history'])
     await ui.execute('ui.action',{name},'a');
-  assert.deepEqual(actions,['layer-states','graph-analysis','ribbon-minimize','command-line','command-history']);
+  assert.deepEqual(actions,['layer-states','attributes','graph-analysis','ribbon-minimize','command-line','command-history']);
   host.client.key='a/live/1';
   host.edit=async (...args)=>selections.push(args);
   const body={state:{action:'restore',id:{value:'state:1'},fields:64}};
@@ -392,4 +392,10 @@ test('semantic Studio controls validate all settings before mutation and fence t
   assert.deepEqual(selections[2],['layer-state',body,{expectedKey:'a/live/1'}]);
   await assert.rejects(ui.execute('cad.edit',{path:'layer-state',body},'other'),/active drawing changed/);
   assert.equal(selections.length,3);
+  const reads=[];host.client.state={revision:7};host.client.read=async path=>{reads.push(path);return {attributes:[]};};
+  assert.deepEqual(await ui.execute('cad.read',{path:'attributes'},'a'),{attributes:[]});
+  assert.deepEqual(reads,['attributes?revision=7']);
+  const attributes={insert:{value:'insert:1'},attributes:[{attribute:{value:'attribute:1'},value:'P-101'}]};
+  await ui.execute('cad.edit',{path:'attributes',body:attributes},'a');
+  assert.deepEqual(selections[3],['attributes',attributes,{expectedKey:'a/live/1'}]);
 });
