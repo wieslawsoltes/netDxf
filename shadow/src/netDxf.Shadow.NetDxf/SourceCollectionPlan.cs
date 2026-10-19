@@ -82,6 +82,14 @@ internal sealed class SourceCollectionPlan
             foreach (var item in after)
                 if (item is null || !unique.Add(item)) throw new ArgumentException("A block cannot contain null or duplicate entity instances.");
         }
+        if (source is netDxf.Collections.AttributeDefinitionDictionary)
+        {
+            var tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var item in DefinitionItems(after))
+                if (item.Value is null || string.IsNullOrEmpty(item.Key) || !tags.Add(item.Key) ||
+                    !string.Equals(item.Key, item.Value.Tag, StringComparison.Ordinal))
+                    throw new ArgumentException("Definition membership requires unique tags matching their definition objects.");
+        }
         return new(source, element, after);
     }
 
@@ -89,14 +97,35 @@ internal sealed class SourceCollectionPlan
     public void RemoveOld()
     {
         if (array is not null) return;
+        if (source is netDxf.Collections.AttributeDefinitionDictionary definitions)
+        {
+            var retained = DefinitionItems(After).Select(item => item.Value).ToHashSet(ReferenceEqualityComparer.Instance);
+            foreach (var item in DefinitionItems(Before).Reverse())
+                if (!retained.Contains(item.Value)) definitions.Remove(item.Key);
+            return;
+        }
         for (var i = Before.Length - suffix - 1; i >= prefix; i--) Remove(i, Before[i]);
     }
     public void AddNew()
     {
         if (array is not null) { AssignArray(After); return; }
-        for (var i = prefix; i < After.Length - suffix; i++) Insert(i, After[i]);
+        if (source is netDxf.Collections.AttributeDefinitionDictionary definitions)
+        {
+            var items = DefinitionItems(After).ToArray();
+            var existing = definitions.Values.ToHashSet(ReferenceEqualityComparer.Instance);
+            foreach (var item in items)
+            {
+                if (!string.Equals(item.Key, item.Value.Tag, StringComparison.Ordinal))
+                    throw new ArgumentException("Definition dictionary keys must match their attribute tags.");
+                if (!existing.Contains(item.Value)) definitions.Add(item.Value);
+            }
+            definitions.Reorder(items.Select(item => item.Value));
+        }
+        else for (var i = prefix; i < After.Length - suffix; i++) Insert(i, After[i]);
         if (!Matches(After)) throw new InvalidOperationException($"Source collection {source.GetType().FullName} rejected or reordered a requested change.");
     }
+    private static IEnumerable<KeyValuePair<string, netDxf.Entities.AttributeDefinition>> DefinitionItems(object?[] items) =>
+        items.Cast<KeyValuePair<string, netDxf.Entities.AttributeDefinition>>();
     /// <summary>Recover only changed membership. Clearing an entire table would also
     /// remove untouched definitions, reallocating their handles and breaking rollback.</summary>
     internal SourceCollectionPlan PrepareRollback() => new(source, elementType, Before);
