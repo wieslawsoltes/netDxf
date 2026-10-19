@@ -94,8 +94,8 @@ exact pushed revision, including each operating-system and package-consumer job.
 ## Current implementation order
 
 1. Preserve green CI on every new pushed increment. Process-launch and browser
-   regressions were corrected; all 23 checks passed on `61dab0da` before the
-   attribute-editor increment. Each new pushed revision needs its own checks.
+   regressions were corrected; all 23 checks passed on `ce403558`, including the
+   attribute editor. Each new pushed revision needs its own checks.
 2. STRETCH/BREAK, graph cycle/forest access and external-agent context controls
    have landed. Extend their coverage as related workflows are implemented.
 3. Continue block attributes, remaining layer workflows, drafting command/entity coverage and reusable
@@ -134,3 +134,39 @@ the user's cumulative USD 20 ceiling. There is no credential material in this au
   definition-attribute authoring, multiline transform coverage, background fills,
   annotation contexts and plot-style editing remain open. Full AutoCAD block
   parity is not established by these tests.
+
+### Attribute membership and history increment
+
+- Native `PrepareAttributeReplacement`/`ReplaceAttributes` validate ownership,
+  duplicate objects and incoming references before edits. They preserve the
+  collection and retained attribute objects, including distinct imported instances
+  with duplicate tags. Prepared plans reject changed owner/document/membership.
+  Reordering leaves retained handles and values intact.
+- Native resource registration is independent of application subscription order.
+  Attribute add/remove notifications observe complete membership; a failing
+  notification is reported after commit, and reentrant membership edits are
+  refused. Canonical resource adoption does not invoke authored property-edit
+  callbacks. Removed attributes release layer, linetype, font and APPID uses.
+- Exact same-tag definition binding and sequence-terminator restoration are public
+  native operations. The source adapter journals the actual owned attribute
+  collection, definition bindings and sequence identity. Empty/populated insert
+  history, branch preview/merge and repeated undo/redo preserve native objects and
+  stable Shadow IDs. Re-adoption can allocate new native handles; the allocator is
+  monotonic. A callback failure that prevents exact graph rollback stops the source
+  session and requires inspection/reattachment rather than silently continuing.
+- The shared incoming-reference scan also covers exposed reactors, XData handles,
+  XRECORDs and other modeled references. Referenced attributes and private owned
+  extension dictionaries are refused before detachment. Sync and attribute
+  transformation now restore the definition's justification. Single-line and
+  multiline transformations both prepare all geometry before applying it, and
+  invalidate the INSERT proxy only after successful geometry changes.
+- Local verification: 174 native attribute cases, 688 INSERT cases, 526 saved-layer
+  cases and all 1,338 Advanced checks pass. History tests cover both initially empty
+  and populated attribute collections, repeated undo/redo, definition rebinding,
+  branch preview/merge, foreign ownership and notification-failure handling.
+  All five native target frameworks build. Published native Chromium passes 97
+  checks; standalone WASM passes 149 across root/subpath hosting. Route/asset
+  verification covers all 90 routes and the published shared assets.
+- These primitives support the remaining ATTSYNC implementation; they do not yet
+  provide the Studio command, all-reference reset policy or preview of dropped
+  instance formatting/XData. Those requirements remain open.

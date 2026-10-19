@@ -79,3 +79,34 @@ Save As, DWG exchange, hatch pattern editing and the main CAD landing page remai
 unchanged. Source collection adoption orders owned payload, shared tables and
 entity membership, then detaches in reverse order. Rollback is prepared from
 actual membership and does not clear unchanged reserved table entries.
+
+## Instance attributes
+
+`EATTEDIT`, `ATTEDIT` and `ATE` open the shared instance editor. Its Attribute,
+Text options and Properties tabs edit values and supported appearance fields;
+Apply submits all authored differences as one undo operation. Multiline content
+uses the captured embedded packet and retains the separate single-line fallback.
+`DraftingAttributes` supplies the same immutable plans to native, browser and
+agent workflows. Editing instance values does not change block defaults.
+
+Native consumers can prepare an exact membership change with
+`insert.PrepareAttributeReplacement(attributes)` and call the returned plan's
+`Apply()`, or use `insert.ReplaceAttributes(attributes)` directly. These methods
+preserve surviving objects and the owned collection; they do not generate or
+transform text. `attribute.SetDefinition(definition)` rebinds a matching tag
+without changing values. `SetAttributeSequenceEnd` supports restoring a previously
+captured terminator, including history for a previously empty INSERT.
+
+The source adapter journals these operations with stable Shadow identities.
+Re-adopting a removed object can allocate a new native handle. Native membership
+notifications occur after commit; if an application callback fails, the native
+call reports that failure. A source journal that cannot restore the full public
+graph stops further edits until inspection and reattachment.
+
+Studio `ATTSYNC`, definition-attribute authoring and the all-reference policy for
+resetting instance formatting/XData remain separate unfinished work. See the
+[parity audit](ParityAudit.md) for those requirements and verification evidence.
+The target is Autodesk's documented
+[ATTSYNC behavior](https://help.autodesk.com/cloudhelp/2025/ENU/AutoCAD-Core/files/GUID-56B14079-250B-4C99-AB3D-F95BA1C32AB7.htm):
+update all references while retaining assigned values and reviewing the removal
+of instance overrides and extended data.
