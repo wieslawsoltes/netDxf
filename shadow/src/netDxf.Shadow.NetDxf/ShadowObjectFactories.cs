@@ -25,8 +25,9 @@ public sealed class ShadowObjectFactories
         lock (gate) factories[typeof(T)] = (node, resolver) => factory(node, resolver);
     }
 
-    internal object Create(ShadowObject node, IShadowObjectResolver resolver)
+    internal object Create(ShadowObject node, IShadowObjectResolver resolver, out bool initializeInsertAttributes)
     {
+        initializeInsertAttributes = false;
         var type = typeof(DxfDocument).Assembly.GetType(node.TypeName, throwOnError: false, ignoreCase: false)
             ?? throw new NotSupportedException($"Unknown netDxf data-model type {node.TypeName}.");
         Func<ShadowObject, IShadowObjectResolver, object>? factory;
@@ -56,6 +57,16 @@ public sealed class ShadowObjectFactories
         }
         if (type == typeof(XData) && node["ApplicationRegistry"] is ShadowValue.Reference registry)
             return new XData((netDxf.Tables.ApplicationRegistry)resolver.Resolve(registry.Id));
+        if (type == typeof(netDxf.Entities.Attribute) && node["Definition"] is ShadowValue.Reference attributeDefinition)
+        {
+            var attribute = new netDxf.Entities.Attribute((netDxf.Entities.AttributeDefinition)resolver.Resolve(attributeDefinition.Id));
+            // A retained definition may be renamed later in the same transaction.
+            // Construct the new instance with its explicit proposed tag; the identity
+            // phase binds the actual definition after the prepared rename is applied.
+            if (node["Tag"] is ShadowValue.Atom tag && !string.Equals(tag.Text, attribute.Tag, StringComparison.Ordinal))
+                attribute.PrepareDefinitionBinding(tag.Text, null).Apply();
+            return attribute;
+        }
         if (type == typeof(netDxf.Objects.DxfSortOrderEntry) && node["Target"] is ShadowValue.Reference target)
             return new netDxf.Objects.DxfSortOrderEntry((DxfObject)resolver.Resolve(target.Id),
                 (string)resolver.Convert(node["SortHandle"], typeof(string))!);
@@ -108,28 +119,17 @@ public sealed class ShadowObjectFactories
                 (netDxf.Entities.Attribute[])resolver.Convert(node["Attributes"], typeof(netDxf.Entities.Attribute[]))!);
         if (type == typeof(netDxf.Entities.Insert) && node["Block"] is ShadowValue.Reference definition && node["Attributes"] is ShadowValue.NullValue)
         {
-            // Public INSERT property setters intentionally do not reposition attributes.
-            // Initialize the complete transform on the detached instance, then transform
-            // its default attributes using the eventual owner's units before adoption.
+            // Definition edits in this same patch have not reached the live block yet.
+            // The session prepares defaults from the proposed snapshot before mutation,
+            // then adopts them after definition names are updated and before registration.
             var block = (netDxf.Blocks.Block)resolver.Resolve(definition.Id);
             var position = node["Position"] is ShadowValue.NullValue ? Vector3.Zero : (Vector3)resolver.Convert(node["Position"], typeof(Vector3))!;
-            var insert = new netDxf.Entities.Insert(block, position);
+            var insert = netDxf.Entities.Insert.CreateWithAttributes(block, Array.Empty<netDxf.Entities.Attribute>());
+            insert.Position = position;
             if (node["Scale"] is not ShadowValue.NullValue) insert.Scale = (Vector3)resolver.Convert(node["Scale"], typeof(Vector3))!;
             if (node["Rotation"] is not ShadowValue.NullValue) insert.Rotation = (double)resolver.Convert(node["Rotation"], typeof(double))!;
             if (node["Normal"] is not ShadowValue.NullValue) insert.Normal = (Vector3)resolver.Convert(node["Normal"], typeof(Vector3))!;
-            if (insert.Attributes.Count != 0)
-            {
-                var units = netDxf.Entities.Insert.DefaultInsUnits;
-                if (node["Owner"] is ShadowValue.Reference ownerReference && resolver.Resolve(ownerReference.Id) is netDxf.Blocks.Block owner)
-                    units = owner.Record.Layout is null ? owner.Record.Units : owner.Record.Owner.Owner.DrawingVariables.InsUnits;
-                var transform = insert.GetTransformation(units);
-                var translation = position - transform * block.Origin;
-                foreach (var attribute in insert.Attributes)
-                {
-                    attribute.Position = attribute.Definition.Position;
-                    attribute.TransformBy(transform, translation);
-                }
-            }
+            initializeInsertAttributes = true;
             return insert;
         }
         var empty = type.GetConstructor(Type.EmptyTypes);

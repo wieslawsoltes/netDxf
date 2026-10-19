@@ -56,7 +56,8 @@ internal sealed class SourceCollectionPlan
             while (suffix < Math.Min(Before.Length, After.Length) - prefix && Same(Before[^(suffix + 1)], After[^(suffix + 1)])) suffix++;
     }
 
-    public static SourceCollectionPlan? TryCreate(object? source, ShadowValue.Sequence value, Func<ShadowValue, Type, object?> convert)
+    public static SourceCollectionPlan? TryCreate(object? source, ShadowValue.Sequence value, Func<ShadowValue, Type, object?> convert,
+        Func<netDxf.Entities.AttributeDefinition, string>? definitionTag = null)
     {
         if (source is not IEnumerable || source is string) return null;
         if (source is Array array)
@@ -87,7 +88,7 @@ internal sealed class SourceCollectionPlan
             var tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var item in DefinitionItems(after))
                 if (item.Value is null || string.IsNullOrEmpty(item.Key) || !tags.Add(item.Key) ||
-                    !string.Equals(item.Key, item.Value.Tag, StringComparison.Ordinal))
+                    !string.Equals(item.Key, definitionTag?.Invoke(item.Value) ?? item.Value.Tag, StringComparison.Ordinal))
                     throw new ArgumentException("Definition membership requires unique tags matching their definition objects.");
         }
         return new(source, element, after);

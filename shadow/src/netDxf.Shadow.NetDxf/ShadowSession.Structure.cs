@@ -31,6 +31,7 @@ public sealed partial class ShadowSession
             // Undo/redo can restore every binding from history without building an index.
             Dictionary<ObjectId, List<(ObjectId Owner, SourceAccessor Accessor)>>? ownedReferences = null;
             var constructing = new HashSet<ObjectId>();
+            var implicitInserts = new List<(ObjectId Id, netDxf.Entities.Insert Insert)>();
             Resolver resolver = null!;
             resolver = new Resolver(Resolve, (value, type) => ConvertValue(value, type, Resolve));
             var writes = new List<(object Source, SourceAccessor Accessor, object? Before, object? After)>();
@@ -40,6 +41,8 @@ public sealed partial class ShadowSession
             var assertions = new List<(ObjectId Id, string Property, ShadowValue Value)>();
             // Preparation allocates only new objects and detached constructor state.
             foreach (var id in additions.Keys) Resolve(id);
+            var insertDefaults = implicitInserts.Select(entry => SourceImplicitInsertPlan.Prepare(entry.Id, entry.Insert, current, target, Resolve, resolver.Convert)).ToArray();
+            var attributeIdentities = SourceAttributeIdentityPlan.Prepare(patch, target, Resolve, historical is not null ? patch.HistoricalTarget : null);
             foreach (var change in patch.Changes.Where(e => e.After is not null))
             {
                 var source = Resolve(change.Id);
@@ -51,6 +54,7 @@ public sealed partial class ShadowSession
                 foreach (var (name, value) in change.After!.Properties)
                 {
                     if (change.Before is { } previous && ShadowValue.Equivalent(previous[name], value)) continue;
+                    if (attributeIdentities.Handles(change.Id, name)) continue;
                     if (method?.Properties?.Contains(name) == true) continue;
                     // Type is read-only entity metadata on some objects, but a writable
                     // semantic enum on HatchPattern and other public data-model types.
@@ -70,7 +74,7 @@ public sealed partial class ShadowSession
                     {
                         if (value is not ShadowValue.Sequence sequence) throw new ArgumentException("Collection membership must be a sequence.");
                         var collectionSource = name == "$items" ? source : accessor!.Get(source);
-                        var plan = SourceCollectionPlan.TryCreate(collectionSource, sequence, resolver.Convert);
+                        var plan = SourceCollectionPlan.TryCreate(collectionSource, sequence, resolver.Convert, attributeIdentities.Tag);
                         if (plan is not null && !plan.IsNoOp && collectionSources.Add(collectionSource!)) collections.Add(plan);
                         else if (plan is null && change.Before is not null) assertions.Add((change.Id, name, value));
                         continue;
@@ -123,6 +127,8 @@ public sealed partial class ShadowSession
                 // Moving entities across owners must release every old owner first.
                 touchedCollections = collections.Count != 0;
                 foreach (var plan in collections.AsEnumerable().Reverse()) plan.RemoveOld();
+                attributeIdentities.Apply();
+                foreach (var defaults in insertDefaults) defaults.Apply();
                 foreach (var plan in collections) plan.AddNew();
                 var next = capture.Capture(document, current);
                 foreach (var assertion in assertions)
@@ -153,8 +159,17 @@ public sealed partial class ShadowSession
                         try { rollback.Add(plan.PrepareRollback()); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                     foreach (var plan in rollback.AsEnumerable().Reverse())
                         try { plan.RemoveOld(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    foreach (var defaults in insertDefaults.Reverse())
+                        try { defaults.Rollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    try { attributeIdentities.Rollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                     foreach (var plan in rollback)
                         try { plan.AddNew(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                }
+                else
+                {
+                    foreach (var defaults in insertDefaults.Reverse())
+                        try { defaults.Rollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    try { attributeIdentities.Rollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                 }
                 for (var index = appliedWrites.Count - 1; index >= 0; index--)
                     try { appliedWrites[index].Accessor.Set(appliedWrites[index].Source, appliedWrites[index].Before); }
@@ -204,7 +219,8 @@ public sealed partial class ShadowSession
                             bindings[id] = owned; capture.Bind(id, owned); return owned;
                         }
                     }
-                    source = ObjectFactories.Create(node, resolver!);
+                    source = ObjectFactories.Create(node, resolver!, out var initializeInsertAttributes);
+                    if (initializeInsertAttributes) implicitInserts.Add((id, (netDxf.Entities.Insert)source));
                     bindings[id] = source; capture.Bind(id, source); return source;
                 }
                 finally { constructing.Remove(id); }
