@@ -9,8 +9,10 @@ import re
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
-STUDIO = ROOT / 'shadow/samples/netDxf.Shadow.Studio'
-BROWSER = ROOT / 'shadow/samples/netDxf.Shadow.Studio.Browser'
+STUDIO = ROOT / 'shadow/src/netDxf.Shadow.Studio.Hosting'
+WEB = ROOT / 'shadow/src/netDxf.Shadow.Studio.Web'
+MARKDOWN = ROOT / 'shadow/src/netDxf.Shadow.Markdown'
+BROWSER = ROOT / 'shadow/src/netDxf.Shadow.Studio.WebAssembly'
 FONT_BLOBS = {
     'NotoSans-Regular.ttf': 'd55220958aa51eeeb85048d746eabe43d2cd9f14',
     'NotoSans-Bold.ttf': '27131f8f479947ef1b6c1d0bc9ad5ab3d30bd831',
@@ -21,7 +23,7 @@ FONT_BLOBS = {
 
 def source_contract():
     expected = set()
-    for file in ('Program.cs', 'StudioHttp.cs', 'StudioCadHttp.cs'):
+    for file in ('StudioLegacyHttp.cs', 'StudioHttp.cs', 'StudioCadHttp.cs'):
         source = (STUDIO / file).read_text(encoding='utf-8')
         prefix = '/api/cad' if file == 'StudioCadHttp.cs' else ''
         expected.update((method.upper(), prefix + path) for method, path in
@@ -43,7 +45,8 @@ def prepare(published: Path):
                 'agents/workspace.mjs', 'agents/client.mjs', 'agents/contracts.mjs', 'agents/render.mjs',
                 'agents/studio-control.mjs', 'agents/mcp-bridge.mjs', 'agents/browser-mcp.mjs', 'agents/agents.css',
                 'agents/persistence.mjs', 'agents/file-transfer.mjs', 'agents/file-workspace.mjs', 'agents/run-state.mjs',
-                'agents/execution.mjs', 'agents/execution-worker.mjs', 'agents/execution-frame.html')
+                'agents/execution.mjs', 'agents/execution-worker.mjs', 'agents/execution-frame.html',
+                'markdown/markdown.mjs', 'markdown/markdown.css', 'markdown/vendor/marked.mjs')
     for relative in required:
         if not (published / relative).is_file():
             raise ValueError(f'Missing browser publish asset: {relative}')
@@ -54,12 +57,17 @@ def prepare(published: Path):
         actual = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
         if actual != expected:
             raise ValueError(f'Bundled font/license differs from the pinned upstream blob: {name}')
-    for source in (STUDIO / 'wwwroot').rglob('*'):
+    for source in (WEB / 'wwwroot').rglob('*'):
         if not source.is_file() or source.name in ('index.html', 'diagnostics.html'):
             continue
-        relative = source.relative_to(STUDIO / 'wwwroot')
+        relative = source.relative_to(WEB / 'wwwroot')
         if source.read_bytes() != (published / relative).read_bytes():
             raise ValueError(f'Shared UI asset drifted: {relative}')
+    for source in (MARKDOWN / 'wwwroot').rglob('*'):
+        if source.is_file():
+            relative = Path('markdown') / source.relative_to(MARKDOWN / 'wwwroot')
+            if source.read_bytes() != (published / relative).read_bytes():
+                raise ValueError(f'Shared Markdown asset drifted: {relative}')
     (published / '.nojekyll').write_text('', encoding='utf-8')
     # Pages serves the root and explicit HTML entry points. Do not serve an index fallback
     # at arbitrary nested paths with a wrong relative base URI.

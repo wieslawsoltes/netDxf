@@ -51,6 +51,31 @@ class SmokeExitTests(unittest.TestCase):
                 else:
                     self.assertEqual('SMOKE_PROBE_EXECUTED\n', log.read_text(encoding='utf-8'))
 
+    def test_shadow_verification_groups_stop_at_first_failing_native_command(self):
+        workflow = (ROOT / '.github/workflows/ci-build.yml').read_text(encoding='utf-8')
+        names = ('Verify MCP protocol, coding harness, native workspace and official provider clients',
+                 'Verify graph analysis, sample drawings and offline model evaluation')
+        bash = shutil.which('bash')
+        if os.name == 'nt':
+            installed = Path(os.environ.get('ProgramFiles', 'C:/Program Files')) / 'Git/bin/bash.exe'
+            if installed.is_file():
+                bash = str(installed)
+        self.assertIsNotNone(bash)
+        for name in names:
+            step = workflow.split('      - name: ' + name + '\n', 1)[1].split('\n      - ', 1)[0]
+            self.assertIn('        shell: bash\n', step, 'Windows native-command failures must fail the whole verification step')
+            script = textwrap.dedent(step.split('        run: |\n', 1)[1])
+            count = script.count('dotnet run ')
+            self.assertGreater(count, 1)
+            probe = "dotnet() { printf 'VERIFICATION_PROBE\\n'; return \"$PROBE_EXIT\"; }\n"
+            for exit_code in (0, 23):
+                with self.subTest(step=name, exit=exit_code):
+                    result = subprocess.run([bash, '--noprofile', '--norc', '-eo', 'pipefail', '-c', probe + script],
+                                            env={**os.environ, 'PROBE_EXIT': str(exit_code)},
+                                            capture_output=True, text=True, timeout=20)
+                    self.assertEqual(exit_code, result.returncode, result.stdout + result.stderr)
+                    self.assertEqual(1 if exit_code else count, result.stdout.count('VERIFICATION_PROBE'))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -2,7 +2,7 @@
 
 ## Release set and shared version
 
-All fourteen library packages use the same version. The checked-in version is
+All thirty-three library packages use the same version. The checked-in version is
 `4.0.0-preview.1`, declared once in the root `Directory.Build.props`; the release
 tag is `v4.0.0-preview.1`. Keep the `preview.1` suffix in package versions and
 include the leading `v` only in the Git tag. Future releases change the shared
@@ -14,21 +14,43 @@ version for the entire set, including the core package.
 | `netDxf.Shadow` | `net8.0` |
 | `netDxf.Shadow.NetDxf` | `net8.0` |
 | `netDxf.Shadow.Geometry` | `net8.0` |
-| `netDxf.Shadow.Graph` | `net8.0` |
-| `netDxf.Shadow.Dimensions` | `net8.0` |
 | `netDxf.Shadow.Rendering` | `net8.0` |
+| `netDxf.Shadow.Graph` | `net8.0` |
+| `netDxf.Shadow.Editor` | `net8.0` |
+| `netDxf.Shadow.Dimensions` | `net8.0` |
+| `netDxf.Shadow.Drafting` | `net8.0` |
+| `netDxf.Shadow.Health` | `net8.0` |
+| `netDxf.Shadow.Workflows` | `net8.0` |
+| `netDxf.Shadow.Modules` | `net8.0` |
+| `netDxf.Shadow.Symbols` | `net8.0` |
+| `netDxf.Shadow.Disciplines` | `net8.0` |
+| `netDxf.Shadow.Pid` | `net8.0` |
+| `netDxf.Shadow.Piping` | `net8.0` |
+| `netDxf.Shadow.Electrical` | `net8.0` |
 | `netDxf.Shadow.Rendering.Shx` | `net8.0` |
 | `netDxf.Shadow.Rendering.SkiaSharp` | `net8.0` |
-| `netDxf.Shadow.Editor` | `net8.0` |
-| `netDxf.Shadow.Drafting` | `net8.0` |
 | `netDxf.Shadow.Exchange.Dwg` | `net8.0` |
+| `netDxf.Shadow.Mcp` | `net8.0` |
+| `netDxf.Shadow.Agents` | `net8.0` |
+| `netDxf.Shadow.Agents.Evaluation` | `net8.0` |
+| `netDxf.Shadow.Samples` | `net8.0` |
+| `netDxf.Shadow.Studio.Core` | `net8.0` |
+| `netDxf.Shadow.Studio.Agents` | `net8.0` |
+| `netDxf.Shadow.Studio.Hosting` | `net8.0` |
+| `netDxf.Shadow.Studio.WebAssembly` | `net8.0` |
+| `netDxf.Shadow.Agents.Codex` | `net8.0` |
+| `netDxf.Shadow.Agents.Acp` | `net8.0` |
+| `netDxf.Shadow.Agents.Hosting` | `net8.0` |
+| `netDxf.Shadow.Markdown` | `net8.0` |
+| `netDxf.Shadow.Studio.Web` | `net8.0` |
 
-Each library produces a `.nupkg` and a matching `.snupkg`: 28 package archives
+Each library produces a `.nupkg` and a matching `.snupkg`: 66 package archives
 per release. Shared package metadata includes the package README, MIT license,
 repository identity, XML documentation and portable symbols. Internal package
 dependencies use the common release version. The core package keeps its existing
-five targets and assembly signing; the shadow libraries target .NET 8. Samples,
-benchmarks, tests and tools are not release packages.
+five targets and assembly signing; the Shadow libraries target .NET 8. The reusable
+`netDxf.Shadow.Samples` factories are packaged; executable sample hosts, benchmarks,
+tests and tools are not release packages.
 
 ## Two core workflows and Studio Pages
 
@@ -75,14 +97,18 @@ loaded DLL against the candidate archive. Framework profiles run on the installe
 compatible Windows CLR, not separate historical CLR installations. The ordinary
 consumer also checks normal NuGet target selection.
 
-The shadow installed-package consumer restores all fourteen candidate packages
+The shadow installed-package consumer restores all thirty-three candidate packages
 from an isolated feed/cache, with public feeds used only for external
 dependencies. It exercises the packaged assemblies without project references,
 including shadow capture/synchronization, editing, geometry, graph, dimensions,
-SHX, SVG, native SkiaSharp/HarfBuzz rendering and DWG exchange. Its
+SHX, SVG, native SkiaSharp/HarfBuzz rendering, DWG exchange, MCP, agent workspaces,
+symbols and discipline modules, health and edit previews, workflow replay, and
+offline agent evaluation. These fourteen scenarios use no provider credentials. Its
 `shadow-smoke.json` receipt and `shadow-smoke.log` bind the results to the source
 commit/tree, candidate package hashes and loaded assembly hashes. Package
-qualification requires the exact fourteen-package and fourteen-symbol inventory;
+qualification requires the exact thirty-three-package and thirty-three-symbol inventory,
+source-matching Studio/Markdown static assets, their Razor mount/import metadata,
+and packaged third-party notices;
 missing, additional, mismatched-version or mismatched-source packages fail.
 
 The `qualify` job requires successful conformance and runtime-evidence jobs; the
@@ -116,7 +142,7 @@ profile menu, choose **Trusted Publishing**, and create a GitHub Actions policy.
 | Policy field | Value |
 | --- | --- |
 | Policy name | `netDxf-GitHub` (a descriptive name of your choice) |
-| Package owner | `wieslawsoltes`, or the owner authorized for all fourteen packages |
+| Package owner | `wieslawsoltes`, or the owner authorized for all thirty-three packages |
 | Repository Owner | `wieslawsoltes` |
 | Repository | `netDxf` |
 | Workflow File | `release.yml` |
@@ -237,7 +263,7 @@ Merge and qualify the intended source before creating a new immutable `vVERSION`
 tag, initially `v4.0.0-preview.1`. Tag pushes validate version spelling, tag target and
 `netstandard` ancestry, rerun core CI on that exact source, and then create a
 **draft** GitHub release behind the `release` environment. Its assets include all
-fourteen packages and their portable symbols, source archive, source-bound test
+thirty-three packages and their portable symbols, source archive, source-bound test
 and runtime evidence, shadow installed-package evidence, release notes and
 checksums. Existing assets/releases are not overwritten.
 
@@ -295,7 +321,7 @@ same-version `.snupkg`, which NuGet pushes automatically. See the
 [official login action](https://github.com/NuGet/login) and
 [symbol publishing documentation](https://learn.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg).
 
-The release is successful only when all fourteen package and symbol uploads
+The release is successful only when all thirty-three package and symbol uploads
 succeed. Publication to NuGet is not atomic across packages. A partial push is a
 failure that needs inspection; duplicate versions are never silently accepted,
 and the workflow does not use `--skip-duplicate`. Inspect package and symbol
@@ -318,7 +344,7 @@ python tools/run_independent_verifiers.py artifacts/conformance
 Workflow tests verify the two core workflows and isolated Studio Pages inventory, retained conformance
 job, acyclic dependency graph, event routing, real publication-gate expressions,
 manual dry-run exclusion, OIDC permissions, authentication conditions and pins.
-Package tests cover the fourteen-package inventory, common version, internal
+Package tests cover the thirty-three-package inventory, common version, internal
 dependencies, source metadata, portable symbols and retained installed-package
 evidence. Existing release-planner CLI tests
 continue to run in real disposable Git repositories. YAML checks and local tests

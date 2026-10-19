@@ -161,9 +161,50 @@ def inspect_package(path: Path, selected: str, commit: str, symbols: bool = Fals
             for name in documentation:
                 doc = ET.fromstring(archive.read(name))
                 require(doc.tag == 'doc' and doc.findtext('./assembly/name') == item.assembly, 'Wrong XML documentation assembly')
-        if item.id == 'netDxf.Shadow.Exchange.Dwg' and not symbols:
+        if not symbols:
+            inspect_static_web_assets(archive, item)
+        if item.id in ('netDxf.Shadow.Exchange.Dwg', 'netDxf.Shadow.Markdown') and not symbols:
             require('THIRD-PARTY-NOTICES.txt' in names and archive.getinfo('THIRD-PARTY-NOTICES.txt').file_size > 0,
-                    'Missing DWG provider third-party notices')
+                    'Missing package third-party notices')
+
+
+def static_web_assets(item) -> dict[str, Path]:
+    if item.id not in ('netDxf.Shadow.Studio.Web', 'netDxf.Shadow.Markdown'):
+        return {}
+    source = (ROOT / item.project).parent / 'wwwroot'
+    return {path.relative_to(source).as_posix(): path for path in source.rglob('*') if path.is_file()}
+
+
+def inspect_static_web_assets(archive: zipfile.ZipFile, item) -> None:
+    if item.id not in ('netDxf.Shadow.Studio.Web', 'netDxf.Shadow.Markdown'):
+        return
+    assets = static_web_assets(item)
+    require(assets, 'Missing static web asset source inventory: ' + item.id)
+    names = set(archive.namelist())
+    require({name.removeprefix('staticwebassets/') for name in names if name.startswith('staticwebassets/')} == set(assets),
+            'Static web asset inventory mismatch: ' + item.id)
+    for name, source in assets.items():
+        require(archive.read('staticwebassets/' + name) == source.read_bytes(), 'Static web asset content mismatch: ' + name)
+    imports = {
+        'build/' + item.id + '.props': 'Microsoft.AspNetCore.StaticWebAssets.props',
+        'buildMultiTargeting/' + item.id + '.props': '../build/' + item.id + '.props',
+        'buildTransitive/' + item.id + '.props': '../buildMultiTargeting/' + item.id + '.props',
+    }
+    for name, expected in imports.items():
+        require(name in names, 'Missing static web asset import: ' + name)
+        document = ET.fromstring(archive.read(name))
+        require(any((entry.get('Project') or '').replace('\\', '/') == expected for entry in document.findall('{*}Import')),
+                'Broken static web asset import: ' + name)
+    manifest = 'build/Microsoft.AspNetCore.StaticWebAssets.props'
+    require(manifest in names, 'Missing static web asset manifest')
+    entries = ET.fromstring(archive.read(manifest)).findall('.//{*}StaticWebAsset')
+    require(len(entries) == len(assets) and {entry.findtext('{*}RelativePath') for entry in entries} == set(assets),
+            'Static web asset manifest inventory mismatch')
+    base_path = 'markdown' if item.id == 'netDxf.Shadow.Markdown' else ''
+    for entry in entries:
+        require((entry.findtext('{*}BasePath') or '').strip('/') == base_path and
+                entry.findtext('{*}SourceId') == item.id and entry.findtext('{*}SourceType') == 'Package' and
+                entry.findtext('{*}CopyToPublishDirectory') == 'PreserveNewest', 'Wrong static web asset mount or publication contract')
 
 
 def inspect_packages(directory: Path, selected: str, commit: str) -> None:

@@ -464,7 +464,7 @@ optional native file/process tools. Native tests exercise actual temporary files
 processes, HTTP, WebSocket and official MCP connections. Tests do not make paid
 inference calls or sign in to a real user's ChatGPT account.
 
-The ordinary release pipeline packs all fourteen repository packages and consumes
+The ordinary release pipeline packs all twenty-four repository packages and consumes
 the exact candidate assemblies in an isolated NuGet feed. GitHub Pages runs the
 agent browser verification alongside the existing CAD and layout regressions
 before deploying the application.

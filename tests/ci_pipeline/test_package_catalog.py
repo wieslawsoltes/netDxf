@@ -3,6 +3,7 @@ from pathlib import Path
 import copy
 import importlib.util
 import json
+import re
 import shutil
 import sys
 import tempfile
@@ -22,8 +23,8 @@ from package_fixtures import write_package, write_catalog
 class PackageCatalogTests(unittest.TestCase):
     def test_every_source_library_and_direct_dependency_is_reviewed(self):
         package_catalog.validate_source(ROOT)
-        self.assertEqual(14, len(package_catalog.PACKAGES))
-        self.assertEqual(13, sum(item.frameworks == ('net8.0',) for item in package_catalog.PACKAGES))
+        self.assertEqual(33, len(package_catalog.PACKAGES))
+        self.assertEqual(32, sum(item.frameworks == ('net8.0',) for item in package_catalog.PACKAGES))
 
     def test_new_library_or_changed_dependency_is_not_silently_published(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -117,6 +118,41 @@ class PackageCatalogTests(unittest.TestCase):
             with self.subTest(mutation=mutation), self.assertRaises(ValueError):
                 pipeline.validate_build_manifest(candidate)
 
+    def test_release_document_inventory_matches_the_catalog(self):
+        text = (ROOT / 'doc/CI-RELEASE.md').read_text(encoding='utf-8')
+        rows = re.findall(r'^\| `([^`]+)` \| (.+) \|$', text, re.MULTILINE)
+        self.assertEqual({item.id: item.frameworks for item in package_catalog.PACKAGES},
+                         {name: tuple(re.findall(r'`([^`]+)`', targets)) for name, targets in rows})
+        self.assertIn(str(len(package_catalog.PACKAGES) * 2) + ' package archives', text)
+
+    def test_static_asset_payload_mounts_imports_and_notices_cannot_disappear(self):
+        for identity in ('netDxf.Shadow.Studio.Web', 'netDxf.Shadow.Markdown'):
+            item = package_catalog.BY_ID[identity]
+            with tempfile.TemporaryDirectory() as temporary:
+                path = Path(temporary) / 'web.nupkg'; write_package(path, item)
+                pipeline.inspect_package(path, '3.0.2', 'a'*40, package_id=item.id)
+                with zipfile.ZipFile(path) as archive:
+                    original = {name: archive.read(name) for name in archive.namelist()}
+                payload = next(name for name in original if name.startswith('staticwebassets/'))
+                for mutation in ('missing', 'changed', 'extra', 'missing-import', 'wrong-import', 'wrong-mount', 'missing-notice'):
+                    if mutation == 'missing-notice' and identity != 'netDxf.Shadow.Markdown':
+                        continue
+                    entries = dict(original)
+                    if mutation == 'missing': del entries[payload]
+                    elif mutation == 'changed': entries[payload] += b'changed'
+                    elif mutation == 'extra': entries['staticwebassets/unreviewed.js'] = b'unexpected'
+                    elif mutation == 'missing-import': del entries['buildTransitive/' + item.id + '.props']
+                    elif mutation == 'wrong-import': entries['buildTransitive/' + item.id + '.props'] = b'<Project />'
+                    elif mutation == 'wrong-mount':
+                        name = 'build/Microsoft.AspNetCore.StaticWebAssets.props'
+                        root = ET.fromstring(entries[name]); root.find('.//BasePath').text = 'wrong-prefix'
+                        entries[name] = ET.tostring(root)
+                    else: del entries['THIRD-PARTY-NOTICES.txt']
+                    with zipfile.ZipFile(path, 'w') as archive:
+                        for name, data in entries.items(): archive.writestr(name, data)
+                    with self.subTest(package=identity, mutation=mutation), self.assertRaises(ValueError):
+                        pipeline.inspect_package(path, '3.0.2', 'a'*40, package_id=item.id)
+
 
 class ShadowConsumerTests(unittest.TestCase):
     def test_consumer_uses_only_exact_installed_catalog_package_references(self):
@@ -124,7 +160,7 @@ class ShadowConsumerTests(unittest.TestCase):
         references = root.findall('./ItemGroup/PackageReference')
         self.assertFalse(root.findall('.//ProjectReference'))
         self.assertEqual(set(package_catalog.BY_ID), {item.get('Include') for item in references})
-        self.assertEqual(14, len(references))
+        self.assertEqual(33, len(references))
         self.assertTrue(all(item.get('Version') == '[$(PackageVersion)]' for item in references))
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / 'nuget.config'
@@ -149,7 +185,7 @@ class ShadowConsumerTests(unittest.TestCase):
                                    'informational_version':'3.0.2+'+'a'*40} for key,value in hashes.items()]}
             receipt = root / shadow_packages.RECEIPT
             receipt.write_text(json.dumps(data))
-            self.assertEqual(14, shadow_packages.verify(root, '3.0.2', source)['packages'])
+            self.assertEqual(33, shadow_packages.verify(root, '3.0.2', source)['packages'])
             for mutation in ('source', 'version', 'missing-scenario', 'duplicate-scenario', 'missing-assembly',
                              'wrong-assembly', 'wrong-target', 'wrong-info-version', 'wrong-package', 'wrong-log', 'failed', 'wrong-runtime'):
                 candidate = copy.deepcopy(data)

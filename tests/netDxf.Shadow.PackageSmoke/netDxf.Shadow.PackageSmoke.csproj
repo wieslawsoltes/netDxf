@@ -24,5 +24,24 @@
     <PackageReference Include="netDxf.Shadow.Exchange.Dwg" Version="[$(PackageVersion)]" />
     <PackageReference Include="netDxf.Shadow.Mcp" Version="[$(PackageVersion)]" />
     <PackageReference Include="netDxf.Shadow.Agents" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Samples" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Studio.Core" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Studio.Agents" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Studio.Hosting" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Studio.WebAssembly" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Agents.Hosting" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Studio.Web" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Agents.Codex" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Agents.Acp" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Markdown" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Health" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Workflows" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Modules" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Symbols" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Disciplines" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Pid" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Piping" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Electrical" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Agents.Evaluation" Version="[$(PackageVersion)]" />
   </ItemGroup>
 </Project>

@@ -16,8 +16,8 @@ Mutable netDxf document <-> serialized adapter <-> immutable shadow snapshots
 
 ## Install packages
 
-The thirteen libraries under `shadow/src` are independently consumable NuGet
-packages. They share **`4.0.0-preview.1`** with `netDxf.netstandard` and target
+The 32 libraries under `shadow/src` are independently consumable NuGet
+packages; the release catalog contains 33 packages including the DXF library. They share **`4.0.0-preview.1`** with `netDxf.netstandard` and target
 .NET 8. See the [package table and current NuGet badges](../README.md#nuget-packages)
 and the [release setup](../doc/CI-RELEASE.md).
 
@@ -28,14 +28,22 @@ dotnet add package netDxf.Shadow.Rendering.SkiaSharp --version 4.0.0-preview.1
 ```
 
 NuGet resolves the required core, geometry and rendering dependencies. Add the
-optional Graph, Drafting, Dimensions, SHX and DWG modules as needed.
+optional Graph, Drafting, Dimensions, SHX and DWG modules as needed. Modules,
+Symbols and the Pid/Piping/Electrical libraries add explicit domain authoring and
+validation. Health and Workflows provide read-only diagnostics and isolated replay.
+See [DisciplineModules.md](docs/DisciplineModules.md) and
+[ReusableProjects.md](docs/ReusableProjects.md) for composition examples.
 
 The optional [coding agent and MCP packages](docs/coding-agents.md) add streaming
 provider sessions, context compaction, versioned coding workspaces, generic DXF
 and shadow tools, and complete Studio control. Select **Agents** in the browser
 Studio. OpenAI, Anthropic and Google, browser file persistence/import/export,
-JavaScript execution and browser MCP run without a companion. An optional .NET
-host supports ChatGPT subscription OAuth, desktop HTTP MCP and native builds.
+JavaScript execution and browser MCP run without a companion. The optional .NET companion hosts desktop MCP, granted native workspaces and
+local agent sessions. `Agents.Codex` uses the supported Codex app-server sign-in
+flow; `Agents.Acp` delegates authentication to an ACP agent according to its
+advertised capabilities. These agent-session transports are separate from the
+API-key provider adapters. `Agents.Evaluation` runs frozen native drawing tasks
+against injected targets without owning credentials or starting agent processes.
 
 ## Build, verify and run
 
@@ -56,30 +64,56 @@ Select **Hatch islands** for all nine Normal/Outer/Ignore solid, pattern and gra
 
 Select **Complex linetypes** for native/SHX text, numeric SHX symbols, relative/absolute/upright orientation, closed paths and curves. Both backends share the same bounded placement plan. Symbols remain pickable for source editing without becoming topology edges or ordinary snap targets. See [Linetypes.md](docs/Linetypes.md) for source preservation, resource providers, work quotas and appearance boundaries.
 
-The **Model** layout contains a process-loop drawing. Select **Appearance** to inspect tapered polylines, a pattern hatch with an island, a gradient region, clipped/sheared raster data and formatted MTEXT. Select **Paper viewports** for an orthographic model overview and a circular, rotated detail with frozen annotation layers. Select **SHX strokes** for native-independent stroke typography. Use **Load SHX/SHP** to register an explicitly selected resource (4 MiB sample limit); imported `.shp` names become `.shx` aliases. These example glyph instructions are generated in source, not bundled font files. Add/delete are immutable structural commands and participate in the same history as property changes. The explicit source-mutation demonstration resets stale history.
+The **Model** layout contains the [tank-and-pump P&ID](docs/ProcessDiagram.md), with native equipment attributes and explicit process/instrument references. Select **Appearance** to inspect tapered polylines, a pattern hatch with an island, a gradient region, clipped/sheared raster data and formatted MTEXT. Select **Paper viewports** for an orthographic model overview and a circular, rotated detail with frozen annotation layers. Select **SHX strokes** for native-independent stroke typography. Use **Load SHX/SHP** to register an explicitly selected resource (4 MiB sample limit); imported `.shp` names become `.shx` aliases. These example glyph instructions are generated in source, not bundled font files. Add/delete are immutable structural commands and participate in the same history as property changes. The explicit source-mutation demonstration resets stale history.
 
 The workspace bar creates and switches isolated branches with independent selection, layouts, history, retained snapshots and pinned SHX resources. The merge panel displays field conflicts and renders a clean preview before applying one canonical undo step. Save DXF is a guarded POST: writer housekeeping is reconciled into the shadow snapshot without discarding editor history. Live invalidations use a bounded, coalescing SSE feed; stale document/workspace/view responses are rejected. See [Branches.md](docs/Branches.md).
+
+The Health, Edit previews, and Workflows palettes expose bounded source diagnostics, paired before/after review with atomic application, and recorded native operations replayed in an isolated drawing. See [Drawing health, edit previews and workflow regressions](docs/DrawingHealthAndWorkflows.md) for reusable APIs, approval and stale-state rules, supported operations, and coverage limits.
 
 Studio shares one host-owned `SkiaTextLayoutEngine` between the render compiler and native backend. The SVG backend consumes the same prepared text layout. Its checkerboard is a generated, explicitly registered in-memory image; opening a drawing never authorizes arbitrary image-path access.
 
 ## Projects and boundaries
 
-| Project | Purpose | Dependencies |
+| Library package | Purpose | Direct dependencies |
 | --- | --- | --- |
-| `netDxf.Shadow` | Detached values, object identity, snapshots, optimistic property batches, immutable graph patches, diffs, reverse references, isolated branches | BCL only |
-| `netDxf.Shadow.NetDxf` | Cached public-model capture, source synchronization, object factories and collection-adoption plans | Core + existing netDxf |
-| `netDxf.Shadow.Geometry` | Double-precision analytic curves, shared block occurrences, styles, presentation regions/stroke groups, hatch scan conversion, persistent BVH | Core |
-| `netDxf.Shadow.Rendering` | Sampled render scenes, signed dash/complex-linetype planning, fill/stroke/image picking, paper-space composition, rich-text parser/layout, backend contracts, SVG | Geometry |
-| `netDxf.Shadow.Rendering.Shx` | Optional bounded SHX/SHP decoding, analytic glyph VM, immutable resource catalogs, entity and linetype shape/text projection | Rendering; no native dependencies |
-| `netDxf.Shadow.Rendering.SkiaSharp` | PNG/direct canvas output, gradient/image paints, HarfBuzz/native glyph metrics and native resource caches | Rendering + SkiaSharp/HarfBuzz |
-| `netDxf.Shadow.Graph` | Toleranced connectivity, intersection splitting and graph algorithms | Geometry |
-| `netDxf.Shadow.Editor` | Source-independent editing, immutable structural/property history and selection, snapping | Rendering |
-| `netDxf.Shadow.Mcp` | Generic public DXF/shadow model tools, transactional edits and official MCP transports | Adapter + Editor + official MCP SDK |
-| `netDxf.Shadow.Agents` | Streaming coding harness, providers, approvals, compaction, workspaces and native process capability | MCP + official OpenAI/Anthropic/Google SDKs |
-| `netDxf.Shadow.AgentHost` | Loopback ChatGPT sign-in, browser MCP bridge and optional native project workspace | Agents + MCP ASP.NET transport |
-| `netDxf.Shadow.Studio` | Integrated local web sample | Adapter + consumer projects |
-| `netDxf.Shadow.Verification` | Original contracts, integration and capture/read smoke measurements | Sample + libraries |
-| `netDxf.Shadow.AdvancedVerification` | Structural history, incremental processing, appearance, typography, paper viewports, SHX resources and gallery regression tests | Sample + libraries |
+| `netDxf.Shadow` | Detached immutable values, object identities, snapshots and graph patches | BCL / framework only |
+| `netDxf.Shadow.NetDxf` | Capture and bidirectional synchronization with native netDxf | Shadow, netDxf |
+| `netDxf.Shadow.Geometry` | Analytic geometry, drawing styles and spatial indexing | Shadow |
+| `netDxf.Shadow.Rendering` | Render scenes, picking, text layout, paper-space composition and SVG | Geometry |
+| `netDxf.Shadow.Graph` | Drawing topology, traversal, connectivity and bounded analysis | Geometry |
+| `netDxf.Shadow.Editor` | Editing, selection, snapping, graph previews and immutable undo/redo | Rendering |
+| `netDxf.Shadow.Dimensions` | Dimension regeneration from immutable snapshots | NetDxf, Geometry |
+| `netDxf.Shadow.Drafting` | Reusable CAD drafting commands, block authoring and resource-editing plans | Editor |
+| `netDxf.Shadow.Health` | Bounded read-only geometry, ownership, resource and reference diagnostics | Shadow, Geometry |
+| `netDxf.Shadow.Workflows` | Versioned operation recording, JSON exchange and isolated deterministic replay contracts | BCL / framework only |
+| `netDxf.Shadow.Modules` | Discoverable CAD module contracts, capability registry and command validation | Drafting |
+| `netDxf.Shadow.Symbols` | Versioned symbol catalogs, native attributes, persistent ports and domain references | NetDxf, Drafting |
+| `netDxf.Shadow.Disciplines` | Shared symbol-module adapter, domain commands and bounded validation reporting | Modules, Symbols |
+| `netDxf.Shadow.Pid` | P&ID equipment and PCE symbols, process-pipe authoring and flow/data validation | Disciplines |
+| `netDxf.Shadow.Piping` | Schematic fittings, pipe routes, nominal sizes and specification continuity | Disciplines |
+| `netDxf.Shadow.Electrical` | Schematic devices, circuit-tagged wires and terminal/data validation | Disciplines |
+| `netDxf.Shadow.Rendering.Shx` | Managed SHX/SHP stroke fonts and shape/text projection | Rendering |
+| `netDxf.Shadow.Rendering.SkiaSharp` | SkiaSharp canvas/PNG output and HarfBuzz typography | Rendering + external SDK/runtime packages |
+| `netDxf.Shadow.Exchange.Dwg` | Explicit diagnostic DWG/DXF exchange using ACadSharp | netDxf + external SDK/runtime packages |
+| `netDxf.Shadow.Mcp` | Official MCP transport, DXF/shadow discovery and transactional drawing/graph tools | NetDxf, Editor, Graph + external SDK/runtime packages |
+| `netDxf.Shadow.Agents` | Official provider SDK adapters, persistent coding harness, workspaces and permissions | Mcp + external SDK/runtime packages |
+| `netDxf.Shadow.Agents.Evaluation` | Frozen drawing tasks, injected agent targets, independent graders and measured tool receipts | Agents |
+| `netDxf.Shadow.Samples` | Reusable DXF gallery and explicitly connected tank-and-pump P&ID factories | Rendering.Shx, Pid, netDxf |
+| `netDxf.Shadow.Studio.Core` | Host-independent CAD workspaces, drawing operations, modules, health, previews and workflows | Samples, Mcp, Exchange.Dwg, Drafting, Dimensions, Rendering.SkiaSharp, Rendering.Shx, Health, Modules, Workflows, Pid, Piping, Electrical |
+| `netDxf.Shadow.Studio.Agents` | Studio agent lifecycle, drawing context, browser tool bridge and companion integration | Agents, Studio.Core |
+| `netDxf.Shadow.Studio.Hosting` | ASP.NET Core HTTP endpoints for CAD workspaces and Studio agents | Studio.Core, Studio.Agents |
+| `netDxf.Shadow.Studio.WebAssembly` | Browser transport, JavaScript interop and in-process Studio runtime | Studio.Core, Studio.Agents + external SDK/runtime packages |
+| `netDxf.Shadow.Agents.Codex` | Codex app-server stdio, managed sign-in, sessions and approval callbacks | BCL / framework only |
+| `netDxf.Shadow.Agents.Acp` | Agent Client Protocol v1 transport and capability-aware sessions | BCL / framework only |
+| `netDxf.Shadow.Agents.Hosting` | Reusable ASP.NET Core companion, local agent bridges and MCP hosting | Agents, Mcp, Agents.Codex, Agents.Acp + external SDK/runtime packages |
+| `netDxf.Shadow.Markdown` | CommonMark/GFM DOM renderer with streaming presentation | BCL / framework only |
+| `netDxf.Shadow.Studio.Web` | Shared CAD ribbon, viewport, module panels and agent chat static assets | Markdown |
+
+Executable samples (`netDxf.Shadow.Studio`, `netDxf.Shadow.Studio.Browser` and
+`netDxf.Shadow.AgentHost`), verification projects and benchmarks are source-only.
+All library dependency edges are reviewed in `tools/ci/package_catalog.py`.
+The installed-package consumer runs 14 functional scenarios and verifies all
+33 loaded package assemblies against their candidate archive hashes.
 
 The core does not expose mutable netDxf objects, SKPath, SKPaint, native fonts or mutable arrays. Geometry is a neutral interchange projection, not a required geometry kernel. Other consumers can read the shadow graph directly without using the supplied geometry/render projects.
 
@@ -241,3 +275,8 @@ The existing consolidated build workflow runs Shadow verification on Linux, Wind
 Capture coverage, editable-source coverage and render fidelity are separate contracts. Full specialized CAD parity remains unfinished: BIGFONT and vertical SHX paragraph layout, custom geometry and ACIS evaluation, complete paragraph/field typography, complete linetype end fitting and global/viewport scaling semantics, exact miter/gradient behavior and certified analytic island predicates, perspective viewport projection, complete viewport visual/layer overrides, complete dimension regeneration, arbitrary affine edit planners and specialized object factories. Metadata remains in the raw shadow graph even when a default consumer cannot interpret it.
 
 Studio is local and single-user. It binds loopback, checks Host, requires a custom mutation header and does not enable CORS or arbitrary external resources. It is not a hardened untrusted-file service. Apply input/resource limits and an explicit trust policy before hosting it elsewhere.
+
+## Reusing the Studio
+
+See [Reusable Studio projects](docs/ReusableProjects.md) for the library boundaries,
+standalone document factories and native/browser hosting examples.
