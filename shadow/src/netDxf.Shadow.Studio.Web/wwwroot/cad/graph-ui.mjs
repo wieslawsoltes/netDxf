@@ -8,8 +8,11 @@ export function graphPalette({client, viewport, report, snapshot, selectSources,
   const values={endpointTolerance:.01,curveTolerance:.05,splitIntersections:true,respectElevation:true,limit:50,source:0,target:1,depth:8};
   const visual={mode:'components',showNodes:true,showEdges:true,labels:'none',dimDrawing:false};
   let operation='summary',saved=null,savedIdentity='',savedOperation='',savedOffset=0,generation=0,projection=null,projectionIdentity='',buildKey='',buildIdentity='',result=null,selected=null,overlayShown=true,lastContainer=null,loadCurrent=null;
+  let thumbnailUrl='';
+  const revokeThumbnail=()=>{if(thumbnailUrl){URL.revokeObjectURL(thumbnailUrl);thumbnailUrl='';}};
   const row=(label,input)=>el('label',{class:'property-row'},[el('span',{text:label}),input]);
   const render=function(container) {
+    revokeThumbnail();
     lastContainer=container;
     const epoch=++generation,renderedKey=client.key,inputs=new Map();let requestSequence=0,projectionSequence=0;
     viewport.cancelGraphPick?.();
@@ -102,6 +105,7 @@ export function graphPalette({client, viewport, report, snapshot, selectSources,
       finally{if(sequence===projectionSequence){loadButton.disabled=false;runButton.disabled=false;}}
     }
     function showVisual() {
+      revokeThumbnail();
       overview.replaceChildren();legend.replaceChildren();
       if(!projection){overview.append(el('p',{class:'hint',text:'Load topology to color components, inspect features and pick graph endpoints.'}));return;}
       const key=client.key,identity=projectionIdentity;
@@ -109,13 +113,14 @@ export function graphPalette({client, viewport, report, snapshot, selectSources,
       overview.append(el('div',{class:'graph-stats'},[el('strong',{text:`${projection.nodes.length} / ${projection.nodeTotal} nodes`}),el('strong',{text:`${projection.edges.length} / ${projection.edgeTotal} edges`}),el('span',{text:`Graph total: ${projection.componentCount??'—'} components · ${projection.cycleRank??'—'} independent cycles`})]));
       overview.append(el('p',{class:projection.partial?'graph-partial':'hint',text:projection.partial?`Partial topology. Only loaded nodes and edges can be inspected or exported.${projection.capped?' Workspace display budget reached. Narrow the projection filters.':''}`:'Complete filtered topology loaded.'}));
       const overviewScene=graphPresentation(projection,result,visual);
-      overview.append(el('img',{class:'graph-thumbnail',src:`data:image/svg+xml;charset=utf-8,${encodeURIComponent(graphSvg(overviewScene,{title:'Loaded graph overview',maximumEdges:1200,maximumNodes:600}))}`,alt:'Loaded graph overview. Use Fit graph to explore in the drawing.'}));
+      thumbnailUrl=URL.createObjectURL(new Blob([graphSvg(overviewScene,{title:'Loaded graph overview',maximumEdges:1200,maximumNodes:600})],{type:'image/svg+xml'}));
+      overview.append(el('img',{class:'graph-thumbnail',src:thumbnailUrl,alt:'Loaded graph overview. Use Fit graph to explore in the drawing.'}));
       if(overviewScene.edges.length>1200||overviewScene.nodes.length>600)overview.append(el('small',{class:'hint',text:'Overview thumbnail limited to 1,200 edges / 600 nodes; main viewport uses all loaded items.'}));
       const more=(projection.nextNode!==null&&projection.nodes.length<graphLimits.nodes)||(projection.nextEdge!==null&&projection.edges.length<graphLimits.edges);
       const actions=[button('Load more topology',use(()=>loadTopology(true)),{disabled:!more})];
       if(download)actions.push(button('Export graph JSON',use(()=>download('graph-topology.json',JSON.stringify({identity:client.state,projection,result,visual},null,2),'application/json'))),button('Export graph SVG',use(()=>download('graph-topology.svg',graphSvg(graphPresentation(projection,result,visual)),'image/svg+xml'))));
       overview.append(el('div',{class:'toolbar'},actions));
-      for(const entry of graphLegend(graphPresentation(projection,result,visual)))legend.append(el('span',{class:'graph-legend-item'},[el('i',{style:`background:${entry.color}`,'aria-hidden':'true'}),el('span',{text:entry.label})]));
+      for(const entry of graphLegend(graphPresentation(projection,result,visual)))legend.append(el('span',{class:'graph-legend-item'},[el('i',{class:`graph-color-${entry.color.slice(1)}`,'aria-hidden':'true'}),el('span',{text:entry.label})]));
       if(visual.mode==='components'&&projection.componentCount>12)legend.append(el('small',{text:'Colors repeat after 12 components; IDs distinguish them. First 24 loaded components shown.'}));
     }
     function inspect(hit) {
@@ -203,7 +208,7 @@ export function graphPalette({client, viewport, report, snapshot, selectSources,
   };
   render.setOperation=value=>{if(!Object.hasOwn(graphOperations,value))throw new Error('Unknown graph operation.');operation=value;saved=null;result=null;if(lastContainer?.isConnected)render(lastContainer);};
   render.loadTopology=()=>loadCurrent?.();
-  render.hide=()=>{generation++;loadCurrent=null;viewport.cancelGraphPick?.();};
+  render.hide=()=>{generation++;loadCurrent=null;revokeThumbnail();viewport.cancelGraphPick?.();};
   render.clearOverlay=()=>{generation++;overlayShown=false;viewport.cancelGraphPick?.();viewport.graph=null;viewport.invalidate();if(lastContainer?.isConnected)render(lastContainer);};
   return render;
 }

@@ -13,6 +13,26 @@
 .graph-legend { display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px;font-size:11px; }
 .graph-legend-item { display:inline-flex;align-items:center;gap:5px; }
 .graph-legend-item i { width:10px;height:10px;display:inline-block;border:1px solid #ffffff40;border-radius:50%;flex:none; }
+.graph-color-5bc0eb { background-color:#5bc0eb; }
+.graph-color-ffba49 { background-color:#ffba49; }
+.graph-color-9bc53d { background-color:#9bc53d; }
+.graph-color-e879b9 { background-color:#e879b9; }
+.graph-color-a99af5 { background-color:#a99af5; }
+.graph-color-48d6bb { background-color:#48d6bb; }
+.graph-color-fa9075 { background-color:#fa9075; }
+.graph-color-a8c5ff { background-color:#a8c5ff; }
+.graph-color-d6d16e { background-color:#d6d16e; }
+.graph-color-c39c79 { background-color:#c39c79; }
+.graph-color-75cfec { background-color:#75cfec; }
+.graph-color-f7a8a8 { background-color:#f7a8a8; }
+.graph-color-ff7d8a { background-color:#ff7d8a; }
+.graph-color-d99cff { background-color:#d99cff; }
+.graph-color-cbd5e1 { background-color:#cbd5e1; }
+.graph-color-64d8bd { background-color:#64d8bd; }
+.graph-color-ffcf66 { background-color:#ffcf66; }
+.graph-color-7593a5 { background-color:#7593a5; }
+.graph-color-87cbe5 { background-color:#87cbe5; }
+.graph-color-ffffff { background-color:#ffffff; }
 .graph-legend small { flex-basis:100%;color:var(--muted,#a9bbc9); }
 .graph-visibility { display:flex;flex-wrap:wrap;gap:8px; }
 .graph-visibility .property-row { display:flex;align-items:center;gap:5px;margin:0;flex:0 0 auto; }

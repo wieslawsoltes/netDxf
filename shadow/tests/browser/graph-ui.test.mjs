@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {graphPalette} from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/graph-ui.mjs';
-import {byText,byLabel,gate,tick,installDom} from './ui-fixture.mjs';
+import {byText,byLabel,gate,tick,installDom,all} from './ui-fixture.mjs';
 
 function fixture(t){
   const root=installDom(t),reads=[],errors=[];
@@ -154,4 +154,18 @@ test('public graph clear fences loading and saved analytical overlays across hid
   const f=fixture(t);const load=byText(f.root,'Load topology').click();await tick();f.render.clearOverlay();f.reads[0].resolve(f.receipt(projection()));await load;assert.equal(f.viewport.graph,null);
   await loadProjection(f);f.render.setOperation('edges');const pending=byText(f.root,'Run analysis').click();await tick();f.reads.at(-1).resolve(f.receipt({graphKey:'build-a',items:projection().edges.items,total:1,nextOffset:null}));await pending;assert.equal(f.viewport.graph.highlight,true);
   f.render.clearOverlay();assert.equal(f.viewport.graph,null);f.render.hide();f.render(f.root);assert.equal(f.viewport.graph,null);await byText(f.root,'Show overlay').click();assert.equal(f.viewport.graph.edges.length,1);
+});
+test('graph thumbnails use revocable Blob URLs and legends require no inline style attributes',async t=>{
+  const originalCreate=URL.createObjectURL,originalRevoke=URL.revokeObjectURL,created=[],revoked=[];
+  URL.createObjectURL=blob=>{assert.equal(blob.type,'image/svg+xml');const url=`blob:graph-test-${created.length}`;created.push(url);return url;};
+  URL.revokeObjectURL=url=>revoked.push(url);
+  t.after(()=>{URL.createObjectURL=originalCreate;URL.revokeObjectURL=originalRevoke;});
+  const f=fixture(t);await loadProjection(f);
+  const image=()=>all(f.root).find(node=>node.tagName==='IMG');
+  assert.match(image().getAttribute('src'),/^blob:/);
+  for(const swatch of all(f.root).filter(node=>node.tagName==='I')){assert.equal(swatch.getAttribute('style'),null);assert.match(swatch.className,/^graph-color-[0-9a-f]{6}$/);}
+  const first=image().getAttribute('src'),mode=byLabel(f.root,'Graph coloring');mode.value='features';await mode.dispatch('change');assert.ok(revoked.includes(first));
+  const second=image().getAttribute('src');f.render(f.root);assert.ok(revoked.includes(second));
+  const third=image().getAttribute('src');f.render.hide();assert.ok(revoked.includes(third));
+  assert.equal(new Set(revoked).size,revoked.length);assert.deepEqual(created,revoked);
 });
