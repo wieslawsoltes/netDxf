@@ -4,13 +4,18 @@ using netDxf.Shadow.Drafting;
 using netDxf.Shadow.Editor;
 using netDxf.Shadow.Health;
 using netDxf.Shadow.Modules;
+using netDxf.Shadow.NetDxf;
 using netDxf.Shadow.Rendering;
 
 namespace netDxf.Shadow.Studio;
 
 public sealed record CadPreviewProperty(ObjectId Entity, string Property, JsonElement Value);
+public sealed record CadAttributeSyncOperation(ObjectId Block, bool ConvertTextModes = false);
+public sealed record CadAttributeSyncSummary(ObjectId Block, string BlockName, int ReferenceCount, int Added, int Retained, int Removed,
+    int RemovedXData, int TextConversions, bool DetailsTruncated, ImmutableArray<AttributeSynchronizationReference> References);
 public sealed record CadEditOperation(string Kind, DraftingCommand? Command = null, ResourceEdit? Resource = null,
-    LayerEdit? Layer = null, CadPreviewProperty? Property = null, string? Module = null, CadModuleCommandRequest? ModuleCommand = null);
+    LayerEdit? Layer = null, CadPreviewProperty? Property = null, string? Module = null, CadModuleCommandRequest? ModuleCommand = null,
+    CadAttributeSyncOperation? AttributeSync = null);
 public sealed record CadEditPreviewRequest(long Revision, string Description, ImmutableArray<CadEditOperation> Operations);
 public sealed record CadEditPreviewTokenRequest(long Revision, string PreviewId);
 
@@ -18,7 +23,8 @@ public sealed partial class Studio
 {
     private sealed record PendingEditPreview(ShadowEditPreview Preview, string Workspace, long View, long FontRevision,
         RenderCompileOptions ViewOptions, ImmutableHashSet<string> Selection, ImmutableArray<ObjectId> SelectionOrder, ImmutableArray<ObjectId> ResultSelection,
-        DrawingHealthReport BeforeHealth, DrawingHealthReport AfterHealth, long ModuleVersion, ImmutableArray<string> Modules, CadEditPreviewRequest Request);
+        DrawingHealthReport BeforeHealth, DrawingHealthReport AfterHealth, long ModuleVersion, ImmutableArray<string> Modules,
+        CadEditPreviewRequest Request, ImmutableArray<CadAttributeSyncSummary> AttributeSynchronizations);
     private readonly Dictionary<string, PendingEditPreview> editPreviews = new(StringComparer.Ordinal);
     public object CadEditPreview(CadEditPreviewRequest request, CancellationToken token = default)
     {
@@ -29,6 +35,7 @@ public sealed partial class Studio
             if (string.IsNullOrWhiteSpace(request.Description) || request.Description.Length > 512) throw new ArgumentException("Provide a description of at most 512 characters.");
             var before = Current; var branch = new EditorSession(new ShadowMemoryStore(before));
             var selectionOrder = CadSelected(Scene()); var selected = selectionOrder;
+            var attributeSynchronizations = ImmutableArray.CreateBuilder<CadAttributeSyncSummary>();
             foreach (var operation in request.Operations)
             {
                 token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(operation);
@@ -47,12 +54,17 @@ public sealed partial class Studio
                         plan = cadModules.Plan(module, branch.Snapshot, moduleCommand, layout, token); break;
                     case "resource" when operation.Resource is { } resource: plan = DraftingResources.Plan(branch.Snapshot, resource); break;
                     case "layer" when operation.Layer is { } layerEdit: plan = DraftingLayers.Plan(branch.Snapshot, layerEdit); break;
+                    case "attribute-sync" when operation.AttributeSync is { } synchronization:
+                        var sync = AttributeSynchronization.Plan(branch.Snapshot, synchronization.Block,
+                            new(ConvertTextModes: synchronization.ConvertTextModes), token);
+                        attributeSynchronizations.Add(AttributeSyncSummary(sync));
+                        plan = new("ATTSYNC " + sync.BlockName, sync.Patch, []); break;
                     case "property" when operation.Property is { } property:
                         if (!selected.Contains(property.Entity)) throw new ShadowConflictException("Preview property targets must belong to the current selection.");
                         var entity = DraftingGuard.Entity(branch.Snapshot, property.Entity);
                         branch.SetProperty(property.Entity, property.Property, ConvertInput(entity[property.Property].Value, property.Value));
                         break;
-                    default: throw new ArgumentException("Choose a typed command, module, resource, layer or property preview operation with its matching payload.");
+                    default: throw new ArgumentException("Choose a typed command, module, resource, layer, property or attribute-sync preview operation with its matching payload.");
                 }
                 if (plan is not null)
                 {
@@ -68,7 +80,8 @@ public sealed partial class Studio
                 ? operation with { Property = property with { Value = property.Value.Clone() } } : operation).ToImmutableArray() };
             var pending = new PendingEditPreview(preview, WorkspaceId, viewVersion, CurrentFonts.Revision, ViewOptions(), editor.State.Selection,
                 selectionOrder, selected, AnalyzeHealth(before, new(MaximumIssues: 500), token), AnalyzeHealth(preview.Proposed, new(MaximumIssues: 500), token), moduleConfigurationVersion,
-                request.Operations.Where(o => o.Kind == "module").Select(o => o.Module!).Distinct(StringComparer.Ordinal).ToImmutableArray(), recordedRequest);
+                request.Operations.Where(o => o.Kind == "module").Select(o => o.Module!).Distinct(StringComparer.Ordinal).ToImmutableArray(), recordedRequest,
+                attributeSynchronizations.ToImmutable());
             foreach (var key in editPreviews.Where(p => !EditPreviewCurrent(p.Value)).Select(p => p.Key).ToArray()) editPreviews.Remove(key);
             if (editPreviews.Count >= 8) editPreviews.Remove(editPreviews.Keys.First());
             var id = Guid.NewGuid().ToString("N"); editPreviews.Add(id, pending);
@@ -84,12 +97,27 @@ public sealed partial class Studio
                 .Select(p => EditPreviewReceipt(p.Key, p.Value)).ToArray();
         }
     }
+    private static CadAttributeSyncSummary AttributeSyncSummary(AttributeSynchronizationPlan plan)
+    {
+        bool truncated = plan.References.Length > 100;
+        string Bound(string value) { if (value.Length <= 1024) return value; truncated = true; return value[..1024] + "…"; }
+        var references = plan.References.Take(100).Select(r =>
+        {
+            truncated |= r.Added.Length > 50 || r.Retained.Length > 50 || r.Removed.Length > 50 || r.RemovedXData.Length > 50 || r.TextConversions.Length > 50;
+            return r with { Added = r.Added.Take(50).ToImmutableArray(), Retained = r.Retained.Take(50).ToImmutableArray(),
+                Removed = r.Removed.Take(50).Select(a => a with { FallbackValue = Bound(a.FallbackValue), MultilineValue = a.MultilineValue is { } v ? Bound(v) : null }).ToImmutableArray(),
+                RemovedXData = r.RemovedXData.Take(50).ToImmutableArray(), TextConversions = r.TextConversions.Take(50).ToImmutableArray() };
+        }).ToImmutableArray();
+        return new(plan.Block, plan.BlockName, plan.References.Length, plan.References.Sum(r => r.Added.Length),
+            plan.References.Sum(r => r.Retained.Length), plan.References.Sum(r => r.Removed.Length),
+            plan.References.Sum(r => r.RemovedXData.Length), plan.References.Sum(r => r.TextConversions.Length), truncated, references);
+    }
     private object EditPreviewReceipt(string id, PendingEditPreview pending) => new
     {
         previewId = id, description = pending.Preview.Description, documentId = pending.Preview.Target.DocumentId,
         workspaceId = pending.Workspace, viewVersion = pending.View, revision = pending.Preview.Target.Revision,
         current = EditPreviewCurrent(pending), validation = pending.Preview.Validation, summary = pending.Preview.Summary,
-        beforeHealth = pending.BeforeHealth, afterHealth = pending.AfterHealth
+        beforeHealth = pending.BeforeHealth, afterHealth = pending.AfterHealth, attributeSynchronizations = pending.AttributeSynchronizations
     };
     private bool EditPreviewCurrent(PendingEditPreview pending) => ReferenceEquals(pending.Preview.Target, Current)
         && pending.Workspace == WorkspaceId && pending.View == viewVersion && pending.FontRevision == CurrentFonts.Revision

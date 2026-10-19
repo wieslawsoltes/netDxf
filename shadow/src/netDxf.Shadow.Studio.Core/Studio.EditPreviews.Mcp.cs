@@ -13,7 +13,7 @@ public sealed partial class Studio
         const string identity = """{"type":"object","properties":{"documentId":{"type":"string"},"workspaceId":{"type":"string","maxLength":128},"viewVersion":{"type":"integer","minimum":0}},"required":["documentId","workspaceId","viewVersion"],"additionalProperties":false}""";
         var previewSchema = McpJson.Parse("{\"type\":\"object\",\"properties\":{\"identity\":" + identity + ",\"request\":" +
             """{"type":"object","properties":{"revision":{"type":"integer","minimum":0},"description":{"type":"string","minLength":1,"maxLength":512},"operations":{"type":"array","minItems":1,"maxItems":128,"items":{"type":"object"}}},"required":["revision","description","operations"],"additionalProperties":false}},"required":["identity","request"],"additionalProperties":false}""");
-        registry.Register(new("studio_edit_preview", "Prepare a nonmutating, typed edit proposal for review. Use studio_request_schema for StudioEditPreviewToolRequest and CadEditOperation. The proposal binds the exact document/workspace/view/selection/resources; native validation runs only when applied. Inspect before/after images in Edit previews. No source edit or undo entry is created.", previewSchema, true), (args, token) =>
+        registry.Register(new("studio_edit_preview", "Prepare a nonmutating, typed edit proposal for review. Use studio_request_schema for StudioEditPreviewToolRequest and CadEditOperation, including attribute-sync (ATTSYNC) for all block references. The proposal binds the exact document/workspace/view/selection/resources; native validation runs only when applied. Inspect before/after images in Edit previews. No source edit or undo entry is created.", previewSchema, true), (args, token) =>
         {
             var input = args.Deserialize<StudioEditPreviewToolRequest>(McpJson.Options) ?? throw new ArgumentException("Missing preview request.");
             var response = ExecuteRequest(input.Identity, () =>
@@ -22,6 +22,8 @@ public sealed partial class Studio
                 var id = receipt.GetProperty("previewId").GetString()!; var pending = FindEditPreview(id); var summary = pending.Preview.Summary;
                 return new { previewId = id, input.Identity.DocumentId, input.Identity.WorkspaceId, input.Identity.ViewVersion, revision = pending.Preview.Target.Revision,
                     description = pending.Preview.Description, validation = pending.Preview.Validation,
+                    attributeSynchronizations = pending.AttributeSynchronizations.Select(s => new { s.Block, s.BlockName, s.ReferenceCount,
+                        s.Added, s.Retained, s.Removed, s.RemovedXData, s.TextConversions, review = "Review formatting resets and removal details in Edit previews before applying." }),
                     summary = new { summary.Added, summary.Removed, summary.Changed, details = summary.Details.Take(50), detailsTruncated = summary.DetailsTruncated || summary.Details.Length > 50 },
                     health = new { beforeErrors = pending.BeforeHealth.Issues.Count(i => i.Severity == DiagnosticSeverity.Error), afterErrors = pending.AfterHealth.Issues.Count(i => i.Severity == DiagnosticSeverity.Error),
                         complete = pending.BeforeHealth.Complete && pending.AfterHealth.Complete, issues = pending.AfterHealth.Issues.Take(20) },

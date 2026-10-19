@@ -1,10 +1,10 @@
 namespace netDxf.Shadow.NetDxf;
 
-public sealed partial class ShadowSession
+internal static partial class SourceValueConversion
 {
     // Object-typed public values must retain their authored primitive type, not silently become strings.
     // Never load a CLR type or assembly named by a snapshot.
-    private object? ConvertBoxedValue(ShadowValue value, Func<ObjectId, object>? resolve)
+    private static object? ConvertBoxedValue(ShadowValue value, Func<ObjectId, object> resolve)
     {
         var type = value switch
         {

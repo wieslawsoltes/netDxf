@@ -17,7 +17,7 @@ public sealed partial class Studio
     private sealed record StateDiagnostic(string Code, string Message, string? Id, string Severity);
     private sealed record StatePresentation(ShadowSnapshot Snapshot, RenderScene Scene,
         ImmutableArray<string> Layouts, ImmutableArray<StateItem> Items, ImmutableArray<StateDiagnostic> Diagnostics);
-    private readonly record struct CadItem(string Id, string Key, string Type, string Layer, int Count, Bounds2 Bounds);
+    private readonly record struct CadItem(string Id, string Key, string Type, string Layer, int Count, Bounds2 Bounds, string? Block);
     private sealed record CadBlock(string Id, string Name, int Entities, Vec3 Origin, string Description, int Attributes, string Units,
         bool IsExternal, bool ScaleUniformly, bool AllowExploding);
     private sealed record CadPresentation(ShadowSnapshot Snapshot, RenderScene Scene,
@@ -63,7 +63,7 @@ public sealed partial class Studio
             if (index >= 0)
             {
                 var source = snapshot.Read(root);
-                rows.Add(new(root.Value, item.Key, source.Type, source["Layer"]["Name"].Text, 1, item.Bounds));
+                rows.Add(new(root.Value, item.Key, source.Type, source["Layer"]["Name"].Text, 1, item.Bounds, source["Block"].Id?.Value));
             }
         }
         return cadPresentation = new(snapshot, scene, rows.ToImmutableArray(), roots.Count, DraftingLayers.Read(snapshot),

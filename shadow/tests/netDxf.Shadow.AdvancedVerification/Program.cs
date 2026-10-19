@@ -42,6 +42,7 @@ AttributeTextVerification.Register(tests);
 AttributeRenderingVerification.Register(tests);
 AttributeEditingVerification.Register(tests);
 AttributeMembershipVerification.Register(tests);
+AttributeSynchronizationVerification.Register(tests);
 ModelAnnotationVerification.Register(tests);
 SourceConsistencyVerification.Register(tests);
 SourceBoundaryVerification.Register(tests);
