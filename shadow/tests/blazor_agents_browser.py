@@ -25,6 +25,7 @@ from playwright.sync_api import sync_playwright, expect
 from blazor_studio_browser import static_host
 from browser_folder_checks import verify_browser_folder
 from browser_storage_checks import verify_browser_recovery_storage
+from browser_chat_layout_checks import verify_compact_chat_layout
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / 'artifacts/blazor-agents'
@@ -295,6 +296,46 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
         expect(page.get_by_role('log', name='Agent conversation and tool activity')).to_contain_text('Approved edit complete.')
         check('approval executes the exact requested write', wait_idle()['status'] == 'completed' and invoke('AgentWorkspaceRead', 'review.txt')['content'] == 'Approved content')
 
+        # Stop remains next to the prompt even when detailed progress is collapsed.
+        # A pending write gives this test a deterministic, non-billable active turn.
+        replies.append(openai_stream(tool=('workspace_write', {'path': 'stopped-review.txt', 'content': 'must not commit', 'expectedVersion': 0}), call_id='stop_approval'))
+        send('Propose a workspace write, then wait for my decision.')
+        expect(page.get_by_role('button', name='Approve once', exact=True)).to_be_visible()
+        page.set_viewport_size({'width': 390, 'height': 844})
+        approve = page.get_by_role('button', name='Approve once', exact=True)
+        approve.click(trial=True)
+        check('mobile compact conversation keeps write approval reachable')
+        expect(page.locator('.agent-run-popover')).not_to_be_visible()
+        page.locator('.agent-run-summary').click()
+        expect(page.locator('.agent-run-popover')).to_be_visible()
+        page.get_by_role('button', name='Close run details', exact=True).focus()
+        page.keyboard.press('Escape')
+        expect(page.locator('.agent-run-summary')).to_be_focused()
+        check('Escape dismisses active progress without cancelling its pending approval', invoke('AgentPoll', 0)['running'])
+        page.locator('.agent-mode-toggle').click()
+        expect(page.get_by_label('Agent execution mode', exact=True)).to_be_disabled()
+        expect(page.get_by_role('button', name='Apply mode', exact=True)).to_be_disabled()
+        page.keyboard.press('Escape')
+        expect(page.locator('.agent-mode-toggle')).to_be_focused()
+        check('mode settings remain inspectable but cannot change an active turn')
+        stop = page.get_by_role('button', name='Stop agent', exact=True)
+        expect(stop).to_be_enabled()
+        stop.click()
+        stopped = wait_idle()
+        check('compact composer Stop cancels a pending write without committing it',
+              stopped['status'] == 'cancelled' and 'stopped-review.txt' not in {file['path'] for file in invoke('AgentWorkspaceFiles')})
+        expect(page.locator('.agent-run-summary')).to_contain_text('Stopped')
+        page.locator('.agent-run-summary').click()
+        resume = page.get_by_role('button', name='Resume from current conversation', exact=True)
+        expect(resume).to_be_enabled()
+        replies.append(openai_stream('Stopped task resumed safely.'))
+        resume.click()
+        expect(page.get_by_role('log', name='Agent conversation and tool activity')).to_contain_text('Stopped task resumed safely.')
+        check('collapsed progress exposes a working Resume action', wait_idle()['status'] == 'completed')
+        page.get_by_label('Message to coding agent', exact=True).click()
+        expect(page.locator('.agent-run-popover')).not_to_be_visible()
+        page.set_viewport_size({'width': 1600, 'height': 1000})
+
         configure(permission='readOnly')
         denied = call('workspace_delete', {'path': 'review.txt', 'expectedVersion': invoke('AgentWorkspaceRead', 'review.txt')['version']}, error=True)
         check('read-only policy rejects direct MCP mutation too', denied['isError'])
@@ -369,6 +410,9 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
 
         def set_mode(mode, criteria=''):
             page.get_by_role('tab', name='Conversation', exact=True).click()
+            mode_menu = page.locator('details.agent-mode-menu')
+            if not mode_menu.evaluate('(element) => element.open'):
+                page.locator('.agent-mode-toggle').click()
             page.get_by_label('Agent execution mode', exact=True).select_option(mode)
             if mode == 'goal':
                 page.get_by_label('Goal success criteria', exact=True).fill(criteria)
@@ -376,6 +420,8 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
             if apply.is_enabled():
                 apply.click()
             page.wait_for_function('mode => window.DotNet.invokeMethodAsync("' + ASSEMBLY + '","AgentPoll",0).then(state => state.run.mode.toLowerCase() === mode)', arg=mode)
+            page.get_by_label('Message to coding agent', exact=True).click()
+            expect(page.locator('.agent-mode-popover')).not_to_be_visible()
 
         configure('openai', 'fullAccess')
         set_mode('plan')
@@ -386,6 +432,8 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
                         openai_stream(tool=('agent_plan', {'steps': planned_steps}), call_id='plan-ready'),
                         openai_stream('The implementation plan is ready for review.')])
         send('Investigate and prepare a concrete plan without editing the workspace.')
+        expect(page.locator('.agent-run-summary')).to_contain_text('Plan ready')
+        page.locator('.agent-run-summary').click()
         expect(page.get_by_role('button', name='Execute plan', exact=True)).to_be_visible()
         planned = wait_idle()
         check('Plan mode performs inspection and prepares a reviewable pending plan',
@@ -405,6 +453,7 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
         check('Execute plan resumes the existing task in Normal mode and finishes it',
               executed_plan['run']['mode'].lower() == 'normal' and executed_plan['status'] == 'completed'
               and invoke('AgentWorkspaceRead', 'executed-plan.txt')['content'] == 'Reviewed plan executed')
+        page.get_by_label('Message to coding agent', exact=True).click()
 
         set_mode('goal', 'Create goal.txt and verify that its saved content is exactly verified.')
         goal_steps = [{'step': 'Create and verify goal.txt', 'status': 'in_progress'}]
@@ -426,6 +475,7 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
         check('Task mode, progress and verification survive a browser checkpoint',
               saved_run['mode'].lower() == 'goal' and saved_run['phase'] == 'completed'
               and saved_run['verification'] == achieved['run']['verification'])
+        verify_compact_chat_layout(page, check, OUTPUT, tag)
         set_mode('normal')
 
         runtime = call('workspace_runtime')
@@ -461,6 +511,10 @@ def verify(base, mount, browser, passed, companion=None, upstream=None, native_w
               and all(file['path'] != 'cancelled.txt' for file in invoke('AgentWorkspaceFiles')))
         page.locator('iframe[title="Isolated agent code"]').wait_for(state='detached')
         wait_idle()
+        # Direct interop cancellation completes before the browser client's next
+        # authoritative poll. Wait for that rendered client state before asking
+        # the UI to perform an operation guarded by AgentClient.ensureIdle().
+        expect(page.get_by_role('complementary', name='Coding agent workspace')).to_have_attribute('aria-busy', 'false')
 
         page.get_by_role('tab', name='MCP', exact=True).click()
         check('browser MCP access requires an explicit UI grant', page.evaluate('() => typeof shadowStudioBrowserMcp === "undefined"'))

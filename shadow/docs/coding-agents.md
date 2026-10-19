@@ -25,14 +25,16 @@ commit or Pages deployment does not itself publish a new NuGet version.
 ## Use the browser workspace
 
 Open [Shadow Studio](https://wieslawsoltes.github.io/netDxf/) and select **Agents** in
-the drawing bar, or press **Ctrl+Shift+A**. The dock has five tabs:
+the drawing bar, or press **Ctrl+Shift+A**. The dock has seven tabs:
 
 | Tab | What it does |
 | --- | --- |
 | Conversation | Normal/Plan/Goal modes, persistent run progress and completion evidence, streaming output, task plan, tool results, approvals, stop and resume, checkpoint import/export |
+| Local agents | Installed Codex/ACP agent connections, sessions and approvals |
 | MCP | Searchable tool catalog, complete input schemas, JSON tool console, WebMCP registration and browser MessagePort connections using the session's permission policy |
 | Files | Versioned text editor, inline diffs, code execution, multi-file/folder/ZIP import, ZIP/bundle download and reviewed folder publishing |
 | Context | Estimated prompt usage, actual provider usage when supplied, pinned requirements, compaction and IndexedDB recovery after reload |
+| Efficiency | Recorded task success, latency, tokens, cache usage and cost comparisons |
 | Settings | Provider, model, API credential, optional endpoint, permissions, budgets, ChatGPT sign-in and companion connections |
 
 Choose a provider, enter a model that supports tool calling and enter the full API
@@ -51,7 +53,9 @@ CORS policy and the browser's local-network permissions still apply.
 
 ### Normal, Plan and Goal
 
-Choose an execution mode beside the message composer. **Apply mode** changes the
+Open the compact mode control beside the message composer to choose an execution
+mode or edit Goal success criteria. Its settings open above the composer without
+shrinking the conversation. **Apply mode** changes the
 idle session immediately, including the policy used by manual and external MCP
 calls; it works without a provider key. **Send task** also applies a pending mode
 or success-criteria change before starting. Mode controls are disabled while the
@@ -63,7 +67,16 @@ agent is working.
 | **Plan** | Investigate with read-only tools and publish a concrete plan. Drawing edits, file mutations, code execution and native commands remain blocked, including with Full access. | A published plan is ready for review; its implementation steps may remain pending. **Execute plan** explicitly switches to Normal and continues the same task. |
 | **Goal** | Work toward the entered **Goal success criteria**, using the task itself when that field is empty. Build a plan, perform the work and verify the result. | A nonempty plan has every step completed, and the agent supplies verification alongside its completion report. |
 
-The **Agent run progress** card retains the outcome after a run stops. It shows
+The compact **Agent run progress** strip retains the outcome after a run stops.
+Open it to inspect the plan, activity, usage, outcome and Resume/Execute actions.
+Its scrollable details overlay the conversation instead of reserving chat space.
+Only one details panel opens at a time; Escape or its Close button dismisses it
+and restores focus to the control. Clicking elsewhere dismisses it without moving
+focus. Escape inside an open panel does not stop the agent. Send/Stop stay beside
+the prompt, and drawing selection attaches through the adjacent link icon.
+Informational notices dismiss automatically; errors remain dismissible.
+
+Run details show
 model turns, total turns across resumptions, automatic continuations, output-limit
 counts, exact pause or blocker details, and an expandable outcome. Verification
 is labeled **Agent-reported verification**; the underlying tool receipts remain
