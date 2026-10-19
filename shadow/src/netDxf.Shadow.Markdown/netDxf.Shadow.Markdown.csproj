@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <Description>Reusable safe DOM Markdown rendering, GFM tables and streaming conversation presentation.</Description>
+    <StaticWebAssetBasePath>/markdown</StaticWebAssetBasePath>
+  </PropertyGroup>
+  <ItemGroup><None Update="THIRD-PARTY-NOTICES.txt" Pack="true" PackagePath="" /></ItemGroup>
+</Project>

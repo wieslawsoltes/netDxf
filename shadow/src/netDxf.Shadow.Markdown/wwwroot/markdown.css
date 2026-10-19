@@ -1,0 +1,26 @@
+.shadow-markdown { overflow-wrap: anywhere; line-height: 1.6; }
+.shadow-markdown > :first-child { margin-top: 0; }
+.shadow-markdown > :last-child { margin-bottom: 0; }
+.shadow-markdown :is(h1,h2,h3,h4,h5,h6) { line-height: 1.3; margin: 1.3em 0 .6em; font-weight: 650; }
+.shadow-markdown h1 { font-size: 1.55em; } .shadow-markdown h2 { font-size: 1.35em; } .shadow-markdown h3 { font-size: 1.15em; }
+.shadow-markdown :is(p,ul,ol,blockquote) { margin: .7em 0; }
+.shadow-markdown :is(ul,ol) { padding-left: 1.6em; } .shadow-markdown li > p { margin: .3em 0; }
+.shadow-markdown blockquote { border-left: 3px solid #647a91; padding: .15em 1em; color: #aabacb; }
+.shadow-markdown a { color: #8dc7ff; text-decoration: underline; text-underline-offset: .15em; }
+.shadow-markdown code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .92em; }
+.shadow-markdown :not(pre) > code { background: #7f8b9c26; padding: .1em .35em; border-radius: 4px; }
+.shadow-markdown pre { overflow-x: auto; margin: 0; padding: 12px; white-space: pre; tab-size: 4; }
+.markdown-code { border: 1px solid #52617265; border-radius: 7px; overflow: hidden; margin: .8em 0; background: #0c131b; }
+.markdown-code-toolbar { display: flex; gap: 8px; align-items: center; padding: 5px 10px; background: #8393a21a; font-size: 11px; }
+.markdown-code-toolbar > span:first-child { flex: 1; }
+.markdown-code-toolbar button { background: transparent; color: inherit; border: 1px solid #8293a545; border-radius: 4px; cursor: pointer; padding: 3px 6px; }
+.markdown-table { max-width: 100%; overflow-x: auto; margin: .8em 0; }
+.markdown-table table { border-collapse: collapse; min-width: 50%; font-size: .94em; }
+.markdown-table :is(th,td) { border: 1px solid #71839660; padding: 7px 11px; text-align: left; }
+.markdown-table th { background: #7e91a51a; font-weight: 600; }
+.markdown-table tr:nth-child(even) { background: #7e91a50b; }
+.markdown-table .align-center { text-align: center; } .markdown-table .align-right { text-align: right; }
+.markdown-task { list-style: none; }
+.shadow-markdown .markdown-task > input[type="checkbox"] { display: inline-block; width: 1em; height: 1em; min-width: 1em; padding: 0; margin: 0 .5em 0 0; vertical-align: -.1em; accent-color: #8dc7ff; }
+.shadow-markdown img { max-width: 100%; height: auto; }
+.shadow-markdown hr { border: 0; border-top: 1px solid #71839660; margin: 1.2em 0; }
