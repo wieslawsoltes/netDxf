@@ -106,9 +106,18 @@ def verify_insert_attributes(page, output, state, command, wait_state, idle, che
     page.screenshot(path=str(output / 'insertion-preview.png'))
     execute('cad.edit', {'path': 'edit-preview/apply', 'body': {'previewId': receipt['previewId']}}); idle()
     check('typed agent insertion preview applies explicit values and owned attributes', attributes()['TAG']['value'] == 'AGENT-401')
+    copy_before = state()['state']; command('COPY 0,0 0,80')
+    check('COPY retains assigned block attributes in one undoable command', attributes()['TAG']['value'] == 'AGENT-401' and
+          state()['state']['undoCount'] == copy_before['undoCount'] + 1)
+    command('U'); command('REDO')
     with page.expect_download() as download: page.locator('[data-action="save"]').first.click()
     saved = output / 'inserted-attributes.dxf'; download.value.save_as(str(saved)); idle()
     loaded = ezdxf.readfile(saved); audit = loaded.audit(); values = [i.get_attrib('TAG').dxf.text for i in loaded.modelspace().query('INSERT')]
     check('independent DXF audit confirms every inserted assignment without repairs', not audit.errors and not audit.fixes and
-          values == ['P-000', 'P-102', 'P-201', 'P-000', 'P-301', 'P-302', 'AGENT-401'])
+          values == ['P-000', 'P-102', 'P-201', 'P-000', 'P-301', 'P-302', 'AGENT-401', 'AGENT-401'])
+    inserted = list(loaded.modelspace().query('INSERT')); original, copied = inserted[-2:]
+    check('copied attributes retain translated geometry after undo redo and save',
+          copied.dxf.insert.isclose(original.dxf.insert + (0, 80, 0)) and
+          all(a.dxf.insert.isclose(b.dxf.insert + (0, 80, 0)) and a.dxf.text == b.dxf.text
+              for a, b in zip(copied.attribs, original.attribs)) and len(copied.attribs) == len(original.attribs) == 4)
     command('Z E', False); page.screenshot(path=str(output / 'insertion-values.png'))
