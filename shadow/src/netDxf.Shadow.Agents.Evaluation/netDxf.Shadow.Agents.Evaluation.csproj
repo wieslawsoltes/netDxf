@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Reproducible drawing-agent evaluation, native geometric grading, measured token and cache efficiency, and conservative shared API budget accounting.</Description></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../netDxf.Shadow.Agents/netDxf.Shadow.Agents.csproj" /></ItemGroup>
+</Project>
