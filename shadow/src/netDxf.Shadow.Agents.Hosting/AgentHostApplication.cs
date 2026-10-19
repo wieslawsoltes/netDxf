@@ -28,6 +28,7 @@ public static class AgentHostApplication
         });
         builder.Services.AddSingleton(options);
         builder.Services.AddSingleton<BrowserStudioRelay>();
+        builder.Services.AddSingleton<ExternalAgentHost>();
         // Sign-in has its own finite timeout; streaming inference uses the separate long-lived HTTP transport below.
         builder.Services.AddSingleton(_ => new ChatGptSignInClient());
         builder.Services.AddSingleton<ChatGptHostSession>();
@@ -165,6 +166,7 @@ public static class AgentHostApplication
             using var socket = await context.WebSockets.AcceptWebSocketAsync();
             await relay.ConnectAsync(socket, options, context.RequestAborted);
         });
+        app.MapExternalAgents();
         app.MapMcp("/mcp");
         return app;
     }
@@ -181,6 +183,7 @@ public static class AgentHostApplication
             using var client = ShadowAgentProviders.Create(new()
             {
                 Provider = request.Provider, ApiKey = request.ApiKey, Model = request.Model, Endpoint = request.Endpoint,
+                OptimizePromptCaching = request.OptimizePromptCaching, PromptCacheKey = request.PromptCacheKey,
             }, http);
             context.Response.ContentType = "application/x-ndjson; charset=utf-8";
             context.Features.Get<IHttpResponseBodyFeature>()?.DisableBuffering();

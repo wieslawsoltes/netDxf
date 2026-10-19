@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Agent Client Protocol v1 client with bounded JSON-RPC stdio transport.</Description></PropertyGroup>
+</Project>

@@ -30,7 +30,7 @@ internal static class ProviderBridgeChecks
             var json = requests.Count switch
             {
                 1 => AnthropicFixture(tool: true),
-                2 => AnthropicFixture(tool: false),
+                2 or 4 => AnthropicFixture(tool: false),
                 _ => "event: message_start\ndata: " + """{"type":"message_start","message":{"id":"m","type":"message","role":"assistant","model":"verification-model","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":11,"output_tokens":1}}}"""
                     + "\n\nevent: error\ndata: " + """{"type":"error","error":{"type":"overloaded_error","message":"Temporary overload"}}""" + "\n\n",
             };
@@ -59,6 +59,8 @@ internal static class ProviderBridgeChecks
             messages.Add(new(ChatRole.Tool, [new FunctionResultContent(call.CallId, "{\"revision\":42}")]));
             var final = await bridge.GetResponseAsync(messages, chatOptions);
             Check(final.Text == "Bridge complete." && requests.Count == 2, "native official SDK completes multi-turn tool replay once per inference");
+            Check(requests.Take(2).All(request => request["cache_control"]?["type"]?.GetValue<string>() == "ephemeral"
+                && request["cache_control"]?["ttl"]?.GetValue<string>() == "5m"), "host maps default Anthropic prefix cache options to official SDK");
             Check(requests[1].ToJsonString().Contains("verified-signature", StringComparison.Ordinal)
                 && requests[1].ToJsonString().Contains("revision", StringComparison.Ordinal), "bridge restores thinking and tool output in next official SDK request");
             try
@@ -69,6 +71,13 @@ internal static class ProviderBridgeChecks
             catch (ShadowAgentProviderException error)
             { Check(ShadowAgentProviders.TryGetTransientFailure(error, out _), "typed Anthropic overload stays transient across native bridge"); }
             Check(requests.Count == 3, "native bridge never retries provider inference itself");
+            using var disabled = ShadowAgentProviders.CreateBrowserBridge(new()
+            {
+                Provider = "anthropic", Model = "verification-model", ApiKey = "anthropic-provider-key", Endpoint = "https://fixture.example",
+                OptimizePromptCaching = false, PromptCacheKey = "bridge-cache-fixture",
+            }, $"http://127.0.0.1:{bridgePort}", token);
+            await disabled.GetResponseAsync(messages, chatOptions);
+            Check(!requests[^1].ContainsKey("cache_control"), "host preserves explicit cache-hint opt-out across bridge");
         }
         finally { await host.StopAsync(); }
         return count;

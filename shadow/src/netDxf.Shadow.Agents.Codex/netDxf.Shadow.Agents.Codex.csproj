@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Codex app-server JSON-RPC transport, managed login and streamed agent session integration.</Description></PropertyGroup>
+</Project>
