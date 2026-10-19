@@ -6,6 +6,10 @@ it is not evidence of complete AutoCAD parity. A passing test proves only the
 behavior it exercises. Items below remain open until the implementation and the
 corresponding end-to-end evidence cover their stated scope.
 
+The latest delivery instruction narrows this PR to fixing major issues, completing
+qualification and merging the implemented work. The remaining parity requirements
+below are follow-up backlog, not claims of completion or new merge-blocking scope.
+
 ## Requested areas
 
 | User requirement | Current implementation and evidence | Remaining work / completion evidence |
@@ -13,7 +17,7 @@ corresponding end-to-end evidence cover their stated scope.
 | Rapid drawing creation, editing and a complete MCP toolset | Generic source/schema/collection/method tools, atomic drawing batches, typed Studio routes; MCP and AgentStudio verification programs | Build a per-native-entity/property/method coverage inventory, close unsupported authoring/editing shapes, and exercise them through actual Studio/MCP workflows. Generic reflection access alone does not prove safe full editing support. |
 | Full graph analysis in Studio | Nodes, edges, components, path/traversal, cut vertices/bridges, nearest node, diagnostics, fundamental cycles and minimum spanning forests share reusable algorithms and MCP tools | Broaden source-reference graph exploration and query-to-selection workflows; validate large real drawings and export/import analysis receipts. Geometric topology does not imply discipline connectivity. |
 | AutoCAD-like ribbon and command/log visibility | Adaptive ribbon panels, keyboard command workflow, independent command/history visibility, clean screen; browser tests | Continue command discoverability, keyboard navigation, focus/accessibility and small-screen validation as commands are added. |
-| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; exact attribute history; shared instance editor, BATTMAN/ATTDEF for named blocks and standalone layout definitions, ATTSYNC previews, insertion-time value/verify prompts, explicit insertion attributes and DXF block-library transfer with conflict policies/previews | Command-line -ATTDEF and richer definition text settings, duplicate-tag layout copying, library catalog/version workflows and remaining transfer metadata, cursor-following insertion graphics, richer insertion/array workflows and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
+| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; exact attribute history; shared instance editor, BATTMAN/ATTDEF for named blocks and standalone layout definitions, ATTSYNC previews, insertion-time value/verify prompts, cursor-following insertion previews, explicit insertion attributes and DXF block-library transfer with conflict policies/previews | Command-line -ATTDEF and richer definition text settings, duplicate-tag layout copying, library catalog/version workflows and remaining transfer metadata, richer insertion/array workflows and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
 | MOVE and other editing tools with drafting aids | MOVE/COPY/ROTATE/SCALE/MIRROR, basic topology edits, STRETCH/BREAK/BREAKATPOINT increment, object/grid snap, Ortho/polar/tracking; native and browser regressions | Extend entity/coordinate-system coverage for each command, curve trim/extend/offset, reference/copy variants of transforms, richer arrays, selection cycling and additional acquisition modes. Existing planar restrictions remain material. |
 | Full line, text style and layer UI | Managers expose supported table fields, complex linetypes, LIN import, fixed-height/font metadata, layer color/plot/lock/freeze/transparency; native layer-state save/update/rename/delete/selective restore with history and DXF persistence | Layer filters/isolation, saved-layer editing, persisted restore masks, LAS transfer, unresolved-resource repair, individual viewport overrides, plot-style workflows, text editing/formatting and externally referenced resource behavior. |
 | Token-efficient coding harness and provider caching | Bounded context/tool batches, caching configuration and usage, stable prefixes, checkpoint/compaction behavior; provider/agent fixtures | Verify supported provider/model combinations with opt-in real accounts, measure cache hits on repeated identical tasks, and compare quality/latency/cost. Fixtures do not establish actual provider cache performance. |
@@ -91,15 +95,16 @@ exact pushed revision, including each operating-system and package-consumer job.
   exercise both text/binary input and output. These tests are foundations for the
   remaining UI work, not evidence of complete block parity.
 
-## Current implementation order
+## Current delivery and follow-up order
 
 1. Preserve green CI on every new pushed increment. Process-launch and browser
    regressions were corrected; all 23 checks passed on `6b8a1482`, including the
    production block-library transfer and cross-platform installed-package matrix.
    Pages deployment was skipped.
    Each new pushed revision needs its own checks.
-2. Finish standalone layout attribute authoring through native/browser and installed
-   package checks, then extend insertion/array workflows and supported attributed/
+2. Finish the current insertion preview increment, review major defects and qualify
+   the final packages and hosted CI before merging PR #272 with granular commits.
+   Follow-up work can then extend insertion/array workflows and supported attributed/
    nonuniform explode cases with native and browser history tests. Retain explicit
    library metadata, catalog/version management and dynamic-block gaps.
 3. Complete remaining layers/styles and drafting workflows: filters/isolation,
@@ -175,12 +180,34 @@ the user's cumulative USD 20 ceiling. There is no credential material in this au
   native Chromium and 237 standalone WASM checks across root/subpath hosting.
   Both Release publishes succeed; all 96 route
   contracts and 987 assets validate. Independent saved-DXF audits require no repairs.
-  An installed-only package consumer now exercises standalone creation, tag preview,
-  multiline grip movement and history. Installed-package execution and hosted CI
-  for this increment must qualify the committed revision separately.
+  An installed-only package consumer exercises standalone creation, tag preview,
+  multiline grip movement and history. All 33 packages and 14 installed-consumer
+  scenarios pass on clean revision `be4479c4`; each later revision requires its own
+  hosted CI qualification.
 - Duplicate-tag layout copying, command-line -ATTDEF, richer definition text
   settings and the other block requirements remain open. This is a bounded
   workflow increment, not evidence of complete AutoCAD block parity.
+
+### Cursor insertion preview increment
+
+- Reusable scene/render options select exact display roots without changing source
+  ownership. A receipt-guarded read compiles only a detached proposed INSERT using
+  the same units, scale, rotation, alternate base point and attribute construction
+  as final placement. Model/paper space, cache isolation, cancellation and stale
+  requests have dedicated verification.
+- Native and WASM share the preview route and frontend. One decoded image follows
+  the cursor without per-pointer requests. Cancel/session changes release pending
+  graphics without adding source objects or undo entries. Agent reads can access
+  the same typed route.
+- Local verification passes 1,465 Advanced, 428 JavaScript, 144 fresh published
+  native Chromium and 243 standalone WASM checks across root/subpath hosting.
+  Both Release publishes pass; all 97 routes and 990 published assets validate.
+  Independent saved-DXF audits require no repairs. Installed-consumer checks also
+  exercise the root-subset renderer and detached insertion preview API; final
+  package execution and hosted CI must qualify the committed revision.
+- Richer acquisition/coordinate modes, arrays, dynamic blocks and other listed
+  parity gaps remain follow-up work. Cursor feedback is a scaled transparent image;
+  it is not a claim of identical stroke rasterization at every zoom.
 
 ### Native block exchange increment
 

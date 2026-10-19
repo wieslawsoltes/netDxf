@@ -42,6 +42,12 @@ model annotation context or paper viewport projection. Root cycle detection and
 scene budgets remain active. No drawing layout or source owner is temporarily
 rewritten for a preview.
 
+`SceneOptions.RootEntities` and `RenderCompileOptions.RootEntities` optionally select
+an ordered, unique subset of roots belonging to the displayed block or layout.
+Default retains all roots; an explicit empty array renders none. Nested references
+expand normally. Subset views are cached separately and suppress automatic paper
+viewport composition without changing source membership or ownership.
+
 Studio's definition editor uses the existing detached branch, pinned resources,
 merge planner and editor transaction implementation. New receipt-guarded routes
 are `block/create`, `block/rename`, `block/begin`, and `block/finish` under each
@@ -288,8 +294,21 @@ this for ordinary INSERT commands, `CadInsert`, recorded workflows and typed edi
 previews. `CadInsertOperation` combines a command and optional assignments through
 the native/WASM `insert` route. An edit-preview operation with `kind: "insert"`
 and its `insert` payload uses the same plan; a normal command preview also includes
-explicit defaults. These are complete drawing previews; cursor-following block
-graphics and richer insertion acquisition remain future work.
+explicit defaults.
+
+`CadInsertPreview` and the native/WASM `insert-preview` read route compile only a
+detached proposed reference. The result contains a transparent SVG, insertion
+anchor, world image bounds and diagnostics, with bounded dimensions and image size.
+It uses the same placement and attribute plans as the final operation, including
+units, scale, rotation and alternate base point. It creates no retained proposal,
+source change, selection, history entry or live renderer switch.
+
+The shared viewport decodes one preview for each insertion configuration and moves
+it with the acquired cursor. Pointer movement requires no further backend requests.
+Drawing receipts, cancellation and session changes fence asynchronous responses;
+Escape releases the pending image. This is transient rasterized SVG feedback, so
+stroke/text rasterization can differ from final rendering at another zoom. Richer
+insertion acquisition, arrays and dynamic-block behavior remain future work.
 
 `EATTEDIT`, `ATTEDIT` and `ATE` open the shared instance editor. Its Attribute,
 Text options and Properties tabs edit values and supported appearance fields;
