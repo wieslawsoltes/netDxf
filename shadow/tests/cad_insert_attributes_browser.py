@@ -87,7 +87,11 @@ def verify_insert_attributes(page, output, state, command, wait_state, idle, che
     ribbon_action(page, 'block-insert', 'Insert', 'Blocks')
     expect(page.locator('#dialog-title')).to_have_text('Insert block')
     page.get_by_label('Repeat block placement', exact=True).check(); page.locator('#dialog-submit').click()
-    expect(page.locator('#dialog')).not_to_be_visible(); input_prompt('320,0')
+    expect(page.locator('#dialog')).not_to_be_visible()
+    # The native dialog hides before its queued close event installs the command
+    # session. Wait for the user-facing prompt before sending placement input.
+    expect(page.locator('#prompt')).to_contain_text('repeat; Escape ends')
+    input_prompt('320,0')
     expect(page.locator('#dialog-title')).to_have_text('Insert block attributes'); accept_insert('P-301')
     expect(page.locator('#prompt')).to_contain_text('repeat; Escape ends')
     input_prompt('400,0'); expect(page.locator('#dialog-title')).to_have_text('Insert block attributes')
