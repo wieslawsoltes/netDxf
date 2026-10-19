@@ -28,6 +28,7 @@ export function glyph(name = 'agent') {
     upload: 'M12 16V3M7 8l5-5 5 5M3 16v5h18v-5', pin: 'm8 2 8 2-1 5 3 4-6 1-5 8 2-9-3-4 3-2z',
     check: 'm4 12 5 5L20 6', search: 'M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0m-2 6 6 6',
     key: 'M14 9a5 5 0 1 1-10 0 5 5 0 0 1 10 0m-2 4 8 8m-3-3 3-3m-6 0 3-3',
+    link: 'M10 7l3-3a5 5 0 0 1 7 7l-3 3M14 17l-3 3a5 5 0 0 1-7-7l3-3M8 16l8-8',
     arrow: 'M4 12h16M14 6l6 6-6 6', retry: 'M3 9a9 9 0 1 1 1 8M3 3v7h7',
     folder: 'M3 5h7l2 3h9v12H3zM3 8h9', archive: 'M3 3h18v5H3zM5 8v13h14V8M9 12h6',
     play: 'm7 4 14 8-14 8z', trash: 'M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7',

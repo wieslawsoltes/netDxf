@@ -9,6 +9,7 @@ import { BrowserSessionPersistence } from './persistence.mjs';
 import { mountBrowserFileTransfer, renderFileDiff } from './file-workspace.mjs';
 import { defaultConfiguration, providers, executionModes, restorePreferences, preferenceRecord, configuration, formatTokens, formatDuration, toolActivity, parseArguments, readable, safeFilePath, toolTemplate } from './contracts.mjs';
 import { presentRun, recoveredRunSelection } from './run-state.mjs';
+import { bindChatPopovers } from './chat-popovers.mjs';
 import { node, glyph, button, field, code, codeExecution, markdown, createMarkdownView } from './render.mjs';
 
 const tabNames = [['chat','Conversation','chat'], ['local','Local agents','play'], ['tools','MCP','tools'], ['files','Files','file'], ['context','Context','context'], ['efficiency','Efficiency','activity'], ['settings','Settings','settings']];
@@ -60,7 +61,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   ]);
   const tabs = node('nav', { class: 'agent-tabs', role: 'tablist', 'aria-label': 'Agent workspace' });
   for (const [id, label, icon] of tabNames) {
-    const control = button(label, () => setTab(id), { icon, id: `agent-tab-${id}`, role: 'tab', 'aria-controls': `agent-panel-${id}`, 'aria-selected': id === selectedTab, tabindex: id === selectedTab ? 0 : -1 });
+    const control = button(label, () => setTab(id), { icon, title: label, 'aria-label': label, id: `agent-tab-${id}`, role: 'tab', 'aria-controls': `agent-panel-${id}`, 'aria-selected': id === selectedTab, tabindex: id === selectedTab ? 0 : -1 });
     control.addEventListener('keydown', event => {
       if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
       event.preventDefault(); const i = tabNames.findIndex(tab => tab[0] === selectedTab);
@@ -70,23 +71,27 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     tabButtons.set(id, control); tabs.append(control);
     panels.set(id, node('section', { id: `agent-panel-${id}`, class: `agent-panel agent-panel-${id}`, role: 'tabpanel', 'aria-labelledby': `agent-tab-${id}`, hidden: id !== selectedTab }));
   }
+  let noticeTimer = null;
   const alertText = node('span'), alert = node('div', { class: 'agent-alert', role: 'status', hidden: true }, [alertText,
-    button('Dismiss message', () => { alert.hidden = true; }, { icon: 'close', compact: true })]);
+    button('Dismiss message', clearNotice, { icon: 'close', compact: true })]);
   dock.append(header, tabs, alert, ...panels.values());
   mountEfficiency(panels.get('efficiency'));
   function notice(message, kind = 'info') {
+    clearTimeout(noticeTimer);
     alertText.textContent = client.clean(String(message)); alert.className = `agent-alert ${kind}`; alert.hidden = false;
     if (kind === 'error') statusLabel.textContent = client.transcript.running ? 'Run active · action needs attention' : 'Needs attention';
+    else noticeTimer = setTimeout(clearNotice, 5000);
   }
-  function clearNotice() { alert.hidden = true; }
+  function clearNotice() { clearTimeout(noticeTimer); noticeTimer = null; alert.hidden = true; }
   function show(tab = selectedTab) {
     opened = true; dock.hidden = false; resize.hidden = false; launcher.setAttribute('aria-expanded', 'true');
     workspace.classList.add('has-agent'); setTab(tab); scheduleRender();
     if (!connectedOnce) { connectedOnce = true; run(async () => { await client.connect(); }); }
     else if (!client.connected) client.schedule(0);
   }
-  function hide() { opened = false; dock.hidden = true; resize.hidden = true; launcher.setAttribute('aria-expanded', 'false'); workspace.classList.remove('has-agent'); }
+  function hide() { chatPopovers.closeAll(); opened = false; dock.hidden = true; resize.hidden = true; launcher.setAttribute('aria-expanded', 'false'); workspace.classList.remove('has-agent'); }
   function setTab(id) {
+    chatPopovers.closeAll();
     selectedTab = id;
     for (const [name, panel] of panels) {
       panel.hidden = id !== name; tabButtons.get(name).setAttribute('aria-selected', String(id === name)); tabButtons.get(name).tabIndex = id === name ? 0 : -1;
@@ -131,7 +136,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const activity = node('div', { class: 'agent-activity', role: 'status', hidden: true }, [node('span', { class: 'agent-activity-dot' }), activityLabel, activityCount]);
   const usageStrip = node('button', { type: 'button', class: 'agent-usage-strip', hidden: true, onclick: () => setTab('context'), title: 'Observed usage for this session. Open detailed token and cache metrics.' });
   const liveStatus = node('span', { class: 'agent-sr-only', role: 'status', 'aria-live': 'polite' });
-  const prompt = node('textarea', { class: 'agent-prompt', placeholder: 'Ask the agent to inspect, build, or edit…', rows: 3, 'aria-label': 'Message to coding agent', spellcheck: false });
+  const prompt = node('textarea', { class: 'agent-prompt', placeholder: 'Ask the agent to inspect, build, or edit…', rows: 2, 'aria-label': 'Message to coding agent', spellcheck: false });
   const sendButton = button('Send task', () => run(send), { icon: 'send', compact: true, class: 'agent-send agent-primary' });
   const stopButton = button('Stop agent', () => run(async () => { await client.cancel(); statusLabel.textContent = 'Stopping…'; }), { icon: 'stop', compact: true, class: 'agent-stop', hidden: true });
   const retryButton = button('Resume task', () => run(resumeTask), { icon: 'retry', 'aria-label': 'Resume from current conversation', title: 'Continue from recorded results without replaying completed edits.', hidden: true, class: 'agent-primary' });
@@ -142,9 +147,14 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const runTitle = node('strong'), runModeBadge = node('span', { class: 'agent-run-mode' });
   const runProgress = node('p', { class: 'agent-run-counters' }), runDetail = node('p', { class: 'agent-run-detail' });
   const runEvidence = node('details', { class: 'agent-run-evidence', hidden: true });
-  const runView = node('section', { class: 'agent-run-state', role: 'region', 'aria-label': 'Agent run progress', hidden: true }, [
-    node('div', { class: 'agent-run-heading' }, [runModeBadge, runTitle]), runProgress, runDetail, runEvidence,
-    node('div', { class: 'agent-row' }, [retryButton, executePlanButton])
+  const runView = node('details', { class: 'agent-run-state', role: 'region', 'aria-label': 'Agent run progress', hidden: true }, [
+    node('summary', { class: 'agent-run-summary', 'aria-controls': 'agent-run-details', title: 'Show run details, plan, usage and actions' }, [
+      node('span', { class: 'agent-run-heading' }, [runModeBadge, runTitle]), runProgress]),
+    node('div', { id: 'agent-run-details', class: 'agent-run-popover agent-chat-popover' }, [
+      node('div', { class: 'agent-popover-heading' }, [node('strong', { text: 'Run details' }),
+        button('Close run details', () => chatPopovers.close(runView, true), { icon: 'close', compact: true })]),
+      runDetail, runEvidence, planView, activity, usageStrip,
+      node('div', { class: 'agent-row' }, [retryButton, executePlanButton])])
   ]); let runVersion = '';
   const executionMode = node('select', { 'aria-label': 'Agent execution mode' }, executionModes.map(mode => node('option', { value: mode.id, text: mode.name })));
   executionMode.value = currentConfig.mode;
@@ -152,7 +162,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const goalCriteria = node('textarea', { rows: 2, maxlength: 16000, 'aria-label': 'Goal success criteria', placeholder: 'Describe the observable result and checks that define success…' });
   goalCriteria.value = currentConfig.successCriteria;
   const goalField = field('Goal success criteria', goalCriteria, 'Optional: leave blank to use your task as the success criterion.');
-  const applyModeButton = button('Apply mode', () => run(applyExecutionMode), { icon: 'check', class: 'agent-secondary' });
+  const applyModeButton = button('Apply mode', () => run(async () => { await applyExecutionMode(); chatPopovers.close(modeMenu, true); }), { icon: 'check', class: 'agent-secondary' });
   const executionControls = node('div', { class: 'agent-mode-controls' }, [
     node('div', { class: 'agent-mode-row' }, [node('label', {}, [node('span', { text: 'Mode' }), executionMode]), applyModeButton]), executionHint, goalField
   ]);
@@ -160,20 +170,31 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   const permissionChip = node('button', { type: 'button', class: 'agent-permission-chip', onclick: () => setTab('settings'), text: 'Approve changes' });
   const contextLabel = node('span', { text: '0 / 128k' }), contextFill = node('span');
   const contextMeter = node('button', { class: 'agent-context-meter', type: 'button', title: 'Context usage and pinned instructions', onclick: () => setTab('context') }, [node('span', { class: 'agent-context-track' }, [contextFill]), contextLabel]);
-  const referenceComposer = createReferenceComposer({ api: drawingReferences, getDocument, report: error => notice(error.message || String(error), 'error') });
+  const referenceComposer = createReferenceComposer({ api: drawingReferences, getDocument, compact: true, report: error => notice(error.message || String(error), 'error') });
+  referenceComposer.chips.classList.add('agent-composer-references');
+  const modeLabel = node('span');
+  const modeMenu = node('details', { class: 'agent-mode-menu' }, [
+    node('summary', { class: 'agent-mode-toggle', 'aria-controls': 'agent-task-settings', title: 'Execution mode and task settings' }, [modeLabel]),
+    node('div', { id: 'agent-task-settings', class: 'agent-mode-popover agent-chat-popover' }, [
+      node('div', { class: 'agent-popover-heading' }, [node('strong', { text: 'Task settings' }),
+        button('Close task settings', () => chatPopovers.close(modeMenu, true), { icon: 'close', compact: true })]), executionControls])
+  ]);
   const composer = node('div', { class: 'agent-composer' }, [
     node('div', { class: 'agent-composer-context' }, [documentChip,
-      button('Pin current drawing context', () => run(pinDrawing), { icon: 'pin', compact: true })]), executionControls,
-    referenceComposer.element,
+      button('Pin current drawing context', () => run(pinDrawing), { icon: 'pin', compact: true }), referenceComposer.controls,
+      node('span', { class: 'grow' }), modeMenu]), referenceComposer.chips,
     node('div', { class: 'agent-prompt-box' }, [prompt,
       node('div', { class: 'agent-prompt-actions' }, [node('span', { text: 'Enter to send · Shift+Enter for a new line' }), node('span', { class: 'grow' }), stopButton, sendButton])]),
     node('div', { class: 'agent-composer-footer' }, [permissionChip, node('span', { class: 'grow' }), contextMeter])
   ]);
-  panels.get('chat').append(chatActions, runView, planView, transcript, jumpLatest, activity, usageStrip, composer, liveStatus);
+  panels.get('chat').append(chatActions, runView, transcript, jumpLatest, composer, liveStatus);
+  const chatPopovers = bindChatPopovers(dock, [runView, modeMenu]);
   function updateExecutionMode() {
     const mode = executionModes.find(item => item.id === executionMode.value) || executionModes[0];
     goalField.hidden = mode.id !== 'goal';
     const pending = !client.config || client.config.mode !== mode.id || client.config.successCriteria !== goalCriteria.value.trim();
+    modeLabel.textContent = `${mode.name}${pending ? ' •' : ''}`;
+    modeMenu.querySelector('summary').setAttribute('aria-label', `${mode.name} mode${pending ? ', unapplied settings' : ''}. Open task settings.`);
     const turnLimit = client.config?.maxTurns ?? currentConfig.maxTurns;
     executionHint.textContent = `${mode.hint} ${turnLimit ? `Turn budget: ${turnLimit.toLocaleString()}; Resume continues after the limit.` : 'No fixed turn limit.'}` + (pending ? ' Apply mode, or send a task to apply it.' : '');
     executionControls.classList.toggle('pending', pending);
@@ -199,13 +220,14 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     updateExecutionMode(); return true;
   }
   updateExecutionMode();
-  function resizePrompt() { prompt.style.height = 'auto'; prompt.style.height = `${Math.min(160, Math.max(60, prompt.scrollHeight))}px`; }
+  function resizePrompt() { prompt.style.height = 'auto'; prompt.style.height = `${Math.min(112, Math.max(44, prompt.scrollHeight))}px`; }
   prompt.addEventListener('input', resizePrompt);
   prompt.addEventListener('keydown', event => {
     if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); if (!client.transcript.running && !client.busy) run(send); }
     if (event.key === 'Escape') { event.stopPropagation(); if (client.transcript.running && !stopButton.disabled) { event.preventDefault(); stopButton.click(); } }
   });
   async function send() {
+    chatPopovers.closeAll();
     clearNotice();
     if (!client.configured) { setTab('settings'); throw new Error('Choose your provider and connect it before sending a task.'); }
     const text = prompt.value;
@@ -242,10 +264,14 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
     const state = client.transcript, running = state.running || client.busy;
     const progress = presentRun(state, client.config || currentConfig);
     const nextRunVersion = JSON.stringify(progress);
+    runView.hidden = !progress.visible && !state.plan.length;
+    if (runView.hidden) chatPopovers.close(runView);
     if (runVersion !== nextRunVersion) {
-      runVersion = nextRunVersion; runView.hidden = !progress.visible; runView.dataset.phase = progress.phase;
+      runVersion = nextRunVersion; runView.dataset.phase = progress.phase;
       runTitle.textContent = progress.title; runModeBadge.textContent = progress.modeName;
-      runProgress.textContent = progress.progress; runDetail.textContent = progress.detail; runDetail.hidden = !progress.detail;
+      runProgress.textContent = `${progress.turns} turn${progress.turns === 1 ? '' : 's'}`;
+      runProgress.title = progress.progress;
+      runDetail.textContent = [progress.detail, progress.progress].filter(Boolean).join('\n'); runDetail.hidden = false;
       const evidence = [];
       if (progress.criteria) evidence.push(node('h4', { text: 'Success criteria' }), node('p', { text: progress.criteria }));
       if (progress.summary) evidence.push(node('h4', { text: 'Outcome' }), node('p', { text: progress.summary }));
@@ -907,7 +933,7 @@ export function mountAgentWorkspace({ workspace, documentBar, getDocument, getDo
   window.addEventListener('pagehide', event => {
     mcpBridge.disconnect(); void browserMcp.disable().catch(() => {});
     if (!event.persisted) {
-      externalAgents.dispose(); referenceComposer.dispose();
+      externalAgents.dispose(); referenceComposer.dispose(); chatPopovers.dispose(); clearNotice();
       for (const cached of timelineNodes.values()) { cached.markdown?.dispose(); cached.preview?.dispose(); }
       disposed = true; authGeneration++; if (authTimer) clearTimeout(authTimer);
       // Saves are normally completed after each idle change and on visibility

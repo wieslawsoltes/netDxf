@@ -17,19 +17,21 @@ export function referenceChips(references, { historical = false, statuses = new 
   return row;
 }
 
-export function createReferenceComposer({ api, getDocument = () => null, report = () => {} }) {
+export function createReferenceComposer({ api, getDocument = () => null, report = () => {}, compact = false }) {
   let references = [], routeId = null, statuses = new Map(), generation = 0, disposed = false, checking = false, rendered = '';
-  const chips = node('div'), status = node('span', { class: 'agent-muted', role: 'status' });
+  const chips = node('div', { hidden: true }), status = node('span', { class: 'agent-muted', role: 'status' });
   const action = callback => Promise.resolve().then(callback).catch(error => report(error));
-  const attach = button('Attach selected objects', () => action(capture), { icon: 'link', disabled: !api });
-  const refresh = button('Refresh attachments', () => action(() => check(true)), { hidden: true });
-  const element = node('div', { class: 'agent-reference-composer' }, [node('div', { class: 'agent-row' }, [attach, refresh, status]), chips]);
+  const attach = button('Attach selected objects', () => action(capture), { icon: 'link', compact, disabled: !api });
+  const refresh = button('Refresh attachments', () => action(() => check(true)), { icon: compact ? 'refresh' : undefined, compact, hidden: true });
+  const controls = node('div', { class: 'agent-row agent-reference-controls' }, [attach, refresh, status]);
+  const element = node('div', { class: 'agent-reference-composer' }, [controls, chips]);
   function render() {
     const next = JSON.stringify([references, [...statuses], routeId, getDocument()]);
     if (rendered === next) return;
     rendered = next;
     const expanded = new Set([...chips.querySelectorAll('details[open]')].map(item => item.getAttribute('data-reference-key')));
     refresh.hidden = references.length === 0;
+    chips.hidden = references.length === 0;
     chips.replaceChildren(referenceChips(references, { statuses, remove: ref => { generation++; references = references.filter(item => referenceKey(item) !== referenceKey(ref)); render(); }, inspect: ref => action(async () => {
       const value = await api.validate([ref], false); if (!value) throw new Error('The drawing changed while checking this object.');
       for (const item of value.items || []) statuses.set(referenceKey(item.reference), item); render();
@@ -64,7 +66,7 @@ export function createReferenceComposer({ api, getDocument = () => null, report 
     if (disposed || checking || !references.length || routeId !== getDocument()) return;
     checking = true; void check(false).catch(() => {}).finally(() => { checking = false; });
   }, 2000);
-  return Object.freeze({ element, prepare: () => check(false), capture, clear() { generation++; references = []; statuses.clear(); routeId = null; render(); },
+  return Object.freeze({ element, controls, chips, prepare: () => check(false), capture, clear() { generation++; references = []; statuses.clear(); routeId = null; render(); },
     commit(expected) { if (JSON.stringify(references) === JSON.stringify(expected)) { generation++; references = []; statuses.clear(); routeId = null; render(); } },
     changed() { generation++; render(); }, get references() { return structuredClone(references); }, dispose() { disposed = true; clearInterval(timer); } });
 }
