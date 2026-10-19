@@ -205,7 +205,9 @@ OpenAI terminal responses stopped by an output limit retain cache-write counts a
 
 ### Prompt caching and overhead
 
-Tool declarations retain stable ordinal ordering and reuse the same function objects, allowing SDK schema caches and provider prefix caches to reuse them. Context accounting memoizes immutable transcript sizes instead of serializing the entire history on every UI poll. Stable instructions and pinned reference material precede the replaceable compaction summary.
+Tool declarations retain stable ordinal ordering and reuse the same function objects, allowing SDK schema caches and provider prefix caches to reuse them. The session reuses prepared tool declarations, workflow guidance, task-state text and context sizes while their inputs are unchanged. Each read still checks the live host definitions, including replacements in the same collection; transcript, plan, pin, checkpoint, summary and calibration changes remain reflected in the context meter. Stable instructions and pinned reference material precede the replaceable compaction summary.
+
+This reduces local polling and request-preparation overhead. It does not establish faster remote inference: provider queuing, model generation and cache hits remain service-dependent. Use the reported inference and first-token latency to assess the actual model calls.
 
 Provider caching is deliberately provider-specific:
 
@@ -221,6 +223,28 @@ Provider caching is deliberately provider-specific:
 ## Context management and checkpoints
 
 The context meter conservatively estimates UTF-8 input, including instructions, tool schemas, history, summary and pins. Actual provider input usage calibrates the estimate upward. It is not an exact model tokenizer. Configure `ContextWindowTokens` for the selected model and reserve suitable output space.
+
+### Model discovery and editable limits
+
+In Studio Settings, **Discover models** reads the selected provider account's model catalog without starting inference or changing the current conversation. Select an entry to fill its model ID and known context budget, then **Connect provider** to apply the settings. The context budget remains directly editable. Tool errors start collapsed in the conversation; opening one shows its arguments and result, while pending approvals remain visible.
+
+The discovery API is reusable independently of Studio:
+
+```csharp
+var catalog = await ShadowAgentProviders.DiscoverModelsAsync(
+    new AgentModelDiscoveryRequest { Provider = "google", ApiKey = sessionCredential },
+    cancellationToken: cancellationToken);
+foreach (var model in catalog.Models)
+    Console.WriteLine($"{model.Id}: context={model.ContextWindowTokens}, input={model.InputTokenLimit}, output={model.OutputTokenLimit}");
+```
+
+`AgentDiscoveredModel` distinguishes a shared context capacity from separate input/output limits and includes metadata provenance. Missing capacities are null. Studio uses a known shared capacity, or conservatively uses an input cap while retaining its output reserve. Unknown capacities retain the user's manual budget. Selecting a model can reduce an oversized output budget to fit the reported limit; the UI explains the change. Discovery does not prove tool support or inference permission.
+
+- [OpenAI model listing](https://developers.openai.com/api/reference/resources/models/methods/list) supplies available IDs without token capacities. A small exact-ID catalog supplies documented capacities for `gpt-6.1-sol`, `gpt-6-luna` and `gpt-6-astra` only at the official endpoint. Snapshots, fine-tunes, other IDs and custom endpoints remain unknown rather than inheriting guessed limits.
+- [Anthropic model listing](https://platform.claude.com/docs/en/api/models/list) supplies `max_input_tokens` and `max_tokens` when available. [Gemini model listing](https://ai.google.dev/api/models) supplies `inputTokenLimit` and `outputTokenLimit`; embedding-only entries are excluded.
+- ChatGPT uses the connected local companion's supported model-list endpoint. Codex's existing app-server model list remains in **Local agents**. Neither path infers undocumented capacity metadata.
+
+`DiscoverModelsAsync` automatically selects browser-compatible transport on WebAssembly; `DiscoverBrowserModelsAsync` is available for explicit hosts and fixtures. Native and browser Studio share the implementation. Discovery bounds total time, pages, model count and response size, refuses redirects, and keeps credentials out of results and errors. Injected HTTP clients remain caller-owned and must disable redirects and credential-bearing default headers. Credentials and catalogs are not persisted in checkpoints; stale UI replies are ignored after changing provider, endpoint or credential.
 
 Before an inference crosses `CompactionThreshold`, the harness summarizes completed older rounds while retaining recent messages and keeping tool calls paired with their results. It archives the complete older transcript in `agent-history/` before replacing it with continuation notes. The current task and pinned context survive compaction. If the summarizer fails, bounded deterministic excerpts and the complete archive provide a fallback. If the workspace cannot retain the archive, compaction stops rather than discarding the original history.
 
@@ -312,3 +336,9 @@ dotnet pack shadow/src/netDxf.Shadow.Agents -c Release -o artifacts/packages
 Consume the package with the same-version Shadow dependencies, or use its project reference in a local build. Packing creates a NuGet artifact; it does not publish the package to a feed. The browser Studio and ASP.NET companion are separate consumers.
 
 Verification projects exercise the harness over real DXF edits with scripted models, the official SDKs over controlled provider streams, and the loopback companion with an official MCP client, WebSockets and cancellable native processes. Live provider credentials and account authorization remain user-supplied.
+
+## Local polling overhead
+
+Context estimation reuses unchanged retained-input byte counts and task-state JSON. Tool declarations and workflow guidance are prepared once per catalog revision; every read still checks the host's current definition references, including replacements in the same list. Hosts can return a fresh list containing their immutable definitions. New schemas, permission flags, additions, removals and ordering changes invalidate the prepared catalog. A new provider request receives its own tool list. Plan/pin edits, checkpoint import, reset, compaction and appended history invalidate the corresponding context inputs; observed token calibration is applied after the cached raw-byte count.
+
+The credential-free `AgentContextVerification` fixture prints `AGENT_CONTEXT_METRIC` and checks exact estimates against fresh restored sessions. Run it with `dotnet run --project shadow/tests/netDxf.Shadow.Agents.Verification -c Release -f net8.0`. Its fixed polling workload has 256 tools, 64 plan steps, 32,000 pinned characters and 1,000 unchanged polls. In a local .NET 8 comparison, allocations fell from 99,320,040 to 440,040 bytes (99.6%); catalog reads and enumerations each fell from 2,000 to 1,000. The remaining comparison uses the host's enumerator to support live catalogs that supply a stable snapshot. The same run took about 133 ms before and 7 ms after; elapsed time is environment-dependent and is not a test threshold. The deterministic catalog counts and correctness checks are regression gates, including a catalog growing or shrinking during comparison. No remote requests were made, and these numbers do not measure provider latency or change model choice, input/output budgets, approval policy or model-visible context.

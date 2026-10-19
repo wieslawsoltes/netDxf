@@ -18,6 +18,7 @@ await VerifyReasoningProvenance();
 await VerifyFailures();
 await VerifyBrowserAnthropic();
 checks += await ProviderTerminationVerification.RunAsync();
+checks += await ModelDiscoveryVerification.RunAsync();
 await VerifyAuthentication();
 await VerifyMcpSchemas();
 await VerifyCaching();

@@ -9,17 +9,28 @@ public sealed partial class AgentSession
 {
     private sealed record MessageSize(int Bytes);
     private readonly ConditionalWeakTable<ChatMessage, MessageSize> contextSizes = new();
+    private readonly record struct ContextSizeKey(long Revision, int Messages, string Summary, string Task,
+        AgentPlanStep[] Plan, int TotalTurns, PreparedToolCatalog Tools);
+    private ContextSizeKey? contextSizeKey;
+    private long retainedContextRevision, contextBytes;
     private int InputBudget => Options.ContextWindowTokens - Options.MaxOutputTokens - 1024;
     private int EstimateContext(bool calibrated = true)
     {
-        long bytes = Encoding.UTF8.GetByteCount(Options.Instructions) + Encoding.UTF8.GetByteCount(RunInstructions()) + Encoding.UTF8.GetByteCount(TaskStateContext()) + Encoding.UTF8.GetByteCount(ToolGuidance()) + Encoding.UTF8.GetByteCount(summary) + 1024;
-        foreach (var pin in pins) bytes += Encoding.UTF8.GetByteCount(pin.Text) + 64;
-        if (summary.Length > 0) bytes += Encoding.UTF8.GetByteCount(activeTask);
-        foreach (var message in messages) bytes += contextSizes.GetValue(message, item => new(Encoding.UTF8.GetByteCount(AgentJson.String(ExportMessage(item))) + 32)).Bytes;
-        foreach (var tool in AvailableTools) bytes += FunctionFor(tool).ContextBytes;
+        var tools = PrepareTools();
+        // Appended messages change Count; replacement/removal and pin edits advance
+        // Revision. Run phase, stream deltas and polling do not change model input.
+        var key = new ContextSizeKey(retainedContextRevision, messages.Count, summary, activeTask, plan, runState.TotalTurns, tools);
+        if (contextSizeKey != key)
+        {
+            long bytes = Encoding.UTF8.GetByteCount(Options.Instructions) + Encoding.UTF8.GetByteCount(RunInstructions()) + Encoding.UTF8.GetByteCount(TaskStateContext()) + Encoding.UTF8.GetByteCount(summary) + 1024 + tools.ContextBytes;
+            foreach (var pin in pins) bytes += Encoding.UTF8.GetByteCount(pin.Text) + 64;
+            if (summary.Length > 0) bytes += Encoding.UTF8.GetByteCount(activeTask);
+            foreach (var message in messages) bytes += contextSizes.GetValue(message, item => new(Encoding.UTF8.GetByteCount(AgentJson.String(ExportMessage(item))) + 32)).Bytes;
+            contextBytes = bytes; contextSizeKey = key;
+        }
         // A conservative UTF-8 estimate calibrated upward by actual provider usage.
         // Exact tokenization is model-dependent and never claimed by this meter.
-        return (int)Math.Min(int.MaxValue, Math.Ceiling(bytes / 3.0 * (calibrated ? tokenCalibration : 1)));
+        return (int)Math.Min(int.MaxValue, Math.Ceiling(contextBytes / 3.0 * (calibrated ? tokenCalibration : 1)));
     }
     private IReadOnlyList<ChatMessage> BuildInput()
     {
@@ -94,6 +105,7 @@ public sealed partial class AgentSession
             archivedReferences.AddRange(prefix.Select(ExportMessage).Where(m => m.References is { Count: > 0 }));
             if (archivedReferences.Count > 1000) archivedReferences.RemoveRange(0, archivedReferences.Count - 1000);
             messages.RemoveRange(0, count);
+            retainedContextRevision++;
             TrimCallResultCache();
             // Compact authoritative receipts survive both compaction and checkpoints.
         }
@@ -168,6 +180,7 @@ public sealed partial class AgentSession
             {
                 SessionId = checkpoint.SessionId; summary = checkpoint.Summary;
                 messages.Clear(); messages.AddRange(imported); archivedReferences.Clear(); archivedReferences.AddRange(archived);
+                retainedContextRevision++;
                 activeTask = checkpoint.ActiveTask is { Length: > 0 } task ? task : imported.LastOrDefault(m => m.Role == ChatRole.User)?.Text ?? "";
                 pins.Clear(); pins.AddRange(checkpoint.Pins); plan = checkpoint.Plan.ToArray();
                 completedCalls.Clear(); events.Clear(); eventCharacters = 0; status = "idle";
@@ -197,6 +210,7 @@ public sealed partial class AgentSession
                 if (clearWorkspace) Workspace.Import([]);
                 SessionId = Guid.NewGuid().ToString("N"); summary = ""; activeTask = ""; status = "idle";
                 messages.Clear(); archivedReferences.Clear(); usageTotals = new(); pins.Clear(); plan = []; completedCalls.Clear(); events.Clear(); eventCharacters = 0; tokenCalibration = 1;
+                retainedContextRevision++;
                 callReceipts.Clear(); callReceiptBudget = 0;
                 runState = NewRunState(); completionDecision = null; acceptingCompletion = false;
                 progressVersion = 0; progressReceipts.Clear(); progressReceiptOrder.Clear();

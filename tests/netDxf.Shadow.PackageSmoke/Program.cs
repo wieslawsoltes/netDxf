@@ -140,6 +140,12 @@ internal static class Program
         Require(typeof(IAgentCodeRunner).Assembly == typeof(AgentCodeTools).Assembly &&
             typeof(AgentCodeRequest).Assembly == typeof(AgentSession).Assembly,
             "Portable browser code contracts are absent from the standalone agent package.");
+        var discovery = ShadowAgentProviders.DiscoverModelsAsync(
+            new AgentModelDiscoveryRequest { Provider = "codex" }, limits: new AgentModelDiscoveryLimits())
+            .GetAwaiter().GetResult();
+        Require(discovery.Status == "unavailable" && discovery.Models.Count == 0 &&
+            typeof(AgentDiscoveredModel).Assembly == typeof(AgentSession).Assembly,
+            "Installed model-discovery contracts must support explicit unavailable results without network access.");
         // Construct the real SDK adapter without making an inference request or requiring an account.
         var client = ShadowAgentProviders.Create(new() { Provider = "openai", ApiKey = "package-smoke-not-a-real-key", Model = "test-model" });
         using var agent = new AgentSession(client, registry, new()
@@ -174,6 +180,9 @@ internal static class Program
             var poll = JsonSerializer.SerializeToElement(controller.Poll(0), McpJson.Options);
             Require(poll.GetProperty("usage").GetProperty("inferences").GetInt32() == 0,
                 "Extracted Studio polling omitted harness usage.");
+            var discovery = controller.ModelsAsync("""{"provider":"codex"}""").GetAwaiter().GetResult();
+            Require(discovery.Status == "unavailable" && !controller.Session.IsRunning,
+                "Extracted Studio model discovery must not start or reconfigure inference.");
         }
         finally { controller.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
 

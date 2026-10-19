@@ -394,6 +394,7 @@ using (var agent = new AgentSession(client, referenceRegistry, full with { Mode 
 checks += await BrowserCodeVerification.RunAsync();
 checks += await AgentRunVerification.RunAsync();
 checks += await AgentReceiptVerification.RunAsync();
+checks += await AgentContextVerification.RunAsync();
 Console.WriteLine($"Agent verification passed: {checks} checks covering live DXF mutations, provider retries, duplicate calls, approvals, stop/resume, concurrency, compaction, protected reasoning, checkpoint validation, atomic file batches and isolated code transactions.");
 
 sealed class ScriptedChatClient : IChatClient

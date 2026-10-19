@@ -34,8 +34,7 @@ public sealed partial class AgentSession
     {
         get
         {
-            var host = executor.Tools;
-            return host.Where(tool => tool.Name is not ("agent_finish" or "agent_plan")).Concat(controlTools.Tools).ToArray();
+            return PrepareTools().Definitions;
         }
     }
 
@@ -259,11 +258,19 @@ public sealed partial class AgentSession
             "Verification must describe observed results; identify unavailable checks honestly. A blocked task needs an exact blocker and the next required input.";
     }
 
-    private string TaskStateContext() => AgentJson.String(new
+    private AgentPlanStep[]? taskContextPlan;
+    private int taskContextTurns = -1;
+    private string taskContext = "";
+    private string TaskStateContext()
     {
-        mode = Options.Mode, permissionMode = Options.PermissionMode, successCriteria = Options.SuccessCriteria, plan,
-        turns = runState.TotalTurns, unfinishedSteps = plan.Count(step => step.Status != "completed")
-    });
+        if (ReferenceEquals(taskContextPlan, plan) && taskContextTurns == runState.TotalTurns) return taskContext;
+        taskContextPlan = plan; taskContextTurns = runState.TotalTurns;
+        return taskContext = AgentJson.String(new
+        {
+            mode = Options.Mode, permissionMode = Options.PermissionMode, successCriteria = Options.SuccessCriteria, plan,
+            turns = runState.TotalTurns, unfinishedSteps = plan.Count(step => step.Status != "completed")
+        });
+    }
 
     private AgentRunState RestoreRunState(AgentRunState? value, bool hasTask)
     {

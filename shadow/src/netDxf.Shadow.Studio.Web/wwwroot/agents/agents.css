@@ -93,6 +93,13 @@
 .agent-external-mcp { margin:0 16px 18px; }
 .agent-browser-features { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }.agent-browser-features span { border:1px solid #466777; border-radius:4px; background:#263d47; color:#b3dbc9; font-size:9px; padding:4px 6px; }
 .agent-provider-runtime { border:1px solid #466777; border-radius:5px; background:#243d42; color:#b6d9d0; font-size:10px; line-height:1.7; padding:10px; margin:4px 0 15px!important; }
+.agent-model-discovery { margin:12px 0 16px; padding:12px; border:1px solid #466077; border-radius:6px; background:#243444; }
+.agent-model-discovery>.agent-row { justify-content:space-between; margin-bottom:10px; }
+.agent-model-discovery>.agent-field { margin-bottom:10px; }
+.agent-model-discovery select { text-overflow:ellipsis; }
+.agent-model-discovery-status,.agent-model-limits-note { overflow-wrap:anywhere; }
+.agent-model-discovery-status.error { color:#efb7c1; }
+.agent-model-discovery>.agent-model-limits-note { margin-bottom:0; }
 .agent-optional-native { margin:0 16px 18px; border-top:1px solid #40546a; padding-top:12px; }.agent-optional-native>summary { color:#a8bdd0; font-size:11px; }.agent-optional-native .agent-external-mcp { margin:12px 0 0; }
 .agent-browser-mcp,.agent-recovery { margin:0 16px 18px; padding:13px; border:1px solid #405a72; border-radius:7px; background:#26374a; }.agent-browser-mcp p,.agent-recovery p { font-size:10px; line-height:1.7; color:#a8bed3; }.agent-browser-mcp .agent-row,.agent-recovery .agent-row { margin:10px 0; }.agent-browser-mcp>details { color:#9cb5ce; font-size:10px; margin-top:10px; }.agent-browser-mcp>.agent-auth-status { color:#a5d7c4; margin:10px 0 0; }.agent-browser-mcp .agent-code pre { white-space:pre-wrap; overflow-wrap:anywhere; }
 .agent-recovery .agent-storage-status { color:#9ed5be; }.agent-recovery .agent-storage-status.error { color:#edb4bf; }.agent-recovery .agent-field { margin-top:14px; }.agent-recovery .agent-row>button { font-size:10px; border:1px solid #4b6580; }.agent-recovery .agent-muted { margin-bottom:0; }
