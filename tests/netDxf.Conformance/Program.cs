@@ -23,6 +23,7 @@ internal static partial class Program
         Directory.CreateDirectory(ArtifactDirectory);
         RegisterMetadataTraversalTests();
         RegisterAttributeMTextTests();
+        RegisterAttributeTextDataTests();
         RegisterDrawingCompatibilityTests();
         RegisterOpaqueObjectCode5Tests();
         RegisterHatchExplicitPeriodicTests();
