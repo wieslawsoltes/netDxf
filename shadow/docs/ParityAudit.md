@@ -15,7 +15,7 @@ corresponding end-to-end evidence cover their stated scope.
 | AutoCAD-like ribbon and command/log visibility | Adaptive ribbon panels, keyboard command workflow, independent command/history visibility, clean screen; browser tests | Continue command discoverability, keyboard navigation, focus/accessibility and small-screen validation as commands are added. |
 | Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; Advanced native fixtures | Dedicated attribute editor and definition synchronization, block-library import/export, richer insertion previews, array references and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
 | MOVE and other editing tools with drafting aids | MOVE/COPY/ROTATE/SCALE/MIRROR, basic topology edits, STRETCH/BREAK/BREAKATPOINT increment, object/grid snap, Ortho/polar/tracking; native and browser regressions | Extend entity/coordinate-system coverage for each command, curve trim/extend/offset, reference/copy variants of transforms, richer arrays, selection cycling and additional acquisition modes. Existing planar restrictions remain material. |
-| Full line, text style and layer UI | Managers expose supported table fields, complex linetypes, LIN import, fixed-height/font metadata, layer color/plot/lock/freeze/transparency; resource-manager fixtures | Layer filters/states/isolation and restoration, individual viewport overrides, plot-style workflows, text editing/formatting and externally referenced resource behavior. These are separate from the implemented native table fields. |
+| Full line, text style and layer UI | Managers expose supported table fields, complex linetypes, LIN import, fixed-height/font metadata, layer color/plot/lock/freeze/transparency; native layer-state save/update/rename/delete/selective restore with history and DXF persistence | Layer filters/isolation, saved-layer editing, persisted restore masks, LAS transfer, unresolved-resource repair, individual viewport overrides, plot-style workflows, text editing/formatting and externally referenced resource behavior. |
 | Token-efficient coding harness and provider caching | Bounded context/tool batches, caching configuration and usage, stable prefixes, checkpoint/compaction behavior; provider/agent fixtures | Verify supported provider/model combinations with opt-in real accounts, measure cache hits on repeated identical tasks, and compare quality/latency/cost. Fixtures do not establish actual provider cache performance. |
 | Coding-chat UI and reusable Markdown | Conversations, streaming/tool activity, approvals, execution modes, references, external-agent panels and reusable Markdown assets; browser fixtures | Continue conversation editing/branching/search and accessibility/workspace usability; measure long conversation rendering under realistic tool-output loads. |
 | Reusable sample/application projects | 33 packages, extracted sample factories/Core/hosting/browser/assets/agent/Markdown/domain libraries; package installed-consumer checks | Preserve library dependency boundaries and package consumer evidence for each new feature. App-specific glue remains in hosts; no duplicate implementations between native/browser. |
@@ -48,12 +48,31 @@ corresponding end-to-end evidence cover their stated scope.
 These are local results. The CI row above still requires verification on the
 exact pushed revision, including each operating-system and package-consumer job.
 
+### Layer-state increment
+
+- Reusable native saved-state plans and the shared `LAYERSTATE`/`LAS` manager
+  cover save/update, rename/delete and selective global property restoration.
+  Text/binary DXF, branch merge, recorded workflow replay and resource rename
+  history are exercised. Missing resources are refused before mutation.
+- Review found compound layer renames rekey saved-state dictionaries before the
+  source adapter's collection phase. The adapter now uses actual intermediate
+  values and membership, avoiding duplicate key edits during undo; a later
+  rejected collection update also restores the original identities and session.
+- Fresh .NET 8 verification: 1,243 Advanced, 18 Shadow and 83 AgentNative checks.
+  Browser units: 397. Published native Chromium: 84. Published WebAssembly:
+  123 CAD checks across root/subpath hosting, with no API server requests.
+  Independent ezdxf audit accepts the saved layer-state drawing without repairs.
+- Native and browser publishes and all 88 route contracts pass. These local
+  results supplement the prior CI baseline; the next pushed revision requires
+  its own complete hosted checks.
+
 ## Current implementation order
 
-1. Correct the observed CI process-launch and real-browser regressions.
-2. Complete and verify missing STRETCH/BREAK workflows, graph cycle/forest access,
-   and external-agent context controls; commit each area separately.
-3. Continue block attributes, layers, drafting command/entity coverage and reusable
+1. Preserve green CI on every new pushed increment. Process-launch and browser
+   regressions were corrected; all 23 checks passed on `377291ce`.
+2. STRETCH/BREAK, graph cycle/forest access and external-agent context controls
+   have landed. Extend their coverage as related workflows are implemented.
+3. Continue block attributes, remaining layer workflows, drafting command/entity coverage and reusable
    symbol/module workflows against the remaining rows above.
 4. Broaden per-feature regressions and provider interoperability evidence; repeat
    the requirement audit before claiming overall completion.
