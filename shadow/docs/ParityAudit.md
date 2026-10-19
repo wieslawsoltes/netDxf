@@ -124,6 +124,28 @@ Credentials supplied in conversation are neither used nor persisted. Paid testin
 remains disabled, with actual spend USD 0. Any later opt-in evaluation must retain
 the user's cumulative USD 20 ceiling. There is no credential material in this audit.
 
+### Native block exchange increment
+
+- `Block.Create` no longer unlinks source hatch boundaries. Source associations,
+  shared boundary entities, reactors, handles and active layout remain intact;
+  only the copies follow the existing nonassociative hatch-clone policy.
+- Reusable `Block.ToDocument`, stream Load and text/binary stream Save APIs expose
+  the existing model-space drawing export without temporary files. File Save uses
+  the same implementation; failed file loads now handle a null reader result.
+  The caller retains stream ownership and receives documented reader/writer errors.
+- Stream round-trips cover all six supported DXF versions, nested block settings,
+  resources and assigned attributes. Embedded attribute packets, independent fallback
+  values and linked MTEXT column ownership have additional regressions.
+- Local verification passes all 25 new exchange cases in both Debug and Release,
+  34 related block checks, 270 text-column regressions, all 1,402 Advanced checks,
+  and Release builds for netstandard2.0, net471, net48,
+  net6.0 and net8.0. Fourteen independently read DXF exports have no audit errors
+  or repairs. Hosted CI still needs to qualify the next pushed revision.
+- This is a native exchange foundation. Exact graph-library transfer, resource-name
+  collision policies, versioned library management and Studio/agent controls remain
+  open. Model-space export does not archive root definition metadata or preserve
+  cloned hatch associations; those limitations are documented in BlockAuthoring.md.
+
 ### Insertion attribute increment
 
 - `InsertAttributeConstruction` materializes explicit owned attributes in proposed

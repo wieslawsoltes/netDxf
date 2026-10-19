@@ -64,6 +64,37 @@ Native block and INSERT clones preserve block insertion units, uniform-scale and
 explode settings. Block clones also retain external-reference paths and modes;
 cloning does not attach the copy to the original document or layout.
 
+## Native block drawing exchange
+
+The core netDxf library exposes `Block.ToDocument(version)`,
+`block.Save(stream, version, isBinary)` and `Block.Load(stream, name, supportFolders)`.
+The text-save and no-support-folders overloads are also available. Stream input
+requires an explicit valid block name and readable, seekable input; output must
+be writable. The caller owns both streams, including when loading fails. These
+methods share the existing DXF reader/writer version and Debug/Release error
+behavior. Unsupported stream versions raise `DxfVersionNotSupportedException`;
+other reader failures return null in Release. The existing file overload also
+returns null when its document reader fails, instead of dereferencing that result.
+
+`ToDocument` creates an independent drawing with the block contents in model space.
+The origin and units become `INSBASE` and `INSUNITS`. Root attribute definitions,
+nested INSERTs, their assigned attribute values and referenced resources are copied.
+Embedded attribute text remains separate from fallback values; legacy linked MTEXT
+columns refer to the copied column entities. File and stream saves use the same
+export implementation. `Block.Create(document, name)` always reads model space
+regardless of the active layout and no longer unlinks source hatch boundaries.
+
+This drawing-content exchange does not archive the named root definition's name,
+description, record flags or block-level XData. Nested definition settings remain
+part of their definitions. Cloned hatches retain their boundary geometry but are
+nonassociative, following the existing `Hatch.Clone` contract; source hatches and
+their boundary/reactor identities remain unchanged. Exact graph-library transfer,
+resource-collision handling and Studio import/export controls remain separate work.
+
+Conformance covers both text and binary formats for all six supported DXF versions,
+model/paper source isolation, nested units/resources/settings, independent export,
+attribute values and embedded packets, linked columns, validation and failure paths.
+
 ## Integration contracts
 
 The existing `BlockSourceDisposition` numeric values remain Retain=0,
