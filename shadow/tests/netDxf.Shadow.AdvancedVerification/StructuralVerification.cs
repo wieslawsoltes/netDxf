@@ -19,6 +19,44 @@ internal static class StructuralVerification
     };
     internal static void Register(List<(string Name, Action Run)> tests)
     {
+        tests.Add(("structure/native compound rekey is regenerated once during undo and redo", () =>
+        {
+            var document = new DxfDocument(); var layer = document.Layers.Add(new netDxf.Tables.Layer("Process"));
+            document.DrawingVariables.CLayer = layer.Name;
+            var state = new netDxf.Objects.LayerState("Stored", document.Layers) { CurrentLayer = layer.Name }; document.Layers.StateManager.Add(state);
+            var property = state.Properties["Process"];
+            var source = new ShadowSession(document); var editor = new EditorSession(source);
+            var edit = new ShadowGraphEdit(source.Current); edit.Set(Id(layer), "Name", ShadowValue.From("Renamed"));
+            editor.Execute("Rename", edit.Build());
+            for (var i = 0; i < 3; i++)
+            {
+                Require(ReferenceEquals(state.Properties["Renamed"], property) && state.CurrentLayer == "Renamed");
+                editor.Undo(); Require(ReferenceEquals(state.Properties["Process"], property) && state.CurrentLayer == "Process");
+                editor.Redo();
+            }
+        }));
+        tests.Add(("structure/failed membership after compound rename rolls back keys and source identity", () =>
+        {
+            var document = new DxfDocument(); var layer = document.Layers.Add(new netDxf.Tables.Layer("Process"));
+            document.DrawingVariables.CLayer = layer.Name;
+            var state = new netDxf.Objects.LayerState("Stored", document.Layers) { CurrentLayer = layer.Name }; document.Layers.StateManager.Add(state);
+            var property = state.Properties["Process"];
+            var source = new ShadowSession(document); var editor = new EditorSession(source); var before = source.Current;
+            var edit = new ShadowGraphEdit(before); edit.Set(Id(layer), "Name", ShadowValue.From("Renamed"));
+            var entries = before.Read(Id(state))["Properties"].Items.ToArray();
+            var node = entries.Single(p => p["Key"].Text == "Process")["Value"].Object!;
+            var invalid = edit.Create(node.TypeName, node.Kind, node.Properties.SetItem("Name", ShadowValue.From("Renamed"))
+                .SetItem("LinetypeName", ShadowValue.From("Unavailable")));
+            edit.ReplaceSequence(Id(state), "Properties", entries.Where(p => p["Key"].Text != "Process").Select(p => p.Value).Append(
+                new ShadowValue.Structure("System.Collections.Generic.KeyValuePair`2", new Dictionary<string, ShadowValue>
+                { ["Key"] = ShadowValue.From("Renamed"), ["Value"] = new ShadowValue.Reference(invalid) }.ToImmutableDictionary())));
+            Reject(() => editor.Execute("Rejected rename and replacement", edit.Build()));
+            Require(ReferenceEquals(before, source.Current) && editor.State.UndoCount == 0);
+            Require(layer.Name == "Process" && state.CurrentLayer == "Process" && ReferenceEquals(state.Properties["Process"], property));
+            // The session must remain usable; a partial rollback would fail-stop it.
+            edit = new ShadowGraphEdit(source.Current); edit.Set(Id(layer), "Name", ShadowValue.From("Recovered"));
+            editor.Execute("Rename after rejection", edit.Build()); editor.Undo(); Require(layer.Name == "Process");
+        }));
         tests.Add(("structure/studio add-delete-undo-redo without history reset", () =>
         {
             using var studio = new Studio();

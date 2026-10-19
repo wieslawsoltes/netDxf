@@ -94,7 +94,9 @@ public sealed partial class ShadowSession
             // then attach referencing entities. Reverse this order when detaching.
             // Within a phase preserve captured membership order and native semantics.
             collections = collections.OrderBy(p => p.AttachmentOrder).ToList();
-            var attempted = 0;
+            // Resource names must exist before setters validate named references.
+            writes = writes.OrderBy(w => w.Source is netDxf.Tables.TableObject && w.Accessor.Name == "Name" ? 0 : 1).ToList();
+            var appliedWrites = new List<(object Source, SourceAccessor Accessor, object? Before)>();
             var attemptedMethods = 0;
             var touchedCollections = false;
             try
@@ -102,9 +104,19 @@ public sealed partial class ShadowSession
                 foreach (var method in methods) { attemptedMethods++; method.Apply(); }
                 foreach (var write in writes)
                 {
-                    attempted++;
+                    var actual = write.Accessor.Get(write.Source);
+                    // Compound native setters can already satisfy a derived write.
+                    // Record the actual intermediate value for reverse-order rollback.
+                    if (ReferenceEquals(actual, write.After) || actual is not null &&
+                        (actual.GetType().IsValueType || actual is string) && actual.Equals(write.After)) continue;
+                    appliedWrites.Add((write.Source, write.Accessor, actual));
                     write.Accessor.Set(write.Source, write.After);
                 }
+                // A native resource rename may already have rekeyed saved layer
+                // state dictionaries. Do not remove stale pre-rename keys again.
+                // Rollback restores this post-write membership first; reversing
+                // the scalar writes then reverses their native side effects.
+                collections = collections.Select(p => p.AfterSourceWrites()).Where(p => !p.IsNoOp).ToList();
                 // Moving entities across owners must release every old owner first.
                 touchedCollections = collections.Count != 0;
                 foreach (var plan in collections.AsEnumerable().Reverse()) plan.RemoveOld();
@@ -141,8 +153,8 @@ public sealed partial class ShadowSession
                     foreach (var plan in rollback)
                         try { plan.AddNew(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                 }
-                for (var index = attempted - 1; index >= 0; index--)
-                    try { writes[index].Accessor.Set(writes[index].Source, writes[index].Before); }
+                for (var index = appliedWrites.Count - 1; index >= 0; index--)
+                    try { appliedWrites[index].Accessor.Set(appliedWrites[index].Source, appliedWrites[index].Before); }
                     catch (Exception e) { failures.Add(e.GetBaseException()); }
                 for (var index = attemptedMethods - 1; index >= 0; index--)
                     try { methods[index].Rollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }

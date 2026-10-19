@@ -101,6 +101,11 @@ internal sealed class SourceCollectionPlan
     /// remove untouched definitions, reallocating their handles and breaking rollback.</summary>
     internal SourceCollectionPlan PrepareRollback() => new(source, elementType, Before);
 
+    /// <summary>Native compound setters can rekey owned collections. Derive the
+    /// remaining membership delta from their actual post-write state, while the
+    /// already converted destination values remain unchanged.</summary>
+    internal SourceCollectionPlan AfterSourceWrites() => new(source, elementType, After);
+
     private static bool IsTable(Type type)
     {
         for (Type? current = type; current is not null; current = current.BaseType)
