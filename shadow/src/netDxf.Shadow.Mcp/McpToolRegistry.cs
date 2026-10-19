@@ -3,6 +3,8 @@ using System.Text.Json;
 
 namespace netDxf.Shadow.Mcp;
 
+internal sealed class McpResultTooLargeException(string message) : Exception(message);
+
 /// <summary>A transport-independent MCP tool contract, also consumed directly by agent runtimes.</summary>
 public sealed record McpToolDefinition(string Name, string Description, JsonElement InputSchema, bool ReadOnly = false);
 
@@ -104,6 +106,7 @@ public sealed class McpToolRegistry : IMcpToolExecutor
             }, McpJson.Options), result.IsError);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
+        catch (McpResultTooLargeException error) { return McpToolResult.Error("result_too_large", error.Message); }
         catch (ShadowConflictException error) { return McpToolResult.Error("revision_conflict", error.Message + " Read shadow_state and inspect the changed objects before rebuilding the edit.", true); }
         catch (ArgumentException error) { return McpToolResult.Error("invalid_arguments", error.Message); }
         catch (JsonException error) { return McpToolResult.Error("invalid_json", error.Message); }

@@ -236,13 +236,15 @@ public sealed partial class ShadowMcpTools
                 catch (Exception error) when (error is not OutOfMemoryException and not StackOverflowException and not AccessViolationException)
                 { /* Host invalidation is observational; a committed edit must remain a successful receipt. */ }
             var currentIdentity = context.GetIdentity(after);
-            return McpToolResult.FromObject(new
-            {
-                documentId = currentIdentity.DocumentId, workspaceId = currentIdentity.WorkspaceId,
-                viewVersion = currentIdentity.ViewVersion, revision = after.Revision, data
-            });
+            return McpToolResult.FromObject(CreateReceipt(after, currentIdentity, data));
         })));
     }
+
+    private static object CreateReceipt(ShadowSnapshot snapshot, ShadowMcpIdentity identity, object? data) => new
+    {
+        documentId = identity.DocumentId, workspaceId = identity.WorkspaceId,
+        viewVersion = identity.ViewVersion, revision = snapshot.Revision, data
+    };
 
     private static void CheckIdentity(JsonElement args, ShadowSnapshot snapshot, ShadowMcpIdentity identity)
     {

@@ -120,7 +120,75 @@ internal static class GraphVisualizationVerification
         var revision = McpJson.Element(studio.State()).GetProperty("revision").GetInt64();
         studio.Fork(new(revision, "Projection branch"));
         Check(McpJson.Element(studio.GraphQuery(new("graph_visualization", McpJson.Element(new { graphKey = studioKey })))).GetProperty("isError").GetBoolean(), "Studio branch changes invalidate visualization IDs");
+        await VerifyResponseBudgetAsync(Check);
         Console.WriteLine($"Graph visualization verification passed: {checks} checks.");
         return checks;
+    }
+
+    private static async Task VerifyResponseBudgetAsync(Action<bool, string> check)
+    {
+        const int edgeCount = 1300;
+        var document = new DxfDocument();
+        for (var i = 0; i < edgeCount; i++) document.Entities.Add(new Line(new Vector3(0, i * 2, 0), new Vector3(10, i * 2, 0)));
+        var source = new ShadowSession(document); var editor = new EditorSession(source); var before = editor.Snapshot;
+        var registry = ShadowMcpTools.Create(new(() => editor, () => source));
+        var roots = document.Entities.Lines.ToDictionary(line => "H:" + line.Handle.ToUpperInvariant(), line => line.StartPoint.Y);
+        var seenNodes = new HashSet<int>(); var seenEdges = new HashSet<int>();
+        var arguments = new Dictionary<string, object>(); string? graphKey = null; var pages = 0;
+        while (true)
+        {
+            check(++pages <= 100, "adaptive visualization terminates within bounded pages");
+            var response = await registry.ExecuteAsync("graph_visualization", McpJson.Element(arguments));
+            check(!response.IsError && response.Text.Length <= registry.MaximumResultCharacters, "default registry visualization stays inside its actual receipt budget");
+            var receipt = McpJson.Parse(response.Text);
+            check(receipt.TryGetProperty("data", out var data) && !receipt.TryGetProperty("truncated", out _), "central truncation never replaces the visualization receipt");
+            var key = data.GetProperty("graphKey").GetString()!; graphKey ??= key;
+            check(key == graphKey && receipt.GetProperty("documentId").GetGuid() == before.DocumentId && receipt.GetProperty("revision").GetInt64() == before.Revision,
+                "adaptive pages preserve exact source and build identity");
+            var nodes = data.GetProperty("nodes"); var edges = data.GetProperty("edges");
+            check(data.GetProperty("nodeCount").GetInt32() == edgeCount * 2 && data.GetProperty("edgeCount").GetInt32() == edgeCount &&
+                nodes.GetProperty("total").GetInt32() == edgeCount * 2 && edges.GetProperty("total").GetInt32() == edgeCount,
+                "adaptive pages preserve complete unfiltered counts");
+            var nodeItems = nodes.GetProperty("items").EnumerateArray().ToArray(); var edgeItems = edges.GetProperty("items").EnumerateArray().ToArray();
+            check(nodeItems.Length <= data.GetProperty("nodeLimit").GetInt32() && edgeItems.Length <= data.GetProperty("edgeLimit").GetInt32(),
+                "reported effective page limits bound emitted items");
+            if (pages == 1) check(data.GetProperty("nodeLimit").GetInt32() < 2000 && data.GetProperty("edgeLimit").GetInt32() < 4000 &&
+                data.GetProperty("truncated").GetBoolean(), "default large-drawing pages shorten transparently");
+            check(nodeItems.All(node => seenNodes.Add(node.GetProperty("id").GetInt32())) && edgeItems.All(edge => seenEdges.Add(edge.GetProperty("id").GetInt32())),
+                "adaptive continuation does not duplicate topology IDs");
+            check(edgeItems.All(edge => roots.TryGetValue(edge.GetProperty("entity").GetString()!, out var y) &&
+                edge.GetProperty("rootEntity").GetString() == edge.GetProperty("entity").GetString() &&
+                edge.GetProperty("start").GetProperty("x").GetDouble() == 0 && edge.GetProperty("end").GetProperty("x").GetDouble() == 10 &&
+                edge.GetProperty("start").GetProperty("y").GetDouble() == y && edge.GetProperty("end").GetProperty("y").GetDouble() == y),
+                "every shortened edge page retains exact source geometry");
+            var nextNode = nodes.GetProperty("nextOffset"); var nextEdge = edges.GetProperty("nextOffset");
+            check((nextNode.ValueKind == JsonValueKind.Null || nextNode.GetInt32() == nodes.GetProperty("offset").GetInt32() + nodeItems.Length && nodeItems.Length > 0) &&
+                (nextEdge.ValueKind == JsonValueKind.Null || nextEdge.GetInt32() == edges.GetProperty("offset").GetInt32() + edgeItems.Length && edgeItems.Length > 0),
+                "each unfinished stream advances by its actual emitted count");
+            if (nextNode.ValueKind == JsonValueKind.Null && nextEdge.ValueKind == JsonValueKind.Null) break;
+            arguments["nodeOffset"] = nextNode.ValueKind == JsonValueKind.Null ? edgeCount * 2 : nextNode.GetInt32();
+            arguments["edgeOffset"] = nextEdge.ValueKind == JsonValueKind.Null ? edgeCount : nextEdge.GetInt32();
+            arguments["graphKey"] = graphKey;
+        }
+        check(pages > 1 && seenNodes.Count == edgeCount * 2 && seenEdges.Count == edgeCount, "default-budget continuation covers all 1300 edges and their nodes");
+        check(ReferenceEquals(before, editor.Snapshot) && editor.State.UndoCount == 0, "adaptive paging never modifies source or history");
+        var emptyNodesResponse = await registry.ExecuteAsync("graph_visualization", McpJson.Element(new { nodeOffset = edgeCount * 2, graphKey }));
+        var emptyNodes = McpJson.Parse(emptyNodesResponse.Text).GetProperty("data");
+        check(!emptyNodesResponse.IsError && emptyNodes.GetProperty("nodes").GetProperty("items").GetArrayLength() == 0 &&
+            emptyNodes.GetProperty("nodes").GetProperty("nextOffset").ValueKind == JsonValueKind.Null &&
+            emptyNodes.GetProperty("edges").GetProperty("nextOffset").GetInt32() > 0, "an exhausted node stream safely accompanies a shortened edge page");
+        var smallRegistry = new McpToolRegistry(maximumResultCharacters: 4096);
+        ShadowMcpTools.Register(smallRegistry, new(() => editor, () => source));
+        var smallResponse = await smallRegistry.ExecuteAsync("graph_visualization", McpJson.EmptyObject);
+        check(!smallResponse.IsError && smallResponse.Text.Length <= 4096 && McpJson.Parse(smallResponse.Text).TryGetProperty("data", out _),
+            "visualization honors a custom smaller host budget");
+        var oversized = new TopologyGraph(before.DocumentId, before.Revision,
+            [new GraphNode(0, new(0, 0), [0]), new GraphNode(1, new(1, 0), [0])],
+            [new GraphEdge(0, 0, 1, 1, new("entity"), new string('\u263a', 3000))], []);
+        var minimumRegistry = new McpToolRegistry(maximumResultCharacters: 4096);
+        ShadowMcpTools.Register(minimumRegistry, new(() => editor, () => source) { Topology = (_, _, _) => oversized });
+        var minimum = await minimumRegistry.ExecuteAsync("graph_visualization", McpJson.EmptyObject);
+        check(minimum.IsError && minimum.Text.Length <= 4096 && McpJson.Parse(minimum.Text).GetProperty("error").GetProperty("code").GetString() == "result_too_large",
+            "an unrepresentable minimum page fails explicitly rather than losing receipt or pagination progress");
     }
 }

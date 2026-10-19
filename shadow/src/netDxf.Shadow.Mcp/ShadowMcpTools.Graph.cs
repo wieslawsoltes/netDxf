@@ -18,7 +18,7 @@ public sealed partial class ShadowMcpTools
 
     private void InstallGraph(McpToolRegistry registry)
     {
-        GraphTool("graph_visualization", "Get bounded node and edge geometry pages with global component/feature annotations and exact source roots, definition entities and INSERT occurrences. Edge endpoints are embedded independently of node pagination. Page totals describe filters; summary counts describe the entire graph. Reuse graphKey and identity/options for every continuation or analysis highlight; refresh after a stale-key error.",
+        GraphTool("graph_visualization", "Get bounded node and edge geometry pages with global component/feature annotations and exact source roots, definition entities and INSERT occurrences. Edge endpoints are embedded independently of node pagination. Pages may be shortened to fit the host response budget; use returned nextOffset and effective nodeLimit/edgeLimit. Page totals describe filters; summary counts describe the entire graph. Reuse graphKey and identity/options for every continuation or analysis highlight; refresh after a stale-key error.",
             Fields(("nodeOffset", Integer(0)), ("nodeLimit", Integer(1, 5000)), ("edgeOffset", Integer(0)), ("edgeLimit", Integer(1, 10000)),
                 ("component", Integer(0)), ("entity", String()), ("rootEntity", String()), ("occurrence", String(8192))), [],
             (g, a, ct) => g.Visualize(new()
@@ -151,12 +151,41 @@ public sealed partial class ShadowMcpTools
                     }, McpJson.Options))));
                     if (GetString(args, "graphKey") is { } expectedKey && expectedKey != graphKey)
                         throw new ShadowConflictException("The topology scope changed. Refresh graph visualization before reusing graph IDs.");
-                    var result = McpJson.Element(operation(graph, args, ct));
-                    var data = result.EnumerateObject().ToDictionary(p => p.Name, p => (object)p.Value, StringComparer.Ordinal);
-                    data.Add("layout", layout); data.Add("options", options); data.Add("graphKey", graphKey);
-                    return data;
+                    var result = operation(graph, args, ct);
+                    while (true)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        var element = McpJson.Element(result);
+                        var data = element.EnumerateObject().ToDictionary(p => p.Name, p => (object)p.Value, StringComparer.Ordinal);
+                        data.Add("layout", layout); data.Add("options", options); data.Add("graphKey", graphKey);
+                        if (result is not GraphVisualization visualization ||
+                            McpToolResult.FromObject(CreateReceipt(snapshot, identity, data)).Text.Length <= registry.MaximumResultCharacters)
+                            return data;
+                        // Shrink the materialized pages without rescanning topology. Each nonempty
+                        // stream must advance; otherwise clients cannot safely follow both cursors.
+                        if (visualization.Nodes.Items.Length <= 1 && visualization.Edges.Items.Length <= 1)
+                            throw new McpResultTooLargeException("The minimum graph visualization page exceeds this host's response budget. " +
+                                "Node and edge pages cannot be shortened further without losing pagination progress. " +
+                                "Use source/component filters or a host with a sufficient response budget.");
+                        var nodes = ShortenVisualizationPage(visualization.Nodes);
+                        var edges = ShortenVisualizationPage(visualization.Edges);
+                        result = visualization with
+                        {
+                            Nodes = nodes, Edges = edges,
+                            NodeLimit = nodes.Items.Length < visualization.Nodes.Items.Length ? nodes.Items.Length : visualization.NodeLimit,
+                            EdgeLimit = edges.Items.Length < visualization.Edges.Items.Length ? edges.Items.Length : visualization.EdgeLimit,
+                            Truncated = nodes.Items.Length < nodes.Total || edges.Items.Length < edges.Total
+                        };
+                    }
                 });
         }
+    }
+
+    private static GraphVisualizationPage<T> ShortenVisualizationPage<T>(GraphVisualizationPage<T> page)
+    {
+        if (page.Items.Length <= 1) return page;
+        var count = Math.Max(1, page.Items.Length / 2);
+        return page with { Items = page.Items[..count], NextOffset = page.Offset + count };
     }
 
     private static Dictionary<string, object> Paging(params (string Name, object Schema)[] fields)
