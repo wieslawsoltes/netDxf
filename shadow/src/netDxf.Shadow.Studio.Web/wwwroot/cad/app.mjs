@@ -6,6 +6,7 @@ import { saveDrawingAs } from './exchange-ui.mjs';
 import { authoringRequest } from './authoring-contracts.mjs';
 import { authoringDialog, isAuthoringAction } from './authoring-ui.mjs';
 import { RibbonLayout, chromePreferences } from './ribbon-layout.mjs';
+import { layerStateTools } from './layer-state-ui.mjs';
 import { graphPalette } from './graph-ui.mjs';
 import { CadClient } from './client.mjs';
 import { blockTools } from './block-ui.mjs';
@@ -124,7 +125,7 @@ async function submit(text) {
   }
   if(!value) return start(lastCommand);
   const match=value.match(/^(\S+)(?:\s+([\s\S]*))?$/), name=match[1].toUpperCase(), rest=match[2]||'';
-  const aliases={BEDIT:'block-edit',BE:'block-edit',BSAVE:'block-save',BCLOSE:'block-close',U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save-as',SAVEAS:'save-as',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot',GRAPH:'graph-analysis',TOPOLOGY:'graph-analysis'};
+  const aliases={BEDIT:'block-edit',BE:'block-edit',BSAVE:'block-save',BCLOSE:'block-close',U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save-as',SAVEAS:'save-as',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LAYERSTATE:'layer-states',LAS:'layer-states',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot',GRAPH:'graph-analysis',TOPOLOGY:'graph-analysis'};
   if(name==='Z'||name==='ZOOM') { if(!rest||['E','EXTENTS','A','ALL'].includes(rest.toUpperCase())) viewport.fit(); else if(rest.toUpperCase()==='IN') await action('zoom-in'); else if(rest.toUpperCase()==='OUT') await action('zoom-out'); else throw new Error('ZOOM accepts Extents, In or Out.'); return; }
   if(aliases[name]==='block-edit' && rest.trim()) {
     const text=rest.trim(), quoted=text.length>1 && ['"',"'"].includes(text[0]) && text.at(-1)===text[0];
@@ -367,6 +368,7 @@ async function action(name) {
     case 'command-history':chrome.commandHistoryVisible=!chrome.commandLineVisible||!chrome.commandHistoryVisible;chrome.commandLineVisible=true;applyChrome();persist();return;
     case 'settings':return draftingSettings();
     case 'layer-new':return resourceUi.layers(null,true);
+    case 'layer-states':return layerStateTools({client,edit,dialog,editable})();
     case 'layer-manager':return resourceUi.layers();
     case 'linetypes':return resourceUi.linetypes();
     case 'text-styles':return resourceUi.textStyles();

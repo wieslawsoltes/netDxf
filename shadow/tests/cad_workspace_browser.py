@@ -23,6 +23,7 @@ from cad_authoring_browser import verify_authoring
 from cad_exchange_browser import verify_exchange
 from cad_modify_browser import verify_modify
 from graph_analysis_browser import verify_graph_analysis
+from cad_layer_states_browser import verify_layer_states
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -336,6 +337,7 @@ def verify(url: str, executable: str | None = None):
             page.screenshot(path=str(OUTPUT/'blocks-workspace.png'))
             verify_modify(page, OUTPUT, state, command, wait_state, idle, check)
             verify_graph_analysis(page, OUTPUT, state, command, wait_state, idle, check)
+            verify_layer_states(page, OUTPUT, state, command, wait_state, idle, check)
             check('no uncaught JavaScript errors or CSP violations', not errors and not violations)
         except Exception:
             failure = traceback.format_exc()
