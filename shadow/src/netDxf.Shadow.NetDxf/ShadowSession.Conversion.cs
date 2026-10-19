@@ -15,6 +15,8 @@ public sealed partial class ShadowSession
             return null;
         }
         target = nullable ?? target;
+        if (value is ShadowValue.Structure textData && (target == typeof(netDxf.Entities.AttributeTextData) || target == typeof(netDxf.Entities.AttributeMText)))
+            return AttributeTextValues.Convert(textData, target, (item, type) => ConvertValue(item, type, resolve));
         if (value is ShadowValue.Reference reference)
         {
             var source = (resolve ?? capture.Source)(reference.Id);

@@ -38,6 +38,7 @@ StudioAgentSchemaVerification.Register(tests);
 StudioPresentationVerification.Register(tests);
 SourceSaveVerification.Register(tests);
 CustomHeaderVerification.Register(tests);
+AttributeTextVerification.Register(tests);
 ModelAnnotationVerification.Register(tests);
 SourceConsistencyVerification.Register(tests);
 SourceBoundaryVerification.Register(tests);
