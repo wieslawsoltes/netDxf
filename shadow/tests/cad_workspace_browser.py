@@ -25,6 +25,7 @@ from cad_modify_browser import verify_modify
 from graph_analysis_browser import verify_graph_analysis
 from cad_layer_states_browser import verify_layer_states
 from cad_attributes_browser import verify_attributes
+from cad_attribute_sync_browser import verify_attribute_sync
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -340,6 +341,7 @@ def verify(url: str, executable: str | None = None):
             verify_graph_analysis(page, OUTPUT, state, command, wait_state, idle, check)
             verify_layer_states(page, OUTPUT, state, command, wait_state, idle, check)
             verify_attributes(page, OUTPUT, state, command, wait_state, idle, check)
+            verify_attribute_sync(page, OUTPUT, state, command, wait_state, idle, check)
             check('no uncaught JavaScript errors or CSP violations', not errors and not violations)
         except Exception:
             failure = traceback.format_exc()

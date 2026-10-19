@@ -1,6 +1,6 @@
 /** Typed UI automation boundary. Model-produced text is never executed as JavaScript or HTML. */
 const actionNames = new Set([
-  'properties','layers','blocks','explorer','workspaces','diagnostics','agents','modules','health','edit-previews','workflows','block-edit','block-save','block-close','block-insert', 'layer-manager', 'layer-states', 'attributes', 'linetypes', 'text-styles',
+  'properties','layers','blocks','explorer','workspaces','diagnostics','agents','modules','health','edit-previews','workflows','block-edit','block-save','block-close','block-insert', 'layer-manager', 'layer-states', 'attributes', 'attribute-sync', 'linetypes', 'text-styles',
   'new','demo','open','save','save-as','font','undo','redo','fit','regen','zoom-in','zoom-out','pan','palette','dock','clean',
   'settings','layer-new','assign-layer','snapshot','snapshots','fork','annotation','linetype','graph','graph-analysis','export-png','export-svg',
   'ribbon-minimize','command-line','command-history',
