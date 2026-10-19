@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using netDxf;
 using netDxf.Blocks;
 using netDxf.Entities;
@@ -77,7 +76,7 @@ internal static class CapturedInsertConstructionVerification
         }
         input.Entities.Add(new Insert(parent)); var source = new ShadowSession(input); var sourceBefore = source.Current;
         var output = new DxfDocument(); var target = new ShadowSession(output); var editor = new EditorSession(target);
-        var patch = CapturedDefinitionFixture(source.Current, target.Current, Id(parent)); var preview = patch.Apply(target.Current);
+        var patch = DraftingBlockLibrary.Import(target.Current, source.Current, new(Id(parent), "PARENT")).Edit.Patch; var preview = patch.Apply(target.Current);
         Check(!output.Blocks.Contains("PARENT") && preview.Document["Blocks"].Items.Any(b => b["Name"].Text == "PARENT"), "Preview published native definitions");
         editor.Execute("Import captured definition graph", patch);
         var imported = output.Blocks["PARENT"]; var nested = output.Blocks["CHILD"];
@@ -95,56 +94,6 @@ internal static class CapturedInsertConstructionVerification
                 output.DimensionStyles["LIBRARY_DIMENSION"].DimArrow1 == output.Blocks["LIBRARY_ARROW"], "Redo lost dimension resource identity");
         }
         Check(ReferenceEquals(source.Refresh(), sourceBefore) && input.Entities.Inserts.Single().Block == parent && parent.Entities.Count == 2, "Import changed source drawing");
-    }
-
-    // Bounded fixture graph: these hand-authored definitions use only the named
-    // tables below. The production library planner must additionally implement
-    // name policies, foreign references, metadata remapping and resource limits.
-    private static ShadowGraphPatch CapturedDefinitionFixture(ShadowSnapshot source, ShadowSnapshot target, ObjectId root)
-    {
-        string[] tables = ["Blocks", "Layers", "Linetypes", "TextStyles", "ApplicationRegistries", "DimensionStyles"];
-        var resources = new Dictionary<ObjectId, string>(); var map = new Dictionary<ObjectId, ObjectId>();
-        var copied = new HashSet<ObjectId>(); var pending = new Queue<ObjectId>();
-        var additions = tables.ToDictionary(t => t, _ => new List<ObjectId>());
-        foreach (var table in tables)
-        {
-            map[source.Document[table].Id!.Value] = target.Document[table].Id!.Value;
-            foreach (var item in source.Document[table].Items) resources[item.Id!.Value] = table;
-        }
-        void Allocate(ObjectId id)
-        {
-            if (map.ContainsKey(id)) return;
-            if (resources.TryGetValue(id, out var table))
-            {
-                var existing = target.Document[table].Items.FirstOrDefault(r => r["Name"].Text == source.Read(id)["Name"].Text);
-                if (id != root && existing.Id is { } match) { map[id] = match; return; }
-                additions[table].Add(id);
-            }
-            map[id] = new("N:" + Guid.NewGuid().ToString("N")); copied.Add(id); pending.Enqueue(id);
-        }
-        Allocate(root);
-        while (pending.TryDequeue(out var id))
-            foreach (var value in source.Objects[id].Properties.Where(p => p.Key is not ("Owner" or "Handle")).Select(p => p.Value))
-                foreach (var reference in value.References()) Allocate(reference);
-        ShadowValue Remap(ShadowValue value) => value switch
-        {
-            ShadowValue.Reference reference => new ShadowValue.Reference(map[reference.Id]),
-            ShadowValue.Sequence sequence => new ShadowValue.Sequence(sequence.Items.Select(Remap).ToImmutableArray()),
-            ShadowValue.Structure structure => structure with { Fields = structure.Fields.ToImmutableDictionary(p => p.Key, p => Remap(p.Value)) },
-            _ => value
-        };
-        var edit = new ShadowGraphEdit(target);
-        foreach (var id in copied)
-        {
-            var node = source.Objects[id];
-            edit.Create(node.TypeName, node.Kind, node.Properties.Where(p => p.Key != "Handle" &&
-                (p.Key != "Owner" || p.Value is not ShadowValue.Reference owner || map.ContainsKey(owner.Id)))
-                .Select(p => new KeyValuePair<string, ShadowValue>(p.Key, Remap(p.Value))), map[id]);
-        }
-        foreach (var table in tables)
-            if (additions[table].Count != 0) edit.ReplaceSequence(target.Root, table, target.Document[table].Items.Select(r => r.Value)
-                .Concat(additions[table].Select(id => (ShadowValue)new ShadowValue.Reference(map[id]))));
-        return edit.Build();
     }
 
     private static ObjectId Id(DxfObject value) => new("H:" + value.Handle.ToUpperInvariant());

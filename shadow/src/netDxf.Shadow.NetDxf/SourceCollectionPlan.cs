@@ -106,6 +106,12 @@ internal sealed class SourceCollectionPlan
     public bool IsNoOp => prefix == Before.Length && prefix == After.Length;
     public void RemoveOld()
     {
+        // Other native removals can already unlink owned lists. Keep Before for
+        // rollback, but calculate indices from the collection's current contents.
+        new SourceCollectionPlan(source, elementType, After).RemovePrepared();
+    }
+    private void RemovePrepared()
+    {
         if (array is not null) return;
         if (source is netDxf.Collections.AttributeDefinitionDictionary definitions)
         {
@@ -114,9 +120,52 @@ internal sealed class SourceCollectionPlan
                 if (!retained.Contains(item.Value)) definitions.Remove(item.Key);
             return;
         }
+        if (source is netDxf.Collections.EntityCollection entities)
+        {
+            // Detach referencing hatches before their source geometry. Entity order
+            // in a DXF need not put the hatch after its boundary, and several hatches
+            // can retain the same source. Remove by identity as callbacks change indices.
+            var pending = Before.Skip(prefix).Take(Before.Length - prefix - suffix)
+                .Cast<netDxf.Entities.EntityObject>().Reverse().ToArray();
+            var membership = pending.ToHashSet();
+            var dependencies = new Dictionary<netDxf.Entities.EntityObject, int>();
+            var dependents = new Dictionary<netDxf.Entities.EntityObject, List<netDxf.Entities.EntityObject>>();
+            foreach (var entity in pending)
+            {
+                var reactors = entity.Reactors.OfType<netDxf.Entities.EntityObject>().Where(membership.Contains).Distinct().ToArray();
+                dependencies[entity] = reactors.Length;
+                foreach (var reactor in reactors)
+                {
+                    if (!dependents.TryGetValue(reactor, out var linked)) dependents[reactor] = linked = [];
+                    linked.Add(entity);
+                }
+            }
+            var ready = new Queue<netDxf.Entities.EntityObject>(pending.Where(entity => dependencies[entity] == 0));
+            var ordered = new List<netDxf.Entities.EntityObject>(pending.Length);
+            while (ready.TryDequeue(out var next))
+            {
+                ordered.Add(next);
+                if (dependents.TryGetValue(next, out var linked))
+                    foreach (var entity in linked) if (--dependencies[entity] == 0) ready.Enqueue(entity);
+            }
+            if (ordered.Count != pending.Length) throw new NotSupportedException("Cyclic entity reactor dependencies cannot be detached.");
+            foreach (var entity in ordered)
+            {
+                if (entities.Contains(entity) && !entities.Remove(entity)) throw new InvalidOperationException("The source refused entity removal.");
+            }
+            return;
+        }
         for (var i = Before.Length - suffix - 1; i >= prefix; i--) Remove(i, Before[i]);
     }
     public void AddNew()
+    {
+        // Boundary adoption and compound callbacks can satisfy part of another
+        // delta. Never insert a second copy using stale pre-callback indices.
+        var remaining = new SourceCollectionPlan(source, elementType, After);
+        remaining.RemovePrepared();
+        remaining.AddPrepared();
+    }
+    private void AddPrepared()
     {
         if (array is not null) { AssignArray(After); return; }
         if (source is netDxf.Collections.AttributeDefinitionDictionary definitions)

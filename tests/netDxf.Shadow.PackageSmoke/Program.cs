@@ -234,6 +234,15 @@ internal static class Program
             Require(refused && document.Entities.Inserts.Count() == 1, "Disabling a module did not isolate capabilities from stored data.");
         }
         var demo = netDxf.Shadow.Samples.ProcessDiagramFactory.Create();
+        var librarySource = new ShadowSession(demo).Current;
+        var libraryBlock = librarySource.Document["Blocks"].Items.First(block => !block["Name"].Text.StartsWith('*')).Id!.Value;
+        var exportedLibrary = DrawingBlockLibrary.Read(DrawingBlockLibrary.Export(librarySource, libraryBlock));
+        var importedDrawing = new DxfDocument(); var importedSource = new ShadowSession(importedDrawing); var importedEditor = new EditorSession(importedSource);
+        var entry = exportedLibrary.Entries.First(item => !item.ModelSpace);
+        exportedLibrary.Plan(importedSource.Current, entry.Name, "PackageLibrary").Edit.Execute(importedEditor);
+        Require(importedDrawing.Blocks.Contains("PackageLibrary"), "Installed drawing library import failed.");
+        importedEditor.Undo(); importedEditor.Redo();
+        Require(importedDrawing.Blocks.Contains("PackageLibrary"), "Installed drawing library history failed.");
         var report = new netDxf.Shadow.Pid.PidModule().Analyze(new ShadowSession(demo).Current);
         Require(report.Complete && report.Records.Length == 26 && report.Issues.IsEmpty,
             "Installed P&ID sample lost its explicit process network.");
