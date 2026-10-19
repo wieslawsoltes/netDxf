@@ -13,7 +13,7 @@ corresponding end-to-end evidence cover their stated scope.
 | Rapid drawing creation, editing and a complete MCP toolset | Generic source/schema/collection/method tools, atomic drawing batches, typed Studio routes; MCP and AgentStudio verification programs | Build a per-native-entity/property/method coverage inventory, close unsupported authoring/editing shapes, and exercise them through actual Studio/MCP workflows. Generic reflection access alone does not prove safe full editing support. |
 | Full graph analysis in Studio | Nodes, edges, components, path/traversal, cut vertices/bridges, nearest node, diagnostics, fundamental cycles and minimum spanning forests share reusable algorithms and MCP tools | Broaden source-reference graph exploration and query-to-selection workflows; validate large real drawings and export/import analysis receipts. Geometric topology does not imply discipline connectivity. |
 | AutoCAD-like ribbon and command/log visibility | Adaptive ribbon panels, keyboard command workflow, independent command/history visibility, clean screen; browser tests | Continue command discoverability, keyboard navigation, focus/accessibility and small-screen validation as commands are added. |
-| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; exact attribute history; shared instance editor, BATTMAN/ATTDEF for named-block definitions, ATTSYNC previews, insertion-time value/verify prompts and explicit insertion attributes in previews | Standalone model-space ATTDEF placement, block-library import/export, cursor-following insertion graphics, richer insertion/array workflows and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
+| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; exact attribute history; shared instance editor, BATTMAN/ATTDEF for named-block definitions, ATTSYNC previews, insertion-time value/verify prompts, explicit insertion attributes and DXF block-library transfer with conflict policies/previews | Standalone model-space ATTDEF placement, library catalog/version workflows and remaining transfer metadata, cursor-following insertion graphics, richer insertion/array workflows and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
 | MOVE and other editing tools with drafting aids | MOVE/COPY/ROTATE/SCALE/MIRROR, basic topology edits, STRETCH/BREAK/BREAKATPOINT increment, object/grid snap, Ortho/polar/tracking; native and browser regressions | Extend entity/coordinate-system coverage for each command, curve trim/extend/offset, reference/copy variants of transforms, richer arrays, selection cycling and additional acquisition modes. Existing planar restrictions remain material. |
 | Full line, text style and layer UI | Managers expose supported table fields, complex linetypes, LIN import, fixed-height/font metadata, layer color/plot/lock/freeze/transparency; native layer-state save/update/rename/delete/selective restore with history and DXF persistence | Layer filters/isolation, saved-layer editing, persisted restore masks, LAS transfer, unresolved-resource repair, individual viewport overrides, plot-style workflows, text editing/formatting and externally referenced resource behavior. |
 | Token-efficient coding harness and provider caching | Bounded context/tool batches, caching configuration and usage, stable prefixes, checkpoint/compaction behavior; provider/agent fixtures | Verify supported provider/model combinations with opt-in real accounts, measure cache hits on repeated identical tasks, and compare quality/latency/cost. Fixtures do not establish actual provider cache performance. |
@@ -26,7 +26,7 @@ corresponding end-to-end evidence cover their stated scope.
 | P&ID disconnected-pipe/tag/flow/instrument validation | Explicit connectivity/ports, duplicate tags, process flow and PCE loop/reference rules; discipline/sample fixtures | Expand rules to the new discipline data and symbol families. Test fault cases on representative imported drawings. Geometry crossings are intentionally not automatic connectivity. |
 | Agent edit previews and atomic undo | Exact identity-bound proposals, before/after images, approval flow and one undoable batch; Editor/Core/browser fixtures | Broaden proposal operations with new command families and ensure all agent mutation surfaces offer an appropriate preview path. |
 | Drawing health | Duplicate primitives, endpoint gaps, source/domain checks, unused resources and supplied-font-inventory checks; health fixtures | Extend invalid-geometry coverage to splines, self-intersections and hatch boundaries, external resources, and additional native entities. A clean bounded report must not be presented as full drawing validity. |
-| Searchable, versioned reusable symbol libraries | Immutable catalog, attributes/units/basepoints/standards metadata, bounded search and module placement | User-managed library import/export, version migration/replacement, thumbnails and broader reviewed catalogs; verify reference and attribute preservation across updates. |
+| Searchable, versioned reusable symbol libraries | Immutable catalog, attributes/units/basepoints/standards metadata, bounded search and module placement; user DXF library import/export with dependency/resource policies and definition thumbnails | Persistent user-library catalogs, version migration/replacement, search/paging and broader reviewed catalogs; extend reference and attribute preservation across version updates. |
 | Measured agent efficiency | Reproducible tasks, grading/receipts and durable budget reservation; offline evaluation fixtures | Actual task-success/latency/tokens/cache/cost comparisons are outstanding. Do not substitute synthetic reports for live comparison results. |
 | Drawing-selection references in chat | Stable object/occurrence chips with document/workspace/revision guards and stale handling; References/browser fixtures | Exercise references across new editing commands and external-agent steering. Expand explicit resource/nested-object workflows beyond ordinary selected occurrences as needed. |
 | Integrate latest netstandard, review, granular commits and PR | Upstream integrated; focused commits on PR #272 | Recheck upstream divergence during continued work, review each increment, commit by responsibility and push to the existing branch. |
@@ -94,12 +94,13 @@ exact pushed revision, including each operating-system and package-consumer job.
 ## Current implementation order
 
 1. Preserve green CI on every new pushed increment. Process-launch and browser
-   regressions were corrected; all 23 checks passed on `e559aceb`, including the
-   attribute editor, synchronization, definition ordering and identity/default fixes.
+   regressions were corrected; all 23 checks passed on `b242a2b8`, including the
+   attribute workflows and captured block graph/COPY fixes. Pages deployment was skipped.
    Each new pushed revision needs its own checks.
-2. Build production block-library transfer on the verified stream exchange and
-   captured-graph/history foundations, then extend insertion/array workflows and supported
-   attributed/nonuniform explode cases with native and browser history tests.
+2. Qualify production block-library transfer through native/browser and installed
+   package checks, then extend insertion/array workflows and supported attributed/
+   nonuniform explode cases with native and browser history tests. Retain explicit
+   library metadata, catalog/version management and dynamic-block gaps.
 3. Complete remaining layers/styles and drafting workflows: filters/isolation,
    layer-state transfer/restore settings, resource repair, viewport overrides,
    text formatting, curve edits, transform variants, arrays and acquisition modes.
@@ -123,6 +124,35 @@ exact pushed revision, including each operating-system and package-consumer job.
 Credentials supplied in conversation are neither used nor persisted. Paid testing
 remains disabled, with actual spend USD 0. Any later opt-in evaluation must retain
 the user's cumulative USD 20 ceiling. There is no credential material in this audit.
+
+### Production block-library increment
+
+- The reusable Drafting planner transfers one named definition or model-space
+  dependency graph, with separate root/resource conflict policies and bounded
+  identity remapping. Redefinition retains matching definition identities and
+  existing assigned INSERT values. Anonymous dependencies are allocated separately.
+- The Symbols DXF codec provides bounded browsing and independent text/binary
+  library export. Native reconstruction retains ENDBLK metadata and associative
+  hatch sources. Adapter history handles shared boundary sources, reordered entity
+  membership and constructor-owned metadata. Contradictory collection counts are
+  rejected before native adoption; arbitrary native event callbacks remain outside
+  the guaranteed transaction boundary.
+- Studio's shared Insert ribbon, native/WASM routes and typed agent previews expose
+  import/export, resource decisions and definition thumbnails. Import applies as one
+  undo entry without implicit placement. Cached library discovery omits DXF bytes;
+  recorded workflows carry bounded content for replay without the upload cache.
+- Local verification: 1,435 Advanced checks, 422 browser unit checks, 132 published
+  native Chromium checks and 218 standalone WASM checks across root/subpath hosting.
+  All 20 new native cases pass in Debug and Release, alongside 8,066 Release hatch
+  regressions; both Release publishes and all five core target builds pass.
+  All 96 route contracts and 987 assets validate.
+  Independent DXF audits preserve exported attributes, units, base point and ENDBLK
+  metadata without repairs. Installed-package and hosted checks must qualify this
+  increment separately from the green `b242a2b8` baseline.
+- Persistent catalog/version management, user-library search/paging, additional
+  transfer metadata and reviewed symbol families remain open. Nonzero handle-valued
+  XData is refused until explicit remapping is implemented; external files are not
+  bundled. This increment does not implement dynamic or parametric blocks.
 
 ### Native block exchange increment
 

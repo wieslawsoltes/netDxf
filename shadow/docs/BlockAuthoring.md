@@ -88,8 +88,9 @@ This drawing-content exchange does not archive the named root definition's name,
 description, record flags or block-level XData. Nested definition settings remain
 part of their definitions. Cloned hatches retain their boundary geometry but are
 nonassociative, following the existing `Hatch.Clone` contract; source hatches and
-their boundary/reactor identities remain unchanged. Exact graph-library transfer,
-resource-collision handling and Studio import/export controls remain separate work.
+their boundary/reactor identities remain unchanged. The graph-library workflow below
+provides a separate exchange contract when definition metadata and associations
+must survive transfer.
 
 Conformance covers both text and binary formats for all six supported DXF versions,
 model/paper source isolation, nested units/resources/settings, independent export,
@@ -109,8 +110,63 @@ independent. Removing definitions as part of a graph transaction detaches their
 entities before removing referenced definitions/resources. Registration orders
 linetypes, layers, blocks and dimension styles so nested references and custom arrow
 blocks can be removed and restored through history. These adapter contracts are
-tested with captured cross-document graphs; the production library import planner
-and its collision/metadata policies remain open.
+tested with captured cross-document graphs and the production library planner below.
+
+## DXF block libraries
+
+`DraftingBlockLibrary.Import` in the source-independent Drafting project plans the
+dependency closure of one named definition or drawing model space. It returns an
+immutable edit, identity mapping and resource-decision report. The source is never
+modified. Model space uses `INSBASE`/`INSUNITS`; paper layouts are excluded. Imported
+definitions retain nested references, assigned attributes, constructor-owned records,
+XData and associative hatch sources within the supported graph.
+
+Root-name conflicts have explicit Reject, Reuse, Rename and Redefine policies.
+Redefinition retains the destination definition and matching attribute-definition
+identities; existing INSERT attribute values remain assigned. Dependent resources
+have separate Reuse, Rename and Reject policies. Layer 0, ByLayer/ByBlock and APPID
+registrations retain their special identity semantics. Anonymous definitions are
+allocated independently rather than reused by name. Resource reports expose every
+decision; reusing a destination style or nested definition can change the result's
+appearance. The planner validates ownership, missing references, circular INSERT
+dependencies and bounded object/value traversal before publication.
+
+`DrawingBlockLibrary` in the Symbols project reads bounded DXF bytes into an
+immutable snapshot and lists model space and local named definitions. `Plan`
+composes the planner with a selected entry. `Export` writes a named definition and
+its dependencies to an independent DXF 2018 drawing, retaining the root definition
+metadata and hatch associations. One model-space INSERT makes the result visible
+in ordinary viewers. Export preserves layer-zero appearance, sets the drawing
+insertion units/base point, and never changes the source revision or save status.
+Both text and binary DXF are supported, with an 8 MiB input/output limit.
+
+Studio exposes Import library and Export library in the Insert ribbon. Browsing
+loads a document-scoped library without changing drawing history. Import first
+creates a proposal containing resource decisions, before/after drawing images and
+a definition thumbnail. Apply adds the definition as one undo operation; placement
+uses the existing Insert workflow. Native and standalone-browser hosts share the
+same Core implementation, preview fences and routes. Agents discover cached library
+entries without receiving the DXF payload and use the typed `block-library` preview
+operation. Recorded workflows embed bounded library content so replay does not
+depend on a transient upload-cache ID.
+
+Native reconstruction uses `Block.CreateAnonymous`, `Block.EndRecord`,
+`HatchBoundaryPath.FromStoredEdges` and `Hatch.SetBoundarySources`. Stored boundary
+geometry is not recomputed from source entities. The adapter restores associations
+after owned payloads and before entity attachment, reconciles membership after native
+callbacks, and removes referencing hatches before their sources. Repeated history
+preserves shared source relationships, path identities and reactor multiplicities.
+Invalid collection-count assertions are refused before native adoption. Arbitrary
+native user-event failures retain the existing rollback/fail-stop contract; these
+APIs do not make event callbacks transactional.
+
+Limits remain explicit: transfer selects one dependency closure, not every unused
+definition in a drawing; nonzero database-handle XData requires future remapping and
+is refused. External file contents are not bundled. Library version migration,
+catalog persistence/search/paging, additional reviewed symbol families and dynamic
+block behavior remain open. The interactive cache holds at most two libraries per
+drawing, proposals accept at most four imports, and resource reports show at most
+500 decisions with a truncation indicator.
 
 ## Integration contracts
 
