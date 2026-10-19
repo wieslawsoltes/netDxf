@@ -40,6 +40,7 @@ SourceSaveVerification.Register(tests);
 CustomHeaderVerification.Register(tests);
 AttributeTextVerification.Register(tests);
 AttributeRenderingVerification.Register(tests);
+AttributeEditingVerification.Register(tests);
 ModelAnnotationVerification.Register(tests);
 SourceConsistencyVerification.Register(tests);
 SourceBoundaryVerification.Register(tests);

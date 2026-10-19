@@ -40,6 +40,8 @@ internal sealed partial class BrowserApplication
             return BrowserReply.Binary(image.Bytes, image.ContentType);
         })));
         Cad("POST", "/api/cad/{id}/block/define", (s, r) => s.CadDefineBlock(r.Body<CadBlockDefinitionRequest>(), Token));
+        Cad("GET", "/api/cad/{id}/attributes", (s, r) => s.CadReadAttributes(r.Long("revision")));
+        Cad("POST", "/api/cad/{id}/attributes", (s, r) => s.CadEditAttributes(r.Body<CadAttributeRequest>(), Token));
         Cad("POST", "/api/cad/{id}/block/rename", (s, r) => s.CadRenameBlock(r.Body<CadBlockRenameRequest>()));
         Cad("POST", "/api/cad/{id}/hatch/create", (s, r) => s.CadCreateHatch(r.Body<CadHatchAuthoringRequest>(), Token));
         Cad("GET", "/api/cad/{id}/hatch/pattern", (s, r) => s.CadReadHatchPattern(r.Long("revision")));

@@ -60,6 +60,19 @@ internal static class StudioAgentSchemaVerification
             try { tools.ExecuteAsync("studio_request_schema", McpJson.EmptyObject, cancelled.Token).GetAwaiter().GetResult(); throw new Exception("Cancellation ignored."); }
             catch (OperationCanceledException) { }
         }));
+        tests.Add(("Studio attribute schema exposes identity-bound optional instance edits", () =>
+        {
+            using var studio = new Studio(); var tools = studio.CreateMcpRegistry();
+            var definitions = Read(tools, new { type = "CadAttributeRequest" }).GetProperty("schema").GetProperty("$defs");
+            var request = definitions.GetProperty("netDxf.Shadow.Studio.CadAttributeRequest");
+            Require(request.GetProperty("required").EnumerateArray().Select(v => v.GetString()).ToHashSet()
+                .SetEquals(new[] { "revision", "insert", "attributes" }));
+            var edit = definitions.GetProperty("netDxf.Shadow.Drafting.AttributeEdit");
+            Require(edit.GetProperty("required").GetArrayLength() == 1 && edit.GetProperty("required")[0].GetString() == "attribute");
+            foreach (var field in new[] { "value", "textStyle", "height", "color", "positionLocked", "lineSpacing" })
+                Require(edit.GetProperty("properties").GetProperty(field).GetProperty("anyOf")
+                    .EnumerateArray().Any(v => v.TryGetProperty("type", out var type) && type.GetString() == "null"));
+        }));
     }
     private static JsonElement Read(McpToolRegistry tools, object args)
     {

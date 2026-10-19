@@ -22,7 +22,17 @@ public sealed partial class Studio
         foreach (var block in source.Document["Blocks"].Items)
         {
             var index = 0; foreach (var entity in block["Entities"].Items)
-            { if (entity.Id is { } id) names[id] = "$entity/" + Uri.EscapeDataString(block["Name"].Text) + "/" + index; index++; }
+            {
+                if (entity.Id is { } id)
+                {
+                    var reference = "$entity/" + Uri.EscapeDataString(block["Name"].Text) + "/" + index;
+                    names[id] = reference;
+                    var attributeIndex = 0;
+                    foreach (var attribute in entity["Attributes"].Items)
+                    { if (attribute.Id is { } attributeId) names[attributeId] = reference + "/attribute/" + attributeIndex; attributeIndex++; }
+                }
+                index++;
+            }
         }
         workflowReferenceIds = names.ToDictionary(p => p.Value, p => p.Key, StringComparer.Ordinal);
         workflowReferences = names; workflowReferenceSnapshot = source;
@@ -33,7 +43,7 @@ public sealed partial class Studio
     {
         BuildWorkflowReferences(source);
         return workflowReferences.TryGetValue(id, out var reference) ? reference : throw new NotSupportedException(
-            "Workflow references support named resources and direct block entities; this nested source object has no portable selector.");
+            "Workflow references support named resources, direct block entities and their attributes; this nested source object has no portable selector.");
     }
     private ObjectId ResolveWorkflowReference(string reference)
     {
