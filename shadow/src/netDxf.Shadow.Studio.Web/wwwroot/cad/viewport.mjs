@@ -117,7 +117,7 @@ export class CadViewport {
     const key = this.client.key, epoch = this.client.epoch;
     try {
       const hit = await this.client.read('snap', { signal: abort.signal,
-        body: { point: constrained, tolerance: 12 / this.camera.scale, modes, anchor, excludeSelection } });
+        body: { point: p, tolerance: 12 / this.camera.scale, modes, anchor, excludeSelection } });
       const current = !abort.signal.aborted && key === this.client.key && epoch === this.client.epoch &&
         !this.client.busy && generation === (force ? this.inputVersion : this.snapGeneration);
       if (!current) {
@@ -153,7 +153,7 @@ export class CadViewport {
     let grip;
     if (!pan && !this.command && this.snapshot === null) grip = this.client.data?.grips.find(g => distance(screen(g.position, this.camera, this.size), pixel) < 8);
     this.drag = { id: e.pointerId, inputVersion: this.inputVersion, key: this.client.key, epoch: this.client.epoch,
-      command: this.command, commandVersion: this.command?.version, snapshot: this.snapshot, pixel, last: pixel, first: p, current: p, pan, grip, moved: false, extend: e.ctrlKey || e.metaKey, remove: e.shiftKey };
+      command: this.command, commandVersion: this.command?.version, snapshot: this.snapshot, pixel, last: pixel, first: p, current: p, pan, grip, moved: false, extend: e.ctrlKey || e.metaKey || this.settings.pickAdd !== false, remove: e.shiftKey };
     this.element.classList.toggle('panning', !!pan); this.invalidate();
   }
   move(e) {
@@ -173,9 +173,9 @@ export class CadViewport {
       drag.last = pixel; drag.current = this.cursor;
     }
     const anchor = this.command?.anchor || this.drag?.grip?.position;
-    this.resolved = constrain(this.cursor, anchor, this.settings); this.hooks.move?.(this.resolved, pixel);
+    this.resolved = this.command?.step.kind==='window'?this.cursor:constrain(this.cursor, anchor, this.settings); this.hooks.move?.(this.resolved, pixel);
     clearTimeout(this.snapTimer);
-    if ((this.command && !this.command.selecting) || drag?.grip) this.snapTimer = setTimeout(async () => {
+    if ((this.command && !this.command.selecting && this.command.step.kind!=='window') || drag?.grip) this.snapTimer = setTimeout(async () => {
       const version = this.inputVersion, generation = this.snapGeneration + 1, command = this.command, commandVersion = command?.version;
       const position = await this.snapped(this.cursor, anchor);
       if (version !== this.inputVersion || generation !== this.snapGeneration || command !== this.command || commandVersion !== this.command?.version) return;
@@ -203,9 +203,12 @@ export class CadViewport {
       const p = world(this.local(e), this.camera, this.size);
       if (drag.grip && drag.moved) {
         const pos = await this.snapped(p, drag.grip.position, true, true); current(); await this.hooks.grip?.(drag.grip, pos);
+      } else if(this.command?.step.kind==='window') {
+        if(drag.moved && this.command.index===0)await this.hooks.window?.(drag.first,p);
+        else await this.hooks.pick?.(p);
       } else if (this.command && !this.command.selecting) {
-        const pos = await this.snapped(p, this.command.anchor, true, this.command.name === 'MOVE' && !!this.command.anchor); current(); this.snapOverride = undefined; await this.hooks.pick?.(pos);
-      } else if (drag.moved) await this.hooks.box?.(drag.first, p, e.clientX < this.element.getBoundingClientRect().left + drag.pixel.x, drag.extend, drag.remove);
+        const pos = await this.snapped(p, this.command.anchor, true, ['MOVE','STRETCH'].includes(this.command.name) && !!this.command.anchor); current(); this.snapOverride = undefined; await this.hooks.pick?.(pos);
+      } else if (drag.moved) await this.hooks.box?.(drag.first, p, e.clientX < this.element.getBoundingClientRect().left + drag.pixel.x, drag.extend || !!this.command?.selecting, drag.remove);
       else await this.hooks.select?.(p, drag.extend || !!this.command?.selecting, drag.remove);
     } catch (error) { this.hooks.error?.(error); }
     this.invalidate();
@@ -234,8 +237,8 @@ export class CadViewport {
       }
       this.preview(c);
     }
-    if (this.drag && !this.drag.pan && !this.drag.grip && (!this.command || this.command.selecting) && this.drag.moved) {
-      const a = screen(this.drag.first, this.camera, this.size), b = this.drag.last, crossing = b.x < a.x;
+    if (this.drag && !this.drag.pan && !this.drag.grip && (!this.command || this.command.selecting || this.command.step.kind==='window') && this.drag.moved) {
+      const a = screen(this.drag.first, this.camera, this.size), b = this.drag.last, crossing = this.command?.spec.crossingSelection || b.x < a.x;
       c.fillStyle = crossing ? '#5cbd7840' : '#4b95dc40'; c.strokeStyle = crossing ? '#90e6a5' : '#8cbbf4';
       c.setLineDash(crossing ? [5, 3] : []); c.lineWidth = 1; c.fillRect(a.x, a.y, b.x - a.x, b.y - a.y); c.strokeRect(a.x, a.y, b.x - a.x, b.y - a.y); c.setLineDash([]);
     }
@@ -270,7 +273,12 @@ export class CadViewport {
     c.beginPath(); points.forEach((p, i) => { const q = screen(p, this.camera, this.size); if (!i) c.moveTo(q.x, q.y); else c.lineTo(q.x, q.y); }); if (close) c.closePath(); c.stroke();
   }
   preview(c) {
-    const session = this.command, p = session?.command.points || [], cursor = this.resolved || this.cursor;
+    const session = this.command, all = session?.command.points || [], p = session?.spec.crossingSelection?all.slice(2):all, cursor = this.resolved || this.cursor;
+    if(session?.spec.crossingSelection&&all.length) {
+      const a=screen(all[0],this.camera,this.size),b=screen(all[1]||cursor,this.camera,this.size);
+      c.fillStyle='#5cbd7820';c.strokeStyle='#90e6a5';c.lineWidth=1;c.setLineDash([5,3]);
+      c.fillRect(a.x,a.y,b.x-a.x,b.y-a.y);c.strokeRect(a.x,a.y,b.x-a.x,b.y-a.y);c.setLineDash([]);
+    }
     c.strokeStyle = '#e4ecf3'; c.lineWidth = 1; c.setLineDash([6, 3]);
     if (this.drag?.grip) this.path(c, [this.drag.grip.position, cursor]);
     if (!session || session.selecting || !p.length || !this.pixel) { c.setLineDash([]); return; }

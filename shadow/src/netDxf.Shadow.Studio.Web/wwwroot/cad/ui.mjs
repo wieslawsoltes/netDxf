@@ -20,6 +20,7 @@ const paths = {
   SPLINE:'M2 18C10-14 10 38 22 4', TEXT:'M3 4h18M12 4v17M8 21h8', MTEXT:'M3 3h18M3 8h18M3 13h13M3 18h16',
   DIMALIGNED:'M4 20L20 4M1 16l6 6M16 1l6 6M4 14v6h6M14 4h6v6', DIMLINEAR:'M3 3v18M21 3v18M3 16h18M7 13l-4 3l4 3M17 13l4 3l-4 3',
   MOVE:'M12 2v20M2 12h20M8 6l4-4l4 4M8 18l4 4l4-4M6 8l-4 4l4 4M18 8l4 4l-4 4', COPY:'M3 3h12v12H3zM9 9h12v12H9z',
+  STRETCH:'M3 4h7v16H3zM14 4h7v16h-7M10 12h11M17 8l4 4l-4 4', BREAK:'M2 18L9 11M15 7l7-5M8 7l4 6M12 5l4 6', BREAKATPOINT:'M2 20L10 12M14 8l8-8M8 8h8v8H8z',
   ROTATE:'M5 7a8 8 0 1 1-1 9M5 2v6h6', SCALE:'M3 14h7v7H3zM3 3h18v18h-7M13 11l8-8M15 3h6v6', MIRROR:'M12 2v20M3 5l6 7l-6 7zM21 5l-6 7l6 7z',
   ARRAY:'M2 2h5v5H2zM10 2h5v5h-5zM18 2h5v5h-5zM2 10h5v5H2zM10 10h5v5h-5zM18 10h5v5h-5zM2 18h5v5H2zM10 18h5v5h-5zM18 18h5v5h-5z',
   OFFSET:'M3 21V3h18M8 21V8h13M13 21v-8h8', TRIM:'M4 3v18M2 7h20M14 3l7 8M21 3l-7 8', EXTEND:'M4 3v18M3 15h12M15 11l5 4l-5 4M21 3v18',
@@ -59,7 +60,7 @@ export function ribbon(tab, data, layer, changeLayer) {
     a('layer-manager','Layer manager'),a('layers','Layers palette'),a('assign-layer','Match current layer'),a('layer-new','New layer')]);
   const content = {
     Home: [group('Draw',[c('LINE',true),c('PLINE',true),c('CIRCLE',true),c('ARC'),c('RECTANG'),c('ELLIPSE'),c('POLYGON'),c('SPLINE'),c('POINT')]),
-      group('Modify',[c('MOVE'),c('COPY'),c('ERASE'),c('ROTATE'),c('MIRROR'),c('SCALE'),c('TRIM'),c('EXTEND'),c('OFFSET'),c('FILLET'),c('CHAMFER'),c('ARRAY'),c('JOIN'),c('EXPLODE')]),
+      group('Modify',[c('MOVE'),c('COPY'),c('STRETCH'),c('BREAK'),c('BREAKATPOINT'),c('ERASE'),c('ROTATE'),c('MIRROR'),c('SCALE'),c('TRIM'),c('EXTEND'),c('OFFSET'),c('FILLET'),c('CHAMFER'),c('ARRAY'),c('JOIN'),c('EXPLODE')]),
       group('Annotation',[c('MTEXT',true),c('DIMALIGNED',true),c('TEXT'),c('DIMLINEAR'),c('DIST')]),layerTools,
       group('Block',[a('block-insert','Insert block',true),a('block-create','Create block'),a('block-redefine','Redefine')]),group('Hatch',[a('hatch-create','Hatch',true),c('HATCHPOLY'),a('hatch-edit','Edit hatch')]), group('Properties',[a('properties','Properties',true),a('linetypes','Linetypes')])],
     Insert: [group('Blocks',[a('block-insert','Insert block',true),a('blocks','Blocks palette',true),a('block-create','Create block'),a('block-redefine','Redefine'),a('block-rename','Rename'),a('block-edit','Edit definition')]),group('Reference resources',[a('open','Open DXF / DWG',true),a('font','Load SHX / SHP',true)]),group('Documents',[a('new','New drawing'),a('demo','New sample drawing'),a('save','Save DXF')])],

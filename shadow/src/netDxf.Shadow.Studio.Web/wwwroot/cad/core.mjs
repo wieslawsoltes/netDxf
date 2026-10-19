@@ -112,6 +112,9 @@ export const commands = Object.freeze({
   DIMLINEAR: spec('DLI', 'Linear dimension', [P('First extension origin'), P('Second extension origin'), P('Dimension line location')]),
   INSERT: spec('I', 'Insert block', [T('block', 'Block name'), P('Insertion point'), N('value', 'Uniform scale', 1), N('rotation', 'Rotation in degrees', 0, -1e12)]),
   MOVE: spec('M', 'Move', [P('Specify base point or [Displacement]'), P('Specify second point or Enter to use base as displacement')], { selection: 1 }),
+  STRETCH: spec('S', 'Stretch', [{kind:'window',prompt:'Specify first crossing-window corner (or drag a rectangle)'}, {kind:'window',prompt:'Specify opposite crossing-window corner'}, P('Specify base point or [Displacement]'), P('Specify second point or Enter to use base as displacement')], {selection:1,crossingSelection:true}),
+  BREAK: spec('BR', 'Break', [P('Specify first break point'), P('Specify second break point or [First]; @ breaks without a gap')], {selection:1,exactSelection:1,pickSelection:true}),
+  BREAKATPOINT: spec('BRP', 'Break at point', [P('Specify break point')], {selection:1,exactSelection:1,pickSelection:true}),
   COPY: spec('CO CP', 'Copy', [P('Base point'), P('Second point')], { selection: 1 }),
   ROTATE: spec('RO', 'Rotate', [P('Base point'), N('value', 'Rotation in degrees', 90, -1e12)], { selection: 1 }),
   SCALE: spec('SC', 'Scale', [P('Base point'), N('value', 'Scale factor', 2)], { selection: 1 }),
@@ -137,12 +140,12 @@ export class CommandSession {
   constructor(name, layer = '0', selectionCount = 0) {
     this.name = commandName(name); if (!this.name) throw new Error(`Unknown command: ${name}`);
     this.spec = commands[this.name]; this.command = { name: this.name, points: [], layer };
-    this.version = 0; this.index = 0; this.selecting = !!this.spec.selection && !this.validSelection(selectionCount); this.complete = false;
+    this.version = 0; this.index = 0; this.selecting = !this.spec.crossingSelection && !!this.spec.selection && !this.validSelection(selectionCount); this.complete = false;
   }
   validSelection(count) { return this.spec.exactSelection ? count === this.spec.exactSelection : count >= (this.spec.selection || 0); }
-  acceptSelection(count) { if (!this.validSelection(count)) throw new Error(`Select ${this.spec.exactSelection ? 'exactly ' : 'at least '}${this.spec.selection} source objects.`); this.selecting = false; this.complete = this.spec.steps.length === 0; this.version++; }
-  get anchor() { return this.command.points.at(-1) || null; }
-  get step() { if (this.displacement && !this.selecting) return { kind: 'point', prompt: 'Specify displacement vector (X,Y,Z)' }; return this.selecting ? { kind: 'selection', prompt: 'Select objects in order; Enter to continue' } : this.spec.steps[this.index] || { kind: 'point', prompt: 'Next point or [Undo/Close]; Enter to finish' }; }
+  acceptSelection(count) { if(this.spec.crossingSelection && this.command.points.length<2)throw new Error('Define a crossing window before confirming the selection.'); if (!this.validSelection(count)) throw new Error(`Select ${this.spec.exactSelection ? 'exactly ' : 'at least '}${this.spec.selection} source objects.`); this.selecting = false; this.complete = this.spec.steps.length === 0; this.version++; }
+  get anchor() { return this.spec.crossingSelection && this.command.points.length<=2 ? null : this.command.points.at(-1) || null; }
+  get step() { if (this.displacement && !this.selecting) return { kind: 'point', prompt: 'Specify displacement vector (X,Y,Z)' }; return this.selecting ? { kind: 'selection', prompt: this.spec.crossingSelection?'Crossing selection; Enter to continue, Shift removes, [Crossing] replaces window':this.spec.pickSelection?'Select one source object': 'Select objects in order; Enter to continue' } : this.spec.steps[this.index] || { kind: 'point', prompt: 'Next point or [Undo/Close]; Enter to finish' }; }
   get prompt() { const s = this.step; return `${this.name} — ${s.prompt}${s.defaultValue !== undefined && s.defaultValue !== '' ? ` <${s.defaultValue}>` : ''}:`; }
   input(text, cursor = null) {
     if (this.selecting || this.complete) throw new Error('The command is not accepting coordinates.');
@@ -155,14 +158,17 @@ export class CommandSession {
       this.spec = { ...this.spec, steps: [...authoringCommands.BLOCK.steps].reverse() };
       return this.pick(origin);
     }
-    if (this.name === 'MOVE' && this.index === 0 && (!value || ['D','DISPLACEMENT'].includes(value.toUpperCase()))) {
-      this.command.points = [point()]; this.displacement = true; this.index = 1; this.version++; return;
+    const offset=this.spec.crossingSelection?2:0, translates=this.name==='MOVE'||this.name==='STRETCH';
+    if (translates && this.index === offset && (!value || ['D','DISPLACEMENT'].includes(value.toUpperCase()))) {
+      this.command.points = [...this.command.points.slice(0,offset),point()]; this.displacement = true; this.index = offset+1; this.version++; return;
     }
-    if (this.name === 'MOVE' && this.index === 1 && !this.displacement && !value) {
-      const delta = this.command.points[0];
+    if (translates && this.index === offset+1 && !this.displacement && !value) {
+      const delta = this.command.points[offset];
       if (distance(delta, point()) < 1e-9) throw new Error('Specify a nonzero displacement.');
-      this.command.points = [point(), delta]; this.complete = true; this.version++; return;
+      this.command.points = [...this.command.points.slice(0,offset),point(), delta]; this.complete = true; this.version++; return;
     }
+    if(this.name==='BREAK' && ['F','FIRST'].includes(value.toUpperCase())) {this.command.points=[];this.index=0;this.version++;return;}
+    if(this.name==='BREAK' && this.index===1 && value==='@')return this.pick(this.command.points[0]);
     const step = this.step;
     if (this.spec.chain && ['U', 'UNDO'].includes(value.toUpperCase())) {
       if (this.command.points.length) this.command.points.pop(); this.index = this.command.points.length ? 1 : 0; this.version++; return;
@@ -174,7 +180,7 @@ export class CommandSession {
       if (this.command.points.length < minimum) throw new Error(`Specify at least ${minimum} points.`);
       this.command.closed = closed; this.complete = true; this.version++; return;
     }
-    if (step.kind === 'point') return this.pick(parsePoint(value, this.anchor || point(), cursor));
+    if (step.kind === 'point' || step.kind === 'window') return this.pick(parsePoint(value, (step.kind==='window'?this.command.points[0]:this.anchor) || point(), cursor));
     if (step.kind === 'text') { const t = value || step.defaultValue; if (!t || t.length > 16384) throw new Error('Enter 1–16384 characters.'); if(this.name === 'BLOCK') blockName(t); this.command[step.key] = t; }
     else {
       const n = value ? number(value) : step.defaultValue;
@@ -194,9 +200,28 @@ export class CommandSession {
       return;
     }
     if (step.kind === 'number' && step.key === 'value' && this.name === 'ROTATE') return this.input(String(Math.atan2(p.y - this.anchor.y, p.x - this.anchor.x) * 180 / Math.PI));
+    if(step.kind==='window') {
+      if(this.index===0){this.command.points=[point(p.x,p.y,0)];this.index=1;this.version++;return;}
+      return this.captureWindow(this.command.points[0],p);
+    }
     if (step.kind !== 'point') throw new Error('This prompt requires keyboard input.');
-    if (this.anchor && distance(this.anchor, p) < 1e-9) throw new Error('The next point must be distinct.');
+    if (this.anchor && distance(this.anchor, p) < 1e-9 && this.name!=='BREAK') throw new Error('The next point must be distinct.');
     this.command.points.push(point(p.x, p.y, p.z ?? 0)); this.advance();
+  }
+  captureWindow(first,second) {
+    if(!this.spec.crossingSelection || (!this.selecting && this.index>=2))throw new Error('This command is not acquiring a crossing window.');
+    for(const p of [first,second])for(const n of [p.x,p.y,p.z??0])finite(n);
+    if(Math.abs(first.x-second.x)<1e-9 || Math.abs(first.y-second.y)<1e-9)throw new Error('A crossing window needs nonzero width and height.');
+    this.command.points=[point(first.x,first.y),point(second.x,second.y)];this.index=2;this.selecting=true;this.complete=false;this.displacement=false;this.version++;
+  }
+  resetWindow() {
+    if(!this.spec.crossingSelection)throw new Error('This command does not use a crossing window.');
+    this.command.points=[];this.index=0;this.selecting=false;this.complete=false;this.displacement=false;this.version++;
+  }
+  acceptPickedSelection(count,position) {
+    if(this.name==='BREAK')for(const value of [position.x,position.y,position.z??0])finite(value);
+    this.acceptSelection(count);
+    if(this.name==='BREAK')this.pick(position);
   }
   advance() { this.version++; this.index++; if (!this.spec.chain && this.index >= this.spec.steps.length) this.complete = true; }
 }

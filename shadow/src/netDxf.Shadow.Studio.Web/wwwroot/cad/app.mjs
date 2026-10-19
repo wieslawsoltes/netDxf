@@ -21,6 +21,7 @@ const client = new CadClient();
 const viewport = new CadViewport($('viewport'), $('drawing'), client, {
   pick: p => takePoint(p), select: (p, extend, remove) => select('pick', p, p, extend, remove),
   box: (a,b,crossing,extend,remove) => select(crossing?'crossing':'window',a,b,extend,remove),
+  window: (a,b) => stretchWindow(a,b),
   grip: (grip,position) => edit('grip',{entity:grip.entity,grip:grip.id,position}),
   move: (p,pixel) => cursorChanged(p,pixel), error: report,
   context: e => contextMenu(e.clientX,e.clientY), frame: () => { $('loading').hidden=true; if(!client.busy) $('connection').textContent='Local'; },
@@ -69,11 +70,21 @@ async function start(name) {
   editable(); if(client.busy) throw new Error('Wait for the current operation to complete.');
   setSession(new CommandSession(name,currentLayer,client.data.selectedEntities.length)); lastCommand=session.name;
   log(`${session.name} — ${commands[session.name].label}`,'input');
-  if(session.spec.selection && !session.selecting) { session.acceptSelection(client.data.selectedEntities.length); if(session.complete) await complete(); }
+  if(session.spec.selection && !session.spec.crossingSelection && !session.selecting) { session.acceptSelection(client.data.selectedEntities.length); if(session.complete) await complete(); }
   ensureCommandLine();$('command-input').focus({preventScroll:true});
 }
-function updatePrompt() { $('prompt').textContent=session?.prompt || 'Command:'; $('command-input').placeholder=session ? (session.selecting?'Select in the viewport, then Enter':session.step.kind==='point'?'X,Y · @X,Y · @distance<angle':'Enter value'):'Type a command'; }
-async function takePoint(p) { if(!session) return; editable(); session.pick(p); updatePrompt(); viewport.invalidate(); if(session.complete) await complete(); }
+function updatePrompt() { $('prompt').textContent=session?.prompt || 'Command:'; $('command-input').placeholder=session ? (session.selecting?'Select in the viewport, then Enter':['point','window'].includes(session.step.kind)?'X,Y · @X,Y · @distance<angle':'Enter value'):'Type a command'; }
+async function acquireCrossing(target) {
+  const [first,second]=target.command.points;
+  await edit('select',{mode:'crossing',first,second,tolerance:8/viewport.camera.scale,extend:false},{expectedKey:client.key});
+  if(session!==target)return;
+  updatePrompt();viewport.invalidate();
+  if(!client.data.selectedEntities.length)throw new Error('The crossing window contains no source objects. Enter C to choose another window.');
+}
+async function stretchWindow(first,second) { if(!session?.spec.crossingSelection)return;editable();const target=session;target.captureWindow(first,second);await acquireCrossing(target); }
+async function takePoint(p) { if(!session) return; editable();const target=session,window=target.step.kind==='window';target.pick(p);if(window&&target.selecting)await acquireCrossing(target);if(session!==target)return;updatePrompt();viewport.invalidate();if(target.complete)await complete(); }
+async function takeInput(value) {const target=session,window=target.step.kind==='window';target.input(value,viewport.resolved||viewport.cursor);if(window&&target.selecting)await acquireCrossing(target);}
+
 async function complete() {
   const completed=session; if(!completed?.complete) return;
   if(completed.moduleRequest){
@@ -97,14 +108,19 @@ async function submit(text) {
   const value=text.trim(); $('suggestions').hidden=true;
   if(value) { lastInput.push(value); if(lastInput.length>100) lastInput.shift(); historyIndex=lastInput.length; log(`› ${value}`,'input'); }
   if(session) {
+    const target=session;
     const overrides={END:1,ENDPOINT:1,MID:2,MIDPOINT:2,CEN:4,CENTER:4,QUA:8,INT:16,PER:32,NEA:64,INS:128,TAN:256,NONE:0};
-    if(!session.selecting && Object.hasOwn(overrides,value.toUpperCase())) {
+    if(!session.selecting && session.step.kind!=='window' && Object.hasOwn(overrides,value.toUpperCase())) {
       viewport.snapOverride=overrides[value.toUpperCase()];viewport.snapGeneration++;viewport.snapAbort?.abort();viewport.snapHit=null;
       log(`${value.toUpperCase()} — applies to the next picked point.`);return;
     }
-    if(session.selecting) { if(value) throw new Error('Select objects in the viewport, then press Enter.'); session.acceptSelection(client.data.selectedEntities.length); }
-    else session.input(value,viewport.resolved || viewport.cursor);
-    updatePrompt(); viewport.invalidate(); if(session.complete) await complete(); return;
+    if(session.selecting) {
+      if(session.spec.crossingSelection&&['C','CROSSING'].includes(value.toUpperCase())){session.resetWindow();updatePrompt();viewport.invalidate();return;}
+      if(value)throw new Error('Select objects in the viewport, then press Enter.');
+      session.acceptSelection(client.data.selectedEntities.length);
+    } else await takeInput(value);
+    if(session!==target)return;
+    updatePrompt(); viewport.invalidate(); if(target.complete) await complete(); return;
   }
   if(!value) return start(lastCommand);
   const match=value.match(/^(\S+)(?:\s+([\s\S]*))?$/), name=match[1].toUpperCase(), rest=match[2]||'';
@@ -125,13 +141,21 @@ async function submit(text) {
       if(!session) throw new Error('Extra input after command completion.');
       if(session.selecting) throw new Error('Preselect source objects before an inline modification command.');
       const isText=session.step.kind==='text'&&session.index===session.spec.steps.length-1;
-      const token=isText?tokens.slice(i).join(' '):tokens[i]; session.input(token,viewport.resolved||viewport.cursor); if(session.complete) await complete(); if(isText) break;
+      const target=session,token=isText?tokens.slice(i).join(' '):tokens[i]; await takeInput(token); if(session!==target)return;if(target.complete) await complete(); if(isText) break;
     }
     updatePrompt(); viewport.invalidate();
   }
 }
 async function select(mode,first=point(),second=point(),extend=false,remove=false) {
-  editable(); await edit('select',{mode,first,second,tolerance:8/viewport.camera.scale,extend,remove}); updatePrompt();
+  editable();const target=session;
+  if(target?.spec.crossingSelection&&target.selecting&&!remove){
+    if(mode==='crossing'||mode==='window')return stretchWindow(first,second);
+    throw new Error('STRETCH uses one crossing window. Shift removes objects; C replaces the window.');
+  }
+  const picked=target?.selecting&&target.spec.pickSelection&&mode==='pick'&&!remove;
+  await edit('select',{mode,first,second,tolerance:8/viewport.camera.scale,extend:picked?false:extend,remove});
+  if(picked&&session===target&&client.data.selectedEntities.length===1)target.acceptPickedSelection(1,first);
+  updatePrompt();viewport.invalidate();
 }
 function updateTools() {
   document.querySelectorAll('[data-command]').forEach(b=>{b.classList.toggle('active',b.dataset.command===session?.name);b.disabled=!!client.busy||snapshot!==null||!client.state;});
@@ -359,7 +383,7 @@ async function action(name) {
     case 'export-png':return exportImage('skia');case 'export-svg':return exportImage('svg');
     case 'legacy':window.open('diagnostics.html','_blank','noopener');return;
     case 'reset-ui':for(const [key,value] of Object.entries({grid:true,snap:false,ortho:false,polar:false,osnap:true,dynamic:true,tracking:false,polarAngle:15,polarTolerance:5,gridStep:10,snapModes:23}))viewport.settings[key]=value;$('workspace').className='workspace';$('studio').className='';chrome=chromePreferences();applyChrome();document.documentElement.style.removeProperty('--palette-width');document.documentElement.style.removeProperty('--command-height');persist();modes();viewport.changed();return;
-    case 'help':await dialog('Shadow CAD command reference',[el('p',{class:'hint',text:'Native netDxf editing on immutable shadow transactions. Enter ends point chains; C closes; U removes the last draft point; Escape cancels. Coordinates: X,Y; @dx,dy; @distance<angle. A bare distance follows the cursor. All edits are undoable.'}),el('table',{class:'help-table'},Object.entries(commands).map(([name,s])=>el('tr',{},[el('td',{text:`${name} (${s.aliases.join(', ')})`}),el('td',{text:s.label})]))),el('p',{class:'hint',text:'TRIM/EXTEND: select target LINE first, then a LINE/CIRCLE boundary, Enter, then pick an endpoint. FILLET/CHAMFER: two intersecting XY lines. EXPLODE: 2D polylines and ordinary unattributed INSERTs, one level at a time. Array inserts, attached data, disabled exploding, and unrepresentable affine geometry are refused. SPLINE: cubic control points. These commands preserve native source geometry and refuse unsupported combinations. BLOCK creates shared definitions; BLOCKREDEFINE replaces one from selected sources; BLOCKRENAME retains references. HATCH/HATCHEDIT accept built-in name, scale, angle and island style. HATCHPOLY makes a solid polygon. Hatch settings import bounded custom PAT files. DWG import uses signature detection; SAVEAS offers host-declared DWG profiles with strict conversion checks. 3D solids, general curve trimming, AutoLISP and CTB/STB plotting are not implemented.'}),el('p',{class:'hint',text:'Ctrl+N/O/S: new/open/save · Ctrl+Z/Y: undo/redo · Ctrl+1: palettes · Ctrl+0: clean screen · Ctrl+9: command line · F2: history · F3: object snap · F7: grid · F8: ortho · F9: grid snap · F10: polar · F11: tracking · F12: dynamic input. Middle drag pans; wheel zooms about the pointer; right click opens command actions. Two-finger touch pans/zooms.'})],'Close');return;
+    case 'help':await dialog('Shadow CAD command reference',[el('p',{class:'hint',text:'Native netDxf editing on immutable shadow transactions. Enter ends point chains; C closes; U removes the last draft point; Escape cancels. Coordinates: X,Y; @dx,dy; @distance<angle. A bare distance follows the cursor. All edits are undoable.'}),el('table',{class:'help-table'},Object.entries(commands).map(([name,s])=>el('tr',{},[el('td',{text:`${name} (${s.aliases.join(', ')})`}),el('td',{text:s.label})]))),el('p',{class:'hint',text:'STRETCH: draw one XY crossing window (drag or two corners), Enter, then base and second point or Displacement. Shift removes objects; C replaces the crossing window. BREAK: pick one object as the first break point, use F to replace it, or @ for a gap-free split. BREAKATPOINT asks for one interior point after selecting the object. Supported curves are listed in the drafting guide; unsupported geometry is refused atomically. TRIM/EXTEND: select target LINE first, then a LINE/CIRCLE boundary, Enter, then pick an endpoint. FILLET/CHAMFER: two intersecting XY lines. EXPLODE: 2D polylines and ordinary unattributed INSERTs, one level at a time. Array inserts, attached data, disabled exploding, and unrepresentable affine geometry are refused. SPLINE: cubic control points. These commands preserve native source geometry and refuse unsupported combinations. BLOCK creates shared definitions; BLOCKREDEFINE replaces one from selected sources; BLOCKRENAME retains references. HATCH/HATCHEDIT accept built-in name, scale, angle and island style. HATCHPOLY makes a solid polygon. Hatch settings import bounded custom PAT files. DWG import uses signature detection; SAVEAS offers host-declared DWG profiles with strict conversion checks. 3D solids, general curve trimming, AutoLISP and CTB/STB plotting are not implemented.'}),el('p',{class:'hint',text:'Ctrl+N/O/S: new/open/save · Ctrl+Z/Y: undo/redo · Ctrl+1: palettes · Ctrl+0: clean screen · Ctrl+9: command line · F2: history · F3: object snap · F7: grid · F8: ortho · F9: grid snap · F10: polar · F11: tracking · F12: dynamic input. Middle drag pans; wheel zooms about the pointer; right click opens command actions. Two-finger touch pans/zooms.'})],'Close');return;
     default:throw new Error(`Unknown workspace action: ${name}`);
   }
 }
