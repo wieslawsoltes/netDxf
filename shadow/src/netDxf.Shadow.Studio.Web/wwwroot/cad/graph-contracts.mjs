@@ -1,4 +1,5 @@
 import { viewKey } from '../studio-state.mjs';
+import { graphResultScene } from './graph-visualization.mjs';
 
 export const graphOperations = Object.freeze({
   summary: 'Summary', nodes: 'Nodes', edges: 'Edges', components: 'Components', deadEnds: 'Dead ends',
@@ -29,6 +30,7 @@ export function graphRequest(operation, values, state, offset = 0) {
   if (operation === 'edges') {
     numeric('edge', undefined, 0, 2147483647, true);
     if (values.entity?.trim()) args.entity = values.entity.trim();
+    if (values.rootEntity?.trim()) args.rootEntity = values.rootEntity.trim();
     if (values.occurrence?.trim()) args.occurrence = values.occurrence.trim();
   }
   if (operation === 'cycle') numeric('cycle', 0, 0, 2147483647, true);
@@ -37,7 +39,17 @@ export function graphRequest(operation, values, state, offset = 0) {
   if (operation === 'traverse') numeric('depth', 8, 0, 128, true);
   if (operation === 'nearest') { for (const axis of ['x','y','z']) numeric(axis, 0, -Number.MAX_VALUE, Number.MAX_VALUE); numeric('maximumDistance', undefined, 0, Number.MAX_VALUE); }
   if (features.has(operation)) args.kind = operation;
+  if(values.graphKey)args.graphKey=values.graphKey;
   return { tool:`graph_${features.has(operation) ? 'features' : operation}`, arguments:args };
+}
+export function graphProjectionRequest(values,state,{nodeOffset=0,edgeOffset=0}={}) {
+  const args=graphRequest('summary',values,state).arguments;
+  Object.assign(args,{nodeOffset,edgeOffset,nodeLimit:2000,edgeLimit:4000});
+  for(const name of ['entity','rootEntity','occurrence'])if(values[name]?.trim())args[name]=values[name].trim();
+  if(values.component!==undefined&&values.component!==''){
+    const component=Number(values.component);if(!Number.isSafeInteger(component)||component<0)throw new Error('Invalid component.');args.component=component;
+  }
+  return {tool:'graph_visualization',arguments:args};
 }
 export function graphData(response, state) {
   if (!response) return null;
@@ -50,13 +62,6 @@ export function graphData(response, state) {
 }
 /** A page can contain non-contiguous IDs; never interpret graph IDs as page array offsets. */
 export function graphOverlay(data) {
-  const nodes = new Map(), edges = new Map();
-  const addNode = node => { if (node && Number.isInteger(node.id) && Number.isFinite(node.x) && Number.isFinite(node.y)) nodes.set(node.id, node); };
-  const addEdge = edge => { if (!edge || !Number.isInteger(edge.a) || !Number.isInteger(edge.b)) return; edges.set(edge.id,edge); addNode({...edge.start,id:edge.a}); addNode({...edge.end,id:edge.b}); };
-  for (const item of data.steps?.items || data.items || data.nodes || []) {
-    addNode(item.node || item); addEdge(item.viaEdge || item);
-  }
-  addNode(data.node);
-  return {nodes:[...nodes.values()],edges:[...edges.values()],highlight:true};
+  return graphResultScene(data);
 }
 export const graphViewKey = state => viewKey(state);

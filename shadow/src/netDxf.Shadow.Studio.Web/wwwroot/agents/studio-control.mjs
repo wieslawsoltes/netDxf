@@ -1,9 +1,10 @@
+import { graphOperations } from '../cad/graph-contracts.mjs';
 /** Typed UI automation boundary. Model-produced text is never executed as JavaScript or HTML. */
 const actionNames = new Set([
   'properties','layers','blocks','explorer','workspaces','diagnostics','agents','modules','health','edit-previews','workflows','block-edit','block-save','block-close','block-insert','block-library-import','block-library-export', 'layer-manager', 'layer-states', 'attributes', 'attribute-sync', 'attribute-definitions', 'attribute-create', 'linetypes', 'text-styles',
   'new','demo','open','save','save-as','font','undo','redo','fit','regen','zoom-in','zoom-out','pan','palette','dock','clean',
   'settings','layer-new','assign-layer','snapshot','snapshots','fork','annotation','linetype','graph','graph-analysis','export-png','export-svg',
-  'ribbon-minimize','command-line','command-history',
+  'ribbon-minimize','ribbon-cycle','ribbon-display','palette-picker','palette-lock','palette-reset','graph-load','graph-fit','graph-clear','command-line','command-history',
   'legacy','reset-ui','help','block-create','block-redefine','block-rename','hatch-create','hatch-edit'
 ]);
 const readRoutes = new Set(['state', 'graph', 'hatch/pattern', 'resources', 'attributes', 'attribute-definitions', 'modules', 'edit-previews', 'workflow/status', 'workflow/export', 'block-libraries']);
@@ -58,7 +59,7 @@ export function installStudioControl(host) {
   const controlIds = new WeakMap(), controls = new Map(), pending = new Map();
   let nextControl = 1, nextOperation = 1;
   const root = host.document || globalThis.document;
-  const knownAction = name => actionNames.has(name) || typeof name==='string' &&
+  const knownAction = name => actionNames.has(name) || typeof name==='string' && name.startsWith('graph-query:') && Object.hasOwn(graphOperations,name.slice(12)) || typeof name==='string' &&
     /^module-(?:open|command):[a-z0-9-]+:[a-z0-9-]+$/.test(name) && client.data?.modules?.some(m=>m.enabled&&m.id===name.split(':')[1]);
   const publicNode = node => !!node && !node.closest('[data-agent-private], .agent-workspace') &&
     node.getAttribute('type') !== 'password' && node.getAttribute('type') !== 'file';
@@ -153,7 +154,7 @@ export function installStudioControl(host) {
         if (!['Properties', 'Layers', 'Blocks', 'Explorer', 'Workspaces', 'Graph', 'Modules', 'Health', 'Edit previews', 'Workflows', 'Diagnostics'].includes(args.name)) throw new Error('Unknown drawing palette.');
         host.showPalette(args.name); break;
       case 'ribbon.show':
-        if (!['Home', 'Insert', 'Annotate', 'View', 'Manage', 'Output'].includes(args.name) && !client.data?.modules?.some(m=>m.enabled&&`module:${m.id}`===args.name)) throw new Error('Unknown ribbon tab.');
+        if (!['Home', 'Insert', 'Annotate', 'Graph', 'View', 'Manage', 'Output'].includes(args.name) && !client.data?.modules?.some(m=>m.enabled&&`module:${m.id}`===args.name)) throw new Error('Unknown ribbon tab.');
         host.showRibbon(args.name); break;
       case 'settings.set': {
         const settings = { ...viewport.settings };
