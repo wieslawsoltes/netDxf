@@ -5,6 +5,10 @@ conversation messages are used, saved or committed. Paid evaluation remains off;
 opt-in evaluation uses environment credentials and a shared budget no greater than
 USD 20. Granular commits and a pull request were subsequently requested explicitly.
 
+The continuing full-scope audit is [ParityAudit.md](ParityAudit.md). Checked
+milestones below describe delivered increments; that audit tracks remaining
+requirements and must be satisfied before claiming full requested parity.
+
 ## Phase 1: requested Studio and agent improvements
 
 - [x] MCP batch authoring, collection edits, schema/method discovery and atomic operations
