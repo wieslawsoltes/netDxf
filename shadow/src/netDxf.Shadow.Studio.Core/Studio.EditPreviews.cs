@@ -15,7 +15,8 @@ public sealed record CadAttributeSyncSummary(ObjectId Block, string BlockName, i
     int RemovedXData, int TextConversions, bool DetailsTruncated, ImmutableArray<AttributeSynchronizationReference> References);
 public sealed record CadEditOperation(string Kind, DraftingCommand? Command = null, ResourceEdit? Resource = null,
     LayerEdit? Layer = null, CadPreviewProperty? Property = null, string? Module = null, CadModuleCommandRequest? ModuleCommand = null,
-    CadAttributeSyncOperation? AttributeSync = null, CadAttributeDefinitionOperation? AttributeDefinitions = null, CadInsertOperation? Insert = null);
+    CadAttributeSyncOperation? AttributeSync = null, CadAttributeDefinitionOperation? AttributeDefinitions = null, CadInsertOperation? Insert = null,
+    CadBlockLibraryOperation? BlockLibrary = null);
 public sealed record CadEditPreviewRequest(long Revision, string Description, ImmutableArray<CadEditOperation> Operations);
 public sealed record CadEditPreviewTokenRequest(long Revision, string PreviewId);
 
@@ -24,7 +25,7 @@ public sealed partial class Studio
     private sealed record PendingEditPreview(ShadowEditPreview Preview, string Workspace, long View, long FontRevision,
         RenderCompileOptions ViewOptions, ImmutableHashSet<string> Selection, ImmutableArray<ObjectId> SelectionOrder, ImmutableArray<ObjectId> ResultSelection,
         DrawingHealthReport BeforeHealth, DrawingHealthReport AfterHealth, long ModuleVersion, ImmutableArray<string> Modules,
-        CadEditPreviewRequest Request, ImmutableArray<CadAttributeSyncSummary> AttributeSynchronizations);
+        CadEditPreviewRequest Request, ImmutableArray<CadAttributeSyncSummary> AttributeSynchronizations, ImmutableArray<CadBlockLibrarySummary> BlockLibraries);
     private readonly Dictionary<string, PendingEditPreview> editPreviews = new(StringComparer.Ordinal);
     public object CadEditPreview(CadEditPreviewRequest request, CancellationToken token = default)
     {
@@ -36,10 +37,13 @@ public sealed partial class Studio
             var before = Current; var branch = new EditorSession(new ShadowMemoryStore(before));
             var selectionOrder = CadSelected(Scene()); var selected = selectionOrder;
             var attributeSynchronizations = ImmutableArray.CreateBuilder<CadAttributeSyncSummary>();
+            var libraries = ImmutableArray.CreateBuilder<CadBlockLibrarySummary>();
+            var recordedOperations = ImmutableArray.CreateBuilder<CadEditOperation>();
             foreach (var operation in request.Operations)
             {
                 token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(operation);
                 DraftingPlan? plan = null;
+                var recordedOperation = operation;
                 switch (operation.Kind)
                 {
                     case "command" when operation.Command is { } command:
@@ -50,6 +54,14 @@ public sealed partial class Studio
                         break;
                     case "insert" when operation.Insert is { } insertion:
                         plan = PlanInsert(branch.Snapshot, insertion, token); break;
+                    case "block-library" when operation.BlockLibrary is { } library:
+                        if (libraries.Count >= 4) throw new ArgumentException("A preview can import at most four definitions.");
+                        var imported = PlanBlockLibrary(branch.Snapshot, library, token);
+                        plan = imported.Plan.Edit;
+                        recordedOperation = operation with { BlockLibrary = imported.Recorded };
+                        libraries.Add(new(imported.Plan.Block, plan.Patch.Apply(branch.Snapshot).Read(imported.Plan.Block)["Name"].Text,
+                            imported.Plan.Resources.Length > 500, imported.Plan.Resources.Take(500).ToImmutableArray()));
+                        break;
                     case "module" when operation.Module is { } module && operation.ModuleCommand is { } moduleCommand:
                         if (activeBranch?.BlockRoot is not null) throw new InvalidOperationException("Finish block editing before previewing discipline objects.");
                         moduleCommand = moduleCommand with { Entities = AuthoringSelection(moduleCommand.Entities, selected) };
@@ -71,8 +83,9 @@ public sealed partial class Studio
                         var entity = DraftingGuard.Entity(branch.Snapshot, property.Entity);
                         branch.SetProperty(property.Entity, property.Property, ConvertInput(entity[property.Property].Value, property.Value));
                         break;
-                    default: throw new ArgumentException("Choose a typed command, insert, module, resource, layer, property, attribute-sync or attribute-definitions preview operation with its matching payload.");
+                    default: throw new ArgumentException("Choose a typed command, insert, block-library, module, resource, layer, property, attribute-sync or attribute-definitions preview operation with its matching payload.");
                 }
+                recordedOperations.Add(recordedOperation);
                 if (plan is not null)
                 {
                     plan.Execute(branch);
@@ -83,12 +96,12 @@ public sealed partial class Studio
             var preview = editor.Preview(request.Description, ShadowGraphPatch.Between(before, branch.Snapshot));
             // A caller may dispose its JsonDocument while a proposal awaits approval.
             // Keep detached property values for the later workflow recording.
-            var recordedRequest = request with { Operations = request.Operations.Select(operation => operation.Property is { } property
+            var recordedRequest = request with { Operations = recordedOperations.Select(operation => operation.Property is { } property
                 ? operation with { Property = property with { Value = property.Value.Clone() } } : operation).ToImmutableArray() };
             var pending = new PendingEditPreview(preview, WorkspaceId, viewVersion, CurrentFonts.Revision, ViewOptions(), editor.State.Selection,
                 selectionOrder, selected, AnalyzeHealth(before, new(MaximumIssues: 500), token), AnalyzeHealth(preview.Proposed, new(MaximumIssues: 500), token), moduleConfigurationVersion,
                 request.Operations.Where(o => o.Kind == "module").Select(o => o.Module!).Distinct(StringComparer.Ordinal).ToImmutableArray(), recordedRequest,
-                attributeSynchronizations.ToImmutable());
+                attributeSynchronizations.ToImmutable(), libraries.ToImmutable());
             foreach (var key in editPreviews.Where(p => !EditPreviewCurrent(p.Value)).Select(p => p.Key).ToArray()) editPreviews.Remove(key);
             if (editPreviews.Count >= 8) editPreviews.Remove(editPreviews.Keys.First());
             var id = Guid.NewGuid().ToString("N"); editPreviews.Add(id, pending);
@@ -124,7 +137,8 @@ public sealed partial class Studio
         previewId = id, description = pending.Preview.Description, documentId = pending.Preview.Target.DocumentId,
         workspaceId = pending.Workspace, viewVersion = pending.View, revision = pending.Preview.Target.Revision,
         current = EditPreviewCurrent(pending), validation = pending.Preview.Validation, summary = pending.Preview.Summary,
-        beforeHealth = pending.BeforeHealth, afterHealth = pending.AfterHealth, attributeSynchronizations = pending.AttributeSynchronizations
+        beforeHealth = pending.BeforeHealth, afterHealth = pending.AfterHealth, attributeSynchronizations = pending.AttributeSynchronizations,
+        blockLibraries = pending.BlockLibraries
     };
     private bool EditPreviewCurrent(PendingEditPreview pending) => ReferenceEquals(pending.Preview.Target, Current)
         && pending.Workspace == WorkspaceId && pending.View == viewVersion && pending.FontRevision == CurrentFonts.Revision
@@ -159,12 +173,18 @@ public sealed partial class Studio
         }
     }
     public RenderImage CadEditPreviewRender(string previewId, bool after, int width = 640, int height = 400,
-        string backend = "svg", CancellationToken token = default)
+        string backend = "svg", CancellationToken token = default, string? block = null)
     {
         lock (gate)
         {
             if (width is < 16 or > 2048 || height is < 16 or > 2048 || (long)width * height > 4_000_000) throw new ArgumentException("Preview frames require 16–2048 pixels per axis and at most 4 megapixels.");
             var pending = FindEditPreview(previewId); var services = FrozenServices(CurrentFonts);
+            if (block is not null)
+            {
+                if (!after || !pending.BlockLibraries.Any(item => item.Block.Value == block)) throw new ArgumentException("Choose an imported definition from this preview.");
+                var definition = services.Compiler.Compile(pending.Preview.Proposed, pending.ViewOptions with { RootBlock = new ObjectId(block) }, token);
+                renderer.Swap(backend); return renderer.Render(new(definition, Viewport.Fit(definition.Bounds, width, height)), token);
+            }
             var before = services.Compiler.Compile(pending.Preview.Target, pending.ViewOptions, token);
             var proposed = services.Compiler.Compile(pending.Preview.Proposed, pending.ViewOptions, token);
             var camera = Viewport.Fit(before.Bounds.Union(proposed.Bounds), width, height);

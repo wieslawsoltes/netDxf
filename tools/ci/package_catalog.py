@@ -64,7 +64,7 @@ PACKAGES = (
     shadow('netDxf.Shadow.Agents.Evaluation', ('netDxf.Shadow.Agents',)),
     shadow('netDxf.Shadow.Samples', ('netDxf.Shadow.Rendering.Shx', 'netDxf.Shadow.Pid', CORE)),
     shadow('netDxf.Shadow.Studio.Core', ('netDxf.Shadow.Samples', 'netDxf.Shadow.Mcp',
-        'netDxf.Shadow.Exchange.Dwg', 'netDxf.Shadow.Drafting', 'netDxf.Shadow.Dimensions',
+        'netDxf.Shadow.Exchange.Dwg', 'netDxf.Shadow.Drafting', 'netDxf.Shadow.Dimensions', 'netDxf.Shadow.Symbols',
         'netDxf.Shadow.Rendering.SkiaSharp', 'netDxf.Shadow.Rendering.Shx',
         'netDxf.Shadow.Health', 'netDxf.Shadow.Modules', 'netDxf.Shadow.Workflows',
         'netDxf.Shadow.Pid', 'netDxf.Shadow.Piping', 'netDxf.Shadow.Electrical')),

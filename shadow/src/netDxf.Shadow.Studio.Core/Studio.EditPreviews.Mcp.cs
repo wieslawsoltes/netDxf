@@ -22,6 +22,7 @@ public sealed partial class Studio
                 var id = receipt.GetProperty("previewId").GetString()!; var pending = FindEditPreview(id); var summary = pending.Preview.Summary;
                 return new { previewId = id, input.Identity.DocumentId, input.Identity.WorkspaceId, input.Identity.ViewVersion, revision = pending.Preview.Target.Revision,
                     description = pending.Preview.Description, validation = pending.Preview.Validation,
+                    blockLibraries = pending.BlockLibraries.Select(library => new { library.Block, library.Name, library.DetailsTruncated, library.Resources }),
                     attributeSynchronizations = pending.AttributeSynchronizations.Select(s => new { s.Block, s.BlockName, s.ReferenceCount,
                         s.Added, s.Retained, s.Removed, s.RemovedXData, s.TextConversions, review = "Review formatting resets and removal details in Edit previews before applying." }),
                     summary = new { summary.Added, summary.Removed, summary.Changed, details = summary.Details.Take(50), detailsTruncated = summary.DetailsTruncated || summary.Details.Length > 50 },

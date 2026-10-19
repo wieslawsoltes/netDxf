@@ -49,6 +49,7 @@ AttributeDefinitionEditingVerification.Register(tests);
 InsertAttributeConstructionVerification.Register(tests);
 CapturedInsertConstructionVerification.Register(tests);
 BlockLibraryVerification.Register(tests);
+StudioBlockLibraryVerification.Register(tests);
 ModelAnnotationVerification.Register(tests);
 SourceConsistencyVerification.Register(tests);
 SourceBoundaryVerification.Register(tests);

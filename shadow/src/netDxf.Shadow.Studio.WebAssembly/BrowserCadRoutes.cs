@@ -37,10 +37,14 @@ internal sealed partial class BrowserApplication
         Cad("POST", "/api/cad/{id}/edit-preview/apply", (s, r) => s.CadEditPreviewApply(r.Body<CadEditPreviewTokenRequest>()));
         Cad("POST", "/api/cad/{id}/edit-preview/discard", (s, r) => s.CadEditPreviewDiscard(r.Body<CadEditPreviewTokenRequest>()));
         Map("GET", "/api/cad/{id}/edit-preview/render", r => documents.Use(r.Parameter("id"), s => s.ExecuteRequest(r.Identity(), () => {
-            var image = s.CadEditPreviewRender(r.Text("previewId"), r.Boolean("after"), r.Int("width"), r.Int("height"), r.Optional("backend") ?? "svg", Token);
+            var image = s.CadEditPreviewRender(r.Text("previewId"), r.Boolean("after"), r.Int("width"), r.Int("height"), r.Optional("backend") ?? "svg", Token, r.Optional("block"));
             return BrowserReply.Binary(image.Bytes, image.ContentType);
         })));
         Cad("POST", "/api/cad/{id}/block/define", (s, r) => s.CadDefineBlock(r.Body<CadBlockDefinitionRequest>(), Token));
+        Cad("GET", "/api/cad/{id}/block-libraries", (s, r) => s.CadBlockLibraries());
+        Cad("POST", "/api/cad/{id}/block-library/open", (s, r) => s.CadOpenBlockLibrary(r.Long("revision"), r.Text("name"), r.Bytes(netDxf.Shadow.Symbols.DrawingBlockLibrary.MaximumBytes), Token));
+        Map("GET", "/api/cad/{id}/block-library/export", r => documents.Use(r.Parameter("id"), s => s.ExecuteRequest(r.Identity(), () =>
+            BrowserReply.Binary(s.CadExportBlockLibrary(new(r.Long("revision"), new(r.Text("block")), r.Boolean("binary")), Token), "application/dxf"))));
         Cad("GET", "/api/cad/{id}/attributes", (s, r) => s.CadReadAttributes(r.Long("revision")));
         Cad("POST", "/api/cad/{id}/attributes", (s, r) => s.CadEditAttributes(r.Body<CadAttributeRequest>(), Token));
         Cad("GET", "/api/cad/{id}/attribute-definitions", (s, r) => s.CadReadAttributeDefinitions(r.Long("revision"), r.Optional("block")));

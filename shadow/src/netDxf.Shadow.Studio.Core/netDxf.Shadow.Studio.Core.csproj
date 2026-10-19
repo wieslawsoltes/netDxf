@@ -5,6 +5,7 @@
     <ProjectReference Include="../netDxf.Shadow.Mcp/netDxf.Shadow.Mcp.csproj" />
     <ProjectReference Include="../netDxf.Shadow.Exchange.Dwg/netDxf.Shadow.Exchange.Dwg.csproj" />
     <ProjectReference Include="../netDxf.Shadow.Drafting/netDxf.Shadow.Drafting.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Symbols/netDxf.Shadow.Symbols.csproj" />
     <ProjectReference Include="../netDxf.Shadow.Dimensions/netDxf.Shadow.Dimensions.csproj" />
     <ProjectReference Include="../netDxf.Shadow.Health/netDxf.Shadow.Health.csproj" />
     <ProjectReference Include="../netDxf.Shadow.Modules/netDxf.Shadow.Modules.csproj" />

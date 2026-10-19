@@ -64,13 +64,25 @@ public static class StudioCadHttp
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadEditPreviewApply(request))));
         routes.MapPost("/{id}/edit-preview/discard", (string id, StudioDocumentHub hub, HttpRequest http, CadEditPreviewTokenRequest request) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadEditPreviewDiscard(request))));
-        routes.MapGet("/{id}/edit-preview/render", (string id, StudioDocumentHub hub, HttpRequest http, string previewId, bool after, int width, int height, string? backend, CancellationToken token) =>
+        routes.MapGet("/{id}/edit-preview/render", (string id, StudioDocumentHub hub, HttpRequest http, string previewId, bool after, int width, int height, string? backend, string? block, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => {
-                var image = s.CadEditPreviewRender(previewId, after, width, height, backend ?? "svg", token);
+                var image = s.CadEditPreviewRender(previewId, after, width, height, backend ?? "svg", token, block);
                 return Results.Bytes(image.Bytes, image.ContentType);
             })));
         routes.MapPost("/{id}/block/define", (string id, StudioDocumentHub hub, HttpRequest http, CadBlockDefinitionRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadDefineBlock(request, token))));
+        routes.MapGet("/{id}/block-libraries", (string id, StudioDocumentHub hub, HttpRequest http) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, s.CadBlockLibraries)));
+        routes.MapPost("/{id}/block-library/open", async (string id, StudioDocumentHub hub, HttpRequest http, long revision, string name, CancellationToken token) =>
+        {
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => {
+                if (s.CadRevision != revision) throw new ShadowConflictException("Drawing changed before library upload."); return true;
+            }));
+            using var stream = await ReadBounded(http, netDxf.Shadow.Symbols.DrawingBlockLibrary.MaximumBytes, token);
+            return hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadOpenBlockLibrary(revision, name, stream.ToArray(), token)));
+        });
+        routes.MapGet("/{id}/block-library/export", (string id, StudioDocumentHub hub, HttpRequest http, long revision, string block, bool binary, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => Results.File(s.CadExportBlockLibrary(new(revision, new(block), binary), token), "application/dxf", "block-library.dxf"))));
         routes.MapGet("/{id}/attributes", (string id, StudioDocumentHub hub, HttpRequest http, long revision) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadReadAttributes(revision))));
         routes.MapPost("/{id}/attributes", (string id, StudioDocumentHub hub, HttpRequest http, CadAttributeRequest request, CancellationToken token) =>

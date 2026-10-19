@@ -283,6 +283,7 @@ public sealed partial class Studio : IDisposable
         {
             ObjectDisposedException.ThrowIf(disposed, this);
             session = next; liveEditor = new(next); activeBranch = null; branches.Clear(); mergePlans.Clear();
+            blockLibraries.Clear(); editPreviews.Clear();
             statePresentation = null; cadPresentation = null;
             viewVersion = checked(viewVersion + 1); liveLayout = "Model"; livePatternAlignment = CadLinetypeAlignment.Periodic; liveAnnotation = ModelAnnotationContext.Default; graph = null;
             liveRetained.Clear(); liveRetainedCompilers.Clear(); captureMilliseconds = timer.Elapsed.TotalMilliseconds;
@@ -318,6 +319,7 @@ public sealed partial class Studio : IDisposable
         {
             if (disposed) return;
             disposed = true; CompleteSubscriptions(); activeBranch = null; branches.Clear(); mergePlans.Clear(); liveRetained.Clear(); liveRetainedCompilers.Clear();
+            blockLibraries.Clear(); editPreviews.Clear();
             statePresentation = null; cadPresentation = null; renderer.Dispose(); assets.Dispose(); textEngine.Dispose();
         }
     }
