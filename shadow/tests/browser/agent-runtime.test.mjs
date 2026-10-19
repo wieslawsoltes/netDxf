@@ -406,4 +406,7 @@ test('semantic Studio controls validate all settings before mutation and fence t
   const definition={definition:{block:{value:'H:12'},changes:{add:[{tag:'SERVICE'}]}}};
   await ui.execute('cad.edit',{path:'attribute-definitions',body:definition},'a');
   assert.deepEqual(selections[4],['attribute-definitions',definition,{expectedKey:'a/live/1'}]);
+  const insertion={insert:{command:{name:'INSERT',reference:{value:'H:12'},points:[{x:1,y:2}]},attributes:[{definition:{value:'H:13'},value:'P-101'}]}};
+  await ui.execute('cad.edit',{path:'insert',body:insertion},'a');
+  assert.deepEqual(selections[5],['insert',insertion,{expectedKey:'a/live/1'}]);
 });

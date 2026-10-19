@@ -110,7 +110,7 @@ export const commands = Object.freeze({
   MTEXT: spec('MT', 'Multiline text', [P('Specify insertion point'), N('value', 'Text height', 3), N('secondary', 'Paragraph width', 40), T('text', 'Enter text (\\P for paragraphs)', 'Text')]),
   DIMALIGNED: spec('DAL', 'Aligned dimension', [P('First extension origin'), P('Second extension origin'), P('Dimension line location')]),
   DIMLINEAR: spec('DLI', 'Linear dimension', [P('First extension origin'), P('Second extension origin'), P('Dimension line location')]),
-  INSERT: spec('I', 'Insert block', [T('block', 'Block name'), P('Insertion point'), N('value', 'Uniform scale', 1), N('rotation', 'Rotation in degrees', 0, -1e12)]),
+  INSERT: spec('I -INSERT', 'Insert block', [T('block', 'Block name'), P('Insertion point'), N('value', 'Uniform scale', 1), N('rotation', 'Rotation in degrees', 0, -1e12)]),
   MOVE: spec('M', 'Move', [P('Specify base point or [Displacement]'), P('Specify second point or Enter to use base as displacement')], { selection: 1 }),
   STRETCH: spec('S', 'Stretch', [{kind:'window',prompt:'Specify first crossing-window corner (or drag a rectangle)'}, {kind:'window',prompt:'Specify opposite crossing-window corner'}, P('Specify base point or [Displacement]'), P('Specify second point or Enter to use base as displacement')], {selection:1,crossingSelection:true}),
   BREAK: spec('BR', 'Break', [P('Specify first break point'), P('Specify second break point or [First]; @ breaks without a gap')], {selection:1,exactSelection:1,pickSelection:true}),

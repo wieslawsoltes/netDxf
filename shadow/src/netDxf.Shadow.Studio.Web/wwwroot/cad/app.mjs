@@ -14,6 +14,8 @@ import { graphPalette } from './graph-ui.mjs';
 import { CadClient } from './client.mjs';
 import { blockTools } from './block-ui.mjs';
 import { createInsertSession } from './block-contracts.mjs';
+import { insertionDefinitions, InsertAttributeSession } from './insert-attribute-contracts.mjs';
+import { insertionAttributeDialog } from './insert-attribute-ui.mjs';
 import { CadViewport, bindViewportPageLifetime } from './viewport.mjs';
 import { CommandSession, commands, commandName, number, point, distance, polygonArea, format, fit } from './core.mjs';
 import { $, el, icon, tool, tabs, ribbon } from './ui.mjs';
@@ -46,6 +48,7 @@ const moduleUi = moduleTools({client,edit,dialog,report,editable,viewport,showPa
   changed:()=>{drawRibbonTabs();drawRibbon();renderPalette();}});
 function persisted() { try { const value=JSON.parse(localStorage.getItem('netdxf-cad-ui-v1') || '{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{}; } catch { return {}; } }
 const settings = persisted();
+const insertionSettings={attreq:settings.attreq===0?0:1,attdia:settings.attdia===0?0:1};
 chrome = chromePreferences(settings);
 for (const key of ['grid','snap','ortho','polar','osnap','dynamic','tracking']) if (typeof settings[key] === 'boolean') viewport.settings[key]=settings[key];
 if (Number.isFinite(settings.gridStep) && settings.gridStep>=1e-6 && settings.gridStep<=1e9) viewport.settings.gridStep=settings.gridStep;
@@ -57,7 +60,7 @@ if (settings.hidden || innerWidth<700) $('workspace').classList.add('hide-palett
 if (Number.isFinite(settings.width)) document.documentElement.style.setProperty('--palette-width',`${Math.max(210,Math.min(550,settings.width))}px`);
 if(Number.isFinite(settings.commandHeight))document.documentElement.style.setProperty('--command-height',`${Math.max(32,Math.min(innerHeight*.55,settings.commandHeight))}px`);
 applyChrome();
-function persist() { try { const {temporaryOrtho,...drafting}=viewport.settings;localStorage.setItem('netdxf-cad-ui-v1',JSON.stringify({...drafting,...chrome,left:$('workspace').classList.contains('left'),hidden:$('workspace').classList.contains('hide-palette'),width:$('palette').getBoundingClientRect().width||290,commandHeight:parseFloat(document.documentElement.style.getPropertyValue('--command-height'))||90})); } catch { /* Private browsing can disable storage. */ } }
+function persist() { try { const {temporaryOrtho,...drafting}=viewport.settings;localStorage.setItem('netdxf-cad-ui-v1',JSON.stringify({...drafting,...chrome,...insertionSettings,left:$('workspace').classList.contains('left'),hidden:$('workspace').classList.contains('hide-palette'),width:$('palette').getBoundingClientRect().width||290,commandHeight:parseFloat(document.documentElement.style.getPropertyValue('--command-height'))||90})); } catch { /* Private browsing can disable storage. */ } }
 function log(message, kind='') { const node=el('div',{text:message,class:kind}); $('history').append(node); while($('history').children.length>300) $('history').firstChild.remove(); $('history').scrollTop=$('history').scrollHeight; }
 function report(error) {
   if (error?.name==='AbortError') return;
@@ -72,7 +75,9 @@ function setSession(value) { if(value!==null)client.beginInteraction(); viewport
 function cancel(clearSelection=true) { setSession(null); $('command-input').value=''; $('suggestions').hidden=true; $('dynamic-input').hidden=true; if(clearSelection && client.state && snapshot===null && !client.busy) run(()=>edit('select',{mode:'clear'})); }
 async function start(name) {
   editable(); if(client.busy) throw new Error('Wait for the current operation to complete.');
-  setSession(new CommandSession(name,currentLayer,client.data.selectedEntities.length)); lastCommand=session.name;
+  setSession(new CommandSession(name,currentLayer,client.data.selectedEntities.length));
+  session.forceCommandAttributes=name.toUpperCase()==='-INSERT';
+  lastCommand=session.forceCommandAttributes?'-INSERT':session.name;
   log(`${session.name} — ${commands[session.name].label}`,'input');
   if(session.spec.selection && !session.spec.crossingSelection && !session.selecting) { session.acceptSelection(client.data.selectedEntities.length); if(session.complete) await complete(); }
   ensureCommandLine();$('command-input').focus({preventScroll:true});
@@ -90,7 +95,7 @@ async function takePoint(p) { if(!session) return; editable();const target=sessi
 async function takeInput(value) {const target=session,window=target.step.kind==='window';target.input(value,viewport.resolved||viewport.cursor);if(window&&target.selecting)await acquireCrossing(target);}
 
 async function complete() {
-  const completed=session; if(!completed?.complete) return;
+  const completed=session; if(!completed?.complete||completed.processing) return;
   if(completed.moduleRequest){
     try{const request=structuredClone(completed.moduleRequest);request.command.points=structuredClone(completed.command.points);
       await edit('modules/command',request,{expectedKey:completed.expectedKey});log(`${completed.name} completed — revision ${client.state.revision}.`,'success');}
@@ -102,11 +107,39 @@ async function complete() {
     else log(`Area = ${format(polygonArea(p))}; perimeter = ${format(p.reduce((sum,v,i)=>sum+distance(v,p[(i+1)%p.length]),0))}`,'success');
     setSession(null); return;
   }
-  const command=structuredClone(completed.command);
-  if(command.name==='INSERT') { const block=client.data.blocks.find(b=>b.name.toLowerCase()===command.block.toLowerCase()); if(!block) { setSession(null); throw new Error(`Unknown block: ${command.block}`); } command.reference={value:block.id}; delete command.block; }
-  let placed=false;
-  try { const authored=authoringRequest(command,client.data); await edit(authored?.path || 'command',authored?.body || {command},authored?{expectedKey:client.key}:{}); log(`${completed.name} completed — revision ${client.state.revision}.`,'success'); placed=true; }
-  finally { if(session===completed) setSession(placed && completed.insertOptions?.repeat ? createInsertSession(completed.insertOptions,currentLayer) : null); }
+  const command=structuredClone(completed.command),key=completed.expectedKey||client.key;
+  let placed=false;completed.processing=true;
+  const current=()=>{if(session!==completed||client.key!==key||client.busy)throw new Error('The drawing or insertion changed. Repeat INSERT.');};
+  try {
+    current();
+    if(command.name==='INSERT') {
+      const block=client.data.blocks.find(b=>command.reference?b.id===command.reference.value:b.name.toLowerCase()===command.block?.toLowerCase());
+      if(!block)throw new Error(`Unknown block: ${command.block||command.reference?.value}`);
+      command.reference={value:block.id};delete command.block;
+      let attributes=completed.attributeAssignments||[];
+      if(!completed.attributesPrepared&&insertionSettings.attreq===1&&block.attributes) {
+        const data=await client.read(`attribute-definitions?revision=${client.state.revision}&block=${encodeURIComponent(block.id)}`);
+        current();if(!data)return;
+        const definitions=insertionDefinitions(data);
+        if(completed.forceCommandAttributes||insertionSettings.attdia===0) {
+          const prompts=new InsertAttributeSession(completed,definitions,key);
+          if(!prompts.complete){setSession(prompts);ensureCommandLine();$('command-input').focus({preventScroll:true});return;}
+          attributes=prompts.attributeAssignments;
+        } else {
+          attributes=await insertionAttributeDialog({definitions,name:block.name,dialog,current});
+          if(attributes===null)return;
+        }
+      }
+      current();await edit('insert',{insert:{command,attributes}},{expectedKey:key});
+    } else {
+      const authored=authoringRequest(command,client.data);
+      await edit(authored?.path||'command',authored?.body||{command},{expectedKey:key});
+    }
+    log(`${completed.name} completed — revision ${client.state.revision}.`,'success');placed=true;
+  } finally {
+    completed.processing=false;
+    if(session===completed)setSession(placed&&completed.insertOptions?.repeat?createInsertSession(completed.insertOptions,currentLayer):null);
+  }
 }
 async function submit(text) {
   const value=text.trim(); $('suggestions').hidden=true;
@@ -114,7 +147,7 @@ async function submit(text) {
   if(session) {
     const target=session;
     const overrides={END:1,ENDPOINT:1,MID:2,MIDPOINT:2,CEN:4,CENTER:4,QUA:8,INT:16,PER:32,NEA:64,INS:128,TAN:256,NONE:0};
-    if(!session.selecting && session.step.kind!=='window' && Object.hasOwn(overrides,value.toUpperCase())) {
+    if(!session.selecting && ['point','number'].includes(session.step.kind) && Object.hasOwn(overrides,value.toUpperCase())) {
       viewport.snapOverride=overrides[value.toUpperCase()];viewport.snapGeneration++;viewport.snapAbort?.abort();viewport.snapHit=null;
       log(`${value.toUpperCase()} — applies to the next picked point.`);return;
     }
@@ -122,12 +155,17 @@ async function submit(text) {
       if(session.spec.crossingSelection&&['C','CROSSING'].includes(value.toUpperCase())){session.resetWindow();updatePrompt();viewport.invalidate();return;}
       if(value)throw new Error('Select objects in the viewport, then press Enter.');
       session.acceptSelection(client.data.selectedEntities.length);
-    } else await takeInput(value);
+    } else await takeInput(session.attributesPrepared?text:value);
     if(session!==target)return;
     updatePrompt(); viewport.invalidate(); if(target.complete) await complete(); return;
   }
   if(!value) return start(lastCommand);
   const match=value.match(/^(\S+)(?:\s+([\s\S]*))?$/), name=match[1].toUpperCase(), rest=match[2]||'';
+  if(name==='ATTREQ'||name==='ATTDIA') {
+    const key=name.toLowerCase(),input=rest.trim()||await ask(name,name==='ATTREQ'?'Prompt for insertion attribute values (0 or 1)':'Attribute dialog (1) or command prompts (0)',String(insertionSettings[key]));
+    if(input===null)return;if(!/^[01]$/.test(input))throw new Error(`${name} accepts 0 or 1.`);
+    insertionSettings[key]=Number(input);persist();log(`${name} = ${input}`);return;
+  }
   const aliases={BATTMAN:'attribute-definitions',ATTDEF:'attribute-create',ATTSYNC:'attribute-sync',EATTEDIT:'attributes',ATTEDIT:'attributes',ATE:'attributes',BEDIT:'block-edit',BE:'block-edit',BSAVE:'block-save',BCLOSE:'block-close',U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save-as',SAVEAS:'save-as',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LAYERSTATE:'layer-states',LAS:'layer-states',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot',GRAPH:'graph-analysis',TOPOLOGY:'graph-analysis'};
   if(name==='Z'||name==='ZOOM') { if(!rest||['E','EXTENTS','A','ALL'].includes(rest.toUpperCase())) viewport.fit(); else if(rest.toUpperCase()==='IN') await action('zoom-in'); else if(rest.toUpperCase()==='OUT') await action('zoom-out'); else throw new Error('ZOOM accepts Extents, In or Out.'); return; }
   if(aliases[name]==='block-edit' && rest.trim()) {

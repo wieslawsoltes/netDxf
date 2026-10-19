@@ -9,7 +9,7 @@ const actionNames = new Set([
 const readRoutes = new Set(['state', 'graph', 'hatch/pattern', 'resources', 'attributes', 'attribute-definitions', 'modules', 'edit-previews', 'workflow/status', 'workflow/export']);
 const readPostRoutes = new Set(['graph/query','modules/symbols','modules/analyze','health','references/capture','references/validate']);
 const editRoutes = new Set([
-  'command', 'block/define', 'block/rename', 'hatch/create', 'hatch/pattern', 'select', 'block/create', 'block/begin',
+  'command', 'insert', 'block/define', 'block/rename', 'hatch/create', 'hatch/pattern', 'select', 'block/create', 'block/begin',
   'block/finish', 'grip', 'layer', 'layer-state', 'attributes', 'attribute-definitions', 'assign-layer', 'property', 'history/undo', 'history/redo', 'layout', 'retain', 'fork',
   'workspace', 'merge/preview', 'merge/apply', 'annotation-view', 'linetype-view','resource',
   'modules/toggle','modules/command','edit-preview','edit-preview/apply','edit-preview/discard','health/select','workflow/start','workflow/stop','workflow/replay','workflow/roundtrip'
