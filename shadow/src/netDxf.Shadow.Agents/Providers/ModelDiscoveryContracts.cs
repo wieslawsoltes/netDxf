@@ -9,7 +9,7 @@ public sealed record AgentModelDiscoveryRequest
     public override string ToString() => "Model discovery; ApiKey=[redacted]";
 }
 
-/// <summary>Limits applied across all pages of one discovery operation; no inference is performed.</summary>
+/// <summary>Operation-wide page, model and time limits with a separate byte limit per response; no inference is performed.</summary>
 public sealed record AgentModelDiscoveryLimits
 {
     public int MaximumPages { get; init; } = 10;
