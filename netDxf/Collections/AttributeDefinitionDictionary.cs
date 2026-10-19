@@ -33,7 +33,7 @@ namespace netDxf.Collections
     /// <summary>
     /// Represents a dictionary of <see cref="AttributeDefinition">AttributeDefinitions</see>.
     /// </summary>
-    public sealed class AttributeDefinitionDictionary :
+    public sealed partial class AttributeDefinitionDictionary :
         IDictionary<string, AttributeDefinition>
     {
         #region delegates and events
@@ -97,6 +97,10 @@ namespace netDxf.Collections
         #region private fields
 
         private readonly Dictionary<string, AttributeDefinition> innerDictionary;
+        private readonly List<AttributeDefinition> orderedDefinitions;
+        private readonly ICollection<AttributeDefinition> orderedValues;
+        private readonly List<string> orderedTags;
+        private readonly ICollection<string> tagView;
 
         #endregion
 
@@ -105,9 +109,8 @@ namespace netDxf.Collections
         /// <summary>
         /// Initializes a new instance of <c>AttributeDefinitionDictionary</c>.
         /// </summary>
-        public AttributeDefinitionDictionary()
+        public AttributeDefinitionDictionary() : this(0)
         {
-            this.innerDictionary = new Dictionary<string, AttributeDefinition>(StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -117,6 +120,10 @@ namespace netDxf.Collections
         public AttributeDefinitionDictionary(int capacity)
         {
             this.innerDictionary = new Dictionary<string, AttributeDefinition>(capacity, StringComparer.OrdinalIgnoreCase);
+            this.orderedDefinitions = new List<AttributeDefinition>(capacity);
+            this.orderedValues = this.orderedDefinitions.AsReadOnly();
+            this.orderedTags = new List<string>(capacity);
+            this.tagView = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new OrderedTagList(this));
         }
 
         #endregion
@@ -160,6 +167,9 @@ namespace netDxf.Collections
                     return;
                 }
                 this.innerDictionary[tag] = value;
+                int index = this.orderedDefinitions.FindIndex(item => ReferenceEquals(item, remove));
+                this.orderedDefinitions[index] = value;
+                this.orderedTags[index] = value.Tag;
                 this.OnAddItemEvent(value);
                 this.OnRemoveItemEvent(remove);
             }
@@ -170,7 +180,7 @@ namespace netDxf.Collections
         /// </summary>
         public ICollection<string> Tags
         {
-            get { return this.innerDictionary.Keys; }
+            get { return this.tagView; }
         }
 
         /// <summary>
@@ -178,7 +188,7 @@ namespace netDxf.Collections
         /// </summary>
         public ICollection<AttributeDefinition> Values
         {
-            get { return this.innerDictionary.Values; }
+            get { return this.orderedValues; }
         }
 
         /// <summary>
@@ -218,6 +228,8 @@ namespace netDxf.Collections
             }
 
             this.innerDictionary.Add(item.Tag, item);
+            this.orderedDefinitions.Add(item);
+            this.orderedTags.Add(item.Tag);
             this.OnAddItemEvent(item);
         }
 
@@ -257,6 +269,9 @@ namespace netDxf.Collections
             }
 
             this.innerDictionary.Remove(tag);
+            int index = this.orderedDefinitions.FindIndex(item => ReferenceEquals(item, remove));
+            this.orderedDefinitions.RemoveAt(index);
+            this.orderedTags.RemoveAt(index);
             this.OnRemoveItemEvent(remove);
             return true;
         }
@@ -267,7 +282,7 @@ namespace netDxf.Collections
         public void Clear()
         {
             string[] tags = new string[this.innerDictionary.Count];
-            this.innerDictionary.Keys.CopyTo(tags, 0);
+            this.orderedTags.CopyTo(tags, 0);
             foreach (string tag in tags)
             {
                 this.Remove(tag);
@@ -312,7 +327,8 @@ namespace netDxf.Collections
         /// <returns>An enumerator that can be used to iterate through the dictionary.</returns>
         public IEnumerator<KeyValuePair<string, AttributeDefinition>> GetEnumerator()
         {
-            return this.innerDictionary.GetEnumerator();
+            foreach (AttributeDefinition definition in this.orderedDefinitions)
+                yield return new KeyValuePair<string, AttributeDefinition>(definition.Tag, definition);
         }
 
         #endregion
@@ -321,7 +337,7 @@ namespace netDxf.Collections
 
         ICollection<string> IDictionary<string, AttributeDefinition>.Keys
         {
-            get { return this.innerDictionary.Keys; }
+            get { return this.tagView; }
         }
 
         #endregion
@@ -345,7 +361,7 @@ namespace netDxf.Collections
 
         bool ICollection<KeyValuePair<string, AttributeDefinition>>.Remove(KeyValuePair<string, AttributeDefinition> item)
         {
-            if (!ReferenceEquals(item.Value, this.innerDictionary[item.Key]))
+            if (!this.innerDictionary.TryGetValue(item.Key, out AttributeDefinition value) || !ReferenceEquals(item.Value, value))
             {
                 return false;
             }
@@ -359,7 +375,9 @@ namespace netDxf.Collections
 
         void ICollection<KeyValuePair<string, AttributeDefinition>>.CopyTo(KeyValuePair<string, AttributeDefinition>[] array, int arrayIndex)
         {
-            ((IDictionary<string, AttributeDefinition>) this.innerDictionary).CopyTo(array, arrayIndex);
+            ValidateCopy(array, arrayIndex, this.Count);
+            foreach (KeyValuePair<string, AttributeDefinition> item in this)
+                array[arrayIndex++] = item;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
