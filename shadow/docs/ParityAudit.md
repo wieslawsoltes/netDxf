@@ -13,7 +13,7 @@ corresponding end-to-end evidence cover their stated scope.
 | Rapid drawing creation, editing and a complete MCP toolset | Generic source/schema/collection/method tools, atomic drawing batches, typed Studio routes; MCP and AgentStudio verification programs | Build a per-native-entity/property/method coverage inventory, close unsupported authoring/editing shapes, and exercise them through actual Studio/MCP workflows. Generic reflection access alone does not prove safe full editing support. |
 | Full graph analysis in Studio | Nodes, edges, components, path/traversal, cut vertices/bridges, nearest node, diagnostics, fundamental cycles and minimum spanning forests share reusable algorithms and MCP tools | Broaden source-reference graph exploration and query-to-selection workflows; validate large real drawings and export/import analysis receipts. Geometric topology does not imply discipline connectivity. |
 | AutoCAD-like ribbon and command/log visibility | Adaptive ribbon panels, keyboard command workflow, independent command/history visibility, clean screen; browser tests | Continue command discoverability, keyboard navigation, focus/accessibility and small-screen validation as commands are added. |
-| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; native same-tag attribute rebinding; exact embedded-text snapshot editing/history; shared instance attribute editor with native/WASM save/reopen evidence | Undoable definition synchronization and definition-attribute editing, block-library import/export, richer insertion previews, array references and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
+| Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; native same-tag attribute rebinding; exact embedded-text snapshot editing/history; shared instance attribute editor and all-reference ATTSYNC previews with native/WASM save/reopen evidence | Definition-attribute editing, block-library import/export, richer insertion previews, array references and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
 | MOVE and other editing tools with drafting aids | MOVE/COPY/ROTATE/SCALE/MIRROR, basic topology edits, STRETCH/BREAK/BREAKATPOINT increment, object/grid snap, Ortho/polar/tracking; native and browser regressions | Extend entity/coordinate-system coverage for each command, curve trim/extend/offset, reference/copy variants of transforms, richer arrays, selection cycling and additional acquisition modes. Existing planar restrictions remain material. |
 | Full line, text style and layer UI | Managers expose supported table fields, complex linetypes, LIN import, fixed-height/font metadata, layer color/plot/lock/freeze/transparency; native layer-state save/update/rename/delete/selective restore with history and DXF persistence | Layer filters/isolation, saved-layer editing, persisted restore masks, LAS transfer, unresolved-resource repair, individual viewport overrides, plot-style workflows, text editing/formatting and externally referenced resource behavior. |
 | Token-efficient coding harness and provider caching | Bounded context/tool batches, caching configuration and usage, stable prefixes, checkpoint/compaction behavior; provider/agent fixtures | Verify supported provider/model combinations with opt-in real accounts, measure cache hits on repeated identical tasks, and compare quality/latency/cost. Fixtures do not establish actual provider cache performance. |
@@ -94,8 +94,8 @@ exact pushed revision, including each operating-system and package-consumer job.
 ## Current implementation order
 
 1. Preserve green CI on every new pushed increment. Process-launch and browser
-   regressions were corrected; all 23 checks passed on `ce403558`, including the
-   attribute editor. Each new pushed revision needs its own checks.
+   regressions were corrected; all 23 checks passed on `4565d7d5`, including the
+   attribute editor and membership/history APIs. Each new pushed revision needs its own checks.
 2. STRETCH/BREAK, graph cycle/forest access and external-agent context controls
    have landed. Extend their coverage as related workflows are implemented.
 3. Continue block attributes, remaining layer workflows, drafting command/entity coverage and reusable
@@ -170,3 +170,31 @@ the user's cumulative USD 20 ceiling. There is no credential material in this au
 - These primitives support the remaining ATTSYNC implementation; they do not yet
   provide the Studio command, all-reference reset policy or preview of dropped
   instance formatting/XData. Those requirements remain open.
+
+### ATTSYNC planner and Studio increment
+
+- Reusable immutable synchronization plans cover all references of a local named
+  block, including layouts and nested definitions. Retained attributes keep object
+  identities and assigned values; missing definitions add defaults, orphan
+  attributes are removed, and duplicate tags retain distinct instances. Definition
+  appearance and native insertion geometry replace instance overrides. The native
+  geometry helper takes explicit MIRRTEXT policy and uses owner-unit conversion.
+- `ATTSYNC` and Home/Insert ribbon controls create an edit preview. Before/after
+  rendering and bounded reset/removal reports precede one explicit Apply operation.
+  Reports include removed assigned values and INSERT XData. Stale proposals cannot
+  apply. Native, WASM, MCP schema/tool access and portable workflow replay share the
+  same planner, with no new host-specific geometry implementation.
+- Unchanged text modes preserve fallback and embedded values independently. An
+  explicit conversion option handles single/multiline transitions and reports
+  formatting/fallback changes. That policy is documented without claiming exact
+  AutoCAD conversion semantics. Nonuniform, sheared or reflected embedded MTEXT,
+  protected orphan references and locked layers still cause explicit refusals.
+- Local results: 1,350 Advanced checks, 409 browser units, 178 native attribute
+  cases and 688 INSERT cases pass. All five native target frameworks build. The
+  fresh published native browser suite passes 103 checks; standalone WASM passes
+  161 across root/subpath hosting. Independent ezdxf audits accept synchronized
+  drawings without repairs. All 90 route contracts and published assets validate.
+- This closes the ordinary Studio ATTSYNC command/preview gap. Definition-attribute
+  authoring, extended transform coverage, annotation contexts, block-library
+  transfer and the other remaining scope above are still open. CI must qualify
+  the next pushed revision separately from the green `4565d7d5` baseline.

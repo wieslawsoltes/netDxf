@@ -103,10 +103,49 @@ notifications occur after commit; if an application callback fails, the native
 call reports that failure. A source journal that cannot restore the full public
 graph stops further edits until inspection and reattachment.
 
-Studio `ATTSYNC`, definition-attribute authoring and the all-reference policy for
-resetting instance formatting/XData remain separate unfinished work. See the
-[parity audit](ParityAudit.md) for those requirements and verification evidence.
-The target is Autodesk's documented
-[ATTSYNC behavior](https://help.autodesk.com/cloudhelp/2025/ENU/AutoCAD-Core/files/GUID-56B14079-250B-4C99-AB3D-F95BA1C32AB7.htm):
-update all references while retaining assigned values and reviewing the removal
-of instance overrides and extended data.
+## Synchronize attributes
+
+`ATTSYNC` and the Home/Insert ribbon's Synchronize attributes action select a
+local block by name, defaulting to the selected reference's definition. Create
+synchronization preview prepares every native reference, including other layouts
+and nested definitions. The Edit previews palette shows before/after images,
+reset counts, removed attributes and their values, and INSERT XData removal.
+Apply adopts the exact reviewed proposal as one undo operation. A changed drawing,
+workspace, selection, view or resource receipt invalidates the proposal.
+
+`AttributeSynchronization.Plan` in `netDxf.Shadow.NetDxf` is reusable without
+Studio or a live document. It returns an immutable patch and complete per-reference
+reports. The same planner supports source sessions, detached branches and workflow
+replay. Studio and MCP return bounded summaries with explicit truncation; MCP's
+`studio_edit_preview` accepts a typed `attribute-sync` operation with
+`attributeSync: { block: { value: "<object-id>" }, convertTextModes: false }`.
+Existing preview/apply routes work in native and standalone WebAssembly hosts.
+
+Retained tags keep their instance identities and assigned values. Imported
+instances with duplicate tags remain distinct and are grouped in definition
+order. Missing attributes receive definition defaults; orphan attributes are
+removed. Definition appearance and native transformed geometry replace instance
+overrides. Both fallback and embedded values remain independent when the text
+mode is unchanged. Native `Attribute.CreateTransformed` calculates detached
+attribute geometry using an explicit insertion frame and MIRRTEXT policy, without
+changing global settings. Block origins, owner units and non-world normals use
+native calculations.
+
+Changing text mode requires explicitly enabling conversion in the dialog or
+request. Single-line values become literal escaped multiline text. Converting
+multiline to single-line uses visible text, removes inline formatting and replaces
+paragraph breaks with spaces; it replaces the independent fallback. The review
+reports that conversion, and Undo restores both original stored values. This is
+an explicit Studio conversion policy, not a claim of identical AutoCAD conversion
+semantics for every imported text packet.
+
+The reset follows the scope of Autodesk's documented
+[ATTSYNC behavior](https://help.autodesk.com/cloudhelp/2025/ENU/AutoCAD-Core/files/GUID-56B14079-250B-4C99-AB3D-F95BA1C32AB7.htm).
+Only INSERT XData is cleared; definition and retained attribute metadata are not
+silently deleted. Native incoming references and extension-dictionary ownership
+can prevent orphan removal. Locked references/attribute layers, external blocks,
+inconsistent ownership and exceeded budgets are refused. Native embedded MTEXT
+currently rejects nonuniform scaling, shear and reflection; a reference requiring
+one of those transformations rejects the entire proposal before source changes.
+Definition-attribute authoring, annotation contexts and complete dynamic/parametric
+block parity remain open in the [parity audit](ParityAudit.md).
