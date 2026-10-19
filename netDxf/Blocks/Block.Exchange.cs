@@ -10,6 +10,24 @@ namespace netDxf.Blocks
 {
     public partial class Block
     {
+        /// <summary>Gets the constructor-owned ENDBLK record and its database metadata.</summary>
+        public DxfObject EndRecord { get { return this.end; } }
+
+        /// <summary>Creates a detached anonymous definition with an explicit stored name.</summary>
+        /// <param name="name">An asterisk, an uppercase ASCII letter, and one or more digits.</param>
+        /// <returns>An anonymous block with no document or layout ownership.</returns>
+        /// <remarks>The caller chooses a name unique in the destination drawing. This is
+        /// for reconstruction of stored definitions; it does not create dynamic block actions.</remarks>
+        public static Block CreateAnonymous(string name)
+        {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (name.Length < 3 || name.Length > 255 || name[0] != '*' || name[1] < 'A' || name[1] > 'Z')
+                throw new ArgumentException("Anonymous names require an asterisk, uppercase letter and digits.", nameof(name));
+            for (int index = 2; index < name.Length; index++)
+                if (name[index] < '0' || name[index] > '9') throw new ArgumentException("Anonymous name suffixes must contain ASCII digits.", nameof(name));
+            return new Block(name, null, null, false) { flags = BlockTypeFlags.AnonymousBlock };
+        }
+
         /// <summary>Creates a named block from the model space of a DXF stream.</summary>
         /// <param name="stream">Readable, seekable DXF input, owned by the caller.</param>
         /// <param name="name">Name of the new block; streams have no file name to infer it from.</param>
