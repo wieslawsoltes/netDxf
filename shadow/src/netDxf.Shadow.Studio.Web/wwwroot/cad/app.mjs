@@ -14,7 +14,7 @@ import { graphPalette } from './graph-ui.mjs';
 import { CadClient } from './client.mjs';
 import { blockTools } from './block-ui.mjs';
 import { blockLibraryTools } from './block-library-ui.mjs';
-import { createInsertSession } from './block-contracts.mjs';
+import { createInsertSession, resolveInsertCommand } from './block-contracts.mjs';
 import { insertionDefinitions, InsertAttributeSession } from './insert-attribute-contracts.mjs';
 import { insertionAttributeDialog } from './insert-attribute-ui.mjs';
 import { CadViewport, bindViewportPageLifetime } from './viewport.mjs';
@@ -73,7 +73,7 @@ function report(error) {
 function run(task) { return Promise.resolve().then(task).catch(report); }
 function editable() { if(snapshot!==null) throw new Error('This is a read-only retained snapshot. Return to Current drawing before editing.'); if(!client.state) throw new Error('Load a drawing first.'); }
 async function edit(path,payload={},options={}) { editable(); const result=await client.mutate(path,payload,options); await documentTabs(); return result; }
-function setSession(value) { if(value!==null)client.beginInteraction(); viewport.cancelInput(); session=value; viewport.command=value; viewport.panMode=false; viewport.snapHit=null; updatePrompt(); updateTools(); viewport.invalidate(); }
+function setSession(value) { if(value!==null)client.beginInteraction(); viewport.insertionPreview.clear(); viewport.cancelInput(); session=value; viewport.command=value; viewport.panMode=false; viewport.snapHit=null; updatePrompt(); updateTools(); viewport.invalidate(); }
 function cancel(clearSelection=true) { setSession(null); $('command-input').value=''; $('suggestions').hidden=true; $('dynamic-input').hidden=true; if(clearSelection && client.state && snapshot===null && !client.busy) run(()=>edit('select',{mode:'clear'})); }
 async function start(name) {
   editable(); if(client.busy) throw new Error('Wait for the current operation to complete.');
@@ -115,15 +115,14 @@ async function complete() {
     else log(`Area = ${format(polygonArea(p))}; perimeter = ${format(p.reduce((sum,v,i)=>sum+distance(v,p[(i+1)%p.length]),0))}`,'success');
     setSession(null); return;
   }
-  const command=structuredClone(completed.command),key=completed.expectedKey||client.key;
+  let command=structuredClone(completed.command);const key=completed.expectedKey||client.key;
   let placed=false;completed.processing=true;
   const current=()=>{if(session!==completed||client.key!==key||client.busy)throw new Error('The drawing or insertion changed. Repeat INSERT.');};
   try {
     current();
     if(command.name==='INSERT') {
-      const block=client.data.blocks.find(b=>command.reference?b.id===command.reference.value:b.name.toLowerCase()===command.block?.toLowerCase());
-      if(!block)throw new Error(`Unknown block: ${command.block||command.reference?.value}`);
-      command.reference={value:block.id};delete command.block;
+      command=resolveInsertCommand(command,client.data.blocks);
+      const block=client.data.blocks.find(b=>b.id===command.reference.value);
       let attributes=completed.attributeAssignments||[];
       if(!completed.attributesPrepared&&insertionSettings.attreq===1&&block.attributes) {
         const data=await client.read(`attribute-definitions?revision=${client.state.revision}&block=${encodeURIComponent(block.id)}`);

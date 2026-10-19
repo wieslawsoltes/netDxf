@@ -39,6 +39,42 @@ def verify_insert_attributes(page, output, state, command, wait_state, idle, che
         expect(page.locator('#dialog')).not_to_be_visible()
         wait_state(lambda s: s['state']['revision'] > revision); idle()
 
+    # Observe actual canvas image drawing, without replacing native responses or
+    # synthesizing the transient graphic. Cursor movement must reuse its one image.
+    page.evaluate('''() => {
+      window.insertionPaints=[];window.originalInsertionDrawImage=CanvasRenderingContext2D.prototype.drawImage;
+      window.insertionReads=[];window.originalInsertionFetch=window.fetch;
+      window.fetch=async function(...args){
+        const response=await window.originalInsertionFetch.apply(this,args);
+        if(String(args[0]?.url||args[0]).includes('/insert-preview'))window.insertionReads.push(response.status);
+        return response;
+      };
+      CanvasRenderingContext2D.prototype.drawImage=function(...args){
+        if(this.canvas.id==='drawing' && Math.abs(this.globalAlpha-.72)<.001)
+          window.insertionPaints.push(args.slice(1));
+        return window.originalInsertionDrawImage.apply(this,args);
+      };
+    }''')
+    before_preview = state()['state']; command('INSERT AttributePump', False)
+    expect(page.locator('#prompt')).to_contain_text('Insertion point')
+    canvas = page.locator('#drawing').bounding_box()
+    page.mouse.move(canvas['x'] + canvas['width'] * .7, canvas['y'] + canvas['height'] * .45)
+    page.wait_for_function('window.insertionPaints.length > 0')
+    first_paint = page.evaluate('window.insertionPaints.at(-1)')
+    check('INSERT draws a native cursor preview before creating source geometry',
+          page.evaluate('window.insertionReads') == [200] and first_paint[2] > 0 and first_paint[3] > 0 and state()['state']['revision'] == before_preview['revision'])
+    page.mouse.move(canvas['x'] + canvas['width'] * .8, canvas['y'] + canvas['height'] * .55)
+    page.wait_for_function('(first) => window.insertionPaints.at(-1)[0] !== first[0]', arg=first_paint)
+    check('cursor placement reuses the preview image without per-pointer native requests', page.evaluate('window.insertionReads') == [200])
+    page.screenshot(path=str(output / 'cursor-insertion-preview.png'))
+    page.locator('#command-input').focus(); page.keyboard.press('Escape'); idle()
+    count = page.evaluate('window.insertionPaints.length')
+    page.mouse.move(canvas['x'] + canvas['width'] * .6, canvas['y'] + canvas['height'] * .4)
+    page.evaluate('() => new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))')
+    check('cancelling cursor preview releases its drawing and leaves history unchanged',
+          page.evaluate('window.insertionPaints.length') == count and state()['state']['undoCount'] == before_preview['undoCount'])
+    page.evaluate('CanvasRenderingContext2D.prototype.drawImage=window.originalInsertionDrawImage;window.fetch=window.originalInsertionFetch;delete window.originalInsertionDrawImage;delete window.originalInsertionFetch;delete window.insertionPaints;delete window.insertionReads')
+
     command('ATTREQ 1', False); command('ATTDIA 1', False)
     before = state()['state']; command('INSERT AttributePump 80,0 1 0', False)
     expect(page.locator('#dialog-title')).to_have_text('Insert block attributes')

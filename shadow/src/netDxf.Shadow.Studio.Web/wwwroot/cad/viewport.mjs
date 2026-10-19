@@ -1,5 +1,6 @@
 import { point, add, sub, distance, screen, world, zoom, fit, constrain, trackPoint, format } from './core.mjs';
 import { viewKey } from '../studio-state.mjs';
+import { InsertionPreview } from './insertion-preview.mjs';
 
 /** A cached page resumes its live viewport, including its frame and resize observer. */
 export function bindViewportPageLifetime(viewport, target = globalThis) {
@@ -11,6 +12,7 @@ export class CadViewport {
   constructor(element, canvas, client, hooks = {}) {
     this.element = element; this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.client = client; this.hooks = hooks;
     this.camera = { x: 0, y: 0, scale: 3 }; this.size = { w: 1, h: 1 }; this.dpr = 1;
+    this.insertionPreview = new InsertionPreview(client, {invalidate:()=>this.invalidate(),error:error=>this.hooks.error?.(error)});
     this.settings = { grid: true, snap: false, ortho: false, polar: false, osnap: true, dynamic: true, tracking: false, polarAngle: 15, polarTolerance: 5, gridStep: 10, snapModes: 23 };
     this.backend = 'skia'; this.snapshot = null; this.command = null; this.cursor = point(); this.pixel = null; this.frame = null;
     this.generation = 0; this.pointers = new Map(); this.abort = null; this.snapAbort = null; this.snapGeneration = 0; this.inputVersion = 0; this.pickAbort = null; this.panMode = false;
@@ -274,6 +276,8 @@ export class CadViewport {
   }
   preview(c) {
     const session = this.command, all = session?.command.points || [], p = session?.spec.crossingSelection?all.slice(2):all, cursor = this.resolved || this.cursor;
+    this.insertionPreview.sync(session);
+    if(session?.name==='INSERT'){this.insertionPreview.draw(c,this.camera,this.size,cursor,this.pixel);return;}
     if(session?.spec.crossingSelection&&all.length) {
       const a=screen(all[0],this.camera,this.size),b=screen(all[1]||cursor,this.camera,this.size);
       c.fillStyle='#5cbd7820';c.strokeStyle='#90e6a5';c.lineWidth=1;c.setLineDash([5,3]);
@@ -305,5 +309,5 @@ export class CadViewport {
     const q = screen(cursor, this.camera, this.size); c.fillStyle = '#a8c4dd'; c.font = '11px Consolas'; c.fillText(format(distance(p.at(-1), cursor)), q.x + 12, q.y + 19);
   }
   dispose() {
-    globalThis.removeEventListener?.('keydown', this.modifierDown); globalThis.removeEventListener?.('keyup', this.modifierUp); globalThis.removeEventListener?.('blur', this.modifierBlur); this.cancelInput(); this.generation++; this.pendingFrame = null; this.clearFrame(); this.resizeObserver.disconnect(); this.abort?.abort(); this.snapAbort?.abort(); clearTimeout(this.renderTimer); clearTimeout(this.snapTimer); cancelAnimationFrame(this.raf); }
+    globalThis.removeEventListener?.('keydown', this.modifierDown); globalThis.removeEventListener?.('keyup', this.modifierUp); globalThis.removeEventListener?.('blur', this.modifierBlur); this.insertionPreview.clear(); this.cancelInput(); this.generation++; this.pendingFrame = null; this.clearFrame(); this.resizeObserver.disconnect(); this.abort?.abort(); this.snapAbort?.abort(); clearTimeout(this.renderTimer); clearTimeout(this.snapTimer); cancelAnimationFrame(this.raf); }
 }

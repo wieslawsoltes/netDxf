@@ -1,5 +1,12 @@
 import { CommandSession } from './core.mjs';
 
+/** Resolve keyboard names and picker identities through one native INSERT contract. */
+export function resolveInsertCommand(command,blocks) {
+  const block=blocks.find(b=>command.reference?b.id===command.reference.value:b.name.toLowerCase()===command.block?.toLowerCase());
+  if(!block)throw new Error(`Unknown block: ${command.block||command.reference?.value}`);
+  const resolved=structuredClone(command);resolved.reference={value:block.id};delete resolved.block;return resolved;
+}
+
 const bounded = (value, label) => {
   if (typeof value !== 'number' || !Number.isFinite(value) || Math.abs(value) > 1e12) throw new Error(`${label} must be a finite number within ±1e12.`);
   return value;
