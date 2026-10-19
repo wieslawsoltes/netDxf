@@ -21,6 +21,7 @@ public sealed class TopologyBuilder
 
     public TopologyGraph Build(CadScene scene, TopologyOptions? options = null, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         options ??= new();
         if (options.EndpointTolerance <= 0 || !double.IsFinite(options.EndpointTolerance) || options.CurveTolerance <= 0 || !double.IsFinite(options.CurveTolerance) || options.MaximumSegments < 1 || options.MaximumCandidatePairs < 1)
             throw new ArgumentOutOfRangeException(nameof(options));
@@ -28,7 +29,7 @@ public sealed class TopologyBuilder
         var diagnostics = scene.Diagnostics.ToBuilder();
         foreach (var occurrence in scene.Occurrences)
         {
-            if (!occurrence.Style.Visible) continue;
+            if (!occurrence.Style.Visible || occurrence.IsPresentationOnly) continue;
             foreach (var contour in occurrence.Geometry.Contours)
                 foreach (var curve in contour.Curves)
                 {

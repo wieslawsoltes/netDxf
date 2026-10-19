@@ -5,11 +5,12 @@ namespace netDxf.Shadow.Graph;
 public sealed record GraphNode(int Id, Vec3 Position, ImmutableArray<int> Edges);
 public sealed record GraphEdge(int Id, int A, int B, double Length, ObjectId Entity, string Occurrence);
 public sealed record GraphPath(ImmutableArray<int> Nodes, ImmutableArray<int> Edges, double Length);
-public sealed record TopologyGraph(Guid DocumentId, long Revision, ImmutableArray<GraphNode> Nodes,
+public sealed partial record TopologyGraph(Guid DocumentId, long Revision, ImmutableArray<GraphNode> Nodes,
     ImmutableArray<GraphEdge> Edges, ImmutableArray<ShadowDiagnostic> Diagnostics)
 {
-    public ImmutableArray<ImmutableArray<int>> ConnectedComponents()
+    public ImmutableArray<ImmutableArray<int>> ConnectedComponents(CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var seen = new bool[Nodes.Length];
         var result = ImmutableArray.CreateBuilder<ImmutableArray<int>>();
         var stack = new Stack<int>();
@@ -20,6 +21,7 @@ public sealed record TopologyGraph(Guid DocumentId, long Revision, ImmutableArra
             seen[start] = true; stack.Push(start);
             while (stack.TryPop(out var node))
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 component.Add(node);
                 foreach (var id in Nodes[node].Edges)
                 {
@@ -35,14 +37,17 @@ public sealed record TopologyGraph(Guid DocumentId, long Revision, ImmutableArra
     public IEnumerable<GraphNode> DeadEnds => Nodes.Where(n => n.Edges.Length == 1);
     public IEnumerable<GraphNode> Junctions => Nodes.Where(n => n.Edges.Length > 2);
 
-    public GraphPath? ShortestPath(int source, int target)
+    public GraphPath? ShortestPath(int source, int target, CancellationToken cancellationToken = default)
     {
-        if ((uint)source >= (uint)Nodes.Length || (uint)target >= (uint)Nodes.Length) throw new ArgumentOutOfRangeException(nameof(source));
+        if ((uint)source >= (uint)Nodes.Length) throw new ArgumentOutOfRangeException(nameof(source));
+        if ((uint)target >= (uint)Nodes.Length) throw new ArgumentOutOfRangeException(nameof(target));
+        cancellationToken.ThrowIfCancellationRequested();
         var distance = Enumerable.Repeat(double.PositiveInfinity, Nodes.Length).ToArray();
         var previous = Enumerable.Repeat(-1, Nodes.Length).ToArray();
         var queue = new PriorityQueue<int, double>(); distance[source] = 0; queue.Enqueue(source, 0);
         while (queue.TryDequeue(out var node, out var cost))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (cost > distance[node]) continue;
             if (node == target) break;
             foreach (var id in Nodes[node].Edges)
@@ -63,8 +68,9 @@ public sealed record TopologyGraph(Guid DocumentId, long Revision, ImmutableArra
     }
 
     /// <summary>Iterative Tarjan traversal, including correct handling of parallel edges.</summary>
-    public ImmutableArray<int> Bridges()
+    public ImmutableArray<int> Bridges(CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var discovery = new int[Nodes.Length]; var low = new int[Nodes.Length]; var parent = Enumerable.Repeat(-1, Nodes.Length).ToArray();
         var nextEdge = new int[Nodes.Length]; var time = 0; var result = ImmutableArray.CreateBuilder<int>(); var stack = new Stack<int>();
         for (var root = 0; root < Nodes.Length; root++)
@@ -73,6 +79,7 @@ public sealed record TopologyGraph(Guid DocumentId, long Revision, ImmutableArra
             discovery[root] = low[root] = ++time; stack.Push(root);
             while (stack.Count > 0)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var node = stack.Peek();
                 if (nextEdge[node] < Nodes[node].Edges.Length)
                 {
