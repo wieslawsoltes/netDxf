@@ -36,7 +36,7 @@ corresponding end-to-end evidence cover their stated scope.
 
 - Native verification: 1,231 Advanced checks, 5,338 Graph checks, 493 provider
   checks, 61 ACP checks, 38 Codex checks, and 78 external-agent host checks.
-- Browser unit verification: 390 checks. Fresh native Chromium verification:
+- Browser unit verification: 392 checks. Fresh native Chromium verification:
   77 checks, including independent saved-DXF audit of STRETCH/BREAK geometry,
   cancellation during crossing selection, and cycle/forest palette workflows.
 - Standalone WebAssembly verification: CAD workflows at root and subpath,

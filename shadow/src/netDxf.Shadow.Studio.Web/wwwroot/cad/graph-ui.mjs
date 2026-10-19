@@ -62,6 +62,12 @@ export function graphPalette({client, viewport, report, snapshot}) {
     function overlay(data) { viewport.graph=graphOverlay(data);viewport.graphKey=graphViewKey(client.state);viewport.invalidate(); }
     function focus(node) { viewport.camera.x=node.x;viewport.camera.y=node.y;viewport.changed(); }
     function show(data, offset) {
+      const resultKey=client.key;
+      const useResult=action=>()=>{
+        if(resultKey!==client.key || epoch!==generation || snapshot()!==null)
+          throw new Error('The drawing changed. Run analysis again before using this result.');
+        return action();
+      };
       output.replaceChildren();
       for (const [key,label] of Object.entries({nodeCount:'Nodes',edgeCount:'Edges',componentCount:'Components',cycleRank:'Independent cycles',bridgeCount:'Bridges',articulationPointCount:'Articulation points',deadEndCount:'Dead ends',junctionCount:'Junctions',isolatedNodeCount:'Isolated nodes',totalLength:'Total length',diagnosticCount:'Diagnostics'}))
         if(data[key]!==undefined)output.append(row(label,el('span',{text:format(data[key])})));
@@ -73,20 +79,20 @@ export function graphPalette({client, viewport, report, snapshot}) {
       if(operation==='traverse')output.append(el('p',{text:`${data.nodes.length} visited nodes${data.nodeLimitReached?' · node limit reached':''}${data.depthLimitReached?' · hop limit reached':''}`}));
       if(operation==='nearest')output.append(el('p',{text:data.found?`Node ${data.node.id} · distance ${format(data.distance)}`:'No node within the requested distance.'}));
       const page=data.steps || data, items=page.items || data.nodes || (data.node?[data.node]:[]);
-      if(!['components','diagnostics','cycles'].includes(operation))output.append(button('Highlight this result',()=>overlay(data)));
+      if(!['components','diagnostics','cycles'].includes(operation))output.append(button('Highlight this result',useResult(()=>overlay(data))));
       if(page.total!==undefined)output.append(el('p',{class:'hint',text:`${page.total} matches · showing ${items.length?offset+1:0}–${offset+items.length}`}));
       for(const item of items) {
         const node=item.node || item, edge=item.viaEdge || (item.a!==undefined?item:null), card=el('section',{class:'layer-card'});
         if(Number.isFinite(node.x)&&Number.isFinite(node.y)) {
           card.append(el('b',{text:`Node ${node.id} · degree ${node.degree??'—'}`}),el('p',{text:`${format(node.x)}, ${format(node.y)}, ${format(node.z||0)}${item.depth!==undefined?` · hop ${item.depth}`:''}`}));
-          card.append(el('div',{class:'toolbar'},[button('Focus',()=>focus(node)),button('Start',()=>{values.source=node.id;inputs.get('source')&&(inputs.get('source').value=node.id);}),button('End',()=>{values.target=node.id;inputs.get('target')&&(inputs.get('target').value=node.id);})]));
-        } else if(operation==='components') card.append(el('b',{text:`Component ${item.id}`}),el('p',{text:`${item.nodeCount} nodes · ${item.edgeCount} edges · ${item.cycleRank} cycles · length ${format(item.totalLength)}`}),button('Inspect nodes',()=>{values.component=item.id;operation='nodes';saved=null;render(container);}));
-        else if(operation==='cycles')card.append(el('b',{text:`Cycle ${item.id}`}),el('p',{text:`${item.edgeCount} edges · closing edge ${item.closingEdge}`}),button('Inspect cycle',()=>{values.cycle=item.id;operation='cycle';saved=null;render(container);}));
+          card.append(el('div',{class:'toolbar'},[button('Focus',useResult(()=>focus(node))),button('Start',useResult(()=>{values.source=node.id;inputs.get('source')&&(inputs.get('source').value=node.id);invalidate();})),button('End',useResult(()=>{values.target=node.id;inputs.get('target')&&(inputs.get('target').value=node.id);invalidate();}))]));
+        } else if(operation==='components') card.append(el('b',{text:`Component ${item.id}`}),el('p',{text:`${item.nodeCount} nodes · ${item.edgeCount} edges · ${item.cycleRank} cycles · length ${format(item.totalLength)}`}),button('Inspect nodes',useResult(()=>{values.component=item.id;operation='nodes';saved=null;render(container);})));
+        else if(operation==='cycles')card.append(el('b',{text:`Cycle ${item.id}`}),el('p',{text:`${item.edgeCount} edges · closing edge ${item.closingEdge}`}),button('Inspect cycle',useResult(()=>{values.cycle=item.id;operation='cycle';saved=null;render(container);})));
         else if(operation==='diagnostics')card.append(el('b',{text:item.code}),el('p',{text:`${item.severity}: ${item.message}`}));
         if(edge)card.append(el('b',{text:`Edge ${edge.id}: ${edge.a} → ${edge.b}`}),el('p',{text:`Length ${format(edge.length)} · ${edge.entity}`}),el('small',{text:edge.occurrence}));
         output.append(card);
       }
-      if(page.total!==undefined)output.append(el('div',{class:'toolbar'},[button('Previous',()=>query(Math.max(0,offset-Number(values.limit))),{disabled:offset===0}),button('Next',()=>query(page.nextOffset),{disabled:page.nextOffset===null})]));
+      if(page.total!==undefined)output.append(el('div',{class:'toolbar'},[button('Previous',useResult(()=>query(Math.max(0,offset-Number(values.limit)))),{disabled:offset===0}),button('Next',useResult(()=>query(page.nextOffset)),{disabled:page.nextOffset===null})]));
     }
   };
 }

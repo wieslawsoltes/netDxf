@@ -45,3 +45,23 @@ test('minimum forest results render paged edge geometry',async t=>{
   f.reads[0].resolve(f.receipt({length:12,componentCount:2,edgeCount:3,steps:{items:[{id:9,a:1,b:2,length:4,entity:'H:4',start:{x:0,y:0},end:{x:4,y:0}}],total:3,nextOffset:1}}));await pending;
   assert.match(f.root.textContent,/Minimum forest length 12/);assert.equal(byText(f.root,'Next').disabled,false);
 });
+test('choosing a path endpoint invalidates the previous result and overlay',async t=>{
+  const f=fixture(t),operation=byLabel(f.root,'Graph analysis operation');operation.value='path';await operation.dispatch('change');
+  const pending=byText(f.root,'Run analysis').click();await tick();
+  f.reads[0].resolve(f.receipt({reachable:true,length:5,edgeCount:1,steps:{items:[{node:{id:17,x:2,y:3}}],total:1,nextOffset:null}}));await pending;
+  await byText(f.root,'Highlight this result').click();assert.ok(f.viewport.graph);
+  await byText(f.root,'Start').click();
+  assert.equal(byLabel(f.root,'Start node').value,'17');assert.equal(f.viewport.graph,null);
+  assert.match(f.root.textContent,/Inputs changed/);assert.doesNotMatch(f.root.textContent,/Path length 5/);
+  const next=byText(f.root,'Run analysis').click();await tick();assert.equal(f.reads[1].options.body.arguments.source,17);
+  f.reads[1].resolve(f.receipt({reachable:false,steps:{items:[],total:0,nextOffset:null}}));await next;
+});
+test('graph result actions refuse a superseded drawing even before its palette rerenders',async t=>{
+  const f=fixture(t),operation=byLabel(f.root,'Graph analysis operation');operation.value='nodes';await operation.dispatch('change');
+  const pending=byText(f.root,'Run analysis').click();await tick();
+  f.reads[0].resolve(f.receipt({items:[{id:17,x:2,y:3}],total:1,nextOffset:null}));await pending;
+  f.client.key='different-revision';
+  await byText(f.root,'Highlight this result').click();await byText(f.root,'Focus').click();
+  assert.equal(f.viewport.graph,undefined);assert.deepEqual(f.viewport.camera,{});
+  assert.equal(f.errors.length,2);assert.ok(f.errors.every(e=>/drawing changed/.test(e.message)));
+});
