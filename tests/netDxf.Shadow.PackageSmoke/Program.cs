@@ -353,6 +353,10 @@ internal static class Program
         Require(geometry.Occurrences.Length == 2 && topology.Edges.Length == 4 && topology.Nodes.Length == 5,
             "Crossing geometry/topology failed.");
         Require(topology.Junctions.Single().Edges.Length == 4, "Missing topology junction.");
+        var subset = new RenderCompiler().Compile(fixture.Session.Current,
+            new() { RootEntities = [Id(fixture.Line)] });
+        Require(subset.Items.Length == 1 && subset.Items[0].Entity == Id(fixture.Line),
+            "Installed renderer did not isolate the requested native root.");
     }
 
     private static void Editing()
@@ -386,6 +390,19 @@ internal static class Program
         nativeEditor.Undo(); nativeEditor.Redo();
         Require(ReferenceEquals(document.Layouts["Model"].AssociatedBlock.AttributeDefinitions["TAG"], definition) &&
             definition.GetMText().Value == "Cooling\\Pwater", "Installed attribute history lost identity or content.");
+
+        var block = new netDxf.Blocks.Block("Preview");
+        block.Entities.Add(new Line(Vector2.Zero, new Vector2(10, 0)));
+        block.AttributeDefinitions.Add(new("TAG") { Value = "P-101", Position = new(0, 2, 0), Height = 1 });
+        document.Blocks.Add(block);
+        using var stream = new MemoryStream(); Require(document.Save(stream), "Installed preview fixture did not save."); stream.Position = 0;
+        using var studio = new Studio(false); studio.Load(stream);
+        var before = JsonSerializer.Serialize(studio.CadState(), StudioJson.CreateOptions());
+        var preview = studio.CadInsertPreview(new(studio.CadRevision,
+            new(new("INSERT", [Vec3.Zero], Reference: Id(block)))));
+        Require(preview.Items == 2 && preview.Svg.Contains("P-101") &&
+            JsonSerializer.Serialize(studio.CadState(), StudioJson.CreateOptions()) == before,
+            "Installed transient insertion preview lost attributes or changed the drawing.");
     }
 
     private static void Dimensions()
