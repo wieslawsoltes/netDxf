@@ -88,7 +88,7 @@ public sealed partial class Studio
                 "window" or "crossing" => DraftingQueries.Select(scene,
                     new(Math.Min(request.First.X, request.Second.X), Math.Min(request.First.Y, request.Second.Y), Math.Max(request.First.X, request.Second.X), Math.Max(request.First.Y, request.Second.Y)),
                     request.Mode.Equals("window", StringComparison.OrdinalIgnoreCase) ? DraftingSelectionMode.Window : DraftingSelectionMode.Crossing, token: token),
-                "all" => DraftingQueries.Expand(scene, (activeBranch?.BlockRoot is { } root ? Current.Read(root)["Entities"].Items : Current.DrawingEntities(layout)).Select(e => e.Id!.Value).Take(10_001)),
+                "all" => DraftingQueries.Expand(scene, scene.Items.Select(DraftingQueries.Root).Distinct().Take(10_001)),
                 "entity" when request.Entity is not null => DraftingQueries.Expand(scene, ValidateEntitySelection([new(request.Entity)])),
                 "entities" => DraftingQueries.Expand(scene, ValidateEntitySelection(request.Entities)),
                 "clear" => [],

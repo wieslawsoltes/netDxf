@@ -45,7 +45,7 @@ export const studioUiActions = Object.freeze([
   { name: 'snapshot.show', description: 'Show a retained revision; null returns to the current drawing.', arguments: { revision: null } },
   { name: 'layer.set', description: 'Set the current drawing layer by name.', arguments: { name: '0' } },
   { name: 'selection.set', description: 'Select source entity IDs or clear selection.', arguments: { entities: [], extend: false } },
-  { name: 'cad.read', description: 'Read CAD state, resources, graph queries, module discovery/analysis, health or drawing references. Supply body for typed query routes; discover schema first.', arguments: { path: 'graph' } },
+  { name: 'cad.read', description: 'Read CAD state, resources, graph queries, module discovery/analysis, health or drawing references. For attribute-definitions, use currentSpace:true for model/paper space or the open block editor, or block for a named definition. Supply body for typed query routes; discover schema first.', arguments: { path: 'graph' } },
   { name: 'cad.edit', description: 'Execute a supported native CAD transaction with revision fencing.', arguments: { path: 'command', body: {} } },
   { name: 'ui.action', description: 'Invoke a named Studio action. Returns a pending task when a dialog needs input.', arguments: { name: 'settings' } },
   { name: 'ui.control', description: 'Click a control or set a value using its ID from inspect.', arguments: { id: 'control-1', operation: 'click' } },
@@ -199,6 +199,7 @@ export function installStudioControl(host) {
         if (!readRoutes.has(args.path)) throw new Error('Unsupported CAD read route. Discover the available routes first.');
         const query = new URLSearchParams({ revision: client.state.revision });
         if(args.path==='attribute-definitions'&&args.block!==undefined){if(typeof args.block!=='string'||!args.block||args.block.length>1024)throw new Error('Choose a bounded block identity.');query.set('block',args.block);}
+        if(args.path==='attribute-definitions'&&args.currentSpace!==undefined){if(typeof args.currentSpace!=='boolean')throw new Error('Current space must be a boolean.');query.set('currentSpace',String(args.currentSpace));}
         return client.read(`${args.path}?${query}`);
       }
       case 'cad.edit':

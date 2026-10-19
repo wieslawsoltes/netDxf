@@ -31,7 +31,13 @@ public sealed partial class Studio
         ImmutableArray<InsertAttributeAssignment> assignments = default)
     {
         var plan = activeBranch?.BlockRoot is { } root ? drafting.PlanInBlock(snapshot, command, root, token) : drafting.Plan(snapshot, command, layout, token);
-        if (!command.Name.Trim().Equals("INSERT", StringComparison.OrdinalIgnoreCase)) return plan;
+        if (!command.Name.Trim().Equals("INSERT", StringComparison.OrdinalIgnoreCase) && !command.Name.Trim().Equals("BLOCK", StringComparison.OrdinalIgnoreCase)) return plan;
+        return InitializeCreatedInserts(snapshot, plan, assignments, token);
+    }
+
+    private static DraftingPlan InitializeCreatedInserts(ShadowSnapshot snapshot, DraftingPlan plan,
+        ImmutableArray<InsertAttributeAssignment> assignments, CancellationToken token)
+    {
         var proposed = plan.Patch.Apply(snapshot);
         foreach (var insert in plan.Created)
             proposed = InsertAttributeConstruction.Plan(proposed, insert, assignments, token).Apply(proposed);

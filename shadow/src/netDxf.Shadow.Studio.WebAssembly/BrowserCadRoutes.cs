@@ -47,7 +47,7 @@ internal sealed partial class BrowserApplication
             BrowserReply.Binary(s.CadExportBlockLibrary(new(r.Long("revision"), new(r.Text("block")), r.Boolean("binary")), Token), "application/dxf"))));
         Cad("GET", "/api/cad/{id}/attributes", (s, r) => s.CadReadAttributes(r.Long("revision")));
         Cad("POST", "/api/cad/{id}/attributes", (s, r) => s.CadEditAttributes(r.Body<CadAttributeRequest>(), Token));
-        Cad("GET", "/api/cad/{id}/attribute-definitions", (s, r) => s.CadReadAttributeDefinitions(r.Long("revision"), r.Optional("block")));
+        Cad("GET", "/api/cad/{id}/attribute-definitions", (s, r) => s.CadReadAttributeDefinitions(r.Long("revision"), r.Optional("block"), r.Boolean("currentSpace")));
         Cad("POST", "/api/cad/{id}/attribute-definitions", (s, r) => s.CadEditAttributeDefinitions(r.Body<CadAttributeDefinitionRequest>(), Token));
         Cad("POST", "/api/cad/{id}/block/rename", (s, r) => s.CadRenameBlock(r.Body<CadBlockRenameRequest>()));
         Cad("POST", "/api/cad/{id}/hatch/create", (s, r) => s.CadCreateHatch(r.Body<CadHatchAuthoringRequest>(), Token));

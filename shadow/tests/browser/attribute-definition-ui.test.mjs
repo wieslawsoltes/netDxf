@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {attributeTools} from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/attribute-ui.mjs';
-import {definitionTools} from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/attribute-definition-ui.mjs';
+import {definitionTools,definitionPlacement} from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/attribute-definition-ui.mjs';
 import {definitionChanges,definitionBatch} from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/attribute-definition-contracts.mjs';
 import {installDom,byLabel,byText,gate,tick} from './ui-fixture.mjs';
 
@@ -71,4 +71,20 @@ test('ATTDEF reflects old DXF profile capabilities and refuses stale dialog subm
   const f=fixture(t,{version:'AutoCad2000'}),pending=definitionTools(f.options).create();await tick();
   assert.equal(byLabel(f.root,'Multiple lines definition').disabled,true);assert.equal(byLabel(f.root,'Lock definition location').disabled,true);
   f.client.key='other';f.answer.resolve(true);await assert.rejects(pending,/drawing changed/);assert.equal(f.edits.length,0);
+});
+test('ATTDEF opens in an empty layout and defers publication until on-screen placement',async t=>{
+  const f=fixture(t),read=f.client.read,placements=[];f.client.data.blocks=[];f.client.data.selectedEntities=[];
+  f.client.read=async path=>path==='resources'?read(path):{...await read(path),block:{value:'model'},name:'*Model_Space',layout:'Model',definitions:[]};
+  const pending=definitionTools({...f.options,beginPlacement:value=>placements.push(value)}).create();await tick();
+  byLabel(f.root,'Definition tag').value='TANK_TAG';assert.equal(byLabel(f.root,'Specify attribute point on screen').checked,true);
+  f.answer.resolve(true);await pending;assert.equal(f.edits.length,0);assert.equal(placements.length,1);
+  const session=placements[0];assert.match(session.prompt,/ATTDEF.*insertion point/);session.input('12,34');
+  assert.equal(session.complete,true);assert.deepEqual(session.command.points,[{x:12,y:34,z:0}]);assert.equal(session.expectedKey,'doc/1');
+  assert.equal(session.definitionRequest.block.value,'model');assert.equal(session.definitionRequest.changes.add[0].tag,'TANK_TAG');
+});
+test('definition placement owns its input and cancellation publishes nothing',async t=>{
+  const input={block:{value:'model'},changes:{add:[{tag:'A'}]}};const session=definitionPlacement(input,'doc/1');input.changes.add[0].tag='changed';
+  assert.equal(session.definitionRequest.changes.add[0].tag,'A');
+  const f=fixture(t),placements=[];const pending=definitionTools({...f.options,beginPlacement:value=>placements.push(value)}).create();await tick();
+  f.answer.resolve(false);await pending;assert.equal(f.edits.length,0);assert.equal(placements.length,0);
 });

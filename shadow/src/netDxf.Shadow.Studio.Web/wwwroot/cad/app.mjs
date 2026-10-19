@@ -98,6 +98,12 @@ async function takeInput(value) {const target=session,window=target.step.kind===
 
 async function complete() {
   const completed=session; if(!completed?.complete||completed.processing) return;
+  if(completed.definitionRequest){
+    completed.processing=true;
+    try{const definition=structuredClone(completed.definitionRequest);definition.changes.add[0].position=structuredClone(completed.command.points[0]);
+      await edit('attribute-definitions',{definition},{expectedKey:completed.expectedKey});log(`ATTDEF completed — revision ${client.state.revision}.`,'success');}
+    finally{if(session===completed)setSession(null);}return;
+  }
   if(completed.moduleRequest){
     try{const request=structuredClone(completed.moduleRequest);request.command.points=structuredClone(completed.command.points);
       await edit('modules/command',request,{expectedKey:completed.expectedKey});log(`${completed.name} completed — revision ${client.state.revision}.`,'success');}
@@ -415,7 +421,7 @@ async function action(name) {
     case 'layer-new':return resourceUi.layers(null,true);
     case 'attributes':return attributeTools({client,edit,dialog,editable})();
     case 'attribute-definitions':return definitionTools({client,edit,dialog,editable}).manage();
-    case 'attribute-create':return definitionTools({client,edit,dialog,editable}).create();
+    case 'attribute-create':return definitionTools({client,edit,dialog,editable,beginPlacement:value=>{setSession(value);ensureCommandLine();$('command-input').focus({preventScroll:true});}}).create();
     case 'attribute-sync':return synchronizeAttributes({client,edit,dialog,editable,showPalette});
     case 'layer-states':return layerStateTools({client,edit,dialog,editable})();
     case 'layer-manager':return resourceUi.layers();

@@ -28,6 +28,7 @@ from cad_attributes_browser import verify_attributes
 from cad_attribute_definitions_browser import verify_attribute_definitions
 from cad_insert_attributes_browser import verify_insert_attributes
 from cad_block_library_browser import verify_block_library
+from cad_layout_attributes_browser import verify_layout_attributes
 from cad_attribute_sync_browser import verify_attribute_sync
 from playwright.sync_api import sync_playwright, expect
 
@@ -348,6 +349,7 @@ def verify(url: str, executable: str | None = None):
             verify_attribute_definitions(page, OUTPUT, state, command, wait_state, idle, check)
             verify_insert_attributes(page, OUTPUT, state, command, wait_state, idle, check)
             verify_block_library(page, OUTPUT, state, command, wait_state, idle, check)
+            verify_layout_attributes(page, OUTPUT, state, command, wait_state, idle, check)
             check('no uncaught JavaScript errors or CSP violations', not errors and not violations)
         except Exception:
             failure = traceback.format_exc()

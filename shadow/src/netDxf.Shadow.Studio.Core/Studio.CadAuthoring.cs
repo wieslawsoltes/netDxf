@@ -19,6 +19,7 @@ public sealed partial class Studio
             var definition = request.Definition with { Entities = AuthoringSelection(request.Definition.Entities, selected) };
             var plan = activeBranch?.BlockRoot is { } root ? drafting.PlanBlockDefinitionInDefinition(Current, definition, root, token) :
                 drafting.PlanBlockDefinition(Current, definition, layout, token);
+            plan = InitializeCreatedInserts(Current, plan, [], token);
             return ApplyAuthoring(plan, selected, "block-define", definition);
         }
     }

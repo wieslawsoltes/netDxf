@@ -63,7 +63,9 @@ def verify_attribute_definitions(page, output, state, command, wait_state, idle,
     check('definition manager OK after Apply does not duplicate history', state()['state']['revision'] == revision)
     command('U'); check('definition manager undo restores tags defaults order and instance identity', definitions() == initial and attributes()['TAG'] == original)
     command('REDO')
+    block_id = read('attribute-definitions')['block']['value']
     command('ATTDEF', False); expect(page.locator('#dialog-title')).to_have_text('Attribute definition (ATTDEF)')
+    page.get_by_label('Definition owner', exact=True).select_option(block_id)
     page.get_by_label('Definition tag', exact=True).fill('DETAIL')
     page.get_by_label('Definition prompt', exact=True).fill('Pump detail')
     page.get_by_label('Definition default', exact=True).fill('Cooling\nwater')

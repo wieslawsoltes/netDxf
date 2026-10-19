@@ -46,6 +46,7 @@ AttributeSynchronizationVerification.Register(tests);
 AttributeDefinitionOrderingVerification.Register(tests);
 AttributeDefinitionNamingVerification.Register(tests);
 AttributeDefinitionEditingVerification.Register(tests);
+LayoutAttributeVerification.Register(tests);
 InsertAttributeConstructionVerification.Register(tests);
 CapturedInsertConstructionVerification.Register(tests);
 BlockLibraryVerification.Register(tests);
