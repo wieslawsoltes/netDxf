@@ -125,6 +125,18 @@ def run(dotnet: str, configuration: str, published: Path | None = None) -> None:
                     {**graph_state, 'workspaceId': 'stale-graph-workspace'}, expected=409)
             assert request(cad_prefix + '/state')['state'] == graph_state
             passed('graph route rejects stale topology workspace identity and excessive output without mutation')
+            source_id = cad['items'][0]['id']
+            references = graph_query('graph_reference_graph', roots=[source_id], depth=1)['result']['data']
+            assert references['roots'] == [source_id] and references['direction'] == 'outgoing'
+            layer_edge = next(item for item in references['edges']['items']
+                              if item['source'] == source_id and item['path'] == '/Layer')
+            incoming = graph_query('graph_reference_graph', roots=[layer_edge['target']],
+                                   direction='incoming', depth=1)['result']['data']
+            assert any(item == layer_edge for item in incoming['edges']['items'])
+            assert graph_query('graph_reference_graph', roots=[layer_edge['target']],
+                               referenceKey=references['referenceKey'])['isError']
+            assert request(cad_prefix + '/state')['state'] == graph_state
+            passed('source reference graph preserves directed property paths and read-only identity')
             cad = post(cad_prefix + '/layer', cad['state'], layer={'id': None, 'name': 'HTTP-É-日本語'})
             layer = next(layer for layer in cad['layers'] if layer['name'] == 'HTTP-É-日本語')
             cad = post(cad_prefix + '/layer', cad['state'], layer={'id': layer['id'], 'color': '#123456'})
