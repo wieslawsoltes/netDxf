@@ -34,6 +34,8 @@ public static class StudioCadHttp
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadModuleSymbols(request))));
         routes.MapPost("/{id}/modules/analyze", (string id, StudioDocumentHub hub, HttpRequest http, CadModuleAnalysisRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadAnalyzeModule(request, token))));
+        routes.MapPost("/{id}/modules/schedule", (string id, StudioDocumentHub hub, HttpRequest http, CadModuleScheduleRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadModuleSchedule(request, token))));
         routes.MapPost("/{id}/modules/connectivity", (string id, StudioDocumentHub hub, HttpRequest http, CadModuleConnectivityRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadModuleConnectivity(request, token))));
         routes.MapPost("/{id}/modules/command", (string id, StudioDocumentHub hub, HttpRequest http, CadModuleExecuteRequest request, CancellationToken token) =>

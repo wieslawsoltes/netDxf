@@ -1,12 +1,15 @@
 import { el, group, tool } from './ui.mjs';
 import { moduleRequest, moduleSession } from './module-contracts.mjs';
 import { domainConnectivityTools } from './domain-connectivity-ui.mjs';
+import { domainScheduleTools } from './domain-schedule-ui.mjs';
 
 export function moduleTools({client,edit,dialog,report,editable,place,showPalette,changed,viewport,download,snapshot=()=>null}) {
   if (!document.querySelector('link[data-cad-modules]')) document.head.append(el('link',{rel:'stylesheet',href:new URL('./modules.css',import.meta.url).href,'data-cad-modules':''}));
-  let descriptors = [], loaded = '', pending = null, chosen = '', section = 'symbols', epoch = 0, result = null, query = '', offset = 0, dataOffset = 0, analysisTolerance = '.01';
+  let descriptors = [], loaded = '', pending = null, chosen = '', section = 'symbols', epoch = 0, result = null, query = '', offset = 0, analysisTolerance = '.01';
   const applied = new Set();
   const connectivity = domainConnectivityTools({client,selectEntities,report,download,snapshot});
+  const schedule = domainScheduleTools({client,selectEntities,report,download,snapshot,
+    editRecord:(id,item)=>launch(id,'update',null,{entities:[typeof item.entity==='string'?item.entity:item.entity.value],properties:{...item.properties,tag:item.tag}})});
   const configurationKey = () => JSON.stringify([client.id,client.state?.documentId,client.data?.moduleConfigurationVersion]);
   const button = (text,action,attrs={}) => el('button',{type:'button',text,...attrs,onclick:()=>Promise.resolve().then(action).catch(report)});
   const row = (label,control) => el('label',{class:'form-row'},[el('span',{text:label}),control]);
@@ -36,12 +39,12 @@ export function moduleTools({client,edit,dialog,report,editable,place,showPalett
     try {localStorage.setItem('netdxf-cad-modules-v1',JSON.stringify({...preference(),[id]:value}));}catch{}
     loaded='';result=null;await sync();
   }
-  function open(id,mode='symbols') { if(mode==='structure')connectivity.setOperation('structure');chosen=id;section=mode==='structure'?'connectivity':mode;result=null;offset=0;dataOffset=0;showPalette('Modules'); }
+  function open(id,mode='symbols') { if(['structure','isolation'].includes(mode))connectivity.setOperation(mode);chosen=id;section=['structure','isolation'].includes(mode)?'connectivity':mode;result=null;offset=0;showPalette('Modules'); }
   function ribbon(id) {
     const state=descriptors.find(m=>m.descriptor.id===id);
     const commands=state?.descriptor.commands || [];
     return [group('Author',commands.map(c=>tool(`module-command:${id}:${c.id}`,c.name,true,c.requiresSymbol))),
-      group('Discipline',[tool(`module-open:${id}:symbols`,'Symbol library',true,true),tool(`module-open:${id}:data`,'Data manager',true),tool(`module-open:${id}:validation`,'Validate',true),tool(`module-open:${id}:connectivity`,'Connectivity',true),tool(`module-open:${id}:structure`,'Network structure',true),tool('modules','Modules',true)])];
+      group('Discipline',[tool(`module-open:${id}:symbols`,'Symbol library',true,true),tool(`module-open:${id}:data`,'Data manager',true),tool(`module-open:${id}:validation`,'Validate',true),tool(`module-open:${id}:connectivity`,'Connectivity',true),tool(`module-open:${id}:structure`,'Network structure',true),tool(`module-open:${id}:isolation`,'Isolation study',true),tool('modules','Modules',true)])];
   }
   async function action(name) {
     if(name==='modules'){chosen='';showPalette('Modules');return true;}
@@ -49,22 +52,24 @@ export function moduleTools({client,edit,dialog,report,editable,place,showPalett
     if(name.startsWith('module-command:')){const[,id,command]=name.split(':');await launch(id,command);return true;}
     return false;
   }
-  async function launch(id,commandId,symbol=null) {
-    editable(); await sync();
+  async function launch(id,commandId,symbol=null,context=null) {
+    editable(); const openingKey=client.key; await sync();
+    if(openingKey!==client.key)throw new Error('The drawing changed while loading the module command. Reopen it.');
     const descriptor=descriptors.find(m=>m.descriptor.id===id)?.descriptor;
     const command=descriptor?.commands?.find(c=>c.id===commandId);
     if(!enabled(id) || !command)throw new Error('This module command is unavailable. Enable the module first.');
     if(command.requiresSymbol && !symbol){open(id,'symbols');return;}
-    const key=client.key, selection=[...(client.data.selectedEntities||[])];
+    const key=client.key, selection=[...(context?.entities||client.data.selectedEntities||[])];
     if(command.requiresSelection&&!selection.length)throw new Error('Select source objects before running this command.');
     const fields=new Map(), content=[el('p',{class:'hint',text:command.description})];
     if(symbol)content.push(el('p',{text:`${symbol.name} · ${symbol.version} · ${symbol.units}`}));
     for(const field of [...(command.fields||[]),...(symbol?.attributes||[])]) {
       if([...fields.keys()].some(id=>id.toLowerCase()===field.id.toLowerCase()))continue;
       const input=field.choices?.length?el('select',{'aria-label':field.name},field.choices.map(value=>el('option',{value,text:value}))):el('input',{type:field.type==='number'?'number':'text',step:'any','aria-label':field.name,required:field.required,maxlength:8192});
-      input.value=field.default||'';fields.set(field.id,input);content.push(row(field.name+(field.required?' *':''),input));
+      input.value=Object.entries(context?.properties||{}).find(([name])=>name.toLowerCase()===field.id.toLowerCase())?.[1]??field.default??'';fields.set(field.id,input);content.push(row(field.name+(field.required?' *':''),input));
       if(field.description)content.push(el('small',{class:'module-caption',text:field.description}));
     }
+    if(commandId==='update')content.push(el('p',{class:'hint',text:'Empty fields leave existing values unchanged. Updates preserve object identities and are one undoable transaction.'}));
     if(command.maximumPoints>0)content.push(el('p',{class:'hint',text:`Choose ${command.minimumPoints===command.maximumPoints?command.minimumPoints:`${command.minimumPoints}–${command.maximumPoints}`} points in the drawing after accepting. Object snaps and drafting modes apply; Escape cancels.`}));
     if(!await dialog(command.name,content,command.maximumPoints>0?'Pick points':'Apply'))return;
     if(key!==client.key)throw new Error('The drawing changed while the command dialog was open. Reopen it.');
@@ -80,6 +85,7 @@ export function moduleTools({client,edit,dialog,report,editable,place,showPalett
   }
   function render(container) {
     connectivity.hide();
+    schedule.hide();
     const generation=++epoch;
     const current=()=>generation===epoch && container.isConnected;
     container.replaceChildren(el('p',{class:'intro',text:'Optional discipline toolsets. Turning a module off preserves its drawing objects and data.'}));
@@ -97,6 +103,7 @@ export function moduleTools({client,edit,dialog,report,editable,place,showPalett
     let requestGeneration=0;
     const valid=request=>current()&&client.key===key&&id===chosen&&mode===section&&(request===undefined||request===requestGeneration);
     if(section==='connectivity'){container.append(output);connectivity.render(output,id);return;}
+    if(section==='data'){container.append(output);schedule.render(output,id);return;}
     if(section==='symbols'){
       const search=el('input',{value:query,placeholder:'Search symbols, tags or standards','aria-label':'Search symbol library',maxlength:256});
       const run=async(start=0)=>{const request=++requestGeneration;query=search.value;offset=start;output.replaceChildren(el('p',{text:'Searching…'}));try{const data=await client.read('modules/symbols',{body:{module:id,query,offset:start,limit:30}});if(valid(request)&&data){result={key:cacheKey,id,mode,data,query,offset:start};showSymbols(data,start);}}catch(error){if(valid(request))throw error;}};
@@ -110,26 +117,12 @@ export function moduleTools({client,edit,dialog,report,editable,place,showPalett
       if(result?.key===cacheKey&&result.id===id&&result.mode===mode&&result.query===query&&result.offset===offset)showSymbols(result.data,result.offset);else void run(offset).catch(report);
     } else {
       const tolerance=el('input',{type:'number',step:'any',min:0.000001,value:analysisTolerance,'aria-label':'Connection tolerance'});
-      const run=async()=>{const request=++requestGeneration;analysisTolerance=tolerance.value;output.replaceChildren(el('p',{text:'Analyzing discipline data…'}));try{const data=await client.read('modules/analyze',{body:{revision:client.state.revision,module:id,options:{connectionTolerance:Number(analysisTolerance),maximumObjects:10000,maximumIssues:500}}});if(valid(request)&&data){result={key:cacheKey,id,mode,data,tolerance:analysisTolerance};dataOffset=Math.min(dataOffset,Math.max(0,Math.ceil(data.records.length/50)-1)*50);showAnalysis(data);}}catch(error){if(valid(request))throw error;}};
-      container.append(row('Connection tolerance',tolerance),el('div',{class:'module-actions'},[button(section==='data'?'Refresh data':'Run validation',run)]),output);
+      const run=async()=>{const request=++requestGeneration;analysisTolerance=tolerance.value;output.replaceChildren(el('p',{text:'Analyzing discipline data…'}));try{const data=await client.read('modules/analyze',{body:{revision:client.state.revision,module:id,options:{connectionTolerance:Number(analysisTolerance),maximumObjects:10000,maximumIssues:500}}});if(valid(request)&&data){result={key:cacheKey,id,mode,data,tolerance:analysisTolerance};showAnalysis(data);}}catch(error){if(valid(request))throw error;}};
+      container.append(row('Connection tolerance',tolerance),el('div',{class:'module-actions'},[button('Run validation',run)]),output);
       function showAnalysis(data){output.replaceChildren(el('p',{class:'module-caption',text:`${data.records.length} records · ${data.issues.length} findings · ${data.complete?'complete':'partial'} scan` }));if(data.limitation)output.append(el('p',{text:data.limitation}));
-        if(mode==='data'){
-          for(const item of data.records.slice(dataOffset,dataOffset+50)){
-            const props=el('dl');
-            for(const [name,value]of Object.entries(item.properties||{}))props.append(el('dt',{text:name}),el('dd',{text:value}));
-            props.append(el('dt',{text:'Source ID'}),el('dd',{text:typeof item.entity==='string'?item.entity:item.entity.value}));
-            for(const port of item.ports||[])props.append(el('dt',{text:`Port ${port.id}`}),el('dd',{text:`${port.kind} · ${port.position.x}, ${port.position.y}, ${port.position.z}${port.nominalSize?' · '+port.nominalSize:''}`}));
-            output.append(el('article',{class:'module-card'},[el('h3',{text:item.tag||item.class}),el('small',{text:`${item.class} · ${typeof item.entity==='string'?item.entity:item.entity.value}`}),
-              el('details',{},[el('summary',{text:'Properties and connections'}),props]),
-              el('div',{class:'module-actions'},[button('Select object',()=>selectEntities([item.entity],item.ports?.[0]?.position,false,key)),button('Add to selection',()=>selectEntities([item.entity],item.ports?.[0]?.position,true,key))])]));
-          }
-          output.append(el('div',{class:'module-actions'},[
-            button('Previous records',()=>{dataOffset=Math.max(0,dataOffset-50);showAnalysis(data);},{disabled:dataOffset===0}),
-            button('Next records',()=>{dataOffset+=50;showAnalysis(data);},{disabled:dataOffset+50>=data.records.length})]));
-        }
-        else{if(!data.issues.length)output.append(el('p',{text:data.complete?'No issues found by the enabled rules.':'No findings in the scanned subset.'}));for(const issue of data.issues)output.append(el('article',{class:`module-card module-issue ${issue.severity==='error'?'error':''}`},[el('strong',{text:issue.code}),el('p',{text:issue.message}),button('Select and locate',()=>selectEntities(issue.entities,issue.position,false,key),{disabled:!issue.entities?.length})]));}}
+        if(!data.issues.length)output.append(el('p',{text:data.complete?'No issues found by the enabled rules.':'No findings in the scanned subset.'}));for(const issue of data.issues)output.append(el('article',{class:`module-card module-issue ${issue.severity==='error'?'error':''}`},[el('strong',{text:issue.code}),el('p',{text:issue.message}),button('Select and locate',()=>selectEntities(issue.entities,issue.position,false,key),{disabled:!issue.entities?.length})]));}
       if(result?.key===cacheKey&&result.id===id&&result.mode===mode&&result.tolerance===analysisTolerance)showAnalysis(result.data);
     }
   }
-  return {sync,ribbon,action,render,open,launch,hide:()=>connectivity.hide(),catalog:()=>descriptors};
+  return {sync,ribbon,action,render,open,launch,hide:()=>{connectivity.hide();schedule.hide();},catalog:()=>descriptors};
 }

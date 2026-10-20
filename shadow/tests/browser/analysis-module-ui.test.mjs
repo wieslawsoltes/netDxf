@@ -32,17 +32,20 @@ test('analysis keeps the latest tolerance and response across a palette redraw',
   assert.match(f.root.textContent,/current.rule/);assert.doesNotMatch(f.root.textContent,/old.rule/);
   f.ui.render(f.root);assert.equal(byLabel(f.root,'Connection tolerance').value,'.03');assert.match(f.root.textContent,/current.rule/);
 });
-test('refreshing shorter module data returns a later page to the available records',async t=>{
-  const f=await modules(t,'data');const initial=byText(f.root,'Refresh data').click();await tick();f.reads[0].resolve(analysis('ok',51));await initial;
-  await byText(f.root,'Next records').click();assert.match(f.root.textContent,/Item 50/);
-  const refreshed=byText(f.root,'Refresh data').click();await tick();f.reads[1].resolve(analysis('ok',1));await refreshed;
-  assert.match(f.root.textContent,/Item 0/);assert.equal(byText(f.root,'Previous records').disabled,true);
-});
 test('saved module preferences cannot continue into a newly activated drawing',async t=>{
   installDom(t);globalThis.localStorage.getItem=()=>JSON.stringify({pid:false,piping:false});const writes=[];
   const client={id:'first',state:{documentId:'first'},key:'first-view',data:{moduleConfigurationVersion:0},read:async()=>client.id==='first'?{modules:[descriptor,{...descriptor,id:'piping'}].map(descriptor=>({descriptor,enabled:true}))}:null};
   const ui=moduleTools({client,changed(){},report(){},edit:async(...args)=>{writes.push(args);client.id='second';client.state={documentId:'second'};client.key='second-view';}});
   await ui.sync();await tick();assert.equal(writes.length,1);assert.equal(writes[0][2].expectedKey,'first-view');
+});
+test('schedule row edits cannot pair an old source with a drawing activated during catalog refresh',async t=>{
+  installDom(t);const pending=gate(),dialogs=[];
+  const client={id:'first',state:{documentId:'first'},key:'first-view',data:{moduleConfigurationVersion:0,modules:[{id:'pid',enabled:true}],selectedEntities:[]},read:()=>pending.promise};
+  const ui=moduleTools({client,editable(){},dialog:async(...args)=>{dialogs.push(args);return true;},changed(){},report(){},edit:async()=>{throw new Error('Unexpected edit');}});
+  const opening=ui.launch('pid','update',null,{entities:['old-source'],properties:{tag:'Old tag'}});
+  await tick();client.id='second';client.state={documentId:'second'};client.key='second-view';
+  pending.resolve({modules:[{enabled:true,descriptor:{...descriptor,commands:[{id:'update',name:'Update',fields:[],requiresSelection:true}]}}]});
+  await assert.rejects(opening,/drawing changed/);assert.equal(dialogs.length,0);
 });
 const proposal=id=>({...state(),previewId:id,current:true,description:id,summary:{added:0,changed:1,removed:0,details:[]},beforeHealth:{complete:true,issues:[]},afterHealth:{complete:true,issues:[]},validation:'Preview validated'});
 function previews(t){

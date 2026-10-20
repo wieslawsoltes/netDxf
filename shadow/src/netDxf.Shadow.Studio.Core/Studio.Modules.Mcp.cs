@@ -8,6 +8,7 @@ public sealed partial class Studio
     private void RegisterModuleTools(McpToolRegistry registry)
     {
         RegisterModuleConnectivityTool(registry);
+        RegisterModuleScheduleTool(registry);
         registry.Register(new("studio_modules", "Discover registered discipline modules, enablement, commands, fields and standards references. Disabled modules preserve their native DXF data.",
             McpJson.Parse("""{"type":"object","properties":{},"additionalProperties":false}"""), true), (_, token) =>
         {
