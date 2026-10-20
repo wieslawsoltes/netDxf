@@ -90,8 +90,14 @@ public static partial class DraftingLayerStates
         foreach (var entry in value.Entries)
         {
             token.ThrowIfCancellationRequested();
-            if (entry.ColorIndex is < -255 or > 256 || entry.Transparency is < -1 or > 100 || entry.Transparency is > 90 and < 100)
+            if (entry.ColorIndex is < -255 or > 256 || entry.Transparency is < 0 or > 100 || entry.Transparency is > 90 and < 100)
                 throw new ArgumentException("Invalid saved color/transparency.");
+            if (entry.StoredAlphaValue is { } packed)
+            {
+                var effective = packed == 0 ? 0 : (int)(100 - (packed & 255) / 255d * 100);
+                if (effective is > 90 and < 100) effective = 90;
+                if (entry.Transparency != effective) throw new ArgumentException("Saved transparency does not match its retained LAS alpha packet.");
+            }
             int? rgb = null;
             if (entry.TrueColor)
             {

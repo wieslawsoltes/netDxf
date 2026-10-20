@@ -113,6 +113,39 @@ internal static class LayerStateTransferVerification
             Check(ReferenceEquals(before, source.Current) && state.Properties.Count == 1 && !state.Properties.ContainsKey("New"), "Rejected edit leaked saved properties.");
             Check(editor.State.UndoCount == 0, "Rejected edit added history.");
         }));
+        tests.Add(("layer-state-transfer/packed zero crosses saved and live semantics without DXF or LAS corruption", () =>
+        {
+            foreach (var binary in new[] { false, true })
+            {
+                var doc = new DxfDocument(); var layer = doc.Layers.Add(new Layer("Pipes") { Transparency = new Transparency(35) });
+                var source = new ShadowSession(doc); var editor = new EditorSession(source);
+                var transfer = new LayerStateTransfer("Opaque", "", "0", false, 1024,
+                    [new("Pipes", 8, "#FFFFFF", 7, false, "Continuous", "Default", 0, 0)]);
+                Reject(() => DraftingLayerStates.PlanImport(source.Current, transfer with { Entries = [transfer.Entries[0] with { Transparency = 100 }] }, new()),
+                    "Portable import accepted ambiguous saved zero.");
+                DraftingLayerStates.PlanImport(source.Current, transfer, new()).Execute(editor);
+                var state = doc.Layers.StateManager["Opaque"]; var id = DraftingLayerStates.Read(source.Current).Single().Id;
+                DraftingLayerStates.Plan(source.Current, new("restore", id, Fields: LayerStateFields.Transparency, RestoreCurrentLayer: false)).Execute(editor);
+                Check(layer.Transparency.Value == 0 && layer.Transparency.StoredAlphaValue is null, "Restoring opaque state retained live ByBlock packet.");
+                Check(state.Properties["Pipes"].Transparency.StoredAlphaValue == 0, "Restore changed the retained LAS state.");
+                using var bytes = new MemoryStream(); Check(doc.Save(bytes, binary), "Transparency fixture save failed."); bytes.Position = 0;
+                Check(DxfDocument.Load(bytes).Layers["Pipes"].Transparency.Value == 0, "Opaque restore became ByBlock after DXF reload.");
+            }
+            var byBlock = new Layer("Pipes") { Transparency = Transparency.FromAlphaValue(0) };
+            var drawing = new DxfDocument(); drawing.Layers.Add(byBlock);
+            var session = new ShadowSession(drawing); var edits = new EditorSession(session);
+            DraftingLayerStates.Plan(session.Current, new("save", Name: "ByBlock")).Execute(edits);
+            var saved = drawing.Layers.StateManager["ByBlock"];
+            Check(saved.Properties["Pipes"].Transparency.Value == 100 && saved.Properties["Pipes"].Transparency.StoredAlphaValue is null,
+                "Live ByBlock packet was retained as saved opaque zero.");
+            var parsed = LayerState.FromLasText(saved.ToLasText());
+            Check(parsed.Properties["Pipes"].Transparency.IsByBlock && parsed.Properties["Pipes"].Transparency.StoredAlphaValue == 0x01000000,
+                "Canonical saved ByBlock failed LAS roundtrip.");
+            saved.Properties["Pipes"].Transparency = Transparency.FromAlphaValue(0);
+            Reject(() => saved.ToLasText(), "Strict export silently encoded live ByBlock zero as saved opaque.");
+            saved.Properties["Pipes"].Transparency = Transparency.ByLayer;
+            Reject(() => saved.ToLasText(), "Unrepresentable ByLayer transparency was silently changed.");
+        }));
         tests.Add(("layer-state-transfer/Studio preview is guarded nonmutating and consumed once", () =>
         {
             using var studio = new Studio(false);

@@ -77,6 +77,13 @@ namespace netDxf.Objects
                 if (bytes > MaximumLasBytes) throw new InvalidDataException("LAS transfer exceeds 2 MiB.");
             }
             this.ValidateLasExport();
+            foreach (var property in this.Properties.Values)
+            {
+                int alpha = property.Transparency.StoredAlphaValue ??
+                    (property.Transparency.Value == 0 ? 0 : Transparency.ToAlphaValue(property.Transparency));
+                if (Transparency.FromLayerStateAlphaValue(alpha).Value != property.Transparency.Value)
+                    throw new InvalidDataException("LAS cannot preserve this saved transparency value. Set an explicit percentage or a canonical ByBlock value.");
+            }
             using (var stream = new MemoryStream())
             {
                 Write(stream, this);

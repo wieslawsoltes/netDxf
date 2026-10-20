@@ -152,7 +152,12 @@ public static partial class DraftingLayerStates
     private static ShadowValue CopyValue(ShadowGraphEdit edit, ShadowReader value)
     {
         if (value.Object is not { } node) throw new ArgumentException("The saved layer resource is unavailable.");
-        return new ShadowValue.Reference(edit.Create(node.TypeName, node.Kind, node.Properties));
+        // Packed alpha zero means opaque in a saved state and ByBlock on a live layer.
+        // Cross that boundary by effective value, matching native CopyFrom/CopyTo.
+        // Imports/exports within saved-state semantics keep the exact packet separately.
+        var properties = node.TypeName == "netDxf.Transparency" && value["StoredAlphaValue"].Value is ShadowValue.Atom { Text: "0" }
+            ? node.Properties.Remove("StoredAlphaValue") : node.Properties;
+        return new ShadowValue.Reference(edit.Create(node.TypeName, node.Kind, properties));
     }
     private static void RequireState(ShadowReader state) { if (!state.Exists) throw new ArgumentException("Choose an existing layer state."); }
 }

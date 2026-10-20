@@ -90,7 +90,9 @@ public sealed partial class Studio
         {
             var color = entry.TrueColor ? AciColor.FromTrueColor(int.Parse(entry.Color.AsSpan(1), NumberStyles.HexNumber, CultureInfo.InvariantCulture))
                 : AciColor.FromCadIndex((short)entry.ColorIndex);
-            var alpha = entry.StoredAlphaValue is { } packed ? Transparency.FromLayerStateAlphaValue(packed) : Transparency.FromCadIndex((short)entry.Transparency);
+            var alpha = entry.StoredAlphaValue is { } packed
+                ? packed == 0 && entry.Transparency == 0 ? Transparency.FromLayerStateAlphaValue(packed) : Transparency.FromAlphaValue(packed)
+                : Transparency.FromCadIndex((short)entry.Transparency);
             state.Properties.Add(entry.Name, new LayerStateProperties(entry.Name) { Flags = (LayerPropertiesFlags)entry.Flags,
                 Color = color, Transparency = alpha, LinetypeName = entry.Linetype, Lineweight = Enum.Parse<Lineweight>(entry.Lineweight) });
         }
