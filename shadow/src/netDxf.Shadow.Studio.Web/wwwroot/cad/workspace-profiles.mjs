@@ -1,5 +1,6 @@
 import { chromePreferences } from './ribbon-layout.mjs';
 import { paletteLayout } from './palette-layout.mjs';
+import { quickAccessPreferences } from './command-catalog.mjs';
 
 export const workspaceProfileKey = 'netdxf-cad-workspaces-v1';
 export const workspaceProfileLimit = 24;
@@ -13,7 +14,8 @@ export function workspaceProfileLayout(value, paletteIds) {
     chrome: chromePreferences(record(source.chrome) ? source.chrome : {}),
     tab: typeof source.tab === 'string' && source.tab.length <= 100 ? source.tab : 'Home',
     commandHeight: Number.isFinite(source.commandHeight) ? Math.max(32, Math.min(600, source.commandHeight)) : 90,
-    palettes: paletteLayout(source.palettes, paletteIds)
+    palettes: paletteLayout(source.palettes, paletteIds),
+    quickAccess: quickAccessPreferences(source.quickAccess)
   };
 }
 
@@ -63,7 +65,17 @@ export function workspacePresets(paletteIds) {
     graph.palettes.panels.Graph = { ...graph.palettes.panels.Graph, open: true, side: 'left', width: 350 };
     graph.palettes.active = 'Graph';
   }
-  return [{ name: 'Drafting', layout: draft }, { name: 'Graph analysis', layout: graph }];
+  const presets=[{ name: 'Drafting', layout: draft }, { name: 'Graph analysis', layout: graph }];
+  if (paletteIds.includes('References')) {
+    const dependencies=workspaceProfileLayout({},paletteIds);
+    dependencies.tab='Graph';
+    const tabs=['References','Graph'].filter(id=>paletteIds.includes(id));
+    for(const id of tabs)dependencies.palettes.panels[id]={...dependencies.palettes.panels[id],open:true,side:'left',width:540};
+    dependencies.palettes.active='References';
+    dependencies.palettes.groups.left=[{tabs,active:'References',weight:1}];
+    presets.push({name:'Dependency analysis',layout:workspaceProfileLayout(dependencies,paletteIds)});
+  }
+  return presets;
 }
 
 /** Storage is injected so hosts can keep preferences private or use another persistence layer. */

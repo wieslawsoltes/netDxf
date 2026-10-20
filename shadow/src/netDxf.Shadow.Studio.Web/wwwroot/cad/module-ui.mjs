@@ -127,5 +127,5 @@ export function moduleTools({client,edit,dialog,report,editable,place,showPalett
       if(result?.key===cacheKey&&result.id===id&&result.mode===mode&&result.tolerance===analysisTolerance)showAnalysis(result.data);
     }
   }
-  return {sync,ribbon,action,render,open,launch};
+  return {sync,ribbon,action,render,open,launch,catalog:()=>descriptors};
 }
