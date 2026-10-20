@@ -1,4 +1,5 @@
 import { changePaletteLayout, paletteDockWidths, paletteLayout, paletteRect, resizePaletteRect, paletteDropSide, paletteDropPreview, paletteStorageKey, paletteGroups, paletteGroupFor, paletteStackHeights } from './palette-layout.mjs';
+import { openPaletteAppearance, paletteOpacity } from './palette-appearance.mjs';
 
 const element = (tag, attributes = {}, children = []) => {
   const result = document.createElement(tag);
@@ -57,6 +58,7 @@ export class PaletteDock {
     document.addEventListener('pointerdown', this.outside);
     this.escape = event => {
       if (event.key !== 'Escape') return;
+      if (this.appearance?.dialog.open) return;
       if (this.gesture) { event.preventDefault(); event.stopPropagation(); this.endGesture(true); }
       else if (this.autoId && this.keepOpen(this.autoId)) { event.preventDefault(); event.stopPropagation(); this.hideAuto(); }
     };
@@ -124,6 +126,7 @@ export class PaletteDock {
   }
   /** Restore a detached snapshot or defaults. Explicit restoration also replaces the prior lock state. */
   restore(layout) {
+    this.appearance?.close(); this.appearance = null;
     this.endGesture(true); clearTimeout(this.hideTimer); this.autoId = null; this.launcher.open = false;
     const focused = this.containsFocus();
     for (const frame of this.frames.values()) if (frame.visible) { this.releaseFrame(frame); frame.visible = false; }
@@ -158,14 +161,34 @@ export class PaletteDock {
     this.focusPalette(id);
   }
   title(id) { return this.definitions.find(value => value.id === id)?.title || id; }
+  editAppearance(id) {
+    if (this.appearance?.dialog.open) return;
+    const frame = this.frames.get(id); if (!frame) return;
+    this.appearance = openPaletteAppearance({ title: this.title(id), appearance: this.state.panels[id],
+      disabled: this.state.transparencyDisabled, origin: frame.menu.querySelector('summary'),
+      onApply: value => {
+        if (this.disposed) return;
+        this.commit({ type: 'opacity', id, ...value }, { announce: 'Palette transparency updated.' });
+      } });
+    this.appearanceId = this.appearance ? id : null;
+  }
+  updateOpacity(frame, focused = frame.element.contains(document.activeElement)) {
+    frame.element.style.opacity = String(paletteOpacity(this.state.panels[frame.id], {
+      floating: this.state.panels[frame.id].mode === 'float' || this.anchored(this.state.panels[frame.id]),
+      disabled: this.state.transparencyDisabled, hovered: frame.hovered, focused, menuOpen: frame.menu.open
+    }));
+  }
 
   createLauncher() {
     const select = element('select', { 'aria-label': 'Open drawing palette' }, [element('option', { value: '', text: 'Choose a palette…' }), ...this.definitions.map(value => element('option', { value: value.id, text: value.title }))]);
     select.addEventListener('change', () => { if (select.value) { const id = select.value; select.value = ''; this.launcher.open = false; this.show(id); } });
     this.lock = element('input', { type: 'checkbox', 'aria-label': 'Lock palette layout' }); this.lock.addEventListener('change', () => this.setLocked(this.lock.checked));
+    this.opaque = element('input', { type: 'checkbox', 'aria-label': 'Disable all palette transparency' });
+    this.opaque.addEventListener('change', () => this.commit({ type: 'transparency-disabled', value: this.opaque.checked }));
     const result = element('details', { class: 'pd-launcher' }, [element('summary', { text: 'Palettes ▾', 'aria-label': 'Drawing palettes menu' }),
       element('div', { class: 'pd-launcher-body' }, [element('label', { text: 'Open a palette' }, [select]),
         element('label', { class: 'pd-lock-label' }, [this.lock, document.createTextNode('Lock palette layout')]),
+        element('label', { class: 'pd-lock-label' }, [this.opaque, document.createTextNode('Disable all palette transparency')]),
         control('Reset palette layout', 'Reset palette layout', () => { result.open = false; this.reset(); }),
         element('p', { text: 'Drag a title grip to move, then release over an edge target to dock. Hold Ctrl to keep floating. Escape cancels. The layout menu also offers docking and auto-hide.' })])]);
     result.addEventListener('keydown', event => handlePaletteEscape(event, () => {
@@ -259,6 +282,7 @@ export class PaletteDock {
         const target = this.state.panels[selected];
         if (!target.open && !this.state.locked) this.state.panels[selected] = {
           ...this.state.panels[id], allowDocking: target.allowDocking,
+          opacity: target.opacity, rolloverOpacity: target.rolloverOpacity,
           mode: target.allowDocking ? this.state.panels[id].mode : 'float', open: false
         };
         this.close(id); this.show(selected);
@@ -289,8 +313,9 @@ export class PaletteDock {
     const groupDown = control(`Move ${title} group down`, 'Move group down', () => { menu.open = false; this.reorder(id, 1); });
     const tabLeft = control(`Move ${title} tab left`, 'Move tab left', () => { menu.open = false; this.reorder(id, -1, true); });
     const tabRight = control(`Move ${title} tab right`, 'Move tab right', () => { menu.open = false; this.reorder(id, 1, true); });
+    const appearance = control(`Transparency: ${title}`, 'Transparency…', () => { menu.open = false; this.editAppearance(id); });
     const menu = element('details', { class: 'pd-menu' }, [element('summary', { text: '⋯', 'aria-label': `${title} palette layout` }),
-      element('div', { class: 'pd-menu-body' }, [...placementButtons, allowDocking, element('hr'), groupTarget, groupButton, detach, groupUp, groupDown, tabLeft, tabRight]) ]);
+      element('div', { class: 'pd-menu-body' }, [...placementButtons, allowDocking, appearance, element('hr'), groupTarget, groupButton, detach, groupUp, groupDown, tabLeft, tabRight]) ]);
     const content = element('div', { class: 'palette-content pd-content', id: `${key}-content` });
     const resize = element('div', { class: 'pd-resize', role: 'separator', tabindex: '0', 'aria-label': `Resize ${title} palette`, 'aria-orientation': 'horizontal', title: 'Drag to resize; arrow keys resize, Shift for one pixel' });
     resize.addEventListener('pointerdown', event => this.beginResize(event, id));
@@ -307,7 +332,7 @@ export class PaletteDock {
     const frame = { id, element: window, selector, header, content, resize, move, pin, menu, close, edge,
       placementButtons, allowDocking, groupTarget, groupButton, detach, groupUp, groupDown, tabLeft, tabRight,
       rendered: false, visible: false, generation: 0, hovered: false, edgeHovered: false, cleanup: null };
-    menu.addEventListener('toggle', () => { if (menu.open) this.positionMenu(menu); });
+    menu.addEventListener('toggle', () => { if (menu.open) this.positionMenu(menu); this.updateOpacity(frame); });
     edge.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') { frame.edgeHovered = true; this.reveal(id); } });
     edge.addEventListener('pointerleave', () => { frame.edgeHovered = false; this.queueHide(); });
     edge.addEventListener('focus', () => { if (!this.suppressReveal) this.reveal(id); });
@@ -316,11 +341,11 @@ export class PaletteDock {
       if (handlePaletteEscape(event, () => this.autoId === id && this.hideAuto())) return;
       if (['ArrowLeft', 'ArrowRight', 'Enter', ' '].includes(event.key)) { event.preventDefault(); event.stopPropagation(); this.reveal(id); firstControl(window)?.focus({ preventScroll: true }); }
     });
-    window.addEventListener('pointerenter', () => { frame.hovered = true; clearTimeout(this.hideTimer); });
-    window.addEventListener('pointerleave', () => { frame.hovered = false; this.queueHide(); });
-    window.addEventListener('focusout', () => this.queueHide());
+    window.addEventListener('pointerenter', () => { frame.hovered = true; clearTimeout(this.hideTimer); this.updateOpacity(frame); });
+    window.addEventListener('pointerleave', () => { frame.hovered = false; this.queueHide(); this.updateOpacity(frame); });
+    window.addEventListener('focusout', event => { this.queueHide(); this.updateOpacity(frame, frame.element.contains(event.relatedTarget)); });
     window.addEventListener('pointerdown', () => this.raise(id));
-    window.addEventListener('focusin', () => this.raise(id));
+    window.addEventListener('focusin', () => { this.raise(id); this.updateOpacity(frame, true); });
     window.addEventListener('keydown', event => handlePaletteEscape(event, () => {
       if (this.gesture) this.endGesture(true);
       else if (menu.open) { menu.open = false; menu.querySelector('summary').focus(); }
@@ -340,6 +365,7 @@ export class PaletteDock {
     const railWidth = parseFloat(getComputedStyle(this.leftRail).width) || 28;
     const dockWidths = paletteDockWidths(width('left'), width('right'), bounds.width, (hasRail('left') + hasRail('right')) * railWidth);
     this.workspace.classList.toggle('pd-locked', this.state.locked); this.lock.checked = this.state.locked;
+    this.opaque.checked = this.state.transparencyDisabled;
     for (const side of ['left', 'right']) {
       const dock = this[`${side}Dock`], rail = this[`${side}Rail`];
       dock.hidden = !dockWidths[side]; dock.style.width = `${dockWidths[side]}px`; rail.hidden = !hasRail(side);
@@ -370,6 +396,7 @@ export class PaletteDock {
         this.position(frame, paletteRect(rect, bounds));
       } else for (const property of ['left', 'top', 'width', 'height']) frame.element.style.removeProperty(property);
       if (frame.menu.open) this.positionMenu(frame.menu);
+      this.updateOpacity(frame);
       if (visible && !frame.rendered) toRender.push(id);
     }
     this.launcher.style.left = `${(dockWidths.left + bounds.width - dockWidths.right) / 2}px`;
@@ -437,7 +464,8 @@ export class PaletteDock {
   }
   hideAuto({ implicit = false } = {}) {
     clearTimeout(this.hideTimer);
-    if (!this.autoId || implicit && this.keepOpen(this.autoId)) return false;
+    if (!this.autoId || implicit && (this.keepOpen(this.autoId) ||
+      this.appearance?.dialog.open && this.appearanceId === this.autoId)) return false;
     this.autoId = null; this.apply(); return true;
   }
   queueHide() {
@@ -515,6 +543,7 @@ export class PaletteDock {
     this.persist();
   }
   dispose() {
+    this.appearance?.close(); this.appearance = null;
     this.disposed = true; this.endGesture(true); clearTimeout(this.hideTimer); cancelAnimationFrame(this.frame); this.observer.disconnect(); document.removeEventListener('pointerdown', this.outside); document.removeEventListener('keydown', this.escape, true);
     for (const frame of this.frames.values()) this.releaseFrame(frame);
     for (const node of [this.leftDock, this.rightDock, this.leftRail, this.rightRail, this.overlay, this.dropZones, this.launcher, this.live]) node.remove();

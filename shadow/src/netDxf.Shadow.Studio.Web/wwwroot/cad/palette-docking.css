@@ -53,5 +53,17 @@
 .pd-launcher-body>button { border:1px solid #617d97; width:100%; text-align:left; }
 .pd-launcher-body p { margin:10px 0 0; font-size:10px; line-height:1.6; color:#a6bdcf; }
 .pd-sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+.pd-appearance-dialog { width:min(440px,calc(100vw - 24px)); max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); box-sizing:border-box; padding:16px; overflow:auto; color:#e3edf7; background:#263341; border:1px solid #7994ac; border-radius:5px; font-size:12px; }
+.pd-appearance-dialog::backdrop { background:#0006; }
+.pd-appearance-dialog header,.pd-appearance-dialog footer { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.pd-appearance-dialog h2 { margin:0; font-size:16px; }
+.pd-appearance-dialog button { min-height:32px; padding:6px 10px; color:inherit; background:#354a5d; border:1px solid #6d8ba5; border-radius:3px; }
+.pd-appearance-dialog footer { justify-content:flex-end; margin-top:16px; }
+.pd-opacity-row { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin:14px 0; }
+.pd-opacity-row input[type=range] { flex:1; min-width:90px; max-width:170px; }
+.pd-opacity-row output { min-width:35px; text-align:right; }
+.pd-opacity-preview { padding:16px; margin:12px 0; background:repeating-conic-gradient(#6a7886 0% 25%,#b4c1cd 0% 50%) 50% / 20px 20px; }
+.pd-opacity-sample { padding:16px 10px; border:1px solid #a5cbe8; background:#23374a; color:#f3f8fc; }
+.pd-opacity-status { min-height:34px; line-height:1.5; color:#b7ccdf; }
 #studio.clean .pd-dock,#studio.clean .pd-edge,#studio.clean .pd-overlay,#studio.clean .pd-drop-zones,#studio.clean .pd-launcher { display:none; }
 @media(pointer:coarse) { .pd-title { height:38px; min-height:38px; }.pd-title button,.pd-title summary { min-height:34px; min-width:30px; }.pd-edge { width:32px; }.pd-edge-button { padding:12px 5px; }.pd-splitter { width:9px; }.pd-resize { width:30px; height:30px; }.pd-launcher>summary { padding:7px 12px; } }
