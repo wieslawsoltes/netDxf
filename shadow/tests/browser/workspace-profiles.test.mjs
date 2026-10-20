@@ -29,6 +29,17 @@ test('saved layouts support explicit update, case-insensitive rename/delete and 
   assert.throws(()=>changeWorkspaceProfiles(saved,{type:'rename',name:'Analysis',next:' '.repeat(10)},ids));
 });
 
+test('saved workspaces restore bounded Quick Access choices and migrate old profiles to defaults', () => {
+  const layout = { quickAccess:{version:1,pinned:['action:reference-query:impact','command:LINE','action:layer-manager']} };
+  const saved = changeWorkspaceProfiles(null,{type:'save',name:'Investigate',layout},ids);
+  layout.quickAccess.pinned.reverse();
+  const restored=workspaceProfiles(JSON.parse(JSON.stringify(saved)),ids).profiles[0].layout;
+  assert.deepEqual(restored.quickAccess.pinned,['action:reference-query:impact','command:LINE','action:layer-manager']);
+  const legacy=workspaceProfiles({version:1,profiles:[{name:'Old layout',layout:{tab:'Graph'}}]},ids).profiles[0].layout;
+  assert.equal(legacy.tab,'Graph');assert.equal(legacy.quickAccess.pinned.length,5);
+  assert.equal(workspaceProfileLayout({quickAccess:{version:1,pinned:Array(100).fill('command:LINE')}},ids).quickAccess.pinned.length,1);
+});
+
 test('profile count, duplicate names and failures have explicit boundaries', () => {
   let saved=null;
   for(let i=0;i<24;i++)saved=changeWorkspaceProfiles(saved,{type:'save',name:`Layout ${i}`},ids);
@@ -45,7 +56,17 @@ test('preset layouts keep Properties available beside a left Graph palette and e
   assert(draft.layout.palettes.panels.Properties.open);
   assert(graph.layout.palettes.panels.Properties.open);assert(graph.layout.palettes.panels.Graph.open);
   assert.equal(graph.layout.palettes.panels.Graph.side,'left');assert.equal(graph.layout.tab,'Graph');
-  assert.deepEqual(Object.keys(graph.layout),['chrome','tab','commandHeight','palettes']);
+  assert.deepEqual(Object.keys(graph.layout),['chrome','tab','commandHeight','palettes','quickAccess']);
+});
+
+test('dependency workspace provides a wide References tab beside source Properties', () => {
+  const entry=workspacePresets([...ids,'References']).find(preset=>preset.name==='Dependency analysis');
+  assert.equal(entry.layout.tab,'Graph');
+  assert.equal(entry.layout.palettes.panels.References.width,540);
+  assert.equal(entry.layout.palettes.panels.Properties.side,'right');
+  assert.equal(entry.layout.palettes.panels.Properties.open,true);
+  assert.deepEqual(entry.layout.palettes.groups.left,[{tabs:['References','Graph'],active:'References',weight:1}]);
+  assert(!entry.layout.palettes.groups.right.some(group=>group.tabs.includes('References')||group.tabs.includes('Graph')));
 });
 
 test('UI manager applies presets and manages current layouts without touching drawings', async t => {

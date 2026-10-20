@@ -15,6 +15,8 @@ import { synchronizeAttributes } from './attribute-sync-ui.mjs';
 import { definitionTools } from './attribute-definition-ui.mjs';
 import { graphPalette } from './graph-ui.mjs';
 import { referenceGraphPalette } from './reference-graph-ui.mjs';
+import { buildCommandCatalog } from './command-catalog.mjs';
+import { createCommandAccess } from './command-access.mjs';
 import { CadClient } from './client.mjs';
 import { blockTools } from './block-ui.mjs';
 import { blockLibraryTools } from './block-library-ui.mjs';
@@ -23,7 +25,7 @@ import { insertionDefinitions, InsertAttributeSession } from './insert-attribute
 import { insertionAttributeDialog } from './insert-attribute-ui.mjs';
 import { CadViewport, bindViewportPageLifetime } from './viewport.mjs';
 import { CommandSession, commands, commandName, number, point, distance, polygonArea, format, fit } from './core.mjs';
-import { $, el, icon, tool, ribbon, ribbonEntries as describeRibbonEntries } from './ui.mjs';
+import { $, el, icon, ribbon, ribbonEntries as describeRibbonEntries } from './ui.mjs';
 import { viewKey } from '../studio-state.mjs';
 import { mountAgentWorkspace } from '../agents/workspace.mjs';
 import { installStudioControl } from '../agents/studio-control.mjs';
@@ -41,6 +43,7 @@ const viewport = new CadViewport($('viewport'), $('drawing'), client, {
 let session = null, tab = 'Home', palette = 'Properties', currentLayer = '0', lastCommand = 'LINE';
 let documents = [], viewId = '', stateKey = '', activeIdentity = '', snapshot = null, lastInput = [], historyIndex = 0, toastTimer;
 let agentWorkspace = null;
+let commandAccess = null;
 let ribbonContext = {};
 const renderGraph = graphPalette({client, viewport, report, snapshot:()=>snapshot,
   beginPick:()=>cancel(false), download:(name,text,type)=>download(new Blob([text],{type}),name),
@@ -58,7 +61,7 @@ const resourceUi = resourceTools({client, edit, dialog, run, editable});
 const analysisPalettes=Object.fromEntries(['Health','Edit previews','Workflows'].map(name=>[name,analysisTools({client,edit,viewport,report,editable})]));
 const moduleUi = moduleTools({client,edit,dialog,report,editable,viewport,showPalette,
   place:value=>{cancel(false);setSession(value);ensureCommandLine();$('command-input').focus({preventScroll:true});},
-  changed:()=>{drawRibbonTabs();drawRibbon();renderPalette();}});
+  changed:()=>{drawRibbonTabs();drawRibbon();renderPalette();commandAccess?.refresh();}});
 function persisted() { try { const value=JSON.parse(localStorage.getItem('netdxf-cad-ui-v1') || '{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{}; } catch { return {}; } }
 const settings = persisted();
 const insertionSettings={attreq:settings.attreq===0?0:1,attdia:settings.attdia===0?0:1};
@@ -74,13 +77,13 @@ const docking=new PaletteDock({workspace:$('workspace'),legacyPalette:$('palette
   onActiveChange:id=>{palette=id;},onLayoutChange:()=>viewport.resize(),keepOpen:id=>id==='Graph'&&!!viewport.graphPick,onHide:id=>{analysisPalettes[id]?.destroy();if(id==='Graph')renderGraph.hide();if(id==='References')renderReferences.hide();},report});
 let profileStorage;try{profileStorage=localStorage;}catch{/* Storage may be unavailable in embedded hosts. */}
 const uiWorkspaces=workspaceProfileTools({paletteIds:paletteNames,storage:profileStorage,dialog,report,
-  capture:()=>({chrome,tab,commandHeight:parseFloat(document.documentElement.style.getPropertyValue('--command-height'))||90,palettes:docking.snapshot()}),
+  capture:()=>({chrome,tab,commandHeight:parseFloat(document.documentElement.style.getPropertyValue('--command-height'))||90,palettes:docking.snapshot(),quickAccess:commandAccess?.snapshot()}),
   restore:value=>{
     const layout=workspaceProfileLayout(value,paletteNames);
     ribbonLayout.hide();chrome=layout.chrome;
     document.documentElement.style.setProperty('--command-height',`${Math.min(innerHeight*.55,layout.commandHeight)}px`);
     tab=ribbonEntries().some(entry=>entry.key===layout.tab&&!entry.disabled)?layout.tab:'Home';
-    docking.restore(layout.palettes);applyChrome();drawRibbonTabs();drawRibbon();persist();viewport.resize();
+    docking.restore(layout.palettes);commandAccess?.restore(layout.quickAccess);applyChrome();drawRibbonTabs();drawRibbon();persist();viewport.resize();
   }});
 if(Number.isFinite(settings.commandHeight))document.documentElement.style.setProperty('--command-height',`${Math.max(32,Math.min(innerHeight*.55,settings.commandHeight))}px`);
 applyChrome();
@@ -231,6 +234,7 @@ async function select(mode,first=point(),second=point(),extend=false,remove=fals
 function updateTools() {
   document.querySelectorAll('[data-command]').forEach(b=>{b.classList.toggle('active',b.dataset.command===session?.name);b.disabled=!!client.busy||snapshot!==null||!client.state;});
   for(const [name,enabled] of [['undo',client.state?.undoCount],['redo',client.state?.redoCount]]) document.querySelectorAll(`[data-action="${name}"]`).forEach(b=>b.disabled=!enabled||!!client.busy||snapshot!==null);
+  commandAccess?.refresh();
 }
 async function setCurrentLayer(name) { const layer=client.data?.layers.find(l=>l.name===name);if(!layer)throw new Error('Choose an existing layer.');await edit('resource',{resource:{kind:'layer',action:'current',id:layer.id}}); }
 function ribbonEntries(){return describeRibbonEntries(client.data);}
@@ -414,6 +418,7 @@ async function draftingSettings() {
 }
 async function action(name) {
   if(name.startsWith('graph-query:')){showPalette('Graph');renderGraph.setOperation(name.slice(12));return;}
+  if(name.startsWith('reference-query:')){showPalette('References');renderReferences.setOperation(name.slice(16));return;}
   if(name==='modules'||name.startsWith('module-open:')||name.startsWith('module-command:'))return moduleUi.action(name);
   if(isAuthoringAction(name)){cancel(false);return authoringDialog(name,{client,editable,edit,dialog,showPalette,currentLayer});}
   if(['properties','layers','blocks','explorer','workspaces','diagnostics'].includes(name))return showPalette(name[0].toUpperCase()+name.slice(1));
@@ -441,6 +446,8 @@ async function action(name) {
     case 'dock':docking.dockSide();return;
     case 'palette-lock':docking.setLocked(!docking.snapshot().locked);return;
     case 'palette-reset':docking.reset();return;
+    case 'command-search':commandAccess.search();return;
+    case 'quick-access-customize':commandAccess.customize();return;
     case 'clean':ribbonLayout.hide();$('studio').classList.toggle('clean');return;
     case 'ribbon-minimize':chrome.ribbonMode=chrome.ribbonMode==='tabs'?'full':'tabs';applyChrome();persist();return;
     case 'ribbon-cycle':chrome.ribbonMode=ribbonModes[(ribbonModes.indexOf(chrome.ribbonMode)+1)%ribbonModes.length];applyChrome();persist();return;
@@ -509,7 +516,14 @@ function workspaceMenu(anchor, entries) {
     event.preventDefault();event.stopPropagation();
   };
 }
-$('quick-access').replaceChildren(...[['new','New (Ctrl+N)'],['open','Open (Ctrl+O)'],['save','Save (Ctrl+S)'],['undo','Undo (Ctrl+Z)'],['redo','Redo (Ctrl+Y)']].map(([name,label])=>{const b=tool(name,label,true);b.querySelector('span').remove();return b;}));
+commandAccess=createCommandAccess({
+  toolbar:$('quick-access'),catalog:()=>buildCommandCatalog({modules:moduleUi.catalog()}),
+  state:()=>({hasDocument:!!client.state,busy:!!client.busy,readOnly:snapshot!==null,commandActive:!!session,
+    blockEditing:!!client.data?.blockEditor,selectionCount:client.data?.selectedEntities?.length||0,
+    blockCount:client.data?.blocks?.length||0,undoCount:client.state?.undoCount||0,redoCount:client.state?.redoCount||0,
+    modules:client.data?.modules||[]}),
+  execute:entry=>entry.kind==='command'?start(entry.target):entry.kind==='input'?submit(entry.target):action(entry.target),report
+});
 drawRibbonTabs();
 $('ribbon-tabs').addEventListener('keydown',event=>{const entries=ribbonEntries().filter(entry=>!entry.disabled),key=event.key,index=entries.findIndex(e=>e.key===tab);let next;if(key==='ArrowDown'){event.preventDefault();ribbonLayout.reveal(true);return;}if(key==='ArrowRight')next=(index+1)%entries.length;else if(key==='ArrowLeft')next=(index+entries.length-1)%entries.length;else if(key==='Home')next=0;else if(key==='End')next=entries.length-1;else return;event.preventDefault();selectRibbon(entries[next].key,true);});
 $('ribbon-tabs').addEventListener('dblclick',event=>{if(event.target.closest('[role=tab]'))run(()=>action('ribbon-minimize'));});
@@ -531,7 +545,10 @@ $('open-file').addEventListener('change',e=>run(async()=>{
 }));
 $('font-file').addEventListener('change',e=>run(async()=>{const file=e.target.files[0];e.target.value='';if(!file)return;editable();if(file.size>4*1024*1024)throw new Error('Font upload limit is 4 MiB.');await client.mutate('font',file,{binary:true,query:{name:file.name}});log(`Loaded ${file.name}.`,'success');}));
 document.addEventListener('keydown',e=>{
+  if(e.defaultPrevented)return;
   if(e.target.closest('.agent-workspace'))return;
+  if(commandAccess.handleShortcut(e))return;
+  if(e.target.closest('.command-access-dialog'))return;
   if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key.toLowerCase()==='a')return;
   if($('dialog').open)return;
   const input=e.target.closest('input,select,textarea'),control=e.ctrlKey||e.metaKey;
@@ -589,7 +606,7 @@ window.addEventListener('beforeunload',e=>{if(documents.some(d=>d.dirty)){e.prev
 bindViewportPageLifetime(viewport);
 async function pollDocuments() {
   try {
-    if(!document.hidden&&!client.busy&&!session&&!viewport.inputActive&&!$('dialog').open&&!docking.containsFocus())
+    if(!document.hidden&&!client.busy&&!session&&!viewport.inputActive&&!$('dialog').open&&!commandAccess?.dialog.open&&!docking.containsFocus())
       await run(async()=>{await client.refresh();await documentTabs();});
   } finally { setTimeout(pollDocuments,2500); }
 }

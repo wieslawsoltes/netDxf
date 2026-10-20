@@ -76,6 +76,7 @@ class DockElement extends Element {
   insertBefore(value, before) { value.remove(); value.parentNode = this; this.children.splice(this.children.indexOf(before), 0, value); }
   after(...values) { for (const value of values.reverse()) { value.remove(); value.parentNode = this.parentNode; this.parentNode.children.splice(this.parentNode.children.indexOf(this) + 1, 0, value); } }
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
+  removeAttribute(name) { delete this.attributes[name]; }
   querySelectorAll(selector) {
     return all(this).slice(1).filter(node => selector.startsWith('.') ? node.classList.contains(selector.slice(1)) : node.tagName.toLowerCase() === selector);
   }
@@ -222,7 +223,7 @@ test('explicit restore replaces a locked layout, sanitizes and clamps the snapsh
   assert.equal(JSON.stringify(profile), source, 'restore never mutates the caller snapshot');
   assert.equal(dock.state.locked, false); assert.equal(dock.state.active, 'Layers'); assert.equal(active.at(-1), 'Layers');
   assert.equal(dock.isVisible('Properties'), false); assert.equal(dock.isVisible('Graph'), true); assert.equal(dock.isVisible('Layers'), true);
-  assert.deepEqual(result.panels.Graph, { open: true, mode: 'float', side: 'right', x: 0, y: 0, width: 900, height: 500 });
+  assert.deepEqual(result.panels.Graph, { open: true, allowDocking: true, mode: 'float', side: 'right', x: 0, y: 0, width: 900, height: 500 });
   assert(!JSON.stringify(result).includes('discard-this')); assert(!Object.hasOwn(result.panels, 'Unregistered'));
   assert(graph().generation > previousGeneration); assert(cleaned.includes('Graph')); assert(hidden.includes('Graph'));
   assert.equal(document.activeElement, dock.launcher.querySelector('summary'));
@@ -241,4 +242,170 @@ test('restore cancels gestures and stale async renderers, and defaults remain av
   assert.equal(dock.gesture, null); assert.equal(workspace.capture, null); assert.equal(dock.dropZones.hidden, true);
   assert.equal(dock.state.locked, false); assert.equal(dock.state.active, 'Properties');
   assert.equal(dock.state.panels.Properties.open, true); assert.equal(dock.state.panels.Graph.open, false);
+});
+
+const visibleGroup = (dock, id) => [...dock.groups.values()].find(group => group.element.isConnected && group.visibleTabs.includes(id));
+
+test('explicit Show refreshes already-visible out-of-band content while new visibility renders only once', t => {
+  const { dock } = docking(t);
+  let proposal = 'No pending preview';
+  const calls = [];
+  dock.render = (id, content) => { calls.push(id); content.textContent = proposal; };
+  dock.show('Properties');
+  assert.equal(dock.frames.get('Properties').content.textContent, 'No pending preview');
+  proposal = 'Prepared edit preview'; const before = dock.snapshot();
+  dock.show('Properties');
+  assert.equal(dock.frames.get('Properties').content.textContent, 'Prepared edit preview');
+  assert.deepEqual(dock.snapshot(), before, 'no drawing or layout mutation is needed to refresh external data');
+  assert.deepEqual(calls, ['Properties', 'Properties']);
+  dock.show('Graph'); assert.equal(calls.filter(id => id === 'Graph').length, 1);
+  dock.close('Graph'); dock.show('Graph'); assert.equal(calls.filter(id => id === 'Graph').length, 2);
+  dock.groupWith('Graph', 'Properties'); dock.show('Properties');
+  const prior = calls.filter(id => id === 'Graph').length;
+  dock.show('Graph'); assert.equal(calls.filter(id => id === 'Graph').length, prior + 1);
+});
+
+test('global hide and reveal render each visible palette once after attachment and retain its new ownership', async t => {
+  const { dock } = docking(t);
+  dock.groupWith('Graph', 'Properties'); await Promise.resolve();
+  const lifecycle = [];
+  dock.render = (id, content) => {
+    lifecycle.push({ event: 'render', id, connected: content.isConnected });
+    return () => lifecycle.push({ event: 'cleanup', id });
+  };
+  dock.onHide = id => lifecycle.push({ event: 'hide', id });
+  dock.refresh('Graph'); await Promise.resolve(); lifecycle.length = 0;
+  for (let cycle = 0; cycle < 2; cycle++) {
+    dock.toggle();
+    assert.equal(dock.contentFor('Graph').isConnected, false);
+    dock.toggle(); await Promise.resolve();
+    assert.equal(dock.contentFor('Graph').isConnected, true);
+    assert.deepEqual(lifecycle, [
+      { event: 'cleanup', id: 'Graph' }, { event: 'hide', id: 'Graph' },
+      { event: 'render', id: 'Graph', connected: true }
+    ], 'revealing an attached palette neither duplicates rendering nor hides or cleans up the new renderer');
+    lifecycle.length = 0;
+  }
+});
+
+test('tab groups reuse frames, expose linked accessible tabs and release inactive renderer ownership', async t => {
+  const { dock, cleaned, rendered } = docking(t);
+  dock.show('Graph'); const properties = dock.frames.get('Properties'), graph = dock.frames.get('Graph');
+  await Promise.resolve(); dock.groupWith('Graph', 'Properties'); await Promise.resolve();
+  const group = visibleGroup(dock, 'Graph');
+  assert(group); assert.equal(group.tablist.hidden, false); assert.equal(dock.isVisible('Graph'), true); assert.equal(dock.isVisible('Properties'), false);
+  assert.equal(properties.element.isConnected, false); assert(cleaned.includes('Properties'));
+  const tab = group.tabs.get('Graph');
+  assert.equal(tab.getAttribute('aria-controls'), group.panels.get('Graph').getAttribute('id'));
+  assert.equal(group.panels.get('Graph').getAttribute('aria-labelledby'), tab.getAttribute('id'));
+  assert.equal(group.panels.get('Graph').getAttribute('role'), 'tabpanel'); assert.equal(tab.getAttribute('aria-selected'), 'true');
+  assert.equal(group.panels.get('Properties').isConnected, true); assert.equal(group.panels.get('Properties').hidden, true);
+  assert.equal(group.tabs.get('Properties').getAttribute('aria-controls'), group.panels.get('Properties').getAttribute('id'));
+  assert.equal(tab.tabIndex, 0); assert.equal(group.tabs.get('Properties').tabIndex, -1);
+  tab.emit('keydown', { key: 'ArrowLeft' }); await Promise.resolve();
+  assert.equal(dock.isVisible('Properties'), true); assert.equal(dock.isVisible('Graph'), false);
+  assert.equal(document.activeElement, group.tabs.get('Properties')); assert(dock.containsFocus()); assert(cleaned.includes('Graph'));
+  assert.equal(dock.frames.get('Properties'), properties); assert(rendered.filter(id => id === 'Properties').length >= 2);
+  group.tabs.get('Properties').emit('keydown', { key: 'End' }); assert.equal(dock.isVisible('Graph'), true);
+  group.tabs.get('Graph').emit('keydown', { key: 'Home' }); assert.equal(dock.isVisible('Properties'), true);
+});
+
+test('closing and reopening an active grouped palette selects its neighbor without losing membership or focus', t => {
+  const { dock } = docking(t);
+  dock.groupWith('Graph', 'Properties'); const group = visibleGroup(dock, 'Graph');
+  group.tabs.get('Graph').focus(); dock.close('Graph');
+  assert.equal(dock.isVisible('Properties'), true); assert.equal(document.activeElement, dock.frames.get('Properties').selector);
+  assert.deepEqual(dock.state.groups.right[0].tabs, ['Properties', 'Graph']);
+  dock.show('Graph'); assert.equal(dock.isVisible('Graph'), true); assert.equal(dock.isVisible('Properties'), false);
+});
+
+test('explicit reorder and separation retain controls and new dock order in storage', t => {
+  const { dock, stored } = docking(t);
+  dock.groupWith('Graph', 'Properties'); dock.reorder('Graph', -1, true);
+  assert.deepEqual(dock.state.groups.right[0].tabs, ['Graph', 'Properties']);
+  assert.equal(document.activeElement, visibleGroup(dock, 'Graph').tabs.get('Graph'));
+  dock.detach('Graph');
+  assert(dock.isVisible('Graph') && dock.isVisible('Properties'));
+  dock.reorder('Graph', -1);
+  const visible = [...dock.rightDock.panes.children].filter(child => child.classList.contains('pd-group'));
+  assert.equal(visible[0], visibleGroup(dock, 'Graph').element);
+  assert.deepEqual(stored.at(-1), dock.snapshot());
+});
+
+test('stack separators resize by keyboard and pointer, retain focus ownership and cancel exactly', t => {
+  const { dock, workspace, events } = docking(t);
+  dock.show('Graph'); const group = visibleGroup(dock, 'Properties'), before = group.height;
+  group.splitter.focus(); assert(dock.containsFocus());
+  group.splitter.emit('keydown', { key: 'ArrowDown' }); assert(Math.abs(group.height - before - 20) < 1e-8);
+  assert.equal(group.splitter.getAttribute('aria-orientation'), 'horizontal');
+  const snapshot = dock.snapshot();
+  group.splitter.emit('pointerdown'); workspace.emit('pointermove', { clientY: 240 });
+  assert.notDeepEqual(dock.snapshot(), snapshot); assert.equal(dock.dropZones.hidden, true);
+  events.emit('keydown', { key: 'Escape' }); assert.deepEqual(dock.snapshot(), snapshot);
+  assert.equal(document.activeElement, group.splitter);
+  group.splitter.emit('pointerdown'); workspace.emit('pointermove', { clientY: 230 }); workspace.emit('pointerup', { clientY: 230 });
+  assert.notDeepEqual(dock.snapshot(), snapshot);
+  dock.setLocked(true); const locked = dock.snapshot(); group.splitter.emit('keydown', { key: 'ArrowUp' }); group.splitter.emit('pointerdown');
+  assert.deepEqual(dock.snapshot(), locked); assert.equal(dock.gesture, null); assert.equal(group.splitter.tabIndex, -1);
+});
+
+test('a group with its original tab closed remains resizable through its visible neighbor', t => {
+  const { dock } = docking(t);
+  dock.groupWith('Layers', 'Graph'); dock.close('Graph'); dock.reorder('Layers', -1);
+  const group = visibleGroup(dock, 'Layers'), height = group.height;
+  assert.equal(group.id, 'Graph');
+  group.splitter.emit('keydown', { key: 'ArrowDown', shiftKey: true });
+  assert(Math.abs(group.height - height - 1) < 1e-8);
+});
+
+test('Allow Docking off floats an active tab and disables grouping, anchoring and drop targets, not movement', t => {
+  const { dock, workspace, point } = docking(t);
+  dock.groupWith('Graph', 'Properties'); const frame = dock.frames.get('Graph');
+  dock.setAllowDocking('Graph', false);
+  assert.equal(dock.state.panels.Graph.mode, 'float'); assert.equal(dock.state.panels.Graph.allowDocking, false);
+  assert(dock.isVisible('Properties') && dock.isVisible('Graph')); assert.equal(frame.pin.disabled, true);
+  assert.equal(frame.allowDocking.getAttribute('aria-checked'), 'false'); assert.equal(frame.groupButton.disabled, true);
+  assert(frame.placementButtons.filter(button => button.dataset.docking === 'true').every(button => button.disabled));
+  assert.equal(frame.placementButtons.find(button => button.dataset.docking === 'false').disabled, false);
+  frame.element.rect = { left: 400, top: 150, width: 310, height: 350 }; frame.move.emit('pointerdown');
+  workspace.emit('pointermove', point(5)); assert.equal(dock.dropZones.hidden, true); workspace.emit('pointerup', point(5));
+  assert.equal(dock.state.panels.Graph.mode, 'float'); assert.equal(dock.state.panels.Graph.x, 0);
+  dock.setAllowDocking('Graph', true); assert.equal(dock.state.panels.Graph.mode, 'float'); assert.equal(frame.pin.disabled, false);
+});
+
+test('palette replacement inherits placement but never transfers another palette docking permission', t => {
+  const { dock } = docking(t);
+  dock.show('Graph'); dock.setAllowDocking('Graph', false); dock.close('Graph');
+  const properties = dock.frames.get('Properties');
+  properties.selector.value = 'Graph'; properties.selector.emit('change');
+  assert.equal(dock.state.panels.Graph.allowDocking, false); assert.equal(dock.state.panels.Graph.mode, 'float');
+  assert.equal(dock.isVisible('Graph'), true); assert.equal(dock.state.panels.Properties.open, false);
+  const graph = dock.frames.get('Graph');
+  graph.selector.value = 'Properties'; graph.selector.emit('change');
+  assert.equal(dock.state.panels.Properties.allowDocking, true); assert.equal(dock.state.panels.Properties.mode, 'float');
+  assert.equal(dock.isVisible('Properties'), true);
+  dock.place('Properties', 'dock', 'right'); assert.equal(dock.state.panels.Properties.mode, 'dock');
+});
+
+test('group layouts restore on compact screens as independent edge controls and return to the saved group', t => {
+  const { dock, workspace } = docking(t);
+  dock.groupWith('Graph', 'Properties'); const saved = dock.snapshot();
+  workspace.rect.width = 390; dock.restore(saved);
+  assert.equal(dock.leftDock.hidden, true); assert.equal(dock.rightDock.hidden, true);
+  assert.equal(dock.frames.get('Properties').edge.hidden, false); assert.equal(dock.frames.get('Graph').edge.hidden, false);
+  dock.activateAnchor('Graph'); assert.equal(dock.isVisible('Graph'), true); assert.equal(dock.isVisible('Properties'), false);
+  workspace.rect.width = 1280; dock.apply();
+  assert.deepEqual(dock.state.groups, saved.groups); assert.equal(dock.isVisible('Graph'), true);
+  assert.equal(visibleGroup(dock, 'Graph').tablist.hidden, false);
+});
+
+test('restore handles tab focus and late renderer completions after switching tabs', async t => {
+  const { dock } = docking(t);
+  dock.groupWith('Graph', 'Properties');
+  let resolve, cleanup = 0; dock.render = () => new Promise(done => { resolve = done; });
+  dock.refresh('Graph'); const old = resolve;
+  visibleGroup(dock, 'Graph').tabs.get('Properties').emit('click');
+  old(() => cleanup++); await Promise.resolve(); assert.equal(cleanup, 1);
+  const saved = dock.snapshot(); visibleGroup(dock, 'Properties').tabs.get('Properties').focus();
+  dock.restore(saved); assert.equal(document.activeElement, dock.launcher.querySelector('summary'));
 });

@@ -76,6 +76,7 @@ public sealed partial class ShadowMcpTools
         InstallSnapshots(registry);
         InstallGraph(registry);
         InstallReferenceGraph(registry);
+        InstallReferenceAnalysis(registry);
     }
 
     private object Objects(JsonElement args, EditorSession editor, ShadowSnapshot snapshot, CancellationToken token)

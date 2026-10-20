@@ -5,7 +5,8 @@ const actionNames = new Set([
   'new','demo','open','save','save-as','font','undo','redo','fit','regen','zoom-in','zoom-out','pan','palette','dock','clean',
   'settings','layer-new','assign-layer','snapshot','snapshots','fork','annotation','linetype','graph','graph-analysis','export-png','export-svg',
   'ribbon-minimize','ribbon-cycle','ribbon-display','palette-picker','palette-lock','palette-reset','ui-workspaces','reference-graph','graph-load','graph-fit','graph-clear','command-line','command-history',
-  'legacy','reset-ui','help','block-create','block-redefine','block-rename','hatch-create','hatch-edit'
+  'legacy','reset-ui','help','block-create','block-redefine','block-rename','hatch-create','hatch-edit',
+  'command-search','quick-access-customize','reference-query:explore','reference-query:components','reference-query:path','reference-query:impact'
 ]);
 const readRoutes = new Set(['state', 'graph', 'hatch/pattern', 'resources', 'attributes', 'attribute-definitions', 'modules', 'edit-previews', 'workflow/status', 'workflow/export', 'block-libraries']);
 const readPostRoutes = new Set(['graph/query','modules/symbols','modules/analyze','health','references/capture','references/validate','insert-preview']);
@@ -36,7 +37,7 @@ export const studioUiActions = Object.freeze([
   { name: 'viewport.pan', description: 'Pan by a delta in drawing units.', arguments: { dx: 10, dy: 0 } },
   { name: 'viewport.zoom', description: 'Zoom by a positive factor.', arguments: { factor: 1.5 } },
   { name: 'viewport.fit', description: 'Fit the current drawing bounds.' },
-  { name: 'palette.show', description: 'Show Properties, Layers, Blocks, Explorer, Workspaces, Graph, Modules, Health, Edit previews, or Diagnostics.', arguments: { name: 'Properties' } },
+  { name: 'palette.show', description: 'Show Properties, Layers, Blocks, Explorer, Workspaces, Graph, References, Modules, Health, Edit previews, Workflows, or Diagnostics.', arguments: { name: 'Properties' } },
   { name: 'ribbon.show', description: 'Select a ribbon tab.', arguments: { name: 'Home' } },
   { name: 'settings.set', description: 'Set grid, snap, ortho, polar, osnap, dynamic, tracking, gridStep, snapModes, polarAngle or polarTolerance.' },
   { name: 'document.activate', description: 'Activate an open drawing.', arguments: { id: 'document ID' } },
@@ -63,7 +64,17 @@ export function installStudioControl(host) {
     /^module-(?:open|command):[a-z0-9-]+:[a-z0-9-]+$/.test(name) && client.data?.modules?.some(m=>m.enabled&&m.id===name.split(':')[1]);
   const publicNode = node => !!node && !node.closest('[data-agent-private], .agent-workspace') &&
     node.getAttribute('type') !== 'password' && node.getAttribute('type') !== 'file';
-  const visible = node => !node.hidden && !node.closest('[hidden]') && (!node.getClientRects || node.getClientRects().length > 0);
+  const visible = node => !node.hidden && !node.closest('[hidden], [inert]') && (!node.getClientRects || node.getClientRects().length > 0);
+  function activeModal() {
+    let dialogs;
+    try { dialogs = [...root.querySelectorAll('dialog:modal')]; }
+    catch { dialogs = [...root.querySelectorAll('dialog[open]')]; }
+    // Focus identifies the top dialog when several native modal dialogs are stacked.
+    // Include private dialogs here: their background must remain inert even though
+    // none of their controls or contents may be exposed to an agent.
+    return dialogs.find(dialog => dialog.contains?.(root.activeElement)) || dialogs.at(-1) || null;
+  }
+  const actionable = (node, modal = activeModal()) => publicNode(node) && visible(node) && (!modal || modal.contains(node));
   function descriptor(node) {
     if (!publicNode(node)) return null;
     let id = controlIds.get(node);
@@ -86,12 +97,18 @@ export function installStudioControl(host) {
   }
   function inspect() {
     controls.clear();
-    const nodes = [...root.querySelectorAll('#studio button, #studio input, #studio select, #studio textarea, #dialog button, #dialog input, #dialog select, #dialog textarea')]
-      .filter(node => publicNode(node) && visible(node));
-    const dialog = root.getElementById('dialog');
+    const modal = activeModal();
+    const nodes = [...(modal || root).querySelectorAll(modal ? 'button, input, select, textarea' :
+      '#studio button, #studio input, #studio select, #studio textarea, #dialog button, #dialog input, #dialog select, #dialog textarea, .command-access-dialog button, .command-access-dialog input, .command-access-dialog select')]
+      .filter(node => actionable(node, modal));
+    const legacyDialog = root.getElementById('dialog');
+    const labelledBy = modal?.getAttribute('aria-labelledby')?.split(/\s+/).map(id => root.getElementById(id)).filter(publicNode)
+      .map(node => node.textContent).join(' ');
     return {
       controls: nodes.slice(0, 400).map(descriptor), truncated: nodes.length > 400,
-      dialog: dialog?.open ? { title: root.getElementById('dialog-title')?.textContent, text: root.getElementById('dialog-body')?.textContent?.slice(0, 8000) } : null,
+      dialog: modal && publicNode(modal) ? (modal === legacyDialog
+        ? { title: root.getElementById('dialog-title')?.textContent, text: root.getElementById('dialog-body')?.textContent?.slice(0, 8000) }
+        : { title: (labelledBy || modal.getAttribute('aria-label') || 'Dialog').slice(0, 180) }) : null,
       pending: [...pending].map(([id, item]) => ({ id, name: item.name, status: item.status, error: item.error }))
     };
   }
@@ -211,7 +228,7 @@ export function installStudioControl(host) {
         return deferred(args.name, () => host.action(args.name));
       case 'ui.control': {
         const node = controls.get(args.id);
-        if (!node || !node.isConnected || !publicNode(node) || !visible(node)) throw new Error('The control has changed. Inspect the UI again.');
+        if (!node || !node.isConnected || !actionable(node)) throw new Error('The control has changed. Inspect the UI again.');
         if (node.disabled) throw new Error('The requested control is disabled.');
         if (args.operation === 'click') {
           if (node.dataset.action && knownAction(node.dataset.action)) return deferred(node.dataset.action, () => host.action(node.dataset.action));
@@ -235,7 +252,7 @@ export function installStudioControl(host) {
       }
       case 'dialog.submit': {
         const dialog = root.getElementById('dialog');
-        if (!dialog?.open) throw new Error('No drawing dialog is open.');
+        if (!dialog?.open || activeModal() !== dialog || !publicNode(dialog)) throw new Error('No active drawing dialog is open.');
         if (args.accept === true && !root.getElementById('dialog-form').reportValidity()) throw new Error('Complete the required dialog fields.');
         dialog.close(args.accept === true ? 'ok' : 'cancel'); await Promise.resolve(); break;
       }

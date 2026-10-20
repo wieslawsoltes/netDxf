@@ -2,7 +2,7 @@
 
 Open the **Graph** ribbon or enter `GRAPH` / `TOPOLOGY`. **Visualize topology** loads source-linked geometry into the drawing; the Graph palette stays independent of Properties. Color connected components or topology features, show node/edge IDs, dim the underlying drawing, and fit the loaded graph. **Inspect in drawing** picks a node or edge without changing selection. Edge inspection identifies its leaf entity, occurrence and root INSERT; **Select source in drawing** explicitly selects that root for native Properties/editing. No source selection occurs just by loading or highlighting a graph.
 
-The Graph ribbon exposes every topology operation below. Choose an operation, set its inputs and run analysis. Paths support **Pick start node** and **Pick end node** directly in the viewport. Escape cancels graph picking without clearing drawing selection. Component results load their visual projection; cycle results open their ordered geometry. Paths, traversal, node/edge and feature queries, cycles and spanning forests can highlight and fit their loaded results. Result JSON and graph JSON/SVG exports retain the displayed subset and source identity.
+The Graph ribbon exposes every topology operation below. Choose an operation, set its inputs and run analysis. Paths support **Pick start node** and **Pick end node** directly in the viewport. Escape cancels graph picking without clearing drawing selection. Component results load their visual projection; cycle results open their ordered geometry. Paths, traversal, node/edge and feature queries, cycles and spanning forests can highlight and fit their loaded results. JSON exports retain the loaded results, source identity, options and coverage. SVG exports retain the rendered subset, object/edge titles and descriptive coverage; they do not embed the complete document/workspace/revision/build identity.
 
 A projection loads up to 2,000 nodes and 4,000 edges per request, shortened automatically to fit the host response budget. **Load more topology** follows the actual continuation cursors. **Load remaining topology (bounded)** follows up to 40 continuation pages per activation; repeat to continue, within the browser workspace's 10,000-node / 20,000-edge display limits. Clear overlay, hiding the palette or changing its inputs cancels pending continuation. Node and edge pages are independent; each edge carries endpoint coordinates even when its nodes are on another page. Component/entity/root entity/occurrence filters keep global graph IDs. Counts clearly distinguish loaded geometry from matching totals and partial coverage. A bounded full-result action loads at most 4,000 items / 40 pages; result cards display at most 200 items. Traversal keeps its own explicit visit/depth limits. Labels are bounded to 300 visible items. The overview thumbnail is limited to 600 nodes / 1,200 edges; the main viewport uses all loaded geometry. Tighten filters to inspect large drawings. Geometric topology is an XY visual projection of sampled semantic curves, not a discipline connectivity model or a 3D graph layout.
 
@@ -103,3 +103,51 @@ describes its displayed subset. Selection is an explicit action available only
 for exact active drawing roots present in the current bounded scene listing.
 Nested definition objects and resources remain inspectable without pretending
 they are directly selectable drawing occurrences.
+
+The References palette also exposes three directed analyses, with shortcuts in
+the Graph ribbon and command search:
+
+- **Cyclic dependency groups** partitions the bounded exploration into strongly
+  connected components and reports references between components. A singleton
+  with a self-reference is cyclic. Ownership and back-references often form
+  legitimate cycles; this is structural information, not a drawing defect report.
+  A partial exploration can split a larger component, so it cannot establish
+  global acyclicity or maximal groups.
+- **Dependency path** finds a path with the fewest references between two source
+  objects, either outgoing or incoming. Every step retains its exact property
+  path and stored source-to-target orientation. Results distinguish Found,
+  Unreachable and Incomplete. A budget-exhausted search never claims absence or
+  skips an earlier candidate and labels a longer route shortest.
+- **Reference impact** follows incoming links from one or more seed objects.
+  Each visit records a predecessor and exact property link. Inspecting a visit
+  expands a shortest chain back to a seed, explaining why the object was reached.
+  This is structural reachability; it does not simulate changes or predict
+  engineering effects.
+
+The reusable APIs are `ReferenceGraphIndex.StronglyConnectedComponents`,
+`ShortestPath` and `Impact`. SCC analysis is iterative; impact stores a predecessor
+forest rather than a separate full path for every visited node. The MCP tools
+`graph_reference_components`, `graph_reference_path` and `graph_reference_impact`
+use the same snapshot identity and response-budget contracts as exploration.
+Queries run against the captured source index rather than the currently loaded
+diagram page. Inputs, drawing changes and cancelled requests invalidate displayed
+results. JSON exports retain the analysis, source identities, inputs and coverage
+limits. SVG exports describe the rendered subset and coverage; a condensation
+SVG uses component IDs rather than individual source-object identities.
+
+Path queries require `source` and `target` object IDs and accept `direction`
+(`outgoing` or `incoming`). Component queries accept `roots` and `direction`;
+impact queries accept `roots` and always traverse incoming references. All three
+support `depth`, `maximumNodes` and `maximumEdges`. Path defaults are depth 16,
+1,000 nodes and 4,000 examined edges; component/impact defaults are depth 2,
+100 nodes and 500 edges.
+
+Analysis responses have four independent page streams: `nodes`, `edges`,
+`results` (component summaries) and `links` (condensation edges). Continue each
+using its returned `nextOffset` as `nodeOffset`, `edgeOffset`, `resultOffset` or
+`linkOffset`, preserving inputs and `referenceKey`. Corresponding limits are
+`nodeLimit`/`resultLimit` (default 100, maximum 200) and
+`edgeLimit`/`linkLimit` (default 200, maximum 500). The host may shorten each stream
+to fit its serialized response budget. Path and impact still return the empty
+`results` and `links` streams. Exhausted streams use their total as the offset
+while other streams continue.
