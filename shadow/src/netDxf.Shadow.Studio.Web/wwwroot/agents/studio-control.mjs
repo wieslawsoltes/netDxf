@@ -4,7 +4,7 @@ const actionNames = new Set([
   'properties','layers','blocks','explorer','workspaces','diagnostics','agents','modules','health','edit-previews','workflows','block-edit','block-save','block-close','block-insert','block-library-import','block-library-export', 'layer-manager', 'layer-states', 'attributes', 'attribute-sync', 'attribute-definitions', 'attribute-create', 'linetypes', 'text-styles',
   'new','demo','open','save','save-as','font','undo','redo','fit','regen','zoom-in','zoom-out','pan','palette','dock','clean',
   'settings','layer-new','assign-layer','snapshot','snapshots','fork','annotation','linetype','graph','graph-analysis','export-png','export-svg',
-  'ribbon-minimize','ribbon-cycle','ribbon-display','palette-picker','palette-lock','palette-reset','graph-load','graph-fit','graph-clear','command-line','command-history',
+  'ribbon-minimize','ribbon-cycle','ribbon-display','palette-picker','palette-lock','palette-reset','ui-workspaces','reference-graph','graph-load','graph-fit','graph-clear','command-line','command-history',
   'legacy','reset-ui','help','block-create','block-redefine','block-rename','hatch-create','hatch-edit'
 ]);
 const readRoutes = new Set(['state', 'graph', 'hatch/pattern', 'resources', 'attributes', 'attribute-definitions', 'modules', 'edit-previews', 'workflow/status', 'workflow/export', 'block-libraries']);
@@ -151,10 +151,10 @@ export function installStudioControl(host) {
         viewport.changed(); break;
       case 'viewport.fit': viewport.fit(); break;
       case 'palette.show':
-        if (!['Properties', 'Layers', 'Blocks', 'Explorer', 'Workspaces', 'Graph', 'Modules', 'Health', 'Edit previews', 'Workflows', 'Diagnostics'].includes(args.name)) throw new Error('Unknown drawing palette.');
+        if (!['Properties', 'Layers', 'Blocks', 'Explorer', 'Workspaces', 'Graph', 'References', 'Modules', 'Health', 'Edit previews', 'Workflows', 'Diagnostics'].includes(args.name)) throw new Error('Unknown drawing palette.');
         host.showPalette(args.name); break;
       case 'ribbon.show':
-        if (!['Home', 'Insert', 'Annotate', 'Graph', 'View', 'Manage', 'Output'].includes(args.name) && !client.data?.modules?.some(m=>m.enabled&&`module:${m.id}`===args.name)) throw new Error('Unknown ribbon tab.');
+        if (!['Home', 'Insert', 'Annotate', 'Graph', 'View', 'Manage', 'Output'].includes(args.name) && !(args.name==='Block Editor'&&client.data?.blockEditor) && !client.data?.modules?.some(m=>m.enabled&&!client.data?.blockEditor&&`module:${m.id}`===args.name)) throw new Error('Unknown ribbon tab.');
         host.showRibbon(args.name); break;
       case 'settings.set': {
         const settings = { ...viewport.settings };
