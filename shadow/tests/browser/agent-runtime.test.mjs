@@ -385,6 +385,10 @@ test('semantic Studio controls validate all settings before mutation and fence t
   for (const name of ['layer-states','attributes','attribute-definitions','attribute-create','graph-analysis','ribbon-minimize','command-line','command-history'])
     await ui.execute('ui.action',{name},'a');
   assert.deepEqual(actions,['layer-states','attributes','attribute-definitions','attribute-create','graph-analysis','ribbon-minimize','command-line','command-history']);
+  const discovery=['command-search','quick-access-customize','reference-query:explore','reference-query:components','reference-query:path','reference-query:impact'];
+  for(const name of discovery)await ui.execute('ui.action',{name},'a');
+  assert.deepEqual(actions.slice(-discovery.length),discovery);
+  await assert.rejects(ui.execute('ui.action',{name:'reference-query:mutate'},'a'),/Unknown Studio action/);
   host.client.key='a/live/1';
   host.edit=async (...args)=>selections.push(args);
   const body={state:{action:'restore',id:{value:'state:1'},fields:64}};
@@ -409,4 +413,85 @@ test('semantic Studio controls validate all settings before mutation and fence t
   const insertion={insert:{command:{name:'INSERT',reference:{value:'H:12'},points:[{x:1,y:2}]},attributes:[{definition:{value:'H:13'},value:'P-101'}]}};
   await ui.execute('cad.edit',{path:'insert',body:insertion},'a');
   assert.deepEqual(selections[5],['insert',insertion,{expectedKey:'a/live/1'}]);
+});
+
+function semanticModalFixture(t) {
+  const previous = globalThis.shadowStudioAgentUi;
+  t.after(() => { globalThis.shadowStudioAgentUi = previous; });
+  const nodes = [], modals = [], clicks = [];
+  function node(id, {tag='BUTTON', type=null, label=id, parent=null, privateNode=false, inert=false, value=''} = {}) {
+    const attributes = { 'aria-label': label, ...(type ? {type} : {}) };
+    const item = {id,tagName:tag,type,dataset:{},parent,isConnected:true,disabled:false,hidden:false,value,textContent:label,
+      privateNode,inert,children:[],getAttribute:name=>attributes[name]??null,
+      closest(selector){
+        for(let n=this;n;n=n.parent){
+          if(selector.includes('data-agent-private') && n.privateNode)return n;
+          if(selector.includes('[hidden]') && n.hidden)return n;
+          if(selector.includes('[inert]') && n.inert)return n;
+        }return null;
+      },
+      contains(other){for(let n=other;n;n=n.parent)if(n===this)return true;return false;},
+      querySelectorAll(){return nodes.filter(n=>n!==this&&this.contains(n)&&['BUTTON','INPUT','SELECT','TEXTAREA'].includes(n.tagName));},
+      getClientRects:()=>[{}],click(){clicks.push(id);},dispatchEvent(){},
+      close(){item.open=false;const i=modals.indexOf(item);if(i>=0)modals.splice(i,1);}
+    };
+    nodes.push(item);if(parent)parent.children.push(item);return item;
+  }
+  const root={activeElement:null,
+    querySelectorAll(selector){return selector==='dialog:modal'||selector==='dialog[open]'?[...modals]:nodes.filter(n=>['BUTTON','INPUT','SELECT','TEXTAREA'].includes(n.tagName));},
+    getElementById:id=>nodes.find(n=>n.id===id)||null};
+  const modal=(id,options={})=>{const item=node(id,{tag:'DIALOG',...options});item.open=true;modals.push(item);return item;};
+  const host={document:root,client:{id:'drawing',data:null,busy:false},viewport:{camera:{},settings:{}},documents:()=>[],currentLayer:()=>'',ribbon:()=>'',palette:()=>'',retainedSnapshot:()=>null,command:()=>null};
+  return {ui:installStudioControl(host),root,node,modal,modals,clicks};
+}
+
+test('semantic inspection exposes active modal controls instead of four hundred background controls', async t=>{
+  const f=semanticModalFixture(t);
+  for(let i=0;i<450;i++)f.node(`background-${i}`);
+  const before=f.ui.inspect();assert.equal(before.controls.length,400);assert.equal(before.truncated,true);
+  const oldBackground=before.controls[0].id;
+  const dialog=f.modal('command-search',{label:'Search commands'});
+  const input=f.node('search-query',{tag:'INPUT',type:'search',label:'Search commands',parent:dialog});
+  f.node('close-search',{label:'Close command search',parent:dialog});
+  f.root.activeElement=input;
+  // An ID captured before the modal opened cannot be used to click its inert background.
+  await assert.rejects(f.ui.execute('ui.control',{id:oldBackground,operation:'click'}),/control has changed/);
+  const visible=f.ui.inspect();assert.deepEqual(visible.controls.map(c=>c.elementId),['search-query','close-search']);
+  assert.equal(visible.truncated,false);assert.equal(visible.dialog.title,'Search commands');
+  await f.ui.execute('ui.control',{id:visible.controls[1].id,operation:'click'});
+  assert.deepEqual(f.clicks,['close-search']);
+  dialog.close();f.root.activeElement=null;
+  const after=f.ui.inspect();assert.equal(after.controls[0].elementId,'background-0');
+});
+
+test('semantic modal inspection preserves private-field exclusions and stays bounded', t=>{
+  const f=semanticModalFixture(t),dialog=f.modal('command-search');
+  const secret=f.node('secret',{tag:'INPUT',type:'password',value:'never expose',parent:dialog});
+  f.node('file',{tag:'INPUT',type:'file',value:'private file',parent:dialog});
+  const privateGroup=f.node('private',{tag:'SECTION',privateNode:true,parent:dialog});
+  f.node('private-input',{tag:'INPUT',value:'private value',parent:privateGroup});
+  const inertGroup=f.node('inert',{tag:'SECTION',inert:true,parent:dialog});f.node('inert-button',{parent:inertGroup});
+  for(let i=0;i<450;i++)f.node(`result-${i}`,{parent:dialog});
+  f.root.activeElement=secret;const result=f.ui.inspect();
+  assert.equal(result.controls.length,400);assert.equal(result.controls[0].elementId,'result-0');assert.equal(result.truncated,true);
+  assert.doesNotMatch(JSON.stringify(result),/never expose|private file|private value|inert-button/);
+});
+
+test('private top modal hides its contents and blocks previously inspected public modal actions', async t=>{
+  const f=semanticModalFixture(t),drawing=f.modal('dialog',{label:'Drawing settings'});
+  const confirm=f.node('confirm',{parent:drawing});f.root.activeElement=confirm;
+  const control=f.ui.inspect().controls[0].id;
+  const privateDialog=f.modal('agent-auth',{privateNode:true,label:'Private authentication'});
+  const token=f.node('token',{tag:'INPUT',value:'never expose',parent:privateDialog});f.root.activeElement=token;
+  await assert.rejects(f.ui.execute('ui.control',{id:control,operation:'click'}),/control has changed/);
+  await assert.rejects(f.ui.execute('dialog.submit',{accept:false}),/No active drawing dialog/);
+  const result=f.ui.inspect();assert.deepEqual(result.controls,[]);assert.equal(result.dialog,null);
+  assert.doesNotMatch(JSON.stringify(result),/authentication|never expose/);assert.deepEqual(f.clicks,[]);
+});
+
+test('top modal scope follows native focus rather than dialog DOM order', async t=>{
+  const f=semanticModalFixture(t),first=f.modal('first'),firstButton=f.node('first-button',{parent:first}),second=f.modal('second');
+  f.node('second-button',{parent:second});f.root.activeElement=firstButton;
+  assert.deepEqual(f.ui.inspect().controls.map(c=>c.elementId),['first-button']);
+  f.root.activeElement=null;assert.deepEqual(f.ui.inspect().controls.map(c=>c.elementId),['second-button']);
 });
