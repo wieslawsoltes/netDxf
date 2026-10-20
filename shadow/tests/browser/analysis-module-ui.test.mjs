@@ -2,12 +2,20 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {moduleTools} from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/module-ui.mjs';
 import {analysisTools} from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/analysis-ui.mjs';
+import {el} from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/ui.mjs';
 import {all,byText,byLabel,gate,tick,installDom} from './ui-fixture.mjs';
 
 const descriptor={id:'pid',name:'P&ID',commands:[],standards:[]};
 const state=()=>({documentId:'document',workspaceId:'live',revision:0,viewVersion:1,layout:'Model'});
 const symbol=name=>({name,version:'1.0',category:'Equipment',units:'Millimeters',basePoint:{x:0,y:0,z:0},attributes:[],ports:[]});
 const page=name=>({total:1,items:[symbol(name)]});
+test('optional discipline fields do not carry a truthy HTML required attribute',t=>{
+  installDom(t);
+  for(const value of [false,undefined,null]){
+    const input=el('input',{required:value});assert.equal(input.required,false);assert.equal(input.getAttribute('required'),null);
+  }
+  assert.equal(el('input',{required:true}).required,true);
+});
 const analysis=(code,count=0)=>({records:Array.from({length:count},(_,i)=>({entity:{value:`H:${i}`},tag:`Item ${i}`,class:'Equipment',properties:{},ports:[]})),issues:[{code,message:code,entities:[]}],complete:true});
 async function modules(t,section='symbols'){
   const root=installDom(t),reads=[],errors=[];
