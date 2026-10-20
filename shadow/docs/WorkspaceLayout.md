@@ -46,9 +46,10 @@ to keyboard and touch users, and the layout lock also prevents drag docking.
 The Drafting and Graph analysis presets provide starting arrangements.
 Dependency analysis opens a wider References/Graph tab group beside Properties.
 Save the
-current palette groups/sizes, ribbon display/tab, Quick Access commands and command-line visibility under
+current palette groups/sizes/transparency, ribbon display/tab/customization, Quick Access commands and command-line visibility under
 a name, then apply, update, rename or delete it later. Up to 24 layouts are stored
-locally in the browser. `WORKSPACE` and `WSSAVE` open the same manager. This follows
+locally in the browser, within a shared 512,000-character storage budget. Oversized
+saves or updates preserve all existing profiles and report the limit. `WORKSPACE` and `WSSAVE` open the same manager. This follows
 the task-oriented display arrangement described in Autodesk's
 [workspace documentation](https://help.autodesk.com/cloudhelp/2020/ENU/AutoCAD-Core/files/GUID-52902E88-41B8-4890-A2FF-E47332CBD0D8.htm).
 Drawing branches remain under **Immutable workspaces**. UI layouts exclude
@@ -86,8 +87,7 @@ The interaction conventions follow Autodesk's documentation for
 [tool palette docking, anchoring and floating](https://help.autodesk.com/cloudhelp/2023/ENU/AutoCAD-Core/files/GUID-6EF21814-B9FB-4F2A-897E-852B25679D17.htm)
 and [ribbon display modes](https://help.autodesk.com/cloudhelp/2023/ENU/AutoCAD-LT/files/GUID-627FCA86-38B1-404B-BB09-9FC3348B54F2.htm).
 Studio implements these workspace patterns in a browser; it does not claim
-AutoCAD CUI compatibility, tear-off ribbon panels, palette transparency or
-multi-monitor native windows.
+AutoCAD CUIx compatibility or multi-monitor native windows.
 
 `palette-layout.mjs` is a pure, bounded preference and layout model.
 `PaletteDock` in `palette-docking.mjs` accepts palette descriptors, render and
@@ -115,3 +115,49 @@ explicit updates and injected storage. `workspace-profile-ui.mjs` uses host
 capture/restore callbacks; `PaletteDock.restore()` cancels gestures and old content
 lifetimes before restoring a sanitized, viewport-clamped layout. These components
 are shared by native and standalone WASM Studio.
+
+## Ribbon customization and floating panels
+
+`CUI` or **Manage → Customize ribbon** opens a draft editor. Show/hide and order
+built-in tabs and their panels, create up to eight custom tabs and 24 custom
+panels, and add up to 32 registered commands per panel. Availability is checked
+again at execution, so a saved button cannot bypass drawing, selection, block
+editor or discipline restrictions. Home and block save/discard controls stay
+recoverable. Apply saves; Cancel leaves the active ribbon unchanged.
+
+Import/export uses bounded Studio JSON (128 KiB), containing command identities
+and UI preferences. Unknown command identities stay disabled. Executable macros,
+CUIx files and arbitrary drawing payloads are not accepted. Named UI workspaces
+capture the same configuration. Explicit save errors are reported; restoring a
+workspace can still apply in memory if optional browser storage is unavailable.
+
+Drag a panel title out of the ribbon or use its **Float** button. A floating panel
+keeps its original controls across tab changes. Move it by pointer or arrow keys
+(Shift for one-pixel steps), cancel a drag with Escape, or use **Return**. Positions
+are clamped to the viewport. Hiding its tab/panel or disabling its discipline
+suspends the floating controls while retaining the preference. Block definition
+save/discard controls remain on the ribbon. Up to 16 panels can float.
+
+`ribbon-customization.mjs` supplies a pure preference model and injected storage;
+`ribbon-customization-ui.mjs` binds the editor to the command catalog.
+`ribbon-floating.mjs` handles pointer/keyboard movement and lifecycle within the
+browser workspace. These are shared web-package assets, not operating-system
+windows.
+
+## Palette transparency
+
+The palette layout menu's **Transparency…** dialog sets normal and rollover
+opacity (0–100%). Rollover opacity cannot be lower than normal opacity. A preview
+shows both states before Apply; Cancel and Escape discard the draft. Apply to all
+palettes is explicit. **Disable all palette transparency** is also available in
+the Palettes launcher for recovery. Docked palettes and palettes containing
+keyboard focus or an open layout menu remain opaque. Floating and anchored
+palettes use the saved values. Appearance remains editable with positions locked.
+
+This follows the controls described in Autodesk's
+[Transparency dialog](https://help.autodesk.com/cloudhelp/2022/ENU/AutoCAD-Core/files/GUID-B04E43D3-2BA0-4230-82C1-8B7140EA4559.htm)
+and [PALETTEOPAQUE behavior](https://help.autodesk.com/cloudhelp/2025/ENG/AutoCAD-Core/files/GUID-32C9D125-6D80-4C1B-A51D-3F48854BD1E4.htm).
+Keeping keyboard-focused controls opaque is Studio's accessibility behavior.
+`palette-appearance.mjs` supplies reusable normalization, effective opacity and
+an isolated draft dialog. Preferences belong to the workspace, never to drawing
+entity transparency or undo history.
