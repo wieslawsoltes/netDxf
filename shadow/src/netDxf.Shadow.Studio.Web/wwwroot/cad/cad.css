@@ -1,4 +1,5 @@
 @import url('./ribbon.css');
+@import url('./selection-cycling.css');
 @import url('./graph.css');
 @import url('./reference-graph.css');
 :root { color-scheme: dark; font: 12px 'Segoe UI', Arial, sans-serif; --chrome:#30343a; --panel:#272b31; --edge:#171a1f; --text:#e2e5eb; --muted:#a3acba; --accent:#58baff; --palette-width:290px; --command-height:90px; }
