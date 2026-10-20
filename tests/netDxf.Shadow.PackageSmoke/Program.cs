@@ -275,18 +275,34 @@ internal static class Program
             structure.StrongComponents.Sum(c => c.PortCount) == connectivity.Nodes.Length &&
             structure.CriticalConnections.All(c => connectivity.Edges.Any(e => e.Id == c.Id)),
             "Installed discipline structure lost port membership or connection identity.");
+        var isolation = connectivity.AnalyzeIsolation(inlet.Id, outlet.Id, excludedPorts: [outlet.Id]);
+        Require(isolation.ScopeComplete && isolation.Before.TargetStatus == "reachable" &&
+            isolation.After.TargetStatus == "excluded" && isolation.ProofTo(outlet.Id, after: false).Edges.Length == 1,
+            "Installed isolation analysis lost exclusion classification or its exact baseline proof.");
+        var schedule = DomainSchedule.Build(librarySource, "pid", options: new(GroupBy: "class"));
+        var pipes = schedule.Rows.Where(row => row.Class == "pipe").ToArray();
+        Require(schedule.Complete && schedule.Rows.Length == 26 && pipes.Length > 0 &&
+            pipes.All(row => row.SegmentLength > 0) &&
+            schedule.Groups.Single(group => group.Value == "pipe").SegmentLength == pipes.Sum(row => row.SegmentLength ?? 0),
+            "Installed discipline schedule lost grouped source lengths or complete root membership.");
         // Exercise the shared indexed kernel through the installed Graph dependency.
         var indexed = IndexedGraphAnalysis.StrongComponents(3, [new(0, 1), new(1, 0), new(1, 2)]);
         var cuts = IndexedGraphAnalysis.LowLinks(3, [new(0, 1), new(0, 1), new(1, 2)]);
         Require(indexed.ComponentCount == 2 && indexed.Membership[0] == indexed.Membership[1] &&
             indexed.Membership[1] != indexed.Membership[2] && cuts.Bridges.SequenceEqual([2]) &&
             cuts.ArticulationPoints.SequenceEqual([1]), "Installed indexed graph kernels lost multigraph semantics.");
-        using (var graphDxf = new MemoryStream())
+        foreach (var binary in new[] { false, true })
         {
-            Require(demo.Save(graphDxf, true), "Installed connectivity DXF save failed."); graphDxf.Position = 0;
-            var importedGraph = DomainConnectivity.Build(new ShadowSession(DxfDocument.Load(graphDxf)).Current, "pid");
+            using var graphDxf = new MemoryStream();
+            Require(demo.Save(graphDxf, binary), "Installed connectivity DXF save failed."); graphDxf.Position = 0;
+            var importedSourceGraph = new ShadowSession(DxfDocument.Load(graphDxf)).Current;
+            var importedGraph = DomainConnectivity.Build(importedSourceGraph, "pid");
             Require(importedGraph.ShortestPath(inlet.Id, outlet.Id, "forward").Path!.Edges.SequenceEqual(passageProof.Edges),
                 "Installed connectivity port identities or passage directions did not survive DXF import.");
+            var importedSchedule = DomainSchedule.Build(importedSourceGraph, "pid", options: new(GroupBy: "class"));
+            Require(importedSchedule.Complete && importedSchedule.Groups.SequenceEqual(schedule.Groups) &&
+                importedSchedule.Rows.Select(row => row.Key).Order().SequenceEqual(schedule.Rows.Select(row => row.Key).Order()),
+                "Installed schedule metadata groups or source lengths did not survive native DXF import.");
         }
         var report = new netDxf.Shadow.Pid.PidModule().Analyze(new ShadowSession(demo).Current);
         Require(report.Complete && report.Records.Length == 26 && report.Issues.IsEmpty,

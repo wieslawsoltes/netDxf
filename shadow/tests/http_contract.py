@@ -215,8 +215,25 @@ def run(dotnet: str, configuration: str, published: Path | None = None) -> None:
             assert structure['portStructures']['total'] == structure['nodes']['total']
             assert request(prefix + '/state')['state'] == before_network
             passed('discipline structure exposes separate bounded membership and proof streams')
+            isolation = request(prefix + '/modules/connectivity', {**query, 'operation': 'isolation',
+                                'source': network['nodes']['items'][0]['id']}, before_network)
+            assert isolation['isolation']['after']['visitedCount'] > 0
+            assert isolation['assessments']['total'] == isolation['nodes']['total']
+            assert request(prefix + '/state')['state'] == before_network
+            passed('isolation HTTP results expose bounded before-after reachability without edits')
+            schedule = request(prefix + '/modules/schedule', query, before_network)
+            assert schedule['rows']['total'] > 1 and schedule['rows']['nextOffset'] == 1
+            more_schedule = request(prefix + '/modules/schedule',
+                                    {**query, 'scheduleKey': schedule['scheduleKey'], 'rowOffset': 1}, before_network)
+            assert more_schedule['rows']['offset'] == 1 and more_schedule['scheduleKey'] == schedule['scheduleKey']
+            request(prefix + '/modules/schedule', query, expected=409, custom={'X-Shadow-Studio': '1'})
+            request(prefix + '/modules/schedule', {**query, 'scheduleKey': schedule['scheduleKey'],
+                                                 'options': {'query': 'changed'}}, before_network, expected=409)
+            assert request(prefix + '/state')['state'] == before_network
+            passed('discipline schedules page exact query receipts and require current identity')
             disabled = post(prefix + '/modules/toggle', before_network, module='pid', enabled=False)['state']
             request(prefix + '/modules/connectivity', {**query, 'revision': disabled['revision']}, disabled, expected=400)
+            request(prefix + '/modules/schedule', {**query, 'revision': disabled['revision']}, disabled, expected=400)
             post(prefix + '/close', disabled, discard=True)
             passed('discipline connectivity HTTP paging is read-only identity-bound and rejects disabled modules')
             for asset in ['/', '/studio.js', '/studio-state.mjs', '/workspaces.css']:

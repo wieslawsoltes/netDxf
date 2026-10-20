@@ -85,6 +85,8 @@ def verify_domain_isolation(page, output, state, command, wait_state, idle, chec
     before = state()
     baseline = run(view, 'discipline-isolation-baseline.json')
     removed = next(e['id'] for e in baseline['edges'] if e['source'] == 'reroute/p0' and e['target'] == 'reroute/p1')
+    # Port search is a workspace preference retained across drawings and earlier graph fixtures.
+    view.get_by_label('Search connectivity ports', exact=True).fill('')
     view.get_by_role('button', name='REROUTE · p0', exact=True).click()
     view.get_by_role('button', name='Exclude connection '+removed, exact=True).click()
     expect(view.get_by_label('Excluded connection IDs', exact=True)).to_have_value(removed)
