@@ -21,6 +21,7 @@ internal sealed partial class BrowserApplication
         Cad("POST", "/api/cad/{id}/modules/toggle", (s, r) => s.CadSetModule(r.Body<CadModuleToggleRequest>()));
         Cad("POST", "/api/cad/{id}/modules/symbols", (s, r) => s.CadModuleSymbols(r.Body<CadModuleCatalogRequest>()));
         Cad("POST", "/api/cad/{id}/modules/analyze", (s, r) => s.CadAnalyzeModule(r.Body<CadModuleAnalysisRequest>(), Token));
+        Cad("POST", "/api/cad/{id}/modules/schedule", (s, r) => s.CadModuleSchedule(r.Body<CadModuleScheduleRequest>(), Token));
         Cad("POST", "/api/cad/{id}/modules/connectivity", (s, r) => s.CadModuleConnectivity(r.Body<CadModuleConnectivityRequest>(), Token));
         Cad("POST", "/api/cad/{id}/modules/command", (s, r) => s.CadRunModule(r.Body<CadModuleExecuteRequest>(), Token));
         Cad("POST", "/api/cad/{id}/references/capture", (s, r) => s.CaptureReferences(r.Body<DrawingReferenceCaptureRequest>()));

@@ -74,3 +74,33 @@ dotnet run --project shadow/tests/netDxf.Shadow.Samples.Verification
 ```
 
 The fixtures exercise native and planned placement, new blocks, attributes, Unicode, base points and unit transforms, undo/redo, text/binary DXF persistence, direct JSON discovery, pure route planning, reference continuity, malformed-data bounds, cancellation and partial reports, plus actual process-flow, reducer and circuit failures. Connectivity fixtures cover components, directed paths, predecessor proofs, legacy declarations, ambiguous keys, scan/search limits and metadata updates. Sample checks verify the explicit process network separately from the visible geometry and preserve the gallery layouts.
+
+
+## Searchable discipline schedules
+
+The **Data manager** now searches explicit metadata on active-layout roots,
+including hidden/frozen layers. Group by class, tag, circuit, service, spec, route,
+nominal size or another property; filter a group, sort and inspect source records.
+Group counts describe retained objects and distinct explicit route IDs. Lengths
+sum only straight pipe/wire/signal LINE segments in drawing units. They are not
+purchased quantities or inferred engineering calculations.
+
+`DomainSchedule.Build` in Symbols is host independent. It retains at most 10,000
+records and 16 MiB of metadata text; scans default to 10,000 roots and permit up to
+100,000. Unreadable metadata and invalid transformed ports report incomplete
+coverage. Nested symbol strokes do not become additional scheduled objects.
+
+Studio exposes `modules/schedule` on native/WASM and the read-only MCP tool
+`studio_module_schedule`. `CadModuleScheduleRequest` carries query, class,
+group field/value, sort/order, root limit and independent rows/groups/issues
+cursors. The schedule key binds the exact snapshot, workspace, view, layout,
+module configuration and options. Changing that scope requires a fresh query.
+Response budgets may shorten pages; always follow each actual cursor.
+
+The shared UI loads 100 requested records per page and at most 40 pages per bulk
+activation. JSON and CSV exports retain scope, units, query and coverage. Hidden
+roots remain inspectable but cannot be selected through an unloaded scene entry.
+**Edit schedule object data** prefills the discipline's supported update fields,
+checks the original drawing before and after the dialog, and applies one undoable
+transaction. Blank fields preserve existing values. Read, inspect, group and
+export operations do not select or edit the drawing implicitly.

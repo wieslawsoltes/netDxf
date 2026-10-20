@@ -1,4 +1,5 @@
 import { floatingRibbonPosition, protectedRibbonPanel, ribbonPanelKey } from './ribbon-customization.mjs';
+import { bindRovingToolbar } from './ribbon-keyboard.mjs';
 
 const button = (text, label) => {
   const node = document.createElement('button'); node.type = 'button'; node.textContent = text;
@@ -36,7 +37,7 @@ export class RibbonFloatingPanels {
       this.attach(group, spec); if (spec.tab === context.tab) attached.add(group);
     }
     for (const [id, frame] of this.frames) if (!keep.has(id)) {
-      this.focusLost ||= frame.element.contains(document.activeElement); frame.element.remove(); this.frames.delete(id);
+      this.focusLost ||= frame.element.contains(document.activeElement); frame.keyboard.dispose();frame.element.remove(); this.frames.delete(id);
     }
     return groups.filter(group => !attached.has(group));
   }
@@ -52,8 +53,14 @@ export class RibbonFloatingPanels {
       header.append(grip, back); const content = document.createElement('div'); content.className = 'ribbon-floating-content';
       element.append(header, content); this.host.append(element);
       frame = { element, content, grip, back, spec, group, position: spec, prefix: `floating-ribbon-${++floatingSerial}`, scoped: new WeakSet() }; this.frames.set(id, frame);
+      content.setAttribute('role','toolbar');content.setAttribute('aria-label',`${group.dataset.panel} commands`);
+      frame.keyboard=bindRovingToolbar(content,{items:()=>[...content.querySelectorAll('.ribbon-tools button')],onEscape:()=>grip.focus({preventScroll:true})});
+      grip.title='Move panel with arrow keys; Shift moves one pixel. Tab enters panel controls.';
+      grip.setAttribute('aria-description',grip.title);
       grip.addEventListener('pointerdown', event => this.beginGesture(event, frame.group, frame.spec));
       grip.addEventListener('keydown', event => {
+        if(event.defaultPrevented || event.isComposing)return;
+        if(event.key==='Escape'){event.preventDefault();event.stopPropagation();document.querySelector('#ribbon-tabs [aria-selected=true]')?.focus({preventScroll:true});return;}
         if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key) || event.ctrlKey || event.metaKey || event.altKey) return;
         event.preventDefault(); event.stopPropagation(); const step = event.shiftKey ? 1 : 10;
         const next = { ...frame.position, x: frame.position.x + (event.key === 'ArrowLeft' ? -step : event.key === 'ArrowRight' ? step : 0),
@@ -61,11 +68,16 @@ export class RibbonFloatingPanels {
         this.position(frame, next); this.persist(frame.spec, frame.position); this.frames.get(id)?.grip.focus({ preventScroll: true });
       });
       back.addEventListener('click', event => { event.preventDefault(); event.stopPropagation(); this.returnPanel(frame.spec); });
+      back.addEventListener('keydown',event=>{
+        if(event.key!=='Escape'||event.defaultPrevented||event.isComposing||event.ctrlKey||event.metaKey||event.altKey)return;
+        event.preventDefault();event.stopPropagation();document.querySelector('#ribbon-tabs [aria-selected=true]')?.focus({preventScroll:true});
+      });
     }
     frame.group = group; frame.spec = spec;
     frame.element.setAttribute('aria-label', `${group.dataset.panel} floating ribbon panel`);
     frame.grip.textContent = group.dataset.panel; frame.grip.setAttribute('aria-label', `Move floating ${group.dataset.panel} panel`);
     frame.back.setAttribute('aria-label', `Return ${group.dataset.panel} panel to ribbon`);
+    frame.content.setAttribute('aria-label',`${group.dataset.panel} commands`);
     // Live controls from different source tabs may share local IDs (for example
     // the current-layer selector). Keep label/ARIA relationships unique when both
     // tabs' controls are present at once.
@@ -83,7 +95,7 @@ export class RibbonFloatingPanels {
       const focused = frame.content.contains(document.activeElement);
       frame.content.replaceChildren(group); if (focused) frame.grip.focus({ preventScroll: true });
     }
-    this.position(frame, spec); return frame;
+    frame.keyboard.refresh();this.position(frame, spec); return frame;
   }
   position(frame, value) {
     frame.position = floatingRibbonPosition(value, frame.element.getBoundingClientRect(), { width: innerWidth, height: innerHeight });
@@ -135,13 +147,13 @@ export class RibbonFloatingPanels {
     const frame = this.frames.get(gesture.id);
     if (cancelled) {
       if (gesture.existing && frame) this.position(frame, gesture.original);
-      else if (frame) { frame.element.remove(); this.frames.delete(gesture.id); }
+      else if (frame) { frame.keyboard.dispose();frame.element.remove(); this.frames.delete(gesture.id); }
       if (redraw) this.changed();
     } else if (gesture.moved && frame) this.persist(gesture.spec, frame.position);
     if (gesture.focus?.isConnected) gesture.focus.focus({ preventScroll: true });
   }
   dispose() {
-    this.endGesture(true, null, false); for (const frame of this.frames.values()) frame.element.remove(); this.frames.clear();
+    this.endGesture(true, null, false); for (const frame of this.frames.values()){frame.keyboard.dispose();frame.element.remove();} this.frames.clear();
     document.removeEventListener('pointermove', this.move); document.removeEventListener('pointerup', this.up);
     document.removeEventListener('pointercancel', this.cancel); document.removeEventListener('keydown', this.escape, true);
     this.panel.removeEventListener('lostpointercapture', this.cancel); window.removeEventListener('resize', this.resize);

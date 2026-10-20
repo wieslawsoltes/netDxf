@@ -16,10 +16,10 @@ backlog, not claims of completion or new merge-blocking scope.
 | User requirement | Current implementation and evidence | Remaining work / completion evidence |
 | --- | --- | --- |
 | Rapid drawing creation, editing and a complete MCP toolset | Generic source/schema/collection/method tools, atomic drawing batches, typed Studio routes; MCP and AgentStudio verification programs | Build a per-native-entity/property/method coverage inventory, close unsupported authoring/editing shapes, and exercise them through actual Studio/MCP workflows. Generic reflection access alone does not prove safe full editing support. |
-| Full graph analysis in Studio | All existing geometric topology analyses have MCP and Graph workspace controls, source links, picking and exports. A separate directed source-reference explorer exposes incoming/outgoing object dependencies, cyclic groups, shortest dependency paths and impact proofs with exact property paths, snapshot keys, bounded paging and exports. Explicit discipline-port networks add components, paths, traces, strongly connected groups, condensation, weak cuts and bounded loop evidence. | Continue large/imported drawing validation and broader discipline engineering workflows. Geometric topology and source ownership/dependencies do not imply physical process connectivity or engineering simulation. |
-| AutoCAD-like ribbon and command/log visibility | Four ribbon display modes, contextual Block Editor tab, command search and customizable Quick Access, independent command/history visibility, clean screen, docked/floating/anchored palettes with edge-drop previews, tab groups, split sizing and docking permissions, and named UI workspace save/restore; Studio JSON ribbon customization, floating panels, palette transparency and portable UI workspace transfer; browser tests | Continue command discoverability and accessibility as commands are added. CUIx interoperability and native multi-monitor windows remain open. |
+| Full graph analysis in Studio | All existing geometric topology analyses have MCP and Graph workspace controls, source links, picking and exports. A separate directed source-reference explorer exposes incoming/outgoing object dependencies, cyclic groups, shortest dependency paths and impact proofs with exact property paths, snapshot keys, bounded paging and exports. Explicit discipline-port networks add components, paths, traces, strongly connected groups, condensation, weak cuts, bounded loop evidence and explicit isolation/rerouting studies with before/after proofs. | Continue large/imported drawing validation and broader discipline engineering workflows. Geometric topology and source ownership/dependencies do not imply physical process connectivity or engineering simulation. |
+| AutoCAD-like ribbon and command/log visibility | Four ribbon display modes, contextual Block Editor tab, command search and customizable Quick Access, independent command/history visibility, clean screen, docked/floating/anchored palettes with edge-drop previews, tab groups, split sizing and docking permissions, and named UI workspace save/restore; Studio JSON ribbon customization, floating panels, palette transparency and portable UI workspace transfer; shared roving keyboard navigation across ribbon, Quick Access, floating panels and workspace menus; browser tests | Continue command discoverability and accessibility as commands are added. CUIx interoperability and native multi-monitor windows remain open. |
 | Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; exact attribute history; shared instance editor, BATTMAN/ATTDEF for named blocks and standalone layout definitions, ATTSYNC previews, insertion-time value/verify prompts, cursor-following insertion previews, explicit insertion attributes and DXF block-library transfer with conflict policies/previews | Command-line -ATTDEF and richer definition text settings, duplicate-tag layout copying, library catalog/version workflows and remaining transfer metadata, richer insertion/array workflows and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
-| MOVE and other editing tools with drafting aids | MOVE/COPY/ROTATE/SCALE/MIRROR, basic topology edits, STRETCH/BREAK/BREAKATPOINT increment, overlap selection cycling, object/grid snap, Ortho/polar/tracking; native and browser regressions | Extend entity/coordinate-system coverage for each command, curve trim/extend/offset, reference/copy variants of transforms, richer arrays and additional acquisition modes. Existing planar restrictions remain material. |
+| MOVE and other editing tools with drafting aids | MOVE/COPY/ROTATE/SCALE/MIRROR, basic topology edits, STRETCH/BREAK/BREAKATPOINT increment, ROTATE/SCALE Reference and Copy acquisition, overlap selection cycling, object/grid snap, Ortho/polar/tracking; native and browser regressions | Extend entity/coordinate-system coverage for each command, curve trim/extend/offset, richer arrays and additional acquisition modes. Existing planar restrictions remain material. |
 | Full line, text style and layer UI | Managers expose supported table fields, complex linetypes, LIN import, fixed-height/font metadata, layer color/plot/lock/freeze/transparency; native layer-state save/update/rename/delete/selective restore with history and DXF persistence; browser-local property filters/groups, native undoable isolation, saved-entry editing, persisted restore masks and previewed LAS transfer with explicit resource mappings | Native filter dictionaries, automatic resource reconstruction, individual viewport overrides, plot-style workflows, text editing/formatting and externally referenced resource behavior. |
 | Token-efficient coding harness and provider caching | Bounded context/tool batches, caching configuration and usage, stable prefixes, checkpoint/compaction behavior; provider/agent fixtures | Verify supported provider/model combinations with opt-in real accounts, measure cache hits on repeated identical tasks, and compare quality/latency/cost. Fixtures do not establish actual provider cache performance. |
 | Coding-chat UI and reusable Markdown | Conversations, streaming/tool activity, approvals, execution modes, references, external-agent panels and reusable Markdown assets; browser fixtures | Continue conversation editing/branching/search and accessibility/workspace usability; measure long conversation rendering under realistic tool-output loads. |
@@ -34,7 +34,7 @@ backlog, not claims of completion or new merge-blocking scope.
 | Searchable, versioned reusable symbol libraries | Immutable catalog, attributes/units/basepoints/standards metadata, bounded search and module placement; user DXF library import/export with dependency/resource policies and definition thumbnails | Persistent user-library catalogs, version migration/replacement, search/paging and broader reviewed catalogs; extend reference and attribute preservation across version updates. |
 | Measured agent efficiency | Reproducible tasks, grading/receipts and durable budget reservation; offline evaluation fixtures | Actual task-success/latency/tokens/cache/cost comparisons are outstanding. Do not substitute synthetic reports for live comparison results. |
 | Drawing-selection references in chat | Stable object/occurrence chips with document/workspace/revision guards and stale handling; References/browser fixtures | Exercise references across new editing commands and external-agent steering. Expand explicit resource/nested-object workflows beyond ordinary selected occurrences as needed. |
-| Integrate latest netstandard, review, granular commits and PR | Earlier increments merged through PR #278; continued work starts from the current netstandard branch | Recheck upstream divergence during continued work, review each increment, commit by responsibility and push the feature branch. |
+| Integrate latest netstandard, review, granular commits and PR | Earlier increments merged through PR #279; continued work starts from the current netstandard branch | Recheck upstream divergence during continued work, review each increment, commit by responsibility and push the feature branch. |
 | CI passes | Windows/Linux build and package jobs plus cross-platform Shadow, conformance and real-browser jobs | All required checks must pass for the exact pushed revision. A local pass, older green revision or skipped job is not a substitute. Track and fix actual failures. |
 
 ## October 19 review evidence
@@ -110,7 +110,7 @@ exact pushed revision, including each operating-system and package-consumer job.
    library metadata, catalog/version management and dynamic-block gaps.
 3. Complete remaining layers/styles and drafting workflows: native filter dictionaries,
    automatic resource reconstruction, viewport overrides,
-   text formatting, curve edits, transform variants, arrays and acquisition modes.
+   text formatting, curve edits, richer arrays and acquisition modes.
    Extend ribbon discovery, keyboard navigation and accessibility with each command.
 4. Expand reusable symbols and toggleable P&ID/electrical/piping modules with
    discipline authoring, tags/specifications/circuits, reports and project workflows.
@@ -579,3 +579,36 @@ the user's cumulative USD 20 ceiling. There is no credential material in this au
   workflows. Loop search returns at most one witness per strong group and
   reports its budgets; cut classifications describe retained connectivity,
   not simulated equipment behavior or operational risk.
+
+
+### Keyboard ribbon, reference transforms and discipline workflows
+
+- Ribbon, Quick Access and workspace menus share visible/enabled roving focus,
+  spatial arrows, Home/End and scoped Escape behavior. Native inputs retain
+  editing keys. Compact/floating/custom/contextual panels, customization redraws
+  and viewport Shift+F10 have real browser coverage.
+- ROTATE/SCALE support Reference and Copy with scalar or two-point measures,
+  independent target points, snap acquisition and one undoable transaction.
+  Rotation remains WCS-Z; scale is positive and uniform. Existing affine entity
+  restrictions remain explicit. Copy preserves ordinary COPY metadata semantics.
+- Reusable discipline isolation compares one captured graph before/after explicit
+  port/connection exclusions, with exact proof paths, alternate routes, bounded
+  traversal and honest unknown classifications. It adds four independent streams
+  to Studio/MCP's existing graph receipt, plus shared inspectors and exports.
+- `DomainSchedule.Build` and the Data manager expose searchable, grouped layout
+  metadata, stable paging, units, hidden-root inspection, row editing and CSV/JSON.
+  Straight source lengths and route IDs are descriptive quantities. Schedules do
+  not infer purchased quantities or simulate engineering behavior.
+- Review fixed stale source-row editing across document switches, non-finite
+  imported block ports, optional fields accidentally required by HTML, and keyboard
+  focus loss in menu/customization/floating controls. Installed-package scenarios
+  now call schedule and isolation APIs and compare text/binary imported schedules.
+- Local source verification passes 1,508 Advanced, 13,558 discipline and 733
+  browser unit checks. Native HTTP contracts pass 40 checks. Focused native
+  browser qualification covers 13 transform, 9 isolation, 10 schedule and 30
+  keyboard checks with no uncaught errors or CSP violations. Full shared browser
+  workflows and the exact pushed revision must pass hosted CI before merge.
+- Follow-up discipline scope includes explicit connection repair/disconnect and
+  reconnect authoring, richer reports/project workflows, catalog/version updates,
+  and standards review. CUIx/native windows, curve/entity editing, native layer
+  filters, viewport/plot-style payloads and the broader request inventory remain.

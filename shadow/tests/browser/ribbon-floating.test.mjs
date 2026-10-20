@@ -114,6 +114,7 @@ test('all compact modes expose tear-off from an opened panel flyout, preserving 
 test('contextual save/discard panels cannot be hidden in floating windows and dispose removes transient UI', t => {
   const { layout, source, draw, entries, store, body, events } = fixture(t);
   entries.push({ key: 'Block Editor' }); const { node } = source('Block Editor', 'Definition'); draw('Block Editor');
+  assert.equal(node.querySelector('.ribbon-launcher').getAttribute('aria-keyshortcuts'),'ArrowDown','protected controls must not advertise an unavailable float shortcut');
   assert.equal(node.querySelector('.ribbon-tear-button'), null); layout.floatPanel(node); assert.equal(store.snapshot().floating.length, 0);
   draw('Home'); layout.floatPanel(layout.groups[0]); assert.equal(body.querySelectorAll('.ribbon-floating').length, 1);
   layout.dispose(); assert.equal(body.querySelectorAll('.ribbon-floating').length, 0);

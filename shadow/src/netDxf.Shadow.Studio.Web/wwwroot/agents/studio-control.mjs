@@ -9,7 +9,7 @@ const actionNames = new Set([
   'command-search','quick-access-customize','reference-query:explore','reference-query:components','reference-query:path','reference-query:impact'
 ]);
 const readRoutes = new Set(['state', 'graph', 'hatch/pattern', 'resources', 'layer-state/details', 'layer-state/export', 'attributes', 'attribute-definitions', 'modules', 'edit-previews', 'workflow/status', 'workflow/export', 'block-libraries']);
-const readPostRoutes = new Set(['graph/query','modules/symbols','modules/analyze','modules/connectivity','health','references/capture','references/validate','insert-preview','selection-candidates','layer-state/preview']);
+const readPostRoutes = new Set(['graph/query','modules/symbols','modules/analyze','modules/schedule','modules/connectivity','health','references/capture','references/validate','insert-preview','selection-candidates','layer-state/preview']);
 const editRoutes = new Set([
   'command', 'insert', 'block/define', 'block/rename', 'hatch/create', 'hatch/pattern', 'select', 'block/create', 'block/begin',
   'block/finish', 'grip', 'layer', 'layer-isolation', 'layer-state', 'layer-state/import', 'attributes', 'attribute-definitions', 'assign-layer', 'property', 'history/undo', 'history/redo', 'layout', 'retain', 'fork',

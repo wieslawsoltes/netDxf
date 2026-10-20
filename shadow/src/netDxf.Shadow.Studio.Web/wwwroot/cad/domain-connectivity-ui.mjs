@@ -1,17 +1,20 @@
 import {el} from './ui.mjs';
 import {connectivityIdentity,connectivityRequest,mergeConnectivity,connectivityStreams,connectivityOffsets,connectivityCaps,connectivityProof,connectivitySelection,connectivitySelectionIndex,connectivitySvg,connectivityCsv} from './domain-connectivity-model.mjs';
 import {domainLoopProof,domainProofIndex,domainStructureCsv,domainCondensationSvg} from './domain-structure-model.mjs';
+import {isolationExclusions,isolationCsv,isolationStreams} from './domain-isolation-model.mjs';
+import {renderIsolationReport} from './domain-isolation-ui.mjs';
 
 /** Reusable discipline connectivity panel. No source mutation occurs without an explicit Select action. */
 export function domainConnectivityTools({client,selectEntities,report,download,snapshot=()=>null}) {
   let scene=null,identity='',module='',generation=0,url='',selected=null,component=null,listOffset=0,issueOffset=0,filter='',proof=null;
   let strongComponent=null,critical=false,diagramMode='ports',structureOffset=0,criticalOffset=0;
-  const values={operation:'network',source:'',target:'',direction:'both',maximumVisits:10000,maximumDepth:256,maximumObjects:10000,tolerance:.01,maximumLoops:20,maximumProofSteps:4000,maximumSearchWork:100000};
+  const isolationState={offset:0,filter:'all'};
+  const values={operation:'network',source:'',target:'',direction:'both',maximumVisits:10000,maximumDepth:256,maximumObjects:10000,tolerance:.01,maximumLoops:20,maximumProofSteps:4000,maximumSearchWork:100000,maximumExaminedEdges:200000,excludedConnections:'',excludedPorts:''};
   const revoke=()=>{if(url){URL.revokeObjectURL(url);url='';}};
   const hide=()=>{generation++;revoke();};
   function render(container,id) {
     hide();const epoch=generation,key=client.key,scope=connectivityIdentity(client);
-    if(identity!==scope||module!==id){scene=null;selected=null;proof=null;component=null;strongComponent=null;critical=false;diagramMode='ports';listOffset=0;issueOffset=0;structureOffset=0;criticalOffset=0;values.source='';values.target='';}
+    if(identity!==scope||module!==id){scene=null;selected=null;proof=null;component=null;strongComponent=null;critical=false;diagramMode='ports';listOffset=0;issueOffset=0;structureOffset=0;criticalOffset=0;values.source='';values.target='';values.excludedConnections='';values.excludedPorts='';isolationState.offset=0;}
     module=id;identity=scope;
     const current=()=>generation===epoch&&container.isConnected&&snapshot()===null&&client.key===key&&connectivityIdentity(client)===scope&&client.data?.modules?.some(m=>m.id===id&&m.enabled);
     let sequence=0,running=false;
@@ -19,23 +22,35 @@ export function domainConnectivityTools({client,selectEntities,report,download,s
     const guard=action=>()=>{check();return action();};
     const button=(text,action,attrs={})=>el('button',{type:'button',text,...attrs,onclick:()=>Promise.resolve().then(action).catch(report)});
     const row=(name,control)=>el('label',{class:'form-row'},[el('span',{text:name}),control]);
-    const root=el('section',{class:'domain-connectivity'}),status=el('p',{'aria-live':'polite',class:'module-caption'}),output=el('div'),inspector=el('section',{class:'domain-inspector','aria-live':'polite'}),diagram=el('div',{class:'domain-diagram',tabindex:0,'aria-label':'Scrollable connectivity diagram'}),list=el('div'),issues=el('div'),structure=el('section',{class:'domain-structure'});
+    const root=el('section',{class:'domain-connectivity'}),status=el('p',{'aria-live':'polite',class:'module-caption'}),output=el('div'),inspector=el('section',{class:'domain-inspector','aria-live':'polite'}),diagram=el('div',{class:'domain-diagram',tabindex:0,'aria-label':'Scrollable connectivity diagram'}),list=el('div'),issues=el('div'),structure=el('section',{class:'domain-structure'}),isolation=el('section',{class:'domain-isolation'});
     container.replaceChildren(root);
     if(snapshot()!==null){scene=null;root.append(el('p',{text:'Return to Current drawing to analyze discipline connectivity. Retained drawing snapshots are not analyzed by this panel.'}));return;}
     const changed=()=>{sequence++;running=false;runButton.disabled=false;moreButton.disabled=!scene?.partial;status.textContent='Query changed. Run analysis to use these values; the displayed receipt retains its original scope.';};
-    const operation=el('select',{'aria-label':'Connectivity operation'},[['network','Network and components'],['path','Minimum-link path'],['trace','Trace declared passages'],['structure','Directed groups, loops and cut links']].map(([value,text])=>el('option',{value,text})));operation.value=values.operation;
-    operation.addEventListener('change',()=>{values.operation=operation.value;direction.disabled=operation.value==='structure';changed();});
+    const operation=el('select',{'aria-label':'Connectivity operation'},[['network','Network and components'],['path','Minimum-link path'],['trace','Trace declared passages'],['structure','Directed groups, loops and cut links'],['isolation','Isolation and alternative routes']].map(([value,text])=>el('option',{value,text})));operation.value=values.operation;
+    operation.addEventListener('change',()=>{values.operation=operation.value;direction.disabled=operation.value==='structure';assumptions.hidden=operation.value!=='isolation';changed();});
     const direction=el('select',{'aria-label':'Connectivity direction'},[['both','Either direction'],['forward','Follow passage direction'],['reverse','Against passage direction']].map(([value,text])=>el('option',{value,text})));direction.value=values.direction;
     direction.addEventListener('change',()=>{values.direction=direction.value;changed();});
     direction.disabled=values.operation==='structure';
     const source=el('input',{'aria-label':'Connectivity source port',value:values.source,maxlength:2048,placeholder:'Choose a loaded port below'}),target=el('input',{'aria-label':'Connectivity target port',value:values.target,maxlength:2048,placeholder:'Choose a loaded port below'});
     for(const [name,input]of [['source',source],['target',target]])input.addEventListener('input',()=>{values[name]=input.value;changed();});
     const number=(name,label,min,max,step=1)=>row(label,el('input',{type:'number',min,max,step,value:values[name],'aria-label':label,oninput:e=>{values[name]=e.target.value;changed();}}));
+    const excludedConnections=el('textarea',{'aria-label':'Excluded connection IDs',rows:3,maxlength:128000,value:values.excludedConnections,placeholder:'Exact declared IDs, one per line'}),
+      excludedPorts=el('textarea',{'aria-label':'Excluded port IDs',rows:3,maxlength:128000,value:values.excludedPorts,placeholder:'Exact declared IDs, one per line'});
+    for(const [name,input]of [['excludedConnections',excludedConnections],['excludedPorts',excludedPorts]])input.addEventListener('input',()=>{values[name]=input.value;changed();});
+    const assumptions=el('section',{class:'domain-isolation-assumptions',hidden:values.operation!=='isolation'},[
+      el('p',{class:'hint',text:'Explicit graph removal assumptions only. Pick a loaded port/connection below or enter exact IDs, one per line. The source must remain retained; target is optional. Maximum 2000 exclusions / 128000 ID characters.'}),
+      row('Excluded connections',excludedConnections),row('Excluded ports',excludedPorts),number('maximumExaminedEdges','Isolation edge examination limit',1,400000),
+      button('Clear exclusion assumptions',guard(()=>{values.excludedConnections='';values.excludedPorts='';excludedConnections.value='';excludedPorts.value='';changed();}))]);
+    function addExclusion(kind,value){
+      const field=kind==='port'?'excludedPorts':'excludedConnections',input=kind==='port'?excludedPorts:excludedConnections;
+      const next={...values,[field]:[values[field],value].filter(Boolean).join('\n')},normalized=isolationExclusions(next.excludedConnections,next.excludedPorts);
+      values[field]=normalized[field].join('\n');input.value=values[field];values.operation='isolation';operation.value='isolation';direction.disabled=false;assumptions.hidden=false;changed();
+    }
     const runButton=button('Run connectivity analysis',guard(()=>load(false,false))),moreButton=button('Load remaining connectivity',guard(()=>load(true,true)),{disabled:!scene?.partial});
     root.append(el('p',{class:'intro',text:'Explore declared ports and connections in this discipline and active layout. Lines that cross do not connect. Dashed diagram links are declared internal passages; no flow, pressure, switching or electrical simulation is performed.'}),
-      row('Analysis',operation),row('Direction',direction),row('Source port',source),row('Target port',target),
+      row('Analysis',operation),row('Direction',direction),row('Source port',source),row('Target port',target),assumptions,
       el('details',{},[el('summary',{text:'Scan and search bounds'}),number('maximumObjects','Connectivity object limit',1,100000),number('maximumVisits','Connectivity visit limit',1,50000),number('maximumDepth','Connectivity depth limit',0,1000),number('tolerance','Connectivity gap tolerance',.000001,1e6,'any'),number('maximumLoops','Loop witness limit',1,100),number('maximumProofSteps','Loop proof step limit',2,10000),number('maximumSearchWork','Loop search work limit',1,1000000),el('p',{class:'hint',text:'Projection cap: 20000 ports / 40000 links / 500 findings. Bulk loading stops after 40 pages and can be continued. Missing declarations remain visible. Structure always follows declared direction; at most one loop witness per strong group is sought.'})]),
-      el('div',{class:'module-actions'},[runButton,moreButton,button('Clear connectivity',()=>{sequence++;running=false;scene=null;proof=null;selected=null;component=null;strongComponent=null;critical=false;diagramMode='ports';revoke();output.replaceChildren();diagram.replaceChildren();structure.replaceChildren();inspector.replaceChildren();list.replaceChildren();issues.replaceChildren();status.textContent='Connectivity cleared.';runButton.disabled=false;moreButton.disabled=true;})]),status,output,diagram,structure,inspector,list,issues);
+      el('div',{class:'module-actions'},[runButton,moreButton,button('Clear connectivity',()=>{sequence++;running=false;scene=null;proof=null;selected=null;component=null;strongComponent=null;critical=false;diagramMode='ports';revoke();output.replaceChildren();diagram.replaceChildren();structure.replaceChildren();isolation.replaceChildren();inspector.replaceChildren();list.replaceChildren();issues.replaceChildren();status.textContent='Connectivity cleared.';runButton.disabled=false;moreButton.disabled=true;})]),status,output,diagram,structure,isolation,inspector,list,issues);
     async function load(continuation,bulk) {
       check();const requestId=++sequence;running=true;runButton.disabled=true;moreButton.disabled=true;
       const valid=()=>current()&&requestId===sequence;
@@ -52,7 +67,7 @@ export function domainConnectivityTools({client,selectEntities,report,download,s
           status.textContent=`Loading connectivity page ${pages+1}…`;
           const data=await client.read('modules/connectivity',{body});if(!valid()||!data)return;
           const merged={...mergeConnectivity(accumulated,data),query};
-          if(!continuation&&pages===0){proof=null;selected=null;component=null;strongComponent=null;critical=false;diagramMode='ports';structureOffset=0;criticalOffset=0;inspector.replaceChildren();}
+          if(!continuation&&pages===0){proof=null;selected=null;component=null;strongComponent=null;critical=false;diagramMode='ports';structureOffset=0;criticalOffset=0;isolationState.offset=0;inspector.replaceChildren();}
           accumulated=merged;scene=accumulated;pages++;
           if(selected&&!scene.nodes.some(n=>n.id===selected)){selected=null;proof=null;inspector.replaceChildren();}
           show();status.textContent=`Loaded ${scene.nodes.length}/${scene.totals.nodes} ports and ${scene.edges.length}/${scene.totals.edges} links (${pages} pages this run).`;
@@ -63,10 +78,10 @@ export function domainConnectivityTools({client,selectEntities,report,download,s
     }
     function exportFile(kind) {
       check();if(!scene)return;
-      const name=`${id}-connectivity`,structural=connectivityStreams.slice(5).includes(kind),svg=kind==='svg'||kind==='condensationSvg';
-      const data=kind==='json'?JSON.stringify(scene,null,2):svg?(kind==='condensationSvg'?domainCondensationSvg(scene,strongComponent):connectivitySvg(scene,{component,selected,proof,strongComponent,critical})):structural?domainStructureCsv(scene,kind):connectivityCsv(scene,kind);
+      const name=`${id}-connectivity`,structural=connectivityStreams.slice(5,11).includes(kind),scenario=isolationStreams.includes(kind),svg=kind==='svg'||kind==='condensationSvg';
+      const data=kind==='json'?JSON.stringify(scene,null,2):svg?(kind==='condensationSvg'?domainCondensationSvg(scene,strongComponent):connectivitySvg(scene,{component,selected,proof,strongComponent,critical})):scenario?isolationCsv(scene,kind):structural?domainStructureCsv(scene,kind):connectivityCsv(scene,kind);
       const mime=kind==='json'?'application/json':svg?'image/svg+xml':'text/csv';
-      download(new Blob([data],{type:mime}),`${name}${['nodes','edges','issues'].includes(kind)||structural||kind==='condensationSvg'?'-'+kind:''}.${mime==='text/csv'?'csv':svg?'svg':kind}`);
+      download(new Blob([data],{type:mime}),`${name}${['nodes','edges','issues'].includes(kind)||structural||scenario||kind==='condensationSvg'?'-'+kind:''}.${mime==='text/csv'?'csv':svg?'svg':kind}`);
     }
     function show() {
       if(!scene)return;
@@ -78,7 +93,10 @@ export function domainConnectivityTools({client,selectEntities,report,download,s
       const choices=el('select',{'aria-label':'Connectivity component'},[el('option',{value:'',text:'All loaded components'}),...scene.components.slice(0,500).map(c=>el('option',{value:c.id,text:`Component ${c.id} · ${c.nodeCount} ports · ${c.entityCount} objects · ${c.openPortCount} open`}))]);choices.value=component??'';
       choices.addEventListener('change',()=>{check();component=choices.value===''?null:Number(choices.value);listOffset=0;showDiagram();showList();});
       output.append(row('Component',choices),el('small',{text:'First 500 loaded components listed; each port inspector identifies its component. Export includes all loaded component records.'}));
-      showDiagram();showStructure();showList();showIssues();if(selected)inspect(selected);moreButton.disabled=running||!scene.partial;
+      showDiagram();showStructure();showIsolation();showList();showIssues();if(selected)inspect(selected);moreButton.disabled=running||!scene.partial;
+    }
+    function showIsolation(){
+      renderIsolationReport({scene,container:isolation,inspector,button,guard,showProof:evidence=>{proof=evidence;component=null;strongComponent=null;diagramMode='ports';showDiagram();},select,sourceRows:client.data?.items||[],exportFile,state:isolationState,inspectPort:node=>{inspect(node);showDiagram();}});
     }
     function showDiagram() {
       revoke();diagram.replaceChildren();if(!scene?.nodes.length)return;
@@ -159,11 +177,11 @@ export function domainConnectivityTools({client,selectEntities,report,download,s
       const structural=scene.portStructures.find(p=>p.id===nodeId);
       inspector.replaceChildren(el('h3',{text:`${node.tag||node.class} · ${node.port}`}),el('p',{text:`${node.kind} · component ${node.component} · ${node.degree} links · ${node.open?'declared open':'not declared open'}${structural?' · strong group '+structural.strongComponent+(structural.articulationPoint?' · weak articulation port':''):''}`}),el('code',{text:node.id}),
         el('p',{text:`Source: ${node.entity?.value||node.entity} · position ${node.position.x}, ${node.position.y}, ${node.position.z}${node.nominalSize?' · nominal size '+node.nominalSize:''}`}),
-        el('div',{class:'module-actions'},[button('Use as source port',guard(()=>choose('source',node))),button('Use as target port',guard(()=>choose('target',node))),button('Select port source',guard(()=>select([nodeId])),{disabled:!!sourceState.reason,title:sourceState.reason||'Select this source object'}),
-          button('Trace from this port',guard(()=>{choose('source',node);values.operation='trace';operation.value='trace';direction.disabled=false;return load(false,false);})),
+        el('div',{class:'module-actions'},[button('Use as source port',guard(()=>choose('source',node))),button('Use as target port',guard(()=>choose('target',node))),button('Exclude this port',guard(()=>addExclusion('port',nodeId))),button('Select port source',guard(()=>select([nodeId])),{disabled:!!sourceState.reason,title:sourceState.reason||'Select this source object'}),
+          button('Trace from this port',guard(()=>{choose('source',node);values.operation='trace';operation.value='trace';direction.disabled=false;assumptions.hidden=true;return load(false,false);})),
           button('Show predecessor proof',guard(()=>{proof=connectivityProof(scene,nodeId);showDiagram();inspector.append(el('p',{text:`Proof: ${proof.edges.length} links${proof.complete?'':' · load more proof pages'}`}),button('Select proof sources',guard(()=>select(proof.nodes)),{disabled:!proof.complete||!!connectivitySelection(scene,proof.nodes,client.data?.items||[]).reason}));}),{disabled:!visit})]),
         ...(sourceState.reason?[el('p',{class:'hint',text:sourceState.reason})]:[]),el('p',{text:`${connections.length}/${node.degree} incident links loaded.`}),
-        ...connections.slice(0,100).map(edge=>{const other=edge.source===nodeId?edge.target:edge.source;return el('div',{class:'domain-connection'},[el('span',{text:`${edge.kind} · ${edge.direction} · ${edge.reciprocal?'reciprocal/declaration':'one-sided'} · span ${Number(edge.span).toPrecision(5)}`}),button(other,guard(()=>{inspect(other);showDiagram();}),{disabled:!scene.nodes.some(n=>n.id===other)})]);}));
+        ...connections.slice(0,100).map(edge=>{const other=edge.source===nodeId?edge.target:edge.source;return el('div',{class:'domain-connection'},[el('span',{text:`${edge.kind} · ${edge.direction} · ${edge.reciprocal?'reciprocal/declaration':'one-sided'} · span ${Number(edge.span).toPrecision(5)}`}),el('code',{text:edge.id}),button(other,guard(()=>{inspect(other);showDiagram();}),{disabled:!scene.nodes.some(n=>n.id===other)}),button('Exclude connection '+edge.id,guard(()=>addExclusion('connection',edge.id)))]);}));
       showList();
     }
     function showList() {
@@ -179,7 +197,7 @@ export function domainConnectivityTools({client,selectEntities,report,download,s
     if(scene)show();
   }
   function setOperation(operation) {
-    if(!['network','path','trace','structure'].includes(operation))throw new Error('Unknown connectivity operation.');
+    if(!['network','path','trace','structure','isolation'].includes(operation))throw new Error('Unknown connectivity operation.');
     hide();values.operation=operation;scene=null;proof=null;strongComponent=null;critical=false;diagramMode='ports';
   }
   return {render,hide,destroy:hide,setOperation};

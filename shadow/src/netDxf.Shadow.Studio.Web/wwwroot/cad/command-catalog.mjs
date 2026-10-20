@@ -93,7 +93,7 @@ export function buildCommandCatalog({ modules = [] } = {}) {
       if (!known.has(entry.id)) { known.add(entry.id);entries.push({...entry,category,location:`${category} · Discipline`,shortcut:'',
         module,requiresDocument:true,excludesBlockEditor:true}); }
     };
-    for (const [mode,label] of [['symbols','Symbol library'],['data','Data manager'],['validation','Validation'],['connectivity','Connectivity graph'],['structure','Network structure']]) {
+    for (const [mode,label] of [['symbols','Symbol library'],['data','Data manager'],['validation','Validation'],['connectivity','Connectivity graph'],['structure','Network structure'],['isolation','Isolation study']]) {
       const target=`module-open:${module}:${mode}`;
       append({id:`action:${target}`,kind:'action',target,label:`${category} ${label}`,aliases:[category,mode]});
     }
@@ -155,7 +155,7 @@ export const quickAccessLimit = 16;
 export const defaultQuickAccess = Object.freeze(['new','open','save','undo','redo'].map(value=>`action:${value}`));
 const knownIds = new Set(buildCommandCatalog().map(entry=>entry.id));
 const validPreferenceId = value => typeof value==='string' && value.length<=180 && (knownIds.has(value) ||
-  /^action:module-(?:command:[a-zA-Z][a-zA-Z0-9_.-]{0,63}:[a-zA-Z][a-zA-Z0-9_.-]{0,63}|open:[a-zA-Z][a-zA-Z0-9_.-]{0,63}:(?:symbols|data|validation|connectivity|structure))$/.test(value));
+  /^action:module-(?:command:[a-zA-Z][a-zA-Z0-9_.-]{0,63}:[a-zA-Z][a-zA-Z0-9_.-]{0,63}|open:[a-zA-Z][a-zA-Z0-9_.-]{0,63}:(?:symbols|data|validation|connectivity|structure|isolation))$/.test(value));
 /** Preserve unloaded module IDs so disabling a module never silently erases its pin. */
 export function quickAccessPreferences(value) {
   if (!value || value.version!==1 || !Array.isArray(value.pinned)) return {version:1,pinned:[...defaultQuickAccess]};

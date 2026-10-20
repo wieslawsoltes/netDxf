@@ -112,3 +112,16 @@ test('editor changes, reset and imports are detached drafts until Apply; Cancel 
   modal = gate(); const reset = editor.customize(); await byText(body, 'Reset ribbon draft').dispatch('click', { stopPropagation() {} });
   assert.equal(store.tabs(entries).length, 2); modal.resolve(true); await reset; assert.equal(store.tabs(entries).length, 3);
 });
+
+test('keyboard customization keeps focus on replacement tab/panel selectors and reset recovery',async t=>{
+  const host=installDom(t),store=new RibbonCustomization({storage:storage()}),modal=gate();let body;
+  const editor=ribbonCustomizationTools({store,entries:()=>entries,panels:()=>panels,catalog:()=>catalog,
+    dialog:(title,contents)=>{body=contents[0];host.append(body);return modal.promise;}});
+  const pending=editor.customize(),tab=byLabel(body,'Customize ribbon tab');tab.focus();tab.value='Graph';await tab.dispatch('change');
+  const nextTab=byLabel(body,'Customize ribbon tab');assert.notEqual(nextTab,tab);assert.equal(document.activeElement,nextTab);assert.equal(nextTab.value,'Graph');
+  const panel=byLabel(body,'Customize ribbon panel');panel.focus();panel.value=panels.at(-1).id;await panel.dispatch('change');
+  assert.equal(document.activeElement,byLabel(body,'Customize ribbon panel'));assert.equal(document.activeElement.isConnected,true);
+  await byText(body,'Reset ribbon draft').dispatch('click',{stopPropagation(){}});
+  assert.equal(document.activeElement,byLabel(body,'Customize ribbon tab'));assert.equal(document.activeElement.value,'Home');
+  modal.resolve(false);await pending;
+});

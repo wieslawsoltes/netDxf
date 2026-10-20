@@ -1,6 +1,7 @@
 import { el, icon } from './ui.mjs';
 import { commandAvailability, resolveCommand, searchCommands, changeQuickAccess, quickAccessPreferences,
   quickAccessCapacity, quickAccessKey, quickAccessLimit } from './command-catalog.mjs';
+import { bindRovingToolbar } from './ribbon-keyboard.mjs';
 
 let nextInstance = 0;
 const button = (label, callback, children = []) => el('button', {type:'button','aria-label':label,title:label,
@@ -20,6 +21,8 @@ export function createCommandAccess({ toolbar, catalog, state, execute, report =
     document.head.append(el('link',{rel:'stylesheet',href:new URL('./command-access.css',import.meta.url).href,'data-command-access':''}));
   toolbar.classList.add('command-quick-access');
   toolbar.setAttribute('role','toolbar');toolbar.setAttribute('aria-label','Quick Access');
+  toolbar.setAttribute('aria-orientation','horizontal');
+  const toolbarKeyboard=bindRovingToolbar(toolbar,{orientation:'horizontal'});
   const title=el('h2',{id:`${prefix}-title`,text:'Search commands'});
   const input=el('input',{id:`${prefix}-query`,type:'search','aria-label':'Search commands',placeholder:'Search names, aliases, tools or disciplines',maxlength:256,autocomplete:'off',spellcheck:'false'});
   const status=el('p',{class:'command-access-status',role:'status','aria-live':'polite'});
@@ -124,6 +127,7 @@ export function createCommandAccess({ toolbar, catalog, state, execute, report =
       }
     }
     for (const control of controls) updateControl(control.button,control.id);
+    toolbarKeyboard.refresh();
   }
   function pinButton(entry) {
     const isPinned=preferences.pinned.includes(entry.id);
@@ -194,13 +198,13 @@ export function createCommandAccess({ toolbar, catalog, state, execute, report =
   dialog.addEventListener('keydown',event=>{
     if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close();return;}
     if(event.isComposing || event.ctrlKey || event.metaKey || event.altKey)return;
-    if(event.key==='ArrowDown' || event.key==='ArrowUp') {
+    if(event.key==='ArrowDown' || event.key==='ArrowUp' || (event.target!==input && ['Home','End'].includes(event.key))) {
       const current=mode==='customize'?[...rows.filter(row=>row.section==='pinned'),...rows.filter(row=>row.section==='search')]:
         rows.filter(row=>row.section==='search');
       const choices=current.filter(row=>!row.run.disabled).map(row=>row.run);
       const index=choices.indexOf(document.activeElement),offset=event.key==='ArrowDown'?1:-1;
       if(choices.length) {
-        const choice=choices[index<0?(offset>0?0:choices.length-1):(index+offset+choices.length)%choices.length];
+        const choice=choices[event.key==='Home'?0:event.key==='End'?choices.length-1:index<0?(offset>0?0:choices.length-1):(index+offset+choices.length)%choices.length];
         choice.focus({preventScroll:true});
         choice.scrollIntoView({block:'nearest',inline:'nearest'});
       }
@@ -227,7 +231,7 @@ export function createCommandAccess({ toolbar, catalog, state, execute, report =
       const other=document.querySelector('dialog[open]');if(other && other!==dialog)return false;
       event.preventDefault();event.stopPropagation();open('search');return true;
     },
-    destroy() { disposed=true;observer?.disconnect();close(false);dialog.remove();toolbar.replaceChildren(); },
+    destroy() { disposed=true;observer?.disconnect();toolbarKeyboard.dispose();close(false);dialog.remove();toolbar.replaceChildren(); },
     get dialog() { return dialog; }
   };
 }

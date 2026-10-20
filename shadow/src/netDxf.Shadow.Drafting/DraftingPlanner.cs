@@ -52,11 +52,13 @@ public sealed partial class DraftingPlanner
         }
         cancellationToken.ThrowIfCancellationRequested();
         command = command with { Name = command.Name.Trim().ToUpperInvariant(), Points = points, Entities = ids };
+        if (command.Transform is not null && command.Name is not ("ROTATE" or "SCALE"))
+            throw new ArgumentException("Transform options are available only for ROTATE and SCALE.");
         return command.Name switch
         {
             "BLOCK" => CreateBlockInOwner(snapshot, new(command.Text ?? "", points.Length == 1 ? points[0] :
                 throw new ArgumentException("BLOCK requires one base point."), ids, Layer: command.Layer), owner, cancellationToken),
-            "MOVE" or "ROTATE" or "SCALE" or "MIRROR" => Transform(snapshot, command, cancellationToken),
+            "MOVE" or "ROTATE" or "SCALE" or "MIRROR" => Transform(snapshot, command, owner, cancellationToken),
             "STRETCH" => Stretch(snapshot, command, owner, cancellationToken),
             "BREAK" or "BREAKATPOINT" => Break(snapshot, command, owner, cancellationToken),
             "COPY" or "ARRAY" => Copy(snapshot, command, owner, cancellationToken),
@@ -220,29 +222,6 @@ public sealed partial class DraftingPlanner
     {
         Selected(command, 1); var edit = new ShadowGraphEdit(snapshot); edit.RemoveEntities(command.Entities);
         return new("ERASE", edit.Build(), []);
-    }
-
-    private DraftingPlan Transform(ShadowSnapshot snapshot, DraftingCommand command, CancellationToken token)
-    {
-        Selected(command, 1); Need(command.Points, 1);
-        var p = command.Points; var origin = p[0];
-        if (command.Name == "MOVE")
-        {
-            Exact(p, 2); var after = snapshot.Apply(EditOperations.Translate(snapshot, command.Entities, p[1] - p[0]));
-            return new("MOVE", ShadowGraphPatch.Between(snapshot, after), []);
-        }
-        Affine3 local;
-        switch (command.Name)
-        {
-            case "ROTATE": local = Affine3.RotateZ(command.Value * Math.PI / 180); break;
-            case "SCALE": var amount = Positive(command.Value); local = Affine3.Scale(new(amount, amount, amount)); break;
-            default:
-                Exact(p, 2); PlanarPoints(p); Length(p[1] - p[0]);
-                var angle = Math.Atan2(p[1].Y - p[0].Y, p[1].X - p[0].X);
-                local = Affine3.RotateZ(angle) * Affine3.Scale(new(1, -1, 1)) * Affine3.RotateZ(-angle); break;
-        }
-        return new(command.Name, AffineEditOperations.Plan(snapshot, command.Entities,
-            Affine3.Move(origin) * local * Affine3.Move(-origin), cancellationToken: token), []);
     }
 
     private static ShadowReader Layer(ShadowSnapshot snapshot, string name)

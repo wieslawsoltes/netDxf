@@ -8,7 +8,18 @@ namespace netDxf.Shadow.Drafting;
 public sealed record DraftingCommand(string Name, ImmutableArray<Vec3> Points = default,
     ImmutableArray<ObjectId> Entities = default, double Value = 0, double Secondary = 0,
     string? Text = null, string Layer = "0", bool Closed = false, int Count = 6, double Rotation = 0,
-    ObjectId? Reference = null, Vec3? Scale = null, Vec3? BasePoint = null);
+    ObjectId? Reference = null, Vec3? Scale = null, Vec3? BasePoint = null,
+    DraftingTransformOptions? Transform = null);
+
+/// <summary>A scalar or exactly two WCS points. ROTATE uses XY angles in degrees;
+/// SCALE uses positive three-dimensional lengths in drawing units.</summary>
+public sealed record DraftingTransformMeasure(double? Value = null, ImmutableArray<Vec3> Points = default);
+
+/// <summary>Optional ROTATE/SCALE copy and reference acquisition. Reference and Target
+/// must be supplied together; the effective rotation is target minus reference and
+/// the effective scale is target divided by reference. Copy retains original roots.</summary>
+public sealed record DraftingTransformOptions(bool Copy = false,
+    DraftingTransformMeasure? Reference = null, DraftingTransformMeasure? Target = null);
 
 public sealed record DraftingLimits(int MaximumPoints = 10_000, int MaximumEntities = 10_000,
     int MaximumClonedObjects = 100_000, double MaximumCoordinate = 1e12, double MinimumLength = 1e-9);

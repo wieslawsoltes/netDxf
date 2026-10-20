@@ -22,3 +22,15 @@
 .domain-connection { display: grid; gap: 4px; margin-block: 6px; }
 .domain-connection button { text-align: left; white-space: normal; overflow-wrap: anywhere; }
 .domain-result { font-weight: 600; }
+.schedule-scroll { max-width:100%; overflow:auto; margin-block:8px; }
+.schedule-table { border-collapse:collapse; width:100%; font-size:11px; }
+.schedule-table th,.schedule-table td { padding:5px; border-bottom:1px solid var(--border,#45515f); text-align:left; overflow-wrap:anywhere; max-width:190px; }
+.schedule-table caption { text-align:left; margin-block:5px; }
+.domain-schedule { min-width:0; }
+.domain-schedule input[type=checkbox] { width:auto; }
+.domain-schedule .domain-inspector dl { display:grid; grid-template-columns:minmax(60px,1fr) minmax(80px,2fr); gap:4px 8px; }
+.domain-schedule .domain-inspector dd { margin:0; overflow-wrap:anywhere; }
+.domain-schedule pre { max-height:260px; overflow:auto; font-size:11px; }
+
+.domain-isolation-assumptions textarea {width:100%;min-width:0;resize:vertical;font:inherit}
+.domain-isolation-assumptions .form-row {align-items:start}

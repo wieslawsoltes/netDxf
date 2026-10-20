@@ -50,18 +50,20 @@ export function ribbonCustomizationTools({ store, entries, panels, catalog, dial
     let draft = store.snapshot(), selectedTab = '', selectedPanel = '', commandIndex = 0;
     const origin = document.activeElement, body = el('div', { class: 'ribbon-customization' });
     const status = el('p', { role: 'status', 'aria-live': 'polite', class: 'ribbon-customization-status' });
+    const focusNamed=label=>[...body.querySelectorAll('select'),...body.querySelectorAll('input'),...body.querySelectorAll('button')]
+      .find(node=>node.getAttribute('aria-label')===label&&!node.disabled)?.focus({preventScroll:true});
     const execute = (action, focusLabel) => {
       try {
         draft = changeRibbonPreferences(draft, action, { entries: entries(), panels: panels(action.tab || selectedTab), catalog: catalog() });
         status.textContent = 'Draft changed. Apply saves; Cancel keeps the current ribbon.';
-        render(); if (focusLabel) [...body.querySelectorAll('select,input,button')].find(node => node.getAttribute('aria-label') === focusLabel)?.focus();
+        render(); if (focusLabel) focusNamed(focusLabel);
       } catch (error) { status.textContent = error.message; }
     };
     function render() {
       const tabEntries = customizedRibbonTabs(draft, entries(), { includeHidden: true });
       const tabs = choices('Customize ribbon tab', tabEntries.map(tab => ({ id: tab.key, name: `${tab.name}${tab.visible ? '' : ' (hidden)'}` })), selectedTab);
       selectedTab = tabs.value;
-      tabs.addEventListener('change', () => { selectedTab = tabs.value; selectedPanel = ''; commandIndex = 0; render(); });
+      tabs.addEventListener('change', () => { selectedTab = tabs.value; selectedPanel = ''; commandIndex = 0; render();focusNamed('Customize ribbon tab'); });
       const currentTab = tabEntries.find(tab => tab.key === selectedTab);
       const visibleTab = el('input', { type: 'checkbox', checked: currentTab?.visible, disabled: ['Home', 'Block Editor'].includes(selectedTab), 'aria-label': 'Show ribbon tab',
         onchange: event => execute({ type: 'tab-visible', id: selectedTab, visible: event.target.checked }, 'Show ribbon tab') });
@@ -69,7 +71,7 @@ export function ribbonCustomizationTools({ store, entries, panels, catalog, dial
       const panelEntries = customizedRibbonPanels(draft, selectedTab, panels(selectedTab), { includeHidden: true });
       const panelSelect = choices('Customize ribbon panel', panelEntries.map(panel => ({ id: panel.id, name: `${panel.name}${panel.visible ? '' : ' (hidden)'}` })), selectedPanel);
       selectedPanel = panelSelect.value;
-      panelSelect.addEventListener('change', () => { selectedPanel = panelSelect.value; commandIndex = 0; render(); });
+      panelSelect.addEventListener('change', () => { selectedPanel = panelSelect.value; commandIndex = 0; render();focusNamed('Customize ribbon panel'); });
       const currentPanel = panelEntries.find(panel => panel.id === selectedPanel);
       const custom = draft.customPanels.find(panel => panel.id === selectedPanel);
       const visiblePanel = el('input', { type: 'checkbox', checked: currentPanel?.visible, 'aria-label': 'Show ribbon panel',
@@ -94,7 +96,7 @@ export function ribbonCustomizationTools({ store, entries, panels, catalog, dial
         try {
           const selected = file.files?.[0]; if (!selected) return;
           if (selected.size > ribbonLimits.bytes) throw new Error('Ribbon customization JSON exceeds 128 KiB.');
-          draft = parseRibbonCustomization(await selected.text()); selectedTab = ''; selectedPanel = ''; render();
+          draft = parseRibbonCustomization(await selected.text()); selectedTab = ''; selectedPanel = ''; render();focusNamed('Import ribbon customization');
           status.textContent = 'Imported into the draft. Unregistered commands stay disabled. Apply to save.';
         } catch (error) { status.textContent = error.message; }
       });
@@ -104,15 +106,15 @@ export function ribbonCustomizationTools({ store, entries, panels, catalog, dial
           button('Move tab later', () => execute({ type: 'tab-move', id: selectedTab, offset: 1 }, 'Customize ribbon tab'))]),
         row('Custom tab name', tabName), el('div', { class: 'toolbar' }, [
           button('Add custom tab', () => { const id = newId(); selectedTab = id; execute({ type: 'custom-tab', id, name: tabName.value }, 'Customize ribbon tab'); }),
-          button('Rename custom tab', () => execute({ type: 'custom-tab', id: selectedTab, name: tabName.value }), { disabled: !currentTab?.custom }),
-          button('Delete custom tab', () => execute({ type: 'delete-tab', id: selectedTab }), { disabled: !currentTab?.custom })])]),
+          button('Rename custom tab', () => execute({ type: 'custom-tab', id: selectedTab, name: tabName.value }, 'Customize ribbon tab'), { disabled: !currentTab?.custom }),
+          button('Delete custom tab', () => execute({ type: 'delete-tab', id: selectedTab }, 'Customize ribbon tab'), { disabled: !currentTab?.custom })])]),
         el('section', {}, [el('h3', { text: 'Panels' }), row('Panel', panelSelect), row('Visible', visiblePanel), el('div', { class: 'toolbar' }, [
           button('Move panel earlier', () => execute({ type: 'panel-move', tab: selectedTab, id: selectedPanel, offset: -1 }, 'Customize ribbon panel'), { disabled: !currentPanel }),
           button('Move panel later', () => execute({ type: 'panel-move', tab: selectedTab, id: selectedPanel, offset: 1 }, 'Customize ribbon panel'), { disabled: !currentPanel })]),
         row('Custom panel name', panelName), el('div', { class: 'toolbar' }, [
           button('Add custom panel', () => { const id = newId(); selectedPanel = id; execute({ type: 'custom-panel', id, tab: selectedTab, name: panelName.value, commands: [] }, 'Customize ribbon panel'); }),
-          button('Rename custom panel', () => execute({ type: 'custom-panel', id: selectedPanel, tab: selectedTab, name: panelName.value, commands: custom.commands }), { disabled: !custom }),
-          button('Delete custom panel', () => execute({ type: 'delete-panel', id: selectedPanel }), { disabled: !custom })]),
+          button('Rename custom panel', () => execute({ type: 'custom-panel', id: selectedPanel, tab: selectedTab, name: panelName.value, commands: custom.commands }, 'Customize ribbon panel'), { disabled: !custom }),
+          button('Delete custom panel', () => execute({ type: 'delete-panel', id: selectedPanel }, 'Customize ribbon panel'), { disabled: !custom })]),
         row('Commands', commands), el('div', { class: 'toolbar' }, [
           button('Move command earlier', () => reorder(-1), { disabled: !custom?.commands.length }),
           button('Move command later', () => reorder(1), { disabled: !custom?.commands.length }),
@@ -121,7 +123,7 @@ export function ribbonCustomizationTools({ store, entries, panels, catalog, dial
         button('Add panel command', () => editPanel([...custom.commands, found.value]), { disabled: !custom })]),
         el('section', {}, [el('h3', { text: 'Portable preferences' }), row('Import JSON', file), el('div', { class: 'toolbar' }, [
           button('Export ribbon JSON', () => download?.('ribbon-customization.json', JSON.stringify(draft, null, 2), 'application/json'), { disabled: !download }),
-          button('Reset ribbon draft', () => { draft = ribbonPreferences(null); selectedTab = ''; selectedPanel = ''; render(); status.textContent = 'Defaults prepared. Apply to reset the ribbon; Cancel keeps it.'; })])]), status);
+          button('Reset ribbon draft', () => { draft = ribbonPreferences(null); selectedTab = ''; selectedPanel = ''; render();focusNamed('Customize ribbon tab');status.textContent = 'Defaults prepared. Apply to reset the ribbon; Cancel keeps it.'; })])]), status);
     }
     render();
     try { if (await dialog('Customize ribbon', [body], 'Apply')) store.restore(draft); }

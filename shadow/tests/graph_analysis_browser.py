@@ -12,6 +12,10 @@ from reference_analysis_browser_checks import verify_reference_analysis
 from domain_connectivity_browser_checks import verify_domain_connectivity
 from domain_structure_browser_checks import verify_domain_structure
 from selection_cycling_browser_checks import verify_selection_cycling
+from transform_reference_browser_checks import verify_transform_reference
+from domain_isolation_browser_checks import verify_domain_isolation
+from domain_schedule_browser_checks import verify_domain_schedule
+from ribbon_keyboard_browser_checks import verify_ribbon_keyboard
 
 
 def verify_graph_analysis(page, output, state, command, wait_state, idle, check):
@@ -118,6 +122,10 @@ def verify_graph_analysis(page, output, state, command, wait_state, idle, check)
     verify_domain_connectivity(page, output, state, command, wait_state, idle, check)
     verify_domain_structure(page, output, state, command, wait_state, idle, check)
     verify_selection_cycling(page, output, state, command, wait_state, idle, check)
+    verify_transform_reference(page, output, state, command, wait_state, idle, check)
+    verify_domain_isolation(page, output, state, command, wait_state, idle, check)
+    verify_domain_schedule(page, output, state, command, wait_state, idle, check)
+    verify_ribbon_keyboard(page, output, state, command, wait_state, idle, check)
 
 
 def verify_large_graph_projection(page, output, state, command, wait_state, idle, check):

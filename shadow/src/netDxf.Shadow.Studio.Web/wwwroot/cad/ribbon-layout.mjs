@@ -1,5 +1,8 @@
 import { RibbonFloatingPanels } from './ribbon-floating.mjs';
 import { protectedRibbonPanel } from './ribbon-customization.mjs';
+import { bindRovingToolbar, nativeRibbonInput, visibleRibbonControl } from './ribbon-keyboard.mjs';
+
+let panelSerial=0;
 
 /** Preserve leading panels while collapsing trailing ones until they fit. */
 export function collapsedPanels(widths, available, compactWidth = 56, gap = 2) {
@@ -42,6 +45,7 @@ export function reconcileRibbonContext(currentTab, context = {}, entries = []) {
 export class RibbonLayout {
   constructor(panel, { customization, report = () => {} } = {}) {
     this.panel = panel; this.groups = []; this.popup = null; this.frame = 0; this.mode='full';
+    this.keyboard=bindRovingToolbar(panel,{items:()=>this.panelButtons(),onEscape:()=>{this.hide();document.querySelector('#ribbon-tabs [aria-selected=true]')?.focus({preventScroll:true});}});
     this.sourceGroups = []; this.context = {};
     this.floating = customization ? new RibbonFloatingPanels({ panel, customization, report,
       changed: () => this.set(this.sourceGroups, this.context) }) : null;
@@ -50,8 +54,10 @@ export class RibbonLayout {
       if(this.popup && !this.popup.tools.contains(event.target) && !this.popup.button.contains(event.target))this.close();
       if(this.panel.classList.contains('ribbon-peek')&&!this.panel.contains(event.target)&&!event.target.closest('.ribbon-bar,.ribbon-flyout'))this.hide();
     };
-    this.escape = event => { if(event.key==='Escape'&&(this.popup||this.panel.classList.contains('ribbon-peek'))){event.preventDefault();event.stopPropagation();if(this.popup)this.close(true);else {this.hide();document.querySelector('#ribbon-tabs [aria-selected=true]')?.focus();}} };
+    this.escape = event => { if(event.key==='Escape'&&!event.defaultPrevented&&!event.isComposing&&!nativeRibbonInput(event.target)&&(this.popup||this.panel.classList.contains('ribbon-peek'))){event.preventDefault();event.stopPropagation();if(this.popup)this.close(true);else {this.hide();document.querySelector('#ribbon-tabs [aria-selected=true]')?.focus();}} };
     document.addEventListener('pointerdown',this.outside); document.addEventListener('keydown',this.escape,true);
+    this.focusOutside=event=>{if(this.popup&&!this.popup.tools.contains(event.target)&&event.target!==this.popup.button)this.close();};
+    document.addEventListener('focusin',this.focusOutside);
     this.resize=()=>{this.close();this.hide();};window.addEventListener('resize',this.resize);
     this.choose=event=>{if(event.target.closest('button[data-command],button[data-action]'))this.hide();};
     panel.addEventListener('click',this.choose);
@@ -63,13 +69,20 @@ export class RibbonLayout {
     if(this.floating?.focusLost)document.querySelector('#ribbon-tabs [aria-selected=true]')?.focus({preventScroll:true});
     groups.forEach(group=>{
       this.boundGroups ||= new WeakSet(); if(this.boundGroups.has(group))return;this.boundGroups.add(group);
+      const tools=group.querySelector('.ribbon-tools'),launcher=group.querySelector('.ribbon-launcher');
+      const canFloat=this.floating&&!protectedRibbonPanel(context.tab,group.dataset.ribbonPanel||group.dataset.panel);
+      if(tools){if(!tools.getAttribute('id'))tools.setAttribute('id',`ribbon-tools-${++panelSerial}`);tools.setAttribute('role','toolbar');tools.setAttribute('aria-label',`${group.dataset.panel} commands`);launcher.setAttribute('aria-controls',tools.getAttribute('id'));}
+      launcher.setAttribute('aria-haspopup','false');launcher.setAttribute('aria-keyshortcuts',canFloat?'ArrowDown Alt+F':'ArrowDown');
+      launcher.title=`${group.dataset.panel} tools (Down opens${canFloat?', Alt+F floats panel':''})`;
       group.querySelector('.ribbon-launcher').addEventListener('click',()=>this.activate(group));
       group.querySelector('.ribbon-launcher').addEventListener('pointerenter',event=>{if(this.mode==='titles'&&event.pointerType==='mouse'&&this.popup?.group!==group)this.open(group,false);});
       group.querySelector('.ribbon-launcher').addEventListener('keydown',event=>{
-        if(event.altKey&&event.key.toLowerCase()==='f'&&this.floating){event.preventDefault();event.stopPropagation();this.floatPanel(group);return;}
+        if(event.defaultPrevented||event.isComposing||event.ctrlKey||event.metaKey)return;
+        if(event.altKey&&!event.shiftKey&&event.key.toLowerCase()==='f'&&canFloat){event.preventDefault();event.stopPropagation();this.floatPanel(group);return;}
+        if(event.altKey||event.shiftKey)return;
         if(event.key!=='ArrowDown')return;event.preventDefault();event.stopPropagation();this.open(group,true);
       });
-      if(this.floating&&!protectedRibbonPanel(context.tab,group.dataset.ribbonPanel||group.dataset.panel)){
+      if(canFloat){
         const title=group.querySelector('.ribbon-group-title');
         const float=document.createElement('button');float.type='button';float.className='ribbon-tear-button';float.textContent='↗';
         float.setAttribute('aria-label',`Float ${group.dataset.panel} panel`);float.title=`Float ${group.dataset.panel} panel`;
@@ -81,8 +94,13 @@ export class RibbonLayout {
         });
       }
     });
+    this.keyboard?.refresh();
     this.schedule();
   }
+  panelButtons(){return [...this.panel.querySelectorAll('button')].filter(button=>{
+    const group=button.closest('.ribbon-group');if(!group)return false;
+    return group.classList.contains('collapsed')?button.classList.contains('ribbon-launcher'):!button.classList.contains('ribbon-launcher');
+  });}
   containsFocus(){return this.panel.contains(document.activeElement)||!!this.popup?.tools.contains(document.activeElement)||!!this.floating?.containsFocus();}
   floatPanel(group){this.close();this.floating?.floatPanel(group,this.context.tab);}
   setMode(mode) {this.close();this.hide();this.mode=ribbonModes.includes(mode)?mode:'full';this.panel.dataset.mode=this.mode;this.schedule();}
@@ -91,50 +109,62 @@ export class RibbonLayout {
       const bounds=document.querySelector('.ribbon-bar').getBoundingClientRect();
       this.panel.style.top=`${bounds.bottom}px`;this.panel.classList.add('ribbon-peek');this.schedule();
     }
-    if(focus)requestAnimationFrame(()=>this.panel.querySelector('.ribbon-group:not(.collapsed) button:not(:disabled),.collapsed .ribbon-launcher')?.focus({preventScroll:true}));
+    if(focus)requestAnimationFrame(()=>{this.layout();this.keyboard?.focus();});
   }
   hide() {this.panel.classList.remove('ribbon-peek');this.panel.style.removeProperty('top');this.close();}
   schedule() { if(!this.frame)this.frame=requestAnimationFrame(()=>{this.frame=0;this.layout();}); }
   layout() {
     if(!this.panel.clientWidth)return;
+    const focused=document.activeElement,focusGroup=this.panel.contains(focused)?focused.closest('.ribbon-group'):null;
     this.close(); this.groups.forEach(group=>group.classList.remove('collapsed'));
-    if(this.mode==='buttons'||this.mode==='titles'){this.groups.forEach(group=>group.classList.add('collapsed'));return;}
-    const widths=this.groups.map(group=>group.getBoundingClientRect().width);
-    const collapsed=collapsedPanels(widths,this.panel.clientWidth-8);
-    this.groups.forEach((group,index)=>group.classList.toggle('collapsed',collapsed[index]));
+    if(this.mode==='buttons'||this.mode==='titles')this.groups.forEach(group=>group.classList.add('collapsed'));
+    else {
+      const widths=this.groups.map(group=>group.getBoundingClientRect().width);
+      const collapsed=collapsedPanels(widths,this.panel.clientWidth-8);
+      this.groups.forEach((group,index)=>group.classList.toggle('collapsed',collapsed[index]));
+    }
+    this.keyboard?.refresh();
+    if(focusGroup&&!visibleRibbonControl(focused)){
+      const target=focusGroup.classList.contains('collapsed')?focusGroup.querySelector('.ribbon-launcher'):
+        [...focusGroup.querySelectorAll('.ribbon-tools button,.ribbon-tools select,.ribbon-tools input')].find(visibleRibbonControl);
+      if(visibleRibbonControl(target))target.focus({preventScroll:true});
+    }
   }
   activate(group) {
     // Mouse hover precedes click. Promote that preview instead of closing it.
     if(this.popup?.group===group&&!this.popup.preview){this.close(true);return;}
     this.open(group,true);
   }
-  focusTools() {this.popup?.tools.querySelector('button:not(:disabled),select:not(:disabled)')?.focus({preventScroll:true});}
+  focusTools() {if(!this.popup?.keyboard?.focus())[...this.popup?.tools.querySelectorAll('select,input')||[]].find(visibleRibbonControl)?.focus({preventScroll:true});}
   open(group, focus=true) {
     if(this.popup?.group===group){if(focus){this.popup.preview=false;this.focusTools();}return;}
     this.close();
     const tools=group.querySelector('.ribbon-tools'),button=group.querySelector('.ribbon-launcher');
     if(!tools)return;
     const marker=document.createComment('ribbon-panel');tools.before(marker);document.body.append(tools);
-    tools.classList.add('ribbon-flyout');tools.setAttribute('role','group');tools.setAttribute('aria-label',group.dataset.panel);
+    tools.classList.add('ribbon-flyout');tools.setAttribute('role','toolbar');tools.setAttribute('aria-label',`${group.dataset.panel} commands`);
     const bounds=button.getBoundingClientRect();
     tools.style.left='4px';tools.style.top=`${bounds.bottom+3}px`;
     const position=flyoutPosition(bounds,tools.getBoundingClientRect(),{width:innerWidth,height:innerHeight});
     tools.style.left=`${position.left}px`;tools.style.top=`${position.top}px`;
     button.setAttribute('aria-expanded','true');this.popup={group,tools,button,marker,preview:!focus};
-    if(focus)this.focusTools();
     this.onChoose=event=>{if(event.target.closest('button[data-command],button[data-action]'))this.hide();};tools.addEventListener('click',this.onChoose);
     if(this.floating&&!protectedRibbonPanel(this.context.tab,group.dataset.ribbonPanel||group.dataset.panel)){
       const float=document.createElement('button');float.type='button';float.textContent=`Float ${group.dataset.panel} panel`;float.className='ribbon-flyout-float';
       float.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();this.floatPanel(group);});
       tools.append(float);this.popup.floatButton=float;
     }
+    this.keyboard?.refresh();
+    this.popup.keyboard=bindRovingToolbar(tools,{onEscape:()=>this.close(true)});
+    if(focus)this.focusTools();
   }
   close(focus=false) {
     const popup=this.popup;if(!popup)return;this.popup=null;
+    popup.keyboard?.dispose();
     popup.floatButton?.remove();
     popup.tools.removeEventListener('click',this.onChoose);popup.tools.classList.remove('ribbon-flyout');
     popup.tools.style.removeProperty('left');popup.tools.style.removeProperty('top');popup.marker.replaceWith(popup.tools);
-    popup.button.setAttribute('aria-expanded','false');if(focus)popup.button.focus({preventScroll:true});
+    popup.button.setAttribute('aria-expanded','false');this.keyboard?.refresh();if(focus)popup.button.focus({preventScroll:true});
   }
-  dispose() {this.hide();this.floating?.dispose();this.observer.disconnect();cancelAnimationFrame(this.frame);document.removeEventListener('pointerdown',this.outside);document.removeEventListener('keydown',this.escape,true);window.removeEventListener('resize',this.resize);this.panel.removeEventListener('click',this.choose);}
+  dispose() {this.hide();this.keyboard?.dispose();this.floating?.dispose();this.observer.disconnect();cancelAnimationFrame(this.frame);document.removeEventListener('pointerdown',this.outside);document.removeEventListener('keydown',this.escape,true);document.removeEventListener('focusin',this.focusOutside);window.removeEventListener('resize',this.resize);this.panel.removeEventListener('click',this.choose);}
 }

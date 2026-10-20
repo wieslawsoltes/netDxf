@@ -200,3 +200,25 @@ and **Rename**. The Home ribbon exposes **Hatch**, **Edit hatch** and a
 **Solid hatch polygon** command. These operations use the shared authoring plans,
 not transient graphics. See [CAD authoring](CadAuthoring.md) for APIs, exact
 geometry admission, pattern import, examples and validation boundaries.
+
+
+### Rotate and Scale reference workflows
+
+After selecting objects and a base point, ROTATE and SCALE accept **Copy** and
+**Reference**. Reference accepts a typed angle/length or two points. The new
+measure accepts a scalar, a point measured from the base, or **Points** for two
+independent picks. Existing snaps and drafting aids apply to point acquisition;
+Escape cancels without an edit. Typed coordinate and polar/relative input use the
+same command parser.
+
+`DraftingTransformOptions` on the reusable `DraftingCommand` carries Copy,
+Reference and Target measures. ROTATE measures WCS XY angles and rotates about
+WCS Z. SCALE uses positive uniform factors and 3D reference lengths. Each measure
+has exactly one scalar or two points; invalid/coincident references are refused.
+The existing affine representability limits still apply to tilted entities,
+arrays and unsupported text/entity combinations.
+
+Copy creates fresh roots while sharing existing definitions/resources, with the
+same discipline metadata behavior as COPY. It does not invent new domain keys or
+connections. The complete clone/transform is one undoable operation. Exact full
+rotations and unit scales are history no-ops unless Copy requests new roots.

@@ -61,6 +61,7 @@ Check(detachedAttribute.Owner is null, "Rejected native factory leaves detached 
 checks += DisciplineChecks.Run();
 checks += ConnectivityChecks.Run();
 checks += DomainStructureChecks.Run();
+checks += DomainIsolationChecks.Run();
 checks += CadReviewChecks.Run();
 Console.WriteLine($"{checks} discipline verification checks passed.");
 void Check(bool condition, string message) { checks++; if (!condition) throw new InvalidOperationException(message); }

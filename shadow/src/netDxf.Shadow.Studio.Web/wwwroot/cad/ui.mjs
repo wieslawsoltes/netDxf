@@ -6,7 +6,7 @@ export function el(tag, attributes = {}, children = []) {
     if (name === 'text') node.textContent = value;
     else if (name === 'class') node.className = value;
     else if (name.startsWith('on')) node.addEventListener(name.slice(2), value);
-    else if (name === 'checked' || name === 'disabled' || name === 'hidden') node[name] = !!value;
+    else if (name === 'checked' || name === 'disabled' || name === 'hidden' || name === 'required') node[name] = !!value;
     else if (value !== undefined && value !== null) node.setAttribute(name, String(value));
   }
   for (const child of Array.isArray(children) ? children : [children]) if (child !== null && child !== undefined) node.append(child);
