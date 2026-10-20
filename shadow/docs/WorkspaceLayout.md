@@ -24,14 +24,29 @@ restore each palette's visibility, docking side, mode and size; reset returns to
 one Properties palette on the right. Old single-palette preferences migrate.
 Drawing files and undo history are unaffected by layout changes.
 
+Docked palettes can share a tab group. Use a palette's layout menu to group it
+with another docked palette, move it to the target's side, detach it, or change the order of tabs
+and groups. The active tab owns the content renderer; inactive tabs release
+asynchronous work. Arrow keys navigate tabs. Horizontal separators resize stacked
+groups independently of the column width. Splitter moves can be cancelled and
+the layout lock prevents regrouping and resizing.
+
+**Allow Docking** is a per-palette preference. Turning it off keeps that palette
+floating and disables edge docking and auto-hide anchoring until re-enabled.
+Existing layouts and saved workspaces migrate to the group model; narrow screens
+retain edge overlays while preserving the desktop arrangement. The interaction
+follows Autodesk's [docking permissions and pane resizing](https://help.autodesk.com/cloudhelp/2023/ENU/AutoCAD-Core/files/GUID-6EF21814-B9FB-4F2A-897E-852B25679D17.htm).
+
 Dragging a palette now shows left/right docking targets and a shaded preview.
 Release over a target to dock; hold Ctrl to keep the palette floating. Escape or
 pointer cancellation restores the previous layout. Menu docking remains available
 to keyboard and touch users, and the layout lock also prevents drag docking.
 
 **UI workspaces** in the document bar, View or Manage ribbon opens saved layouts.
-The Drafting and Graph analysis presets provide starting arrangements. Save the
-current palette positions, ribbon display/tab and command-line visibility under
+The Drafting and Graph analysis presets provide starting arrangements.
+Dependency analysis opens a wider References/Graph tab group beside Properties.
+Save the
+current palette groups/sizes, ribbon display/tab, Quick Access commands and command-line visibility under
 a name, then apply, update, rename or delete it later. Up to 24 layouts are stored
 locally in the browser. `WORKSPACE` and `WSSAVE` open the same manager. This follows
 the task-oriented display arrangement described in Autodesk's
@@ -39,6 +54,21 @@ the task-oriented display arrangement described in Autodesk's
 Drawing branches remain under **Immutable workspaces**. UI layouts exclude
 drawings, drafting aids, discipline enablement and agent credentials/settings.
 Storage failures are reported instead of claiming a layout was saved.
+
+**Search commands** in Quick Access, **Manage → Find a command**, or Ctrl/Cmd+K
+opens command search. Search labels, aliases and categories for drawing commands,
+resource managers, graph analyses and discipline tools. Results explain their
+availability; execution rechecks the current drawing and module state.
+Enter executes the selected result and Escape returns focus. Opening and
+filtering search does not cancel the drawing command or change selection.
+
+**Customize Quick Access** pins, removes and reorders up to 16 command IDs.
+Overflow keeps controls reachable on narrow screens. Choices persist locally and
+are included in saved UI workspaces; reset restores New, Open, Save, Undo and Redo.
+This follows Autodesk's [Quick Access customization](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-5F9B5220-1D63-4791-96C6-97E50621320C.htm).
+The reusable `command-catalog.mjs` owns discovery, availability and bounded
+preferences; `command-access.mjs` supplies UI using host execution callbacks.
+Saved preferences contain command identities, never drawing payloads or credentials.
 
 The ribbon display menu offers **Full ribbon**, **Panel buttons**, **Panel
 titles** and **Tabs only**. The adjacent arrow cycles these modes; double-click
