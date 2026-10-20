@@ -182,6 +182,14 @@ namespace netDxf
             return result;
         }
 
+        /// <summary>Decodes the packed alpha stored in a LAS/DXF layer-state entry.</summary>
+        /// <remarks>Saved layer states use zero for opaque, unlike the generic FromAlphaValue
+        /// projection, where zero is ByBlock. The exact packed value is retained for round trips.</remarks>
+        public static Transparency FromLayerStateAlphaValue(int value)
+        {
+            return value == 0 ? new Transparency(0, 0) : FromAlphaValue(value);
+        }
+
         public static Transparency FromCadIndex(short alpha)
         {
             if (alpha == -1)

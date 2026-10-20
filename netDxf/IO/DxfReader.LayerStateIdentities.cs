@@ -81,7 +81,7 @@ namespace netDxf.IO
             int at = 0;
             Func<short, object, bool> take = (code, value) => at < data.Count
                 && data[at].Code == code && Equals(data[at++].Value, value);
-            if (!take(91, 2047) || !take(301, state.Description) || !take(290, state.PaperSpace)
+            if (!take(91, (int)state.RestoreMask) || !take(301, state.Description) || !take(290, state.PaperSpace)
                 || !take(302, state.CurrentLayer)) return false;
             foreach (var properties in state.Properties.Values)
             {

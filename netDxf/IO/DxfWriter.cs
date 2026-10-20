@@ -4886,7 +4886,7 @@ namespace netDxf.IO
 
             this.chunk.Write(100, SubclassMarker.XRecord);
             this.chunk.Write(280, (short) 1); // Duplicate record cloning flag
-            this.chunk.Write(91, 2047); // unknown code functionality <- 32-bit integer value
+            this.chunk.Write(91, (int)layerState.RestoreMask);
             this.chunk.Write(301, this.EncodeNonAsciiCharacters(layerState.Description));
             this.chunk.Write(290, layerState.PaperSpace);
             this.chunk.Write(302, this.EncodeNonAsciiCharacters(layerState.CurrentLayer));

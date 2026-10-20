@@ -47,6 +47,7 @@ namespace netDxf.Objects
         private string description;
         private string currentLayer;
         private bool paperSpace;
+        private LayerStateRestoreMask restoreMask = LayerStateRestoreMask.All;
         private readonly ObservableDictionary<string, LayerStateProperties> properties;
 
         #endregion
@@ -133,6 +134,14 @@ namespace netDxf.Objects
         {
             get { return this.paperSpace; }
             set { this.paperSpace = value; }
+        }
+
+        /// <summary>Gets or sets the persisted LAS/DXF restore mask, including unrecognized bits.</summary>
+        /// <remarks>This is state metadata. Legacy LayerStateManager.Restore continues to use its Options property.</remarks>
+        public LayerStateRestoreMask RestoreMask
+        {
+            get { return this.restoreMask; }
+            set { this.restoreMask = value; }
         }
 
         /// <summary>
@@ -223,7 +232,7 @@ namespace netDxf.Objects
             chunk.Write(0, LayerStateDictionary);
             chunk.Write(0, LayerStateName);
             chunk.Write(1, ls.Name);
-            chunk.Write(91, 2047); // unknown code functionality <- 32-bit integer value
+            chunk.Write(91, (int)ls.RestoreMask);
             chunk.Write(301, ls.Description);
             chunk.Write(290, ls.PaperSpace);
             chunk.Write(302, ls.CurrentLayer);
@@ -297,6 +306,7 @@ namespace netDxf.Objects
             string description = string.Empty;
             string currentLayer = Layer.DefaultName;
             bool paperSpace = false;
+            LayerStateRestoreMask restoreMask = LayerStateRestoreMask.All;
             List<LayerStateProperties> layerProperties = new List<LayerStateProperties>();
 
             if (chunk.Code == 0 )
@@ -320,7 +330,8 @@ namespace netDxf.Objects
                         name = chunk.ReadString();
                         chunk.Next();
                         break;
-                    case 91: // unknown code
+                    case 91:
+                        restoreMask = (LayerStateRestoreMask)chunk.ReadInt();
                         chunk.Next();
                         break;
                     case 301:
@@ -348,7 +359,8 @@ namespace netDxf.Objects
             {
                 Description = description,
                 CurrentLayer = currentLayer,
-                PaperSpace = paperSpace
+                PaperSpace = paperSpace,
+                RestoreMask = restoreMask
             };
 
             foreach (LayerStateProperties lp in layerProperties)
@@ -400,7 +412,7 @@ namespace netDxf.Objects
                         break;
                     case 440:
                         int alpha = chunk.ReadInt();
-                        transparency = alpha == 0 ? new Transparency(0, alpha) : Transparency.FromAlphaValue(alpha);
+                        transparency = Transparency.FromLayerStateAlphaValue(alpha);
                         chunk.Next();
                         break;
                     case 92:
@@ -481,7 +493,8 @@ namespace netDxf.Objects
             {
                 Description = this.description,
                 CurrentLayer = this.currentLayer,
-                PaperSpace = this.paperSpace
+                PaperSpace = this.paperSpace,
+                RestoreMask = this.restoreMask
             };
 
             foreach (LayerStateProperties item in this.properties.Values)
