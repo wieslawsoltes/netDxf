@@ -1,6 +1,8 @@
 """Exercise shared graph analysis palettes against actual native/WASM drawing state."""
 import json
 from playwright.sync_api import expect
+from reference_graph_browser_checks import verify_reference_graph
+from workspace_layout_browser_checks import verify_workspace_layout
 
 
 def verify_graph_analysis(page, output, state, command, wait_state, idle, check):
@@ -95,7 +97,9 @@ def verify_graph_analysis(page, output, state, command, wait_state, idle, check)
     expect(content).to_contain_text('Minimum forest length 50 · 2 components · 5 edges')
     page.screenshot(path=str(output / 'graph-analysis.png'))
     verify_palette_ribbon(page, output, check)
+    verify_workspace_layout(page, output, state, command, wait_state, idle, check)
     verify_large_graph_projection(page, output, state, command, wait_state, idle, check)
+    verify_reference_graph(page, output, state, command, wait_state, idle, check)
 
 
 def verify_large_graph_projection(page, output, state, command, wait_state, idle, check):

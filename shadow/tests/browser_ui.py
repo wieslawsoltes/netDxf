@@ -1,5 +1,23 @@
 """Interactions with the responsive ribbon shared by real-browser CAD suites."""
+import time
 from playwright.sync_api import expect
+
+
+def wait_for_ui(page, predicate, *, arg=None, timeout=15000):
+    """Poll through the browser driver without eval inside a page timer.
+
+    Playwright's wait_for_function timer re-evaluates strings with eval, which is
+    blocked by the native host's strict CSP when the first check is not ready.
+    Keep that policy intact and retain bounded, assertion-driven waits.
+    """
+    deadline = time.monotonic() + timeout / 1000
+    while True:
+        result = page.evaluate(predicate, arg)
+        if result:
+            return result
+        if time.monotonic() >= deadline:
+            raise AssertionError(f'Timed out after {timeout} ms waiting for UI condition: {predicate}')
+        page.wait_for_timeout(30)
 
 
 def ribbon_item(page, selector: str, tab: str, panel: str):
