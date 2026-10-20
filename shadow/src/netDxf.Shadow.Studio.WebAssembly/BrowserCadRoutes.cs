@@ -21,6 +21,7 @@ internal sealed partial class BrowserApplication
         Cad("POST", "/api/cad/{id}/modules/toggle", (s, r) => s.CadSetModule(r.Body<CadModuleToggleRequest>()));
         Cad("POST", "/api/cad/{id}/modules/symbols", (s, r) => s.CadModuleSymbols(r.Body<CadModuleCatalogRequest>()));
         Cad("POST", "/api/cad/{id}/modules/analyze", (s, r) => s.CadAnalyzeModule(r.Body<CadModuleAnalysisRequest>(), Token));
+        Cad("POST", "/api/cad/{id}/modules/connectivity", (s, r) => s.CadModuleConnectivity(r.Body<CadModuleConnectivityRequest>(), Token));
         Cad("POST", "/api/cad/{id}/modules/command", (s, r) => s.CadRunModule(r.Body<CadModuleExecuteRequest>(), Token));
         Cad("POST", "/api/cad/{id}/references/capture", (s, r) => s.CaptureReferences(r.Body<DrawingReferenceCaptureRequest>()));
         Cad("POST", "/api/cad/{id}/references/validate", (s, r) => s.ValidateReferences(r.Body<DrawingReferenceValidationRequest>()));
@@ -61,6 +62,7 @@ internal sealed partial class BrowserApplication
         Cad("POST", "/api/cad/{id}/block/finish", (s, r) => s.CadFinishBlock(r.Body<CadBlockFinishRequest>(), Token));
         Cad("POST", "/api/cad/{id}/grip", (s, r) => s.CadGrip(r.Body<CadGripRequest>()));
         Cad("GET", "/api/cad/{id}/resources", (s, r) => s.CadResources());
+        Cad("POST", "/api/cad/{id}/layer-isolation", (s, r) => s.CadLayerIsolation(r.Body<CadLayerIsolationRequest>(), Token));
         Cad("POST", "/api/cad/{id}/layer-state", (s, r) => s.CadLayerState(r.Body<CadLayerStateRequest>(), Token));
         Cad("POST", "/api/cad/{id}/resource", (s, r) => s.CadResource(r.Body<CadResourceRequest>()));
         Cad("POST", "/api/cad/{id}/layer", (s, r) => s.CadLayer(r.Body<CadLayerRequest>()));

@@ -1,3 +1,7 @@
+import { RibbonCustomization } from './ribbon-customization.mjs';
+import { createDialogLifecycle } from './dialog-lifecycle.mjs';
+import { renderCustomizedRibbonGroups, ribbonCustomizationTools, refreshCustomRibbonCommands } from './ribbon-customization-ui.mjs';
+import { layerManagerTools } from './layer-manager-ui.mjs';
 import { resourceTools } from './resource-ui.mjs';
 import { moduleTools } from './module-ui.mjs';
 import { analysisTools } from './analysis-ui.mjs';
@@ -31,6 +35,7 @@ import { mountAgentWorkspace } from '../agents/workspace.mjs';
 import { installStudioControl } from '../agents/studio-control.mjs';
 
 const client = new CadClient();
+const showDialog = createDialogLifecycle($('dialog'));
 const viewport = new CadViewport($('viewport'), $('drawing'), client, {
   pick: p => takePoint(p), select: (p, extend, remove) => select('pick', p, p, extend, remove),
   box: (a,b,crossing,extend,remove) => select(crossing?'crossing':'window',a,b,extend,remove),
@@ -52,14 +57,20 @@ const renderReferences=referenceGraphPalette({client,report,snapshot:()=>snapsho
   download:(name,text,type)=>download(new Blob([text],{type}),name),
   selectSources:(ids,expectedKey)=>edit('select',{mode:'entities',entities:ids.map(value=>({value}))},{expectedKey})});
 const views = new Map(), layers = new Map();
-const ribbonLayout = new RibbonLayout($('ribbon'));
+let profileStorage;try{profileStorage=localStorage;}catch{/* Storage may be unavailable in embedded hosts. */}
+const ribbonCustomization = new RibbonCustomization({storage:profileStorage,report,changed:()=>{drawRibbonTabs();drawRibbon();}});
+const ribbonLayout = new RibbonLayout($('ribbon'),{customization:ribbonCustomization,report});
 let chrome = chromePreferences();
 const ribbonModeLabels={full:'Full ribbon',buttons:'Panel buttons',titles:'Panel titles',tabs:'Tabs only'};
 const blockUi = blockTools({client, edit, dialog, cancel, fit:()=>viewport.fit(), layer:()=>currentLayer, placeInsert:options=>{editable();setSession(createInsertSession(options,currentLayer));lastCommand='INSERT';ensureCommandLine();$('command-input').focus({preventScroll:true});}});
 const blockLibraryUi = blockLibraryTools({client,edit,dialog,showPalette,download});
-const resourceUi = resourceTools({client, edit, dialog, run, editable});
+const resourceUi = resourceTools({client, edit, dialog, run, editable,layerFilters:()=>layerManager.open()});
+const layerManager=layerManagerTools({client,edit,dialog,editable,editLayer:(id,create)=>resourceUi.layers(id,create),report});
+const ribbonEditor=ribbonCustomizationTools({store:ribbonCustomization,entries:()=>describeRibbonEntries(client.data),
+  panels:name=>rawRibbonGroups(name).map(node=>({id:node.dataset.ribbonPanel||node.dataset.panel,name:node.dataset.panel})),
+  catalog:commandCatalog,dialog,download:(name,text,type)=>download(new Blob([text],{type}),name),report});
 const analysisPalettes=Object.fromEntries(['Health','Edit previews','Workflows'].map(name=>[name,analysisTools({client,edit,viewport,report,editable})]));
-const moduleUi = moduleTools({client,edit,dialog,report,editable,viewport,showPalette,
+const moduleUi = moduleTools({client,edit,dialog,report,editable,viewport,showPalette,download,snapshot:()=>snapshot,
   place:value=>{cancel(false);setSession(value);ensureCommandLine();$('command-input').focus({preventScroll:true});},
   changed:()=>{drawRibbonTabs();drawRibbon();renderPalette();commandAccess?.refresh();}});
 function persisted() { try { const value=JSON.parse(localStorage.getItem('netdxf-cad-ui-v1') || '{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{}; } catch { return {}; } }
@@ -74,12 +85,12 @@ if (Number.isInteger(settings.snapModes) && settings.snapModes>=0 && settings.sn
 const paletteNames=['Properties','Layers','Blocks','Explorer','Workspaces','Graph','References','Modules','Health','Edit previews','Workflows','Diagnostics'];
 const docking=new PaletteDock({workspace:$('workspace'),legacyPalette:$('palette'),legacySplitter:$('palette-splitter'),
   palettes:paletteNames.map(id=>({id,title:id})),legacySettings:settings,render:renderPaletteContent,
-  onActiveChange:id=>{palette=id;},onLayoutChange:()=>viewport.resize(),keepOpen:id=>id==='Graph'&&!!viewport.graphPick,onHide:id=>{analysisPalettes[id]?.destroy();if(id==='Graph')renderGraph.hide();if(id==='References')renderReferences.hide();},report});
-let profileStorage;try{profileStorage=localStorage;}catch{/* Storage may be unavailable in embedded hosts. */}
+  onActiveChange:id=>{palette=id;},onLayoutChange:()=>viewport.resize(),keepOpen:id=>id==='Graph'&&!!viewport.graphPick,onHide:id=>{analysisPalettes[id]?.destroy();if(id==='Modules')moduleUi.hide?.();if(id==='Graph')renderGraph.hide();if(id==='References')renderReferences.hide();},report});
 const uiWorkspaces=workspaceProfileTools({paletteIds:paletteNames,storage:profileStorage,dialog,report,
-  capture:()=>({chrome,tab,commandHeight:parseFloat(document.documentElement.style.getPropertyValue('--command-height'))||90,palettes:docking.snapshot(),quickAccess:commandAccess?.snapshot()}),
+  capture:()=>({chrome,tab,commandHeight:parseFloat(document.documentElement.style.getPropertyValue('--command-height'))||90,palettes:docking.snapshot(),quickAccess:commandAccess?.snapshot(),ribbonCustomization:ribbonCustomization.snapshot()}),
   restore:value=>{
     const layout=workspaceProfileLayout(value,paletteNames);
+    ribbonCustomization.restore(layout.ribbonCustomization,{notify:false,strict:false});
     ribbonLayout.hide();chrome=layout.chrome;
     document.documentElement.style.setProperty('--command-height',`${Math.min(innerHeight*.55,layout.commandHeight)}px`);
     tab=ribbonEntries().some(entry=>entry.key===layout.tab&&!entry.disabled)?layout.tab:'Home';
@@ -198,7 +209,7 @@ async function submit(text) {
     if(input===null)return;if(!/^[01]$/.test(input))throw new Error(`${name} accepts 0 or 1.`);
     insertionSettings[key]=Number(input);persist();log(`${name} = ${input}`);return;
   }
-  const aliases={WORKSPACE:'ui-workspaces',WSSAVE:'ui-workspaces',REFGRAPH:'reference-graph',BATTMAN:'attribute-definitions',ATTDEF:'attribute-create',ATTSYNC:'attribute-sync',EATTEDIT:'attributes',ATTEDIT:'attributes',ATE:'attributes',BEDIT:'block-edit',BE:'block-edit',BSAVE:'block-save',BCLOSE:'block-close',U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save-as',SAVEAS:'save-as',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LAYERSTATE:'layer-states',LAS:'layer-states',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot',GRAPH:'graph-analysis',TOPOLOGY:'graph-analysis'};
+  const aliases={CUI:'ribbon-customize',LAYISO:'layer-isolate',LAYUNISO:'layer-unisolate',WORKSPACE:'ui-workspaces',WSSAVE:'ui-workspaces',REFGRAPH:'reference-graph',BATTMAN:'attribute-definitions',ATTDEF:'attribute-create',ATTSYNC:'attribute-sync',EATTEDIT:'attributes',ATTEDIT:'attributes',ATE:'attributes',BEDIT:'block-edit',BE:'block-edit',BSAVE:'block-save',BCLOSE:'block-close',U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save-as',SAVEAS:'save-as',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LAYERSTATE:'layer-states',LAS:'layer-states',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot',GRAPH:'graph-analysis',TOPOLOGY:'graph-analysis'};
   if(name==='Z'||name==='ZOOM') { if(!rest||['E','EXTENTS','A','ALL'].includes(rest.toUpperCase())) viewport.fit(); else if(rest.toUpperCase()==='IN') await action('zoom-in'); else if(rest.toUpperCase()==='OUT') await action('zoom-out'); else throw new Error('ZOOM accepts Extents, In or Out.'); return; }
   if(aliases[name]==='block-edit' && rest.trim()) {
     const text=rest.trim(), quoted=text.length>1 && ['"',"'"].includes(text[0]) && text.at(-1)===text[0];
@@ -235,14 +246,18 @@ function updateTools() {
   document.querySelectorAll('[data-command]').forEach(b=>{b.classList.toggle('active',b.dataset.command===session?.name);b.disabled=!!client.busy||snapshot!==null||!client.state;});
   for(const [name,enabled] of [['undo',client.state?.undoCount],['redo',client.state?.redoCount]]) document.querySelectorAll(`[data-action="${name}"]`).forEach(b=>b.disabled=!enabled||!!client.busy||snapshot!==null);
   commandAccess?.refresh();
+  refreshCustomRibbonCommands(document,{catalog:commandCatalog,state:commandState});
 }
 async function setCurrentLayer(name) { const layer=client.data?.layers.find(l=>l.name===name);if(!layer)throw new Error('Choose an existing layer.');await edit('resource',{resource:{kind:'layer',action:'current',id:layer.id}}); }
-function ribbonEntries(){return describeRibbonEntries(client.data);}
+function ribbonEntries(){return ribbonCustomization.tabs(describeRibbonEntries(client.data));}
+function rawRibbonGroups(name){return name.startsWith('user:')?[]:name.startsWith('module:')?moduleUi.ribbon(name.slice(7)):ribbon(name,client.data,currentLayer,value=>run(()=>setCurrentLayer(value)));}
+function customizedRibbonGroups(name){return renderCustomizedRibbonGroups(ribbonCustomization,name,rawRibbonGroups(name),
+  {catalog:commandCatalog,state:commandState,execute:entry=>{ribbonLayout.hide();return executeCatalogCommand(entry);},report});}
 function drawRibbonTabs(){
   const entries=ribbonEntries();ribbonContext=reconcileRibbonContext(tab,ribbonContext,entries);tab=ribbonContext.tab;
   $('ribbon-tabs').replaceChildren(...entries.map(({key,name,disabled,title,contextual})=>button(name,()=>selectRibbon(key),{id:`ribbon-tab-${key.replaceAll(' ','-')}`,role:'tab','data-tab':key,'data-contextual':contextual||false,disabled:!!disabled,title:title||name,'aria-controls':'ribbon','aria-selected':key===tab,tabindex:key===tab?0:-1})));
 }
-function drawRibbon() { ribbonLayout.set(tab.startsWith('module:')?moduleUi.ribbon(tab.slice(7)):ribbon(tab,client.data,currentLayer,value=>run(()=>setCurrentLayer(value)))); $('ribbon').setAttribute('aria-label',`${ribbonEntries().find(e=>e.key===tab)?.name||tab} tools`); $('ribbon').setAttribute('aria-labelledby',`ribbon-tab-${tab.replaceAll(' ','-')}`); updateTools(); }
+function drawRibbon() { ribbonLayout.set(customizedRibbonGroups(tab),{tab,entries:ribbonCustomization.tabs(describeRibbonEntries(client.data),{includeHidden:true}),resolveGroups:customizedRibbonGroups}); $('ribbon').setAttribute('aria-label',`${ribbonEntries().find(e=>e.key===tab)?.name||tab} tools`); $('ribbon').setAttribute('aria-labelledby',`ribbon-tab-${tab.replaceAll(' ','-')}`); updateTools(); }
 function selectRibbon(name, focus=false) {
   if(!ribbonEntries().some(entry=>entry.key===name&&!entry.disabled))return;
   tab=name; drawRibbon();
@@ -265,10 +280,9 @@ function ensureCommandLine() { if(!chrome.commandLineVisible){chrome.commandLine
 function showPalette(name) { docking.show(name); }
 function inputRow(label,input) { return el('label',{class:'form-row'},[el('span',{text:label}),input]); }
 async function dialog(title,content,submitLabel='OK') {
-  if($('dialog').open) throw new Error('Finish the open dialog first.');
-  $('dialog-title').textContent=title; $('dialog-body').replaceChildren(...content); $('dialog-submit').textContent=submitLabel;
-  $('dialog').returnValue='cancel'; $('dialog').showModal();
-  return new Promise(resolve=>$('dialog').addEventListener('close',()=>resolve($('dialog').returnValue==='ok'),{once:true}));
+  return await showDialog(()=>{
+    $('dialog-title').textContent=title; $('dialog-body').replaceChildren(...content); $('dialog-submit').textContent=submitLabel;
+  })==='ok';
 }
 async function ask(title,label,initial='',type='text') {
   const input=el('input',{type,value:initial,required:true,'aria-label':label});
@@ -448,6 +462,7 @@ async function action(name) {
     case 'palette-reset':docking.reset();return;
     case 'command-search':commandAccess.search();return;
     case 'quick-access-customize':commandAccess.customize();return;
+    case 'ribbon-customize':return ribbonEditor.customize();
     case 'clean':ribbonLayout.hide();$('studio').classList.toggle('clean');return;
     case 'ribbon-minimize':chrome.ribbonMode=chrome.ribbonMode==='tabs'?'full':'tabs';applyChrome();persist();return;
     case 'ribbon-cycle':chrome.ribbonMode=ribbonModes[(ribbonModes.indexOf(chrome.ribbonMode)+1)%ribbonModes.length];applyChrome();persist();return;
@@ -462,6 +477,9 @@ async function action(name) {
     case 'attribute-sync':return synchronizeAttributes({client,edit,dialog,editable,showPalette});
     case 'layer-states':return layerStateTools({client,edit,dialog,editable})();
     case 'layer-manager':return resourceUi.layers();
+    case 'layer-filters':return layerManager.open();
+    case 'layer-isolate':return layerManager.isolateSelection();
+    case 'layer-unisolate':return layerManager.restore();
     case 'linetypes':return resourceUi.linetypes();
     case 'text-styles':return resourceUi.textStyles();
     case 'assign-layer':{const layer=client.data.layers.find(l=>l.name===currentLayer);if(!layer)throw new Error('Choose an existing layer.');await edit('assign-layer',{layer:layer.id.value});return;}
@@ -516,14 +534,13 @@ function workspaceMenu(anchor, entries) {
     event.preventDefault();event.stopPropagation();
   };
 }
-commandAccess=createCommandAccess({
-  toolbar:$('quick-access'),catalog:()=>buildCommandCatalog({modules:moduleUi.catalog()}),
-  state:()=>({hasDocument:!!client.state,busy:!!client.busy,readOnly:snapshot!==null,commandActive:!!session,
+function commandCatalog(){return buildCommandCatalog({modules:moduleUi.catalog()});}
+function commandState(){return {hasDocument:!!client.state,busy:!!client.busy,readOnly:snapshot!==null,commandActive:!!session,
     blockEditing:!!client.data?.blockEditor,selectionCount:client.data?.selectedEntities?.length||0,
     blockCount:client.data?.blocks?.length||0,undoCount:client.state?.undoCount||0,redoCount:client.state?.redoCount||0,
-    modules:client.data?.modules||[]}),
-  execute:entry=>entry.kind==='command'?start(entry.target):entry.kind==='input'?submit(entry.target):action(entry.target),report
-});
+    modules:client.data?.modules||[]};}
+function executeCatalogCommand(entry){return entry.kind==='command'?start(entry.target):entry.kind==='input'?submit(entry.target):action(entry.target);}
+commandAccess=createCommandAccess({toolbar:$('quick-access'),catalog:commandCatalog,state:commandState,execute:executeCatalogCommand,report});
 drawRibbonTabs();
 $('ribbon-tabs').addEventListener('keydown',event=>{const entries=ribbonEntries().filter(entry=>!entry.disabled),key=event.key,index=entries.findIndex(e=>e.key===tab);let next;if(key==='ArrowDown'){event.preventDefault();ribbonLayout.reveal(true);return;}if(key==='ArrowRight')next=(index+1)%entries.length;else if(key==='ArrowLeft')next=(index+entries.length-1)%entries.length;else if(key==='Home')next=0;else if(key==='End')next=entries.length-1;else return;event.preventDefault();selectRibbon(entries[next].key,true);});
 $('ribbon-tabs').addEventListener('dblclick',event=>{if(event.target.closest('[role=tab]'))run(()=>action('ribbon-minimize'));});
@@ -547,6 +564,7 @@ $('font-file').addEventListener('change',e=>run(async()=>{const file=e.target.fi
 document.addEventListener('keydown',e=>{
   if(e.defaultPrevented)return;
   if(e.target.closest('.agent-workspace'))return;
+  if(e.target.closest('dialog[open]')&&!e.target.closest('.command-access-dialog'))return;
   if(commandAccess.handleShortcut(e))return;
   if(e.target.closest('.command-access-dialog'))return;
   if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key.toLowerCase()==='a')return;
@@ -606,7 +624,7 @@ window.addEventListener('beforeunload',e=>{if(documents.some(d=>d.dirty)){e.prev
 bindViewportPageLifetime(viewport);
 async function pollDocuments() {
   try {
-    if(!document.hidden&&!client.busy&&!session&&!viewport.inputActive&&!$('dialog').open&&!commandAccess?.dialog.open&&!docking.containsFocus())
+    if(!document.hidden&&!client.busy&&!session&&!viewport.inputActive&&!document.querySelector('dialog[open]')&&!docking.containsFocus()&&!ribbonLayout.containsFocus())
       await run(async()=>{await client.refresh();await documentTabs();});
   } finally { setTimeout(pollDocuments,2500); }
 }
@@ -618,7 +636,7 @@ const studioAgentUi = installStudioControl({
   client, viewport, documents:()=>documents, currentLayer:()=>currentLayer, ribbon:()=>tab, palette:()=>palette,
   retainedSnapshot:()=>snapshot,
   command:()=>session?{name:session.name,prompt:session.prompt,selecting:session.selecting,complete:session.complete}:null,
-  showRibbon:name=>selectRibbon(name),
+  showRibbon:name=>selectRibbon(name),ribbonEntries,
   setLayer:name=>setCurrentLayer(name),
   submit, cancel, showPalette, persist, modes, activate, newDocument, edit, setSnapshot, switchWorkspace,
   action, documentTabs, report

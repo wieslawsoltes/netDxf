@@ -27,7 +27,9 @@ test('search finds labels, multiword tool names, command aliases, module metadat
     ['object reference explorer','action:reference-query:explore'],['REC','command:RECTANG'],['L','command:LINE'],
     ['WSSAVE','action:ui-workspaces'],['SAVE','action:save-as'],['QSAVE','action:save'],
     ['-INSERT','command:-INSERT'],['INSERT','command:INSERT'],['ATTREQ','input:ATTREQ'],
-    ['route pipe','action:module-command:pid:route']
+    ['route pipe','action:module-command:pid:route'],['CUI','action:ribbon-customize'],
+    ['LAYISO','action:layer-isolate'],['LAYUNISO','action:layer-unisolate'],
+    ['P&ID Connectivity','action:module-open:pid:connectivity']
   ])assert.equal(searchCommands(catalog,query)[0]?.id,id,query);
   assert(searchCommands(catalog,'process equipment').some(entry=>entry.id==='action:module-command:pid:route'));
   assert.equal(searchCommands(catalog,'not-a-real-command-xyz').length,0);
@@ -64,13 +66,20 @@ test('block and discipline contexts are rechecked immediately before dispatch',(
   assert.match(commandAvailability(find('action:block-save'),state),/Open a block/);
   assert.equal(commandAvailability(find('action:block-save'),{...state,blockEditing:true}),'');
   assert.equal(commandAvailability(find('command:MOVE'),{...state,selectionCount:0}),'','interactive command can request selection');
+  assert.throws(()=>resolveCommand('action:layer-isolate',catalog,{...state,selectionCount:0}),/Select source objects/);
+  for(const action of ['layer-isolate','layer-unisolate']) {
+    assert.throws(()=>resolveCommand(`action:${action}`,catalog,{...state,readOnly:true}),/current drawing/);
+    assert.throws(()=>resolveCommand(`action:${action}`,catalog,{...state,blockEditing:true}),/Close the block editor/);
+  }
+  assert.equal(commandAvailability(find('action:ribbon-customize'),{hasDocument:false}),'');
+  assert.throws(()=>resolveCommand('action:module-open:pid:connectivity',catalog,{...state,modules:[]}),/Enable/);
 });
 
 test('preferences retain only bounded registered IDs and unloaded module pins',()=>{
   assert.deepEqual(quickAccessPreferences(null).pinned,defaultQuickAccess);
   const saved=quickAccessPreferences({version:1,pinned:['action:save','action:save','javascript:alert(1)',
-    'action:missing','action:module-command:custom:place',{},'command:LINE'],secret:'do-not-copy'});
-  assert.deepEqual(saved,{version:1,pinned:['action:save','action:module-command:custom:place','command:LINE']});
+    'action:missing','action:module-command:custom:place','action:module-open:custom:connectivity',{},'command:LINE'],secret:'do-not-copy'});
+  assert.deepEqual(saved,{version:1,pinned:['action:save','action:module-command:custom:place','action:module-open:custom:connectivity','command:LINE']});
   assert.equal(quickAccessPreferences({version:1,pinned:catalog.map(entry=>entry.id)}).pinned.length,16);
   assert.deepEqual(quickAccessPreferences({version:1,pinned:[]}).pinned,[],'intentional empty toolbar survives reload');
 });

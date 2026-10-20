@@ -12,7 +12,7 @@ const groups = {
   History: [['undo','Undo','U UNDO','Ctrl+Z'],['redo','Redo','REDO','Ctrl+Y']],
   Navigate: [['fit','Zoom extents','Z ZOOM'],['zoom-in','Zoom in'],['zoom-out','Zoom out'],['pan','Pan','P PAN'],['regen','Regenerate drawing','RE REGEN']],
   Resources: [
-    ['layer-manager','Layer manager'],['layer-states','Layer states','LAYERSTATE LAS'],['layers','Layers palette','LA LAYER'],
+    ['layer-manager','Layer manager'],['layer-filters','Layer filters and isolation'],['layer-isolate','Isolate selected layers','LAYISO'],['layer-unisolate','Restore isolated layers','LAYUNISO'],['layer-states','Layer states','LAYERSTATE LAS'],['layers','Layers palette','LA LAYER'],
     ['layer-new','New layer'],['assign-layer','Assign current layer'],['linetypes','Linetypes'],['text-styles','Text styles'],
     ['font','Load SHX / SHP fonts'],['annotation','Model annotation scale'],['linetype','Linetype endpoint alignment']
   ],
@@ -36,7 +36,7 @@ const groups = {
     ['health','Drawing health'],['edit-previews','Edit previews'],['workflows','Workflow regressions'],['legacy','Advanced diagnostics']
   ],
   Workspace: [
-    ['command-search','Search commands','','Ctrl+K'],['quick-access-customize','Customize Quick Access'],
+    ['ribbon-customize','Customize ribbon','CUI'],['command-search','Search commands','','Ctrl+K'],['quick-access-customize','Customize Quick Access'],
     ['ui-workspaces','UI workspaces','WORKSPACE WSSAVE'],['workspaces','Immutable drawing workspaces'],
     ['fork','Fork drawing workspace'],['snapshot','Retain snapshot','SNAPSHOT'],['snapshots','Snapshot views'],
     ['palette-picker','Open drawing palette'],['palette','Show or hide palettes','','Ctrl+1'],['dock','Change palette docking side'],
@@ -47,14 +47,14 @@ const groups = {
   ],
   Settings: [['settings','Drafting settings','OPTIONS OSNAP'],['modules','Discipline modules'],['agents','Shadow Agent'],['help','Command help','HELP','F1']]
 };
-const writeActions = new Set(['save','save-as','font','undo','redo','layer-new','assign-layer','block-insert','block-create',
+const writeActions = new Set(['layer-isolate','layer-unisolate','save','save-as','font','undo','redo','layer-new','assign-layer','block-insert','block-create',
   'block-redefine','block-rename','block-edit','block-save','block-close','block-library-import','block-library-export',
   'attributes','attribute-definitions','attribute-create','attribute-sync','hatch-create','hatch-edit','snapshot','fork','annotation','linetype']);
-const selectionActions = new Set(['assign-layer','block-create','block-redefine','hatch-create','hatch-edit','attributes']);
+const selectionActions = new Set(['layer-isolate','assign-layer','block-create','block-redefine','hatch-create','hatch-edit','attributes']);
 const blockActions = new Set(['block-insert','block-edit','block-rename','block-redefine','block-library-export']);
 const globalActions = new Set(['new','open','demo','agents','help','settings','legacy','palette','palette-picker','dock',
   'palette-lock','palette-reset','ui-workspaces','clean','ribbon-display','ribbon-cycle','ribbon-minimize','command-line','command-history','reset-ui',
-  'command-search','quick-access-customize']);
+  'command-search','quick-access-customize','ribbon-customize']);
 const actionAliases = (value = '') => value.split(' ').filter(Boolean);
 const moduleId = value => typeof value === 'string' && /^[a-zA-Z][a-zA-Z0-9_.-]{0,63}$/.test(value);
 const text = (value, maximum = 160) => typeof value === 'string' ? value.slice(0, maximum) : '';
@@ -63,7 +63,7 @@ const baseActions = Object.entries(groups).flatMap(([category, entries]) => entr
   requiresDocument:!globalActions.has(target),requiresWrite:writeActions.has(target),requiresSelection:selectionActions.has(target),
   requiresIdle:['new','open','demo','font'].includes(target),
   requiresBlocks:blockActions.has(target),requiresBlockEditor:['block-save','block-close'].includes(target),
-  excludesBlockEditor:target==='block-edit'
+  excludesBlockEditor:['block-edit','layer-isolate','layer-unisolate'].includes(target)
 })));
 const categories = name => /^(TEXT|MTEXT|DIM)/.test(name) ? 'Annotate' :
   /^(BLOCK|INSERT)/.test(name) ? 'Blocks' : name.startsWith('HATCH') ? 'Hatch' :
@@ -93,7 +93,7 @@ export function buildCommandCatalog({ modules = [] } = {}) {
       if (!known.has(entry.id)) { known.add(entry.id);entries.push({...entry,category,location:`${category} · Discipline`,shortcut:'',
         module,requiresDocument:true,excludesBlockEditor:true}); }
     };
-    for (const [mode,label] of [['symbols','Symbol library'],['data','Data manager'],['validation','Validation']]) {
+    for (const [mode,label] of [['symbols','Symbol library'],['data','Data manager'],['validation','Validation'],['connectivity','Connectivity graph']]) {
       const target=`module-open:${module}:${mode}`;
       append({id:`action:${target}`,kind:'action',target,label:`${category} ${label}`,aliases:[category,mode]});
     }
@@ -155,7 +155,7 @@ export const quickAccessLimit = 16;
 export const defaultQuickAccess = Object.freeze(['new','open','save','undo','redo'].map(value=>`action:${value}`));
 const knownIds = new Set(buildCommandCatalog().map(entry=>entry.id));
 const validPreferenceId = value => typeof value==='string' && value.length<=180 && (knownIds.has(value) ||
-  /^action:module-(?:command:[a-zA-Z][a-zA-Z0-9_.-]{0,63}:[a-zA-Z][a-zA-Z0-9_.-]{0,63}|open:[a-zA-Z][a-zA-Z0-9_.-]{0,63}:(?:symbols|data|validation))$/.test(value));
+  /^action:module-(?:command:[a-zA-Z][a-zA-Z0-9_.-]{0,63}:[a-zA-Z][a-zA-Z0-9_.-]{0,63}|open:[a-zA-Z][a-zA-Z0-9_.-]{0,63}:(?:symbols|data|validation|connectivity))$/.test(value));
 /** Preserve unloaded module IDs so disabling a module never silently erases its pin. */
 export function quickAccessPreferences(value) {
   if (!value || value.version!==1 || !Array.isArray(value.pinned)) return {version:1,pinned:[...defaultQuickAccess]};

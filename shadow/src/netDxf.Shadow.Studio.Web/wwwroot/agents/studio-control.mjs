@@ -1,18 +1,18 @@
 import { graphOperations } from '../cad/graph-contracts.mjs';
 /** Typed UI automation boundary. Model-produced text is never executed as JavaScript or HTML. */
 const actionNames = new Set([
-  'properties','layers','blocks','explorer','workspaces','diagnostics','agents','modules','health','edit-previews','workflows','block-edit','block-save','block-close','block-insert','block-library-import','block-library-export', 'layer-manager', 'layer-states', 'attributes', 'attribute-sync', 'attribute-definitions', 'attribute-create', 'linetypes', 'text-styles',
+  'properties','layers','blocks','explorer','workspaces','diagnostics','agents','modules','health','edit-previews','workflows','block-edit','block-save','block-close','block-insert','block-library-import','block-library-export', 'layer-manager', 'layer-filters', 'layer-isolate', 'layer-unisolate', 'layer-states', 'attributes', 'attribute-sync', 'attribute-definitions', 'attribute-create', 'linetypes', 'text-styles',
   'new','demo','open','save','save-as','font','undo','redo','fit','regen','zoom-in','zoom-out','pan','palette','dock','clean',
   'settings','layer-new','assign-layer','snapshot','snapshots','fork','annotation','linetype','graph','graph-analysis','export-png','export-svg',
-  'ribbon-minimize','ribbon-cycle','ribbon-display','palette-picker','palette-lock','palette-reset','ui-workspaces','reference-graph','graph-load','graph-fit','graph-clear','command-line','command-history',
+  'ribbon-customize','ribbon-minimize','ribbon-cycle','ribbon-display','palette-picker','palette-lock','palette-reset','ui-workspaces','reference-graph','graph-load','graph-fit','graph-clear','command-line','command-history',
   'legacy','reset-ui','help','block-create','block-redefine','block-rename','hatch-create','hatch-edit',
   'command-search','quick-access-customize','reference-query:explore','reference-query:components','reference-query:path','reference-query:impact'
 ]);
 const readRoutes = new Set(['state', 'graph', 'hatch/pattern', 'resources', 'attributes', 'attribute-definitions', 'modules', 'edit-previews', 'workflow/status', 'workflow/export', 'block-libraries']);
-const readPostRoutes = new Set(['graph/query','modules/symbols','modules/analyze','health','references/capture','references/validate','insert-preview']);
+const readPostRoutes = new Set(['graph/query','modules/symbols','modules/analyze','modules/connectivity','health','references/capture','references/validate','insert-preview']);
 const editRoutes = new Set([
   'command', 'insert', 'block/define', 'block/rename', 'hatch/create', 'hatch/pattern', 'select', 'block/create', 'block/begin',
-  'block/finish', 'grip', 'layer', 'layer-state', 'attributes', 'attribute-definitions', 'assign-layer', 'property', 'history/undo', 'history/redo', 'layout', 'retain', 'fork',
+  'block/finish', 'grip', 'layer', 'layer-isolation', 'layer-state', 'attributes', 'attribute-definitions', 'assign-layer', 'property', 'history/undo', 'history/redo', 'layout', 'retain', 'fork',
   'workspace', 'merge/preview', 'merge/apply', 'annotation-view', 'linetype-view','resource',
   'modules/toggle','modules/command','edit-preview','edit-preview/apply','edit-preview/discard','health/select','workflow/start','workflow/stop','workflow/replay','workflow/roundtrip'
 ]);
@@ -171,7 +171,7 @@ export function installStudioControl(host) {
         if (!['Properties', 'Layers', 'Blocks', 'Explorer', 'Workspaces', 'Graph', 'References', 'Modules', 'Health', 'Edit previews', 'Workflows', 'Diagnostics'].includes(args.name)) throw new Error('Unknown drawing palette.');
         host.showPalette(args.name); break;
       case 'ribbon.show':
-        if (!['Home', 'Insert', 'Annotate', 'Graph', 'View', 'Manage', 'Output'].includes(args.name) && !(args.name==='Block Editor'&&client.data?.blockEditor) && !client.data?.modules?.some(m=>m.enabled&&!client.data?.blockEditor&&`module:${m.id}`===args.name)) throw new Error('Unknown ribbon tab.');
+        if (host.ribbonEntries ? !host.ribbonEntries().some(entry=>entry.key===args.name&&!entry.disabled) : !['Home', 'Insert', 'Annotate', 'Graph', 'View', 'Manage', 'Output'].includes(args.name) && !(args.name==='Block Editor'&&client.data?.blockEditor) && !client.data?.modules?.some(m=>m.enabled&&!client.data?.blockEditor&&`module:${m.id}`===args.name)) throw new Error('Unknown ribbon tab.');
         host.showRibbon(args.name); break;
       case 'settings.set': {
         const settings = { ...viewport.settings };
