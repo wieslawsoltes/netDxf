@@ -181,7 +181,7 @@ schematic beside a port's source and predecessor details.
 Native and standalone WASM expose `POST /api/cad/{id}/modules/connectivity`.
 The read-only MCP tool `studio_module_connectivity` uses the same implementation;
 `studio_request_schema` exposes `CadModuleConnectivityRequest`. Supply the exact
-revision and identity, module, operation (`network`, `path`, `trace`, `structure`), source and
+revision and identity, module, operation (`network`, `path`, `trace`, `structure`, `isolation`), source and
 optional target port ID, direction, scan limits, visit/depth bounds and tolerance.
 Disabled modules and block-editor scopes are rejected.
 
@@ -221,3 +221,29 @@ selection, port and condensation diagrams, JSON, SVG and CSV exports.
 iterative SCC and low-link kernels used by source-reference and discipline
 analysis. It accepts up to 50,000 nodes, 100,000 physical connections or 200,000
 directed arcs, with multigraph and cancellation support.
+
+
+## Explicit isolation studies
+
+**Isolation study** in a discipline ribbon opens a before/after reachability
+comparison. Choose a source port, optional target and traversal direction, then
+exclude declared connection IDs or port IDs. Inspectors can add these assumptions
+without editing the drawing. Analysis compares the same captured graph before and
+after the exclusions; it does not infer valve positions, equipment failures,
+pressure, current or physical isolation safety.
+
+`DomainConnectivity.AnalyzeIsolation` returns exact minimum-link predecessor
+proofs, reached/lost/unreachable/unknown/excluded classifications and independent
+before/after limits. Found routes remain evidence under a partial scan; absence
+or loss requires complete graph declarations and traversal. Alternative retained
+routes are shown with their actual connections. Excluding the source is invalid;
+an excluded target is reported separately from an unreachable target.
+
+Defaults permit 10,000 visits, depth 256 and 200,000 examined directed edges per
+traversal; maxima are 50,000, 1,000 and 400,000. At most 2,000 combined exclusions
+and 128,000 exclusion characters are accepted. Four more independent streams
+(`assessments`, `beforeVisits`, `afterVisits`, `exclusions`) bring connectivity to
+15 streams. Continue their actual cursors with the original graph key, query and
+assumptions. The shared UI offers comparison filtering, target/per-port proofs,
+explicit source selection and JSON, CSV and SVG exports. These read-only studies
+never change drawing geometry, discipline metadata or undo history.

@@ -84,7 +84,7 @@ test('partial loop pages and unavailable source roots cannot be presented as sel
  const f=fixture(t);await load(f,receipt({loopSteps:pg(steps.slice(0,1),3)}));
  assert.equal(byText(f.root,'Inspect loop 0').disabled,true);assert.equal(byText(f.root,'Select loop 0 sources').disabled,true);
  const more=byText(f.root,'Load remaining connectivity').click();await tick();assert.equal(f.reads[1].body.loopStepOffset,1);assert.equal(f.reads[1].body.condensationOffset,1);
- const next=receipt({loopSteps:pg(steps.slice(1),3,1)});for(const name of connectivityStreams.filter(n=>n!=='loopSteps'))next[name]=pg([],next[name].total,next[name].total);
+ const next=receipt({loopSteps:pg(steps.slice(1),3,1)});for(const name of connectivityStreams.filter(n=>n!=='loopSteps'))next[name]=pg([],next[name]?.total??0,next[name]?.total??0);
  f.reads[1].resolve(next);await more;assert.equal(byText(f.root,'Inspect loop 0').disabled,false);
  f.client.data.items=[];f.ui.render(f.root,'pid');assert.equal(byText(f.root,'Select loop 0 sources').disabled,true);assert.equal(f.selected.length,0);
 });
