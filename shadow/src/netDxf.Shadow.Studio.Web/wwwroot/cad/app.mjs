@@ -10,6 +10,7 @@ import { saveDrawingAs } from './exchange-ui.mjs';
 import { authoringRequest } from './authoring-contracts.mjs';
 import { authoringDialog, isAuthoringAction } from './authoring-ui.mjs';
 import { RibbonLayout, chromePreferences, ribbonModes, reconcileRibbonContext } from './ribbon-layout.mjs';
+import { bindRovingToolbar } from './ribbon-keyboard.mjs';
 import { PaletteDock } from './palette-docking.mjs';
 import { workspaceProfileTools } from './workspace-profile-ui.mjs';
 import { workspaceProfileLayout } from './workspace-profiles.mjs';
@@ -524,27 +525,33 @@ function cursorChanged(p,pixel) {
   if(!node.hidden){node.textContent=`${session.step.prompt}: ${format(p.x)}, ${format(p.y)}`;node.style.left=`${Math.max(4,Math.min(viewport.size.w-280,pixel.x+20))}px`;node.style.top=`${Math.min(viewport.size.h-28,pixel.y+25)}px`;}
 }
 function contextMenu(x,y) {
-  const menu=$('context-menu');menu.replaceChildren(button(session?'Enter / finish':`Repeat ${lastCommand}`,()=>submit('')),button('Cancel',()=>cancel()),el('hr'),button('Undo',()=>action('undo')),button('Zoom extents',()=>action('fit')),button('Properties',()=>action('properties')),button('Select all',()=>select('all')));
+  hideContextMenu();
+  const execute=callback=>()=>{hideContextMenu(true);return callback();};
+  const menu=$('context-menu');menu.replaceChildren(button(session?'Enter / finish':`Repeat ${lastCommand}`,execute(()=>submit(''))),button('Cancel',execute(()=>cancel())),el('hr'),button('Undo',execute(()=>action('undo'))),button('Zoom extents',execute(()=>action('fit'))),button('Properties',execute(()=>action('properties'))),button('Select all',execute(()=>select('all'))));
   menu.style.left=`${Math.min(x,innerWidth-205)}px`;menu.style.top=`${Math.min(y,innerHeight-220)}px`;menu.hidden=false;
+  menu.setAttribute('role','menu');
+  for(const item of menu.querySelectorAll('button'))item.setAttribute('role','menuitem');
+  menuKeyboard=bindRovingToolbar(menu,{orientation:'vertical',onEscape:()=>hideContextMenu(true),onTab:()=>hideContextMenu(true)});
+  menuKeyboard.focus();
+}
+let menuKeyboard=null,menuAnchor=null;
+function hideContextMenu(restoreFocus=false) {
+  const menu=$('context-menu'),anchor=menuAnchor;
+  menuKeyboard?.dispose();menuKeyboard=null;menuAnchor=null;menu.hidden=true;
+  anchor?.setAttribute('aria-expanded','false');
+  if(restoreFocus)(anchor?.isConnected?anchor:$('viewport')).focus({preventScroll:true});
 }
 function workspaceMenu(anchor, entries) {
+  hideContextMenu();
   const menu=$('context-menu'), bounds=anchor.getBoundingClientRect();
+  menuAnchor=anchor;
+  anchor.setAttribute('aria-haspopup','menu');anchor.setAttribute('aria-controls',menu.id);anchor.setAttribute('aria-expanded','true');
   menu.setAttribute('role','menu');
-  menu.replaceChildren(...entries.map(([label,callback,checked])=>button(label,()=>{const result=callback();if(menu.contains(document.activeElement))anchor.focus({preventScroll:true});return result;},checked===undefined?{role:'menuitem'}:{role:'menuitemradio','aria-checked':checked})));
+  menu.replaceChildren(...entries.map(([label,callback,checked])=>button(label,()=>{hideContextMenu(true);return callback();},checked===undefined?{role:'menuitem','aria-label':label}:{role:'menuitemradio','aria-label':label,'aria-checked':checked})));
   menu.hidden=false;menu.style.left=`${Math.max(4,Math.min(bounds.left,innerWidth-menu.offsetWidth-4))}px`;
   menu.style.top=`${Math.max(4,Math.min(bounds.bottom+2,innerHeight-menu.offsetHeight-4))}px`;
-  menu.querySelector('button')?.focus({preventScroll:true});
-  menu.onkeydown=event=>{
-    const items=[...menu.querySelectorAll('button')],index=items.indexOf(document.activeElement);
-    if(event.key==='Escape'){menu.hidden=true;anchor.focus();}
-    else if(event.key==='ArrowDown')items[(index+1)%items.length]?.focus();
-    else if(event.key==='ArrowUp')items[(index+items.length-1)%items.length]?.focus();
-    else if(event.key==='Home')items[0]?.focus();
-    else if(event.key==='End')items.at(-1)?.focus();
-    else if(event.key==='Enter'||event.key===' '){document.activeElement.click();}
-    else return;
-    event.preventDefault();event.stopPropagation();
-  };
+  menuKeyboard=bindRovingToolbar(menu,{orientation:'vertical',onEscape:()=>hideContextMenu(true),onTab:()=>hideContextMenu(true)});
+  menuKeyboard.focus();
 }
 function commandCatalog(){return buildCommandCatalog({modules:moduleUi.catalog()});}
 function commandState(){return {hasDocument:!!client.state,busy:!!client.busy,readOnly:snapshot!==null,commandActive:!!session,
@@ -554,10 +561,19 @@ function commandState(){return {hasDocument:!!client.state,busy:!!client.busy,re
 function executeCatalogCommand(entry){return entry.kind==='command'?start(entry.target):entry.kind==='input'?submit(entry.target):action(entry.target);}
 commandAccess=createCommandAccess({toolbar:$('quick-access'),catalog:commandCatalog,state:commandState,execute:executeCatalogCommand,report});
 drawRibbonTabs();
-$('ribbon-tabs').addEventListener('keydown',event=>{const entries=ribbonEntries().filter(entry=>!entry.disabled),key=event.key,index=entries.findIndex(e=>e.key===tab);let next;if(key==='ArrowDown'){event.preventDefault();ribbonLayout.reveal(true);return;}if(key==='ArrowRight')next=(index+1)%entries.length;else if(key==='ArrowLeft')next=(index+entries.length-1)%entries.length;else if(key==='Home')next=0;else if(key==='End')next=entries.length-1;else return;event.preventDefault();selectRibbon(entries[next].key,true);});
+$('ribbon-tabs').setAttribute('aria-orientation','horizontal');
+$('ribbon-tabs').addEventListener('keydown',event=>{
+  if(event.defaultPrevented||event.isComposing||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey||!event.target.closest('[role=tab]'))return;
+  const entries=ribbonEntries().filter(entry=>!entry.disabled),key=event.key,index=entries.findIndex(e=>e.key===tab);let next;
+  if(!entries.length)return;
+  if(key==='ArrowDown'){event.preventDefault();event.stopPropagation();ribbonLayout.reveal(true);return;}
+  if(key==='ArrowRight')next=(index+1)%entries.length;else if(key==='ArrowLeft')next=(index+entries.length-1)%entries.length;
+  else if(key==='Home')next=0;else if(key==='End')next=entries.length-1;else return;
+  event.preventDefault();event.stopPropagation();selectRibbon(entries[next].key,true);
+});
 $('ribbon-tabs').addEventListener('dblclick',event=>{if(event.target.closest('[role=tab]'))run(()=>action('ribbon-minimize'));});
-$('file-menu').addEventListener('click',()=>{const menu=$('context-menu');menu.replaceChildren(...[['new','New drawing'],['demo','New sample drawing'],['open','Open DXF / DWG…'],['save','Save DXF'],['save-as','Save drawing as…'],['export-png','Export PNG'],['export-svg','Export SVG'],['legacy','Advanced diagnostics']].map(([name,label])=>button(label,()=>action(name))));menu.style.left='3px';menu.style.top='32px';menu.hidden=false;});
-document.addEventListener('click',e=>{const command=e.target.closest('[data-command]'),target=e.target.closest('[data-action]');if(command)run(()=>start(command.dataset.command));else if(target)run(()=>action(target.dataset.action));if(!e.target.closest('#file-menu'))$('context-menu').hidden=true;});
+$('file-menu').addEventListener('click',()=>workspaceMenu($('file-menu'),[['new','New drawing'],['demo','New sample drawing'],['open','Open DXF / DWG…'],['save','Save DXF'],['save-as','Save drawing as…'],['export-png','Export PNG'],['export-svg','Export SVG'],['legacy','Advanced diagnostics']].map(([name,label])=>[label,()=>action(name)])));
+document.addEventListener('click',e=>{const command=e.target.closest('[data-command]'),target=e.target.closest('[data-action]');if(command)run(()=>start(command.dataset.command));else if(target)run(()=>action(target.dataset.action));if(!menuAnchor?.contains(e.target))hideContextMenu();});
 $('command-form').addEventListener('submit',e=>{e.preventDefault();const text=$('command-input').value;$('command-input').value='';run(()=>submit(text));});
 $('command-input').addEventListener('input',()=>{
   const value=$('command-input').value.trim().toUpperCase(),matches=!session&&value&&!value.includes(' ')?Object.keys(commands).filter(k=>k.startsWith(value)||commands[k].aliases.some(a=>a.startsWith(value))).slice(0,9):[];
@@ -582,7 +598,7 @@ document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key.toLowerCase()==='a')return;
   if($('dialog').open)return;
   const input=e.target.closest('input,select,textarea'),control=e.ctrlKey||e.metaKey;
-  if(e.key==='Escape'){e.preventDefault();if(viewport.cancelSelectionCycle()||viewport.cancelGraphPick())return;cancel();viewport.panMode=false;$('context-menu').hidden=true;return;}
+  if(e.key==='Escape'){e.preventDefault();if(!$('context-menu').hidden){hideContextMenu(true);return;}if(viewport.cancelSelectionCycle()||viewport.cancelGraphPick())return;cancel();viewport.panMode=false;return;}
   if(control&&['s','o','n','z','y','0','1','9'].includes(e.key.toLowerCase())){e.preventDefault();run(()=>action({s:'save',o:'open',n:'new',z:e.shiftKey?'redo':'undo',y:'redo','0':'clean','1':'palette','9':'command-line'}[e.key.toLowerCase()]));return;}
   const toggles={F3:'osnap',F7:'grid',F8:'ortho',F9:'snap',F10:'polar',F11:'tracking',F12:'dynamic'};if(toggles[e.key]){e.preventDefault();toggle(toggles[e.key]);return;}
   if(e.key==='F1'){e.preventDefault();run(()=>action('help'));return;}if(e.key==='F2'){e.preventDefault();run(()=>action('command-history'));return;}

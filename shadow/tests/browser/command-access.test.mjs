@@ -166,3 +166,25 @@ test('whole workspace restoration applies in memory when optional storage is blo
   assert.deepEqual(f.controller.snapshot().pinned,['command:LINE']);
   assert(byLabel(f.toolbar,'Line'));assert.match(f.errors.at(-1),/could not be saved/);
 });
+
+test('Quick Access is one command Tab stop with Home/End/arrows and no execution during navigation',async t=>{
+  const f=fixture(t),buttons=f.toolbar.querySelectorAll('button');buttons[0].focus();
+  await f.toolbar.dispatch('focusin');
+  await f.toolbar.dispatch('keydown',{key:'End',target:buttons[0]});
+  assert.equal(document.activeElement,byLabel(f.toolbar,'Customize Quick Access'));
+  await f.toolbar.dispatch('keydown',{key:'ArrowLeft',target:document.activeElement});
+  assert.equal(document.activeElement,byLabel(f.toolbar,'Search commands (Ctrl+K)'));
+  await f.toolbar.dispatch('keydown',{key:'Home',target:document.activeElement});
+  assert.equal(document.activeElement,buttons[0]);assert.equal(buttons.filter(node=>node.getAttribute('tabindex')==='0').length,1);
+  let prevented=0;await f.toolbar.dispatch('keydown',{key:'Tab',preventDefault:()=>prevented++});assert.equal(prevented,0);assert.deepEqual(f.calls,[]);
+});
+
+test('search result Home/End skip unavailable commands while input caret keys remain native',async t=>{
+  const f=fixture(t);f.controller.search('zoom');
+  const first=byLabel(f.root,'Zoom extents'),last=byLabel(f.root,'Zoom out');first.scrollIntoView=last.scrollIntoView=()=>{};
+  first.focus();await f.controller.dialog.dispatch('keydown',{key:'End',target:first});assert.equal(document.activeElement,last);
+  await f.controller.dialog.dispatch('keydown',{key:'Home',target:last});assert.equal(document.activeElement,first);
+  const input=query(f);input.focus();let prevented=0;
+  await f.controller.dialog.dispatch('keydown',{key:'End',target:input,preventDefault:()=>prevented++});
+  assert.equal(prevented,0);assert.equal(document.activeElement,input);assert.deepEqual(f.calls,[]);
+});

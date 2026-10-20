@@ -56,7 +56,19 @@ export class CadViewport {
     element.addEventListener('pointerleave', () => { if (!this.drag) { this.pixel = null; if(!this.selectionCycle.active)this.selectionCycle.cancel();clearTimeout(this.cycleHoverTimer);this.invalidate(); } });
     element.addEventListener('wheel', e => { if (e.target !== canvas) return; this.client.beginInteraction?.(); e.preventDefault(); this.camera = zoom(this.camera, this.size, this.local(e), Math.exp(-Math.max(-300, Math.min(300, e.deltaY)) * .0015)); this.changed(); }, { passive: false });
     element.addEventListener('dblclick', e => { if (e.button === 1) this.fit(); });
-    element.addEventListener('contextmenu', e => { if (e.target === canvas) { e.preventDefault(); this.hooks.context?.(e); } });
+    element.addEventListener('keydown', e => {
+      if(e.defaultPrevented||e.isComposing||e.ctrlKey||e.metaKey||e.altKey||!e.shiftKey||e.key!=='F10'||
+        (e.target!==element&&e.target!==canvas))return;
+      e.preventDefault();e.stopPropagation();
+      const bounds=element.getBoundingClientRect();
+      this.hooks.context?.({clientX:bounds.left+bounds.width/2,clientY:bounds.top+bounds.height/2});
+    });
+    element.addEventListener('contextmenu', e => {
+      if (e.target !== canvas && e.target !== element) return;
+      e.preventDefault();
+      const bounds=element.getBoundingClientRect();
+      this.hooks.context?.(e.clientX||e.clientY?e:{clientX:bounds.left+bounds.width/2,clientY:bounds.top+bounds.height/2});
+    });
   }
   /** A background read must not advance its generation while a gesture owns input. */
   get inputActive() { return this.pointers.size > 0 || !!this.pickAbort && !this.pickAbort.signal.aborted || !!this.selectionCycle?.active; }
@@ -354,7 +366,7 @@ export class CadViewport {
     c.beginPath(); points.forEach((p, i) => { const q = screen(p, this.camera, this.size); if (!i) c.moveTo(q.x, q.y); else c.lineTo(q.x, q.y); }); if (close) c.closePath(); c.stroke();
   }
   preview(c) {
-    const session = this.command, all = session?.command.points || [], p = session?.spec.crossingSelection?all.slice(2):all, cursor = this.resolved || this.cursor;
+    const session = this.command, all = session?.previewPoints || session?.command.points || [], p = session?.spec.crossingSelection?all.slice(2):all, cursor = this.resolved || this.cursor;
     this.insertionPreview.sync(session);
     if(session?.name==='INSERT'){this.insertionPreview.draw(c,this.camera,this.size,cursor,this.pixel);return;}
     if(session?.spec.crossingSelection&&all.length) {

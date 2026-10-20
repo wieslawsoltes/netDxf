@@ -35,3 +35,6 @@
 .ribbon-customization .toolbar { flex-wrap:wrap; gap:4px; }
 .ribbon-customization input,.ribbon-customization select { min-width:0; max-width:100%; }
 .ribbon-customization-status { min-height:1.5em; }
+/* Keep keyboard focus visible in dense, clipped and floated tool groups. */
+:is(#ribbon,.ribbon-flyout,.ribbon-floating,.command-quick-access) :is(button,input,select):focus-visible,
+#ribbon-tabs button:focus-visible { outline:2px solid #9dd6ff; outline-offset:-2px; }

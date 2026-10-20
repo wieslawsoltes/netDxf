@@ -172,3 +172,27 @@ Keeping keyboard-focused controls opaque is Studio's accessibility behavior.
 `palette-appearance.mjs` supplies reusable normalization, effective opacity and
 an isolated draft dialog. Preferences belong to the workspace, never to drawing
 entity transparency or undo history.
+
+
+## Keyboard ribbon and menu navigation
+
+Ribbon tabs use Left/Right, Home/End and Down to enter the selected ribbon.
+Command panels and Quick Access use one roving button Tab stop, spatial arrows
+and Home/End. Native text fields and selectors retain their ordinary Tab stops
+and editing keys. Escape returns from flyouts to their launcher, from an expanded
+ribbon to its tab, or from floating content to its move grip. Tab leaves the
+control group without a focus trap. Disabled and hidden commands are skipped.
+
+Alt+F on a focused panel launcher floats that panel. Full panels expose a
+keyboard-reachable Float button. The floating move grip supports
+arrow positioning; Escape returns to the selected tab. These shortcuts are scoped
+to ribbon controls and do not intercept the browser's global Alt navigation.
+File and workspace menus use Up/Down and Home/End, close on Tab or Escape and
+restore their trigger focus. Shift+F10 in the drawing viewport opens command
+actions at its center; Escape restores viewport focus without canceling a drawing
+command. Ribbon customization keeps the newly rendered tab/panel selector focused
+after a selection change.
+
+`ribbon-keyboard.mjs` provides reusable visibility filtering, spatial navigation
+and binding lifecycle. Quick Access, full/collapsed/floating ribbon panels and
+workspace menus share it across native and browser hosts.

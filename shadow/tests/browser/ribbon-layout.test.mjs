@@ -60,14 +60,14 @@ test('removed modules and stale saved contextual tabs resolve to available conte
 });
 
 function launcherFixture(){
-  const handlers=new Map(), launcher={addEventListener:(name,callback)=>handlers.set(name,callback)};
+  const handlers=new Map(), launcher={addEventListener:(name,callback)=>handlers.set(name,callback),setAttribute(){}};
   let focused=0,closed=0,created=0;
-  const tools={querySelector:()=>({focus:()=>focused++})},group={querySelector:selector=>selector==='.ribbon-launcher'?launcher:tools};
+  const tools={getAttribute:()=>null,setAttribute(){}},group={dataset:{panel:'Draw'},querySelector:selector=>selector==='.ribbon-launcher'?launcher:tools};
   const layout=Object.create(RibbonLayout.prototype);
   Object.assign(layout,{panel:{replaceChildren(){}},mode:'titles',popup:null,schedule(){},close(focus=false){if(this.popup){closed++;if(focus)focused++;}this.popup=null;}});
   layout.open=function(target,focus=true){
     if(this.popup?.group===target)return RibbonLayout.prototype.open.call(this,target,focus);
-    this.close();created++;this.popup={group:target,tools,preview:!focus};if(focus)this.focusTools();
+    this.close();created++;this.popup={group:target,tools,preview:!focus,keyboard:{focus:()=>{focused++;return true;}}};if(focus)this.focusTools();
   };
   layout.set([group]);
   return {layout,group,emit:(name,event={})=>handlers.get(name)(event),counts:()=>({focused,closed,created})};

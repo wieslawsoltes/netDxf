@@ -243,7 +243,7 @@ def verify_ribbon_launchers(page, output, check):
     page.get_by_role('tab', name='Graph', exact=True).click()
     ribbon_mode(page, 'Panel titles', 'titles')
     launcher = page.get_by_role('button', name='Topology tools', exact=True)
-    flyout = page.locator('.ribbon-flyout[aria-label="Topology"]')
+    flyout = page.locator('.ribbon-flyout[aria-label="Topology commands"]')
     launcher.hover()
     expect(flyout).to_be_visible()
     launcher.click()
