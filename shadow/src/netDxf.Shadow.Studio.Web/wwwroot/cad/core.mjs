@@ -1,4 +1,5 @@
 import { authoringCommands, blockName } from './authoring-contracts.mjs';
+import { TransformAcquisition } from './transform-commands.mjs';
 /** Host-independent precision input, camera math and command state. No DOM, eval or network. */
 export const point = (x = 0, y = 0, z = 0) => ({ x, y, z });
 export const add = (a, b) => point(a.x + b.x, a.y + b.y, (a.z ?? 0) + (b.z ?? 0));
@@ -141,14 +142,17 @@ export class CommandSession {
     this.name = commandName(name); if (!this.name) throw new Error(`Unknown command: ${name}`);
     this.spec = commands[this.name]; this.command = { name: this.name, points: [], layer };
     this.version = 0; this.index = 0; this.selecting = !this.spec.crossingSelection && !!this.spec.selection && !this.validSelection(selectionCount); this.complete = false;
+    if(['ROTATE','SCALE'].includes(this.name))this.transformAcquisition=new TransformAcquisition(this,{finite,number,parsePoint});
   }
   validSelection(count) { return this.spec.exactSelection ? count === this.spec.exactSelection : count >= (this.spec.selection || 0); }
   acceptSelection(count) { if(this.spec.crossingSelection && this.command.points.length<2)throw new Error('Define a crossing window before confirming the selection.'); if (!this.validSelection(count)) throw new Error(`Select ${this.spec.exactSelection ? 'exactly ' : 'at least '}${this.spec.selection} source objects.`); this.selecting = false; this.complete = this.spec.steps.length === 0; this.version++; }
-  get anchor() { return this.spec.crossingSelection && this.command.points.length<=2 ? null : this.command.points.at(-1) || null; }
-  get step() { if (this.displacement && !this.selecting) return { kind: 'point', prompt: 'Specify displacement vector (X,Y,Z)' }; return this.selecting ? { kind: 'selection', prompt: this.spec.crossingSelection?'Crossing selection; Enter to continue, Shift removes, [Crossing] replaces window':this.spec.pickSelection?'Select one source object': 'Select objects in order; Enter to continue' } : this.spec.steps[this.index] || { kind: 'point', prompt: 'Next point or [Undo/Close]; Enter to finish' }; }
+  get anchor() { return this.transformAcquisition&&this.index>0?this.transformAcquisition.anchor:this.spec.crossingSelection && this.command.points.length<=2 ? null : this.command.points.at(-1) || null; }
+  get previewPoints() { return this.transformAcquisition&&this.index>0?this.transformAcquisition.previewPoints:this.command.points; }
+  get step() { if(this.transformAcquisition&&this.index>0&&!this.selecting)return this.transformAcquisition.step; if (this.displacement && !this.selecting) return { kind: 'point', prompt: 'Specify displacement vector (X,Y,Z)' }; return this.selecting ? { kind: 'selection', prompt: this.spec.crossingSelection?'Crossing selection; Enter to continue, Shift removes, [Crossing] replaces window':this.spec.pickSelection?'Select one source object': 'Select objects in order; Enter to continue' } : this.spec.steps[this.index] || { kind: 'point', prompt: 'Next point or [Undo/Close]; Enter to finish' }; }
   get prompt() { const s = this.step; return `${this.name} — ${s.prompt}${s.defaultValue !== undefined && s.defaultValue !== '' ? ` <${s.defaultValue}>` : ''}:`; }
   input(text, cursor = null) {
     if (this.selecting || this.complete) throw new Error('The command is not accepting coordinates.');
+    if(this.transformAcquisition&&this.index>0)return this.transformAcquisition.input(text,cursor);
     const value = String(text).trim();
     // Keep the established name-first prompt while accepting coordinate-first BLOCK
     // input. A comma cannot occur in a valid block name, so this is unambiguous.
@@ -191,6 +195,7 @@ export class CommandSession {
   }
   pick(p) {
     if (this.selecting || this.complete) throw new Error('Finish selecting objects first.');
+    if(this.transformAcquisition&&this.index>0)return this.transformAcquisition.pick(p);
     const step = this.step;
     for (const v of [p.x, p.y, p.z ?? 0]) finite(v);
     if (step.kind === 'number' && step.key === 'value' && ['CIRCLE', 'POLYGON'].includes(this.name)) {
@@ -199,7 +204,6 @@ export class CommandSession {
       if (this.name === 'POLYGON') this.command.rotation = rotation;
       return;
     }
-    if (step.kind === 'number' && step.key === 'value' && this.name === 'ROTATE') return this.input(String(Math.atan2(p.y - this.anchor.y, p.x - this.anchor.x) * 180 / Math.PI));
     if(step.kind==='window') {
       if(this.index===0){this.command.points=[point(p.x,p.y,0)];this.index=1;this.version++;return;}
       return this.captureWindow(this.command.points[0],p);
