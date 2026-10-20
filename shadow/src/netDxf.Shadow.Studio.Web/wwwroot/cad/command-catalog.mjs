@@ -45,14 +45,14 @@ const groups = {
     ['ribbon-minimize','Minimize or expand ribbon'],['command-line','Show or hide command line','','Ctrl+9'],
     ['command-history','Show or hide command history','','F2'],['reset-ui','Reset interface']
   ],
-  Settings: [['settings','Drafting settings','OPTIONS OSNAP'],['modules','Discipline modules'],['agents','Shadow Agent'],['help','Command help','HELP','F1']]
+  Settings: [['settings','Drafting settings','OPTIONS OSNAP'],['selection-cycling','Selection cycling','','Shift+Space'],['modules','Discipline modules'],['agents','Shadow Agent'],['help','Command help','HELP','F1']]
 };
 const writeActions = new Set(['layer-isolate','layer-unisolate','save','save-as','font','undo','redo','layer-new','assign-layer','block-insert','block-create',
   'block-redefine','block-rename','block-edit','block-save','block-close','block-library-import','block-library-export',
   'attributes','attribute-definitions','attribute-create','attribute-sync','hatch-create','hatch-edit','snapshot','fork','annotation','linetype']);
 const selectionActions = new Set(['layer-isolate','assign-layer','block-create','block-redefine','hatch-create','hatch-edit','attributes']);
 const blockActions = new Set(['block-insert','block-edit','block-rename','block-redefine','block-library-export']);
-const globalActions = new Set(['new','open','demo','agents','help','settings','legacy','palette','palette-picker','dock',
+const globalActions = new Set(['new','open','demo','agents','help','settings','selection-cycling','legacy','palette','palette-picker','dock',
   'palette-lock','palette-reset','ui-workspaces','clean','ribbon-display','ribbon-cycle','ribbon-minimize','command-line','command-history','reset-ui',
   'command-search','quick-access-customize','ribbon-customize']);
 const actionAliases = (value = '') => value.split(' ').filter(Boolean);
@@ -93,7 +93,7 @@ export function buildCommandCatalog({ modules = [] } = {}) {
       if (!known.has(entry.id)) { known.add(entry.id);entries.push({...entry,category,location:`${category} · Discipline`,shortcut:'',
         module,requiresDocument:true,excludesBlockEditor:true}); }
     };
-    for (const [mode,label] of [['symbols','Symbol library'],['data','Data manager'],['validation','Validation'],['connectivity','Connectivity graph']]) {
+    for (const [mode,label] of [['symbols','Symbol library'],['data','Data manager'],['validation','Validation'],['connectivity','Connectivity graph'],['structure','Network structure']]) {
       const target=`module-open:${module}:${mode}`;
       append({id:`action:${target}`,kind:'action',target,label:`${category} ${label}`,aliases:[category,mode]});
     }
@@ -155,7 +155,7 @@ export const quickAccessLimit = 16;
 export const defaultQuickAccess = Object.freeze(['new','open','save','undo','redo'].map(value=>`action:${value}`));
 const knownIds = new Set(buildCommandCatalog().map(entry=>entry.id));
 const validPreferenceId = value => typeof value==='string' && value.length<=180 && (knownIds.has(value) ||
-  /^action:module-(?:command:[a-zA-Z][a-zA-Z0-9_.-]{0,63}:[a-zA-Z][a-zA-Z0-9_.-]{0,63}|open:[a-zA-Z][a-zA-Z0-9_.-]{0,63}:(?:symbols|data|validation|connectivity))$/.test(value));
+  /^action:module-(?:command:[a-zA-Z][a-zA-Z0-9_.-]{0,63}:[a-zA-Z][a-zA-Z0-9_.-]{0,63}|open:[a-zA-Z][a-zA-Z0-9_.-]{0,63}:(?:symbols|data|validation|connectivity|structure))$/.test(value));
 /** Preserve unloaded module IDs so disabling a module never silently erases its pin. */
 export function quickAccessPreferences(value) {
   if (!value || value.version!==1 || !Array.isArray(value.pinned)) return {version:1,pinned:[...defaultQuickAccess]};

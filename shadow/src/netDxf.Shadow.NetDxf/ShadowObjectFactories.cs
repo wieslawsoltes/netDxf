@@ -51,7 +51,11 @@ public sealed class ShadowObjectFactories
         if (type == typeof(Transparency))
         {
             if (node["StoredAlphaValue"] is ShadowValue.Atom)
-                return Transparency.FromAlphaValue((int)resolver.Convert(node["StoredAlphaValue"], typeof(int))!);
+            {
+                var alpha = (int)resolver.Convert(node["StoredAlphaValue"], typeof(int))!;
+                return alpha == 0 && node["Value"] is ShadowValue.Atom value && value.Text == "0"
+                    ? Transparency.FromLayerStateAlphaValue(alpha) : Transparency.FromAlphaValue(alpha);
+            }
             if (node["Value"] is ShadowValue.Atom)
                 return Transparency.FromCadIndex((short)resolver.Convert(node["Value"], typeof(short))!);
         }

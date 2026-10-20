@@ -71,44 +71,12 @@ public sealed partial class ReferenceGraphIndex
     {
         var graph = Explore(options, cancellationToken);
         var ids = graph.Nodes.Select(n => n.Id).Order(StringComparer.Ordinal).ToArray();
-        var forward = ids.ToDictionary(id => id, _ => new List<string>(), StringComparer.Ordinal);
-        var reverse = ids.ToDictionary(id => id, _ => new List<string>(), StringComparer.Ordinal);
-        foreach (var edge in graph.Edges)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            forward[edge.Source].Add(edge.Target); reverse[edge.Target].Add(edge.Source);
-        }
-        var visited = new HashSet<string>(StringComparer.Ordinal);
-        var finished = new List<string>();
-        foreach (var start in ids)
-        {
-            if (!visited.Add(start)) continue;
-            var stack = new Stack<(string Id, int Next)>(); stack.Push((start, 0));
-            while (stack.TryPop(out var frame))
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                if (frame.Next == forward[frame.Id].Count) { finished.Add(frame.Id); continue; }
-                stack.Push((frame.Id, frame.Next + 1));
-                var target = forward[frame.Id][frame.Next];
-                if (visited.Add(target)) stack.Push((target, 0));
-            }
-        }
-        visited.Clear();
-        var groups = new List<ImmutableArray<string>>();
-        for (var i = finished.Count - 1; i >= 0; i--)
-        {
-            if (!visited.Add(finished[i])) continue;
-            var group = new List<string>(); var stack = new Stack<string>(); stack.Push(finished[i]);
-            while (stack.TryPop(out var id))
-            {
-                cancellationToken.ThrowIfCancellationRequested(); group.Add(id);
-                foreach (var source in reverse[id]) if (visited.Add(source)) stack.Push(source);
-            }
-            groups.Add(group.Order(StringComparer.Ordinal).ToImmutableArray());
-        }
-        groups.Sort((a, b) => StringComparer.Ordinal.Compare(a[0], b[0]));
+        var positions = ids.Select((id, index) => (id, index)).ToDictionary(p => p.id, p => p.index, StringComparer.Ordinal);
+        var indexed = IndexedGraphAnalysis.StrongComponents(ids.Length,
+            graph.Edges.Select(edge => new IndexedGraphArc(positions[edge.Source], positions[edge.Target])).ToImmutableArray(), cancellationToken);
+        var groups = Enumerable.Range(0, indexed.ComponentCount).Select(_ => new List<string>()).ToList();
         var membership = new Dictionary<string, int>(StringComparer.Ordinal);
-        for (var i = 0; i < groups.Count; i++) foreach (var id in groups[i]) membership.Add(id, i);
+        for (var i = 0; i < ids.Length; i++) { groups[indexed.Membership[i]].Add(ids[i]); membership.Add(ids[i], indexed.Membership[i]); }
         var internalEdges = new int[groups.Count]; var links = new Dictionary<(int Source, int Target), int>();
         foreach (var edge in graph.Edges)
         {
@@ -117,8 +85,8 @@ public sealed partial class ReferenceGraphIndex
             if (a == b) internalEdges[a]++;
             else links[(a, b)] = links.GetValueOrDefault((a, b)) + 1;
         }
-        return new(graph, groups.Select((group, id) => new ReferenceComponent(id, group, internalEdges[id],
-                group.Length > 1 || internalEdges[id] > 0)).ToImmutableArray(),
+        return new(graph, groups.Select((group, id) => new ReferenceComponent(id, group.ToImmutableArray(), internalEdges[id],
+                group.Count > 1 || internalEdges[id] > 0)).ToImmutableArray(),
             links.OrderBy(p => p.Key.Source).ThenBy(p => p.Key.Target)
                 .Select(p => new ReferenceCondensationEdge(p.Key.Source, p.Key.Target, p.Value)).ToImmutableArray());
     }

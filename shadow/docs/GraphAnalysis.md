@@ -181,7 +181,7 @@ schematic beside a port's source and predecessor details.
 Native and standalone WASM expose `POST /api/cad/{id}/modules/connectivity`.
 The read-only MCP tool `studio_module_connectivity` uses the same implementation;
 `studio_request_schema` exposes `CadModuleConnectivityRequest`. Supply the exact
-revision and identity, module, operation (`network`, `path`, `trace`), source and
+revision and identity, module, operation (`network`, `path`, `trace`, `structure`), source and
 optional target port ID, direction, scan limits, visit/depth bounds and tolerance.
 Disabled modules and block-editor scopes are rejected.
 
@@ -191,3 +191,33 @@ exhausted), retaining `graphKey` and the original query. Receipt size can shorte
 individual pages. The key binds snapshot, workspace, view, layout, module
 configuration and all query options; changing any of these requires a fresh
 query. Partial graph/search coverage cannot establish absence of a connection.
+
+**Network structure** in each discipline ribbon opens the structure operation.
+Run it to inspect strongly connected groups (mutual directed reachability),
+their acyclic condensation, weak cut links and articulation ports. A cut means
+removing a connection or port separates the retained graph when direction is
+ignored. Missing declarations can hide alternate routes; these classifications
+do not measure operational risk or simulate equipment failure.
+
+Loop evidence contains exact port and connection IDs. Each proof closes in the
+declared direction and uses distinct declared connection IDs; reversing the same
+bidirectional connection is not a loop. The search seeks at most one witness per
+strong group, not every simple cycle. Defaults allow 20 witnesses, 4,000 proof
+steps and 100,000 search operations; maxima are 100, 10,000 and 1,000,000.
+Search, witness and proof limits are reported separately from source coverage
+and unloaded pages. Loading pages retrieves retained evidence; increasing a
+search bound requires running the analysis again.
+
+Structure adds six independent streams: `strongComponents`, `portStructures`,
+`condensation`, `criticalConnections`, `loops` and `loopSteps`. Their offset
+fields are `strongComponentOffset`, `portStructureOffset`, `condensationOffset`,
+`criticalConnectionOffset`, `loopOffset` and `loopStepOffset`. Keep the original
+`structureOptions` and graph key for every continuation. Flat membership and
+proof streams keep a large component or loop from exceeding one response.
+
+The palette provides group/connection/loop inspectors, explicit source
+selection, port and condensation diagrams, JSON, SVG and CSV exports.
+`IndexedGraphAnalysis` in the reusable Graph package supplies the shared
+iterative SCC and low-link kernels used by source-reference and discipline
+analysis. It accepts up to 50,000 nodes, 100,000 physical connections or 200,000
+directed arcs, with multigraph and cancellation support.

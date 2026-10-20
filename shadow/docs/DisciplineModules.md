@@ -10,7 +10,7 @@ The reusable domain libraries extend native DXF blocks, attributes, lines and XD
 | `netDxf.Shadow.Piping` | Elbow, tee, reducer and flange symbols; nominal-size and specification checks |
 | `netDxf.Shadow.Electrical` | Terminal, switch, resistor, motor and earth symbols; wire circuit and conductor data checks |
 
-`Symbols` references the native Shadow adapter and Drafting. `Disciplines` references Symbols and Modules. Each discipline references Disciplines. Samples references Pid to seed its tank-and-pump demonstration with the same data contract.
+`Symbols` references the native Shadow adapter, Drafting and Graph. The Graph dependency supplies geometry-independent SCC/low-link kernels shared with source-reference analysis. `Disciplines` references Symbols and Modules. Each discipline references Disciplines. Samples references Pid to seed its tank-and-pump demonstration with the same data contract.
 
 ## Authoring
 

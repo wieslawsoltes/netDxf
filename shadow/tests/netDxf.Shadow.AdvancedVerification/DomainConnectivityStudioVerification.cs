@@ -72,6 +72,36 @@ internal static class DomainConnectivityStudioVerification
             Throws<ArgumentException>(()=>studio.CadModuleConnectivity(request with{Operation="eval"}));
             Require(studio.CadModuleConnectivity(request with{GraphKey=result.GraphKey}).GraphKey==result.GraphKey,"Canceled/invalid work leaves valid cached result intact.");
         });
+        Add("structure streams retain scope, directed evidence and exact adaptive cursors",()=>
+        {
+            using var studio=new Studio(false);using var bytes=LargeDrawing();studio.Load(bytes);studio.CadSetModule(new(studio.CadRevision,"pid",true));
+            var request=new CadModuleConnectivityRequest(studio.CadRevision,"pid","structure",Limit:500);
+            var groups=new HashSet<int>();var ports=new HashSet<string>();var critical=new HashSet<string>();var iterations=0;
+            var before=State(studio);var registry=studio.CreateMcpRegistry();
+            var identity=new StudioRequestIdentity(before.GetProperty("documentId").GetGuid(),before.GetProperty("workspaceId").GetString()!,before.GetProperty("viewVersion").GetInt64());
+            while(true)
+            {
+                var answer=registry.ExecuteAsync("studio_module_connectivity",McpJson.Element(new{identity,request})).AsTask().GetAwaiter().GetResult();
+                Require(!answer.IsError&&answer.Text.Length<=registry.MaximumResultCharacters,"Every structure page fits exact MCP response budget.");
+                var result=JsonSerializer.Deserialize<CadModuleConnectivityResult>(answer.Text,McpJson.Options)!;
+                Require(result.Structure is {ScopeComplete:true,LoopSearchComplete:true}&&result.Loops.Total==0,"Bidirectional bridges do not fabricate loops.");
+                foreach(var group in result.StrongComponents.Items)Require(groups.Add(group.Id),"No duplicate strong component.");
+                foreach(var port in result.PortStructures.Items)Require(ports.Add(port.Id),"No duplicate structural port.");
+                foreach(var edge in result.CriticalConnections.Items)Require(critical.Add(edge.Id),"No duplicate weak bridge.");
+                var next=request with{GraphKey=result.GraphKey,NodeOffset=result.Nodes.NextOffset??result.Nodes.Total,EdgeOffset=result.Edges.NextOffset??result.Edges.Total,
+                    IssueOffset=result.Issues.NextOffset??result.Issues.Total,ComponentOffset=result.Components.NextOffset??result.Components.Total,VisitOffset=result.Visits.NextOffset??result.Visits.Total,
+                    StrongComponentOffset=result.StrongComponents.NextOffset??result.StrongComponents.Total,PortStructureOffset=result.PortStructures.NextOffset??result.PortStructures.Total,
+                    CondensationOffset=result.Condensation.NextOffset??result.Condensation.Total,CriticalConnectionOffset=result.CriticalConnections.NextOffset??result.CriticalConnections.Total,
+                    LoopOffset=result.Loops.NextOffset??result.Loops.Total,LoopStepOffset=result.LoopSteps.NextOffset??result.LoopSteps.Total};
+                if(new[]{result.Nodes.NextOffset,result.Edges.NextOffset,result.Issues.NextOffset,result.Components.NextOffset,result.Visits.NextOffset,
+                    result.StrongComponents.NextOffset,result.PortStructures.NextOffset,result.Condensation.NextOffset,result.CriticalConnections.NextOffset,result.Loops.NextOffset,result.LoopSteps.NextOffset}.All(x=>x is null))break;
+                request=next;Require(++iterations<100,"All eleven streams terminate without dropped rows.");
+            }
+            Require(groups.Count==1300&&ports.Count==2600&&critical.Count==1300,"All structure streams retain independent complete coverage.");
+            Throws<InvalidOperationException>(()=>studio.CadModuleConnectivity(request with{StructureOptions=new(MaximumLoops:1)}));
+            Throws<ArgumentException>(()=>studio.CadModuleConnectivity(request with{GraphKey=null,StrongComponentOffset=1}));
+            Require(State(studio).GetProperty("undoCount").GetInt32()==before.GetProperty("undoCount").GetInt32(),"Structural reads preserve source history.");
+        });
     }
     private static MemoryStream LargeDrawing()
     {

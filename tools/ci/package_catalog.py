@@ -45,7 +45,7 @@ PACKAGES = (
     shadow('netDxf.Shadow.Health', ('netDxf.Shadow', 'netDxf.Shadow.Geometry')),
     shadow('netDxf.Shadow.Workflows'),
     shadow('netDxf.Shadow.Modules', ('netDxf.Shadow.Drafting',)),
-    shadow('netDxf.Shadow.Symbols', ('netDxf.Shadow.NetDxf', 'netDxf.Shadow.Drafting')),
+    shadow('netDxf.Shadow.Symbols', ('netDxf.Shadow.NetDxf', 'netDxf.Shadow.Drafting', 'netDxf.Shadow.Graph')),
     shadow('netDxf.Shadow.Disciplines', ('netDxf.Shadow.Modules', 'netDxf.Shadow.Symbols')),
     shadow('netDxf.Shadow.Pid', ('netDxf.Shadow.Disciplines',)),
     shadow('netDxf.Shadow.Piping', ('netDxf.Shadow.Disciplines',)),

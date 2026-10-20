@@ -1,0 +1,8 @@
+.selection-cycle{position:absolute;z-index:45;display:flex;flex-direction:column;gap:6px;box-sizing:border-box;padding:8px;color:var(--text,#e8edf3);background:var(--panel,#28313d);border:1px solid #7697b8;border-radius:4px;box-shadow:0 5px 18px #0008;font:12px/1.4 system-ui,sans-serif;overflow:hidden}
+.selection-cycle[hidden],.selection-cycle [hidden]{display:none}
+.selection-cycle-header{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none}
+.selection-cycle-header button{min-width:28px;min-height:28px}
+.selection-cycle-list{overflow:auto;min-height:0;outline-offset:-2px}
+.selection-cycle-list [role=option]{padding:7px 9px;cursor:pointer;overflow-wrap:anywhere;border:1px solid transparent}
+.selection-cycle-list [aria-selected=true]{background:#385c7c;border-color:#89bbeb;color:#fff}
+.selection-cycle-detail{margin:0;color:var(--muted,#b6c5d5);font-size:11px;flex:none;overflow-wrap:anywhere}

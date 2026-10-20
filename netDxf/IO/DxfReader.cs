@@ -11001,6 +11001,10 @@ namespace netDxf.IO
                         LayerStateProperties properties;
                         switch (recordEntry.Code)
                         {
+                            case 91:
+                                layerState.RestoreMask = (LayerStateRestoreMask)(int)recordEntry.Value;
+                                enumerator.MoveNext();
+                                break;
                             case 301:
                                 layerState.Description = this.DecodeEncodedNonAsciiCharacters((string) recordEntry.Value);
                                 enumerator.MoveNext();
@@ -11115,7 +11119,7 @@ namespace netDxf.IO
                         break;
                     case 440:
                         int alpha = (int) recordEntry.Value;
-                        transparency = alpha == 0 ? new Transparency(0, alpha) : Transparency.FromAlphaValue(alpha);
+                        transparency = Transparency.FromLayerStateAlphaValue(alpha);
                         break;
                     case 92:
                         color = AciColor.FromTrueColor((int) recordEntry.Value);

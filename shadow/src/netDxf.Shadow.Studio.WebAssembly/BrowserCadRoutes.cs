@@ -56,6 +56,7 @@ internal sealed partial class BrowserApplication
         Cad("GET", "/api/cad/{id}/hatch/pattern", (s, r) => s.CadReadHatchPattern(r.Long("revision")));
         Cad("POST", "/api/cad/{id}/hatch/pattern", (s, r) => s.CadChangeHatchPattern(r.Body<CadHatchPatternRequest>(), Token));
         Cad("POST", "/api/cad/{id}/select", (s, r) => s.CadSelect(r.Body<CadSelectionRequest>(), Token));
+        Cad("POST", "/api/cad/{id}/selection-candidates", (s, r) => s.CadSelectionCandidates(r.Body<CadSelectionCandidatesRequest>(), Token));
         Cad("POST", "/api/cad/{id}/snap", (s, r) => s.CadSnap(r.Body<CadSnapRequest>(), Token));
         Cad("POST", "/api/cad/{id}/block/create", (s, r) => s.CadCreateBlock(r.Body<CadBlockCreateRequest>(), Token));
         Cad("POST", "/api/cad/{id}/block/begin", (s, r) => s.CadBeginBlock(r.Body<CadBlockBeginRequest>()));
@@ -64,6 +65,10 @@ internal sealed partial class BrowserApplication
         Cad("GET", "/api/cad/{id}/resources", (s, r) => s.CadResources());
         Cad("POST", "/api/cad/{id}/layer-isolation", (s, r) => s.CadLayerIsolation(r.Body<CadLayerIsolationRequest>(), Token));
         Cad("POST", "/api/cad/{id}/layer-state", (s, r) => s.CadLayerState(r.Body<CadLayerStateRequest>(), Token));
+        Cad("GET", "/api/cad/{id}/layer-state/details", (s, r) => s.CadLayerStateDetails(r.Text("id")));
+        Cad("GET", "/api/cad/{id}/layer-state/export", (s, r) => s.CadLayerStateExport(r.Text("id"), Token));
+        Cad("POST", "/api/cad/{id}/layer-state/preview", (s, r) => s.CadLayerStatePreview(r.Body<CadLayerStatePreviewRequest>(), Token));
+        Cad("POST", "/api/cad/{id}/layer-state/import", (s, r) => s.CadLayerStateImport(r.Body<CadLayerStateImportRequest>(), Token));
         Cad("POST", "/api/cad/{id}/resource", (s, r) => s.CadResource(r.Body<CadResourceRequest>()));
         Cad("POST", "/api/cad/{id}/layer", (s, r) => s.CadLayer(r.Body<CadLayerRequest>()));
         Cad("POST", "/api/cad/{id}/assign-layer", (s, r) => s.CadAssignLayer(r.Body<CadAssignLayerRequest>()));

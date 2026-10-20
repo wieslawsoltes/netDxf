@@ -78,6 +78,15 @@ export function workspacePresets(paletteIds) {
     dependencies.palettes.groups.left=[{tabs,active:'References',weight:1}];
     presets.push({name:'Dependency analysis',layout:workspaceProfileLayout(dependencies,paletteIds)});
   }
+  if (paletteIds.includes('Modules')) {
+    const discipline = workspaceProfileLayout({}, paletteIds);
+    discipline.tab = 'Graph';
+    const tabs = ['Modules', 'Graph', 'References'].filter(id => paletteIds.includes(id));
+    for (const id of tabs) discipline.palettes.panels[id] = { ...discipline.palettes.panels[id], open: true, side: 'left', width: 540 };
+    discipline.palettes.active = 'Modules';
+    discipline.palettes.groups.left = [{ tabs, active: 'Modules', weight: 1 }];
+    presets.push({ name: 'Discipline analysis', layout: workspaceProfileLayout(discipline, paletteIds) });
+  }
   return presets;
 }
 

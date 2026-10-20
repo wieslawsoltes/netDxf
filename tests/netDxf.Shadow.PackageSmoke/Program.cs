@@ -252,6 +252,15 @@ internal static class Program
         Require(importedDrawing.Blocks.Contains("PackageLibrary"), "Installed drawing library import failed.");
         importedEditor.Undo(); importedEditor.Redo();
         Require(importedDrawing.Blocks.Contains("PackageLibrary"), "Installed drawing library history failed.");
+        var savedLayers = new netDxf.Objects.LayerState("Portable layers")
+        {
+            CurrentLayer = "0",
+            RestoreMask = netDxf.Objects.LayerStateRestoreMask.Color | netDxf.Objects.LayerStateRestoreMask.Locked
+        };
+        savedLayers.Properties.Add("0", new netDxf.Objects.LayerStateProperties("0"));
+        var portableLayers = netDxf.Objects.LayerState.FromLasText(savedLayers.ToLasText());
+        Require(portableLayers.Name == savedLayers.Name && portableLayers.RestoreMask == savedLayers.RestoreMask &&
+            portableLayers.Properties.ContainsKey("0"), "Installed LAS codec lost saved entries or persisted restore fields.");
         var connectivity = DomainConnectivity.Build(librarySource, "pid");
         var inlet = connectivity.Nodes.Single(n => n.Tag == "P-101" && n.Port == "inlet");
         var outlet = connectivity.Nodes.Single(n => n.Tag == "P-101" && n.Port == "outlet");
@@ -261,6 +270,17 @@ internal static class Program
             passagePath.Status == "found" && passageProof.Edges.Length == 1 &&
             connectivity.Trace(inlet.Id, "forward").ProofTo(outlet.Id).Edges.SequenceEqual(passageProof.Edges),
             "Installed discipline connectivity lost declared passages, components or exact proof links.");
+        var structure = connectivity.AnalyzeStructure();
+        Require(structure.ScopeComplete && structure.PortStructures.Length == connectivity.Nodes.Length &&
+            structure.StrongComponents.Sum(c => c.PortCount) == connectivity.Nodes.Length &&
+            structure.CriticalConnections.All(c => connectivity.Edges.Any(e => e.Id == c.Id)),
+            "Installed discipline structure lost port membership or connection identity.");
+        // Exercise the shared indexed kernel through the installed Graph dependency.
+        var indexed = IndexedGraphAnalysis.StrongComponents(3, [new(0, 1), new(1, 0), new(1, 2)]);
+        var cuts = IndexedGraphAnalysis.LowLinks(3, [new(0, 1), new(0, 1), new(1, 2)]);
+        Require(indexed.ComponentCount == 2 && indexed.Membership[0] == indexed.Membership[1] &&
+            indexed.Membership[1] != indexed.Membership[2] && cuts.Bridges.SequenceEqual([2]) &&
+            cuts.ArticulationPoints.SequenceEqual([1]), "Installed indexed graph kernels lost multigraph semantics.");
         using (var graphDxf = new MemoryStream())
         {
             Require(demo.Save(graphDxf, true), "Installed connectivity DXF save failed."); graphDxf.Position = 0;

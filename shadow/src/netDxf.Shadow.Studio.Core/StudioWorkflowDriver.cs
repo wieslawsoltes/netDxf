@@ -66,6 +66,10 @@ public sealed partial class Studio
                 case "insert": CadInsert(Read<CadInsertRequest>() with { Revision = Current.Revision }, token); break;
                 case "layer": CadLayer(new(Current.Revision, Read<LayerEdit>())); break;
                 case "layer-state": CadLayerState(new(Current.Revision, Read<LayerStateEdit>()), token); break;
+                case "layer-state-import":
+                    var layerPreview = CadLayerStatePreview(Read<CadLayerStatePreviewRequest>() with { Revision = Current.Revision }, token);
+                    if (layerPreview.Token is not { } layerToken) throw new InvalidOperationException("Recorded LAS import has unresolved resource or name conflicts.");
+                    CadLayerStateImport(new(Current.Revision, layerToken), token); break;
                 case "layer-isolation": CadLayerIsolation(new(Current.Revision, Read<LayerIsolationEdit>()), token); break;
                 case "attributes": CadEditAttributes(Read<CadAttributeRequest>() with { Revision = Current.Revision }, token); break;
                 case "attribute-definitions": CadEditAttributeDefinitions(Read<CadAttributeDefinitionRequest>() with { Revision = Current.Revision }, token); break;

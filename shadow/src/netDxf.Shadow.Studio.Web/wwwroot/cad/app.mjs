@@ -38,10 +38,11 @@ const client = new CadClient();
 const showDialog = createDialogLifecycle($('dialog'));
 const viewport = new CadViewport($('viewport'), $('drawing'), client, {
   pick: p => takePoint(p), select: (p, extend, remove) => select('pick', p, p, extend, remove),
+  selectCandidate: (candidate,p,extend,remove,expectedKey) => selectCandidate(candidate,p,extend,remove,expectedKey),
   box: (a,b,crossing,extend,remove) => select(crossing?'crossing':'window',a,b,extend,remove),
   window: (a,b) => stretchWindow(a,b),
   grip: (grip,position) => edit('grip',{entity:grip.entity,grip:grip.id,position}),
-  move: (p,pixel) => cursorChanged(p,pixel), error: report,
+  move: (p,pixel) => cursorChanged(p,pixel), error: report, message: text=>log(text),
   context: e => contextMenu(e.clientX,e.clientY), frame: () => { $('loading').hidden=true; if(!client.busy) $('connection').textContent='Local'; },
   camera: camera => { if (viewId) views.set(viewId,{...camera}); }
 });
@@ -77,7 +78,7 @@ function persisted() { try { const value=JSON.parse(localStorage.getItem('netdxf
 const settings = persisted();
 const insertionSettings={attreq:settings.attreq===0?0:1,attdia:settings.attdia===0?0:1};
 chrome = chromePreferences(settings);
-for (const key of ['grid','snap','ortho','polar','osnap','dynamic','tracking']) if (typeof settings[key] === 'boolean') viewport.settings[key]=settings[key];
+for (const key of ['grid','snap','ortho','polar','osnap','dynamic','tracking','selectionCycling']) if (typeof settings[key] === 'boolean') viewport.settings[key]=settings[key];
 if (Number.isFinite(settings.gridStep) && settings.gridStep>=1e-6 && settings.gridStep<=1e9) viewport.settings.gridStep=settings.gridStep;
 if (Number.isFinite(settings.polarAngle) && settings.polarAngle>0 && settings.polarAngle<=90) viewport.settings.polarAngle=settings.polarAngle;
 if (Number.isFinite(settings.polarTolerance) && settings.polarTolerance>=0 && settings.polarTolerance<=15) viewport.settings.polarTolerance=settings.polarTolerance;
@@ -87,6 +88,7 @@ const docking=new PaletteDock({workspace:$('workspace'),legacyPalette:$('palette
   palettes:paletteNames.map(id=>({id,title:id})),legacySettings:settings,render:renderPaletteContent,
   onActiveChange:id=>{palette=id;},onLayoutChange:()=>viewport.resize(),keepOpen:id=>id==='Graph'&&!!viewport.graphPick,onHide:id=>{analysisPalettes[id]?.destroy();if(id==='Modules')moduleUi.hide?.();if(id==='Graph')renderGraph.hide();if(id==='References')renderReferences.hide();},report});
 const uiWorkspaces=workspaceProfileTools({paletteIds:paletteNames,storage:profileStorage,dialog,report,
+  download:(name,text,type)=>download(new Blob([text],{type}),name),
   capture:()=>({chrome,tab,commandHeight:parseFloat(document.documentElement.style.getPropertyValue('--command-height'))||90,palettes:docking.snapshot(),quickAccess:commandAccess?.snapshot(),ribbonCustomization:ribbonCustomization.snapshot()}),
   restore:value=>{
     const layout=workspaceProfileLayout(value,paletteNames);
@@ -239,6 +241,15 @@ async function select(mode,first=point(),second=point(),extend=false,remove=fals
   }
   const picked=target?.selecting&&target.spec.pickSelection&&mode==='pick'&&!remove;
   await edit('select',{mode,first,second,tolerance:8/viewport.camera.scale,extend:picked?false:extend,remove});
+  if(picked&&session===target&&client.data.selectedEntities.length===1)target.acceptPickedSelection(1,first);
+  updatePrompt();viewport.invalidate();
+}
+async function selectCandidate(candidate,first,extend,remove,expectedKey) {
+  editable();const target=session;
+  if(target?.spec.crossingSelection&&target.selecting&&!remove)
+    throw new Error('STRETCH uses one crossing window. Shift removes objects; C replaces the window.');
+  const picked=target?.selecting&&target.spec.pickSelection&&!remove;
+  await edit('select',{mode:'entity',entity:candidate.entity,first,tolerance:8/viewport.camera.scale,extend:picked?false:extend,remove},{expectedKey});
   if(picked&&session===target&&client.data.selectedEntities.length===1)target.acceptPickedSelection(1,first);
   updatePrompt();viewport.invalidate();
 }
@@ -470,12 +481,13 @@ async function action(name) {
     case 'command-line':chrome.commandLineVisible=!chrome.commandLineVisible;applyChrome();persist();if(chrome.commandLineVisible)$('command-input').focus({preventScroll:true});else $('viewport').focus({preventScroll:true});return;
     case 'command-history':chrome.commandHistoryVisible=!chrome.commandLineVisible||!chrome.commandHistoryVisible;chrome.commandLineVisible=true;applyChrome();persist();return;
     case 'settings':return draftingSettings();
+    case 'selection-cycling':toggle('selectionCycling');return;
     case 'layer-new':return resourceUi.layers(null,true);
     case 'attributes':return attributeTools({client,edit,dialog,editable})();
     case 'attribute-definitions':return definitionTools({client,edit,dialog,editable}).manage();
     case 'attribute-create':return definitionTools({client,edit,dialog,editable,beginPlacement:value=>{setSession(value);ensureCommandLine();$('command-input').focus({preventScroll:true});}}).create();
     case 'attribute-sync':return synchronizeAttributes({client,edit,dialog,editable,showPalette});
-    case 'layer-states':return layerStateTools({client,edit,dialog,editable})();
+    case 'layer-states':return layerStateTools({client,edit,dialog,editable,download:(name,text)=>download(new Blob([text],{type:'text/plain'}),name)})();
     case 'layer-manager':return resourceUi.layers();
     case 'layer-filters':return layerManager.open();
     case 'layer-isolate':return layerManager.isolateSelection();
@@ -497,15 +509,15 @@ async function action(name) {
     case 'graph':if(viewport.graph)renderGraph.clearOverlay();else{showPalette('Graph');await renderGraph.loadTopology();}return;
     case 'export-png':return exportImage('skia');case 'export-svg':return exportImage('svg');
     case 'legacy':window.open('diagnostics.html','_blank','noopener');return;
-    case 'reset-ui':for(const [key,value] of Object.entries({grid:true,snap:false,ortho:false,polar:false,osnap:true,dynamic:true,tracking:false,polarAngle:15,polarTolerance:5,gridStep:10,snapModes:23}))viewport.settings[key]=value;$('studio').className='';docking.reset();chrome=chromePreferences();applyChrome();document.documentElement.style.removeProperty('--command-height');persist();modes();viewport.changed();return;
-    case 'help':await dialog('Shadow CAD command reference',[el('p',{class:'hint',text:'Native netDxf editing on immutable shadow transactions. Enter ends point chains; C closes; U removes the last draft point; Escape cancels. Coordinates: X,Y; @dx,dy; @distance<angle. A bare distance follows the cursor. All edits are undoable.'}),el('table',{class:'help-table'},Object.entries(commands).map(([name,s])=>el('tr',{},[el('td',{text:`${name} (${s.aliases.join(', ')})`}),el('td',{text:s.label})]))),el('p',{class:'hint',text:'STRETCH: draw one XY crossing window (drag or two corners), Enter, then base and second point or Displacement. Shift removes objects; C replaces the crossing window. BREAK: pick one object as the first break point, use F to replace it, or @ for a gap-free split. BREAKATPOINT asks for one interior point after selecting the object. Supported curves are listed in the drafting guide; unsupported geometry is refused atomically. TRIM/EXTEND: select target LINE first, then a LINE/CIRCLE boundary, Enter, then pick an endpoint. FILLET/CHAMFER: two intersecting XY lines. EXPLODE: 2D polylines and ordinary unattributed INSERTs, one level at a time. Array inserts, attached data, disabled exploding, and unrepresentable affine geometry are refused. SPLINE: cubic control points. These commands preserve native source geometry and refuse unsupported combinations. BLOCK creates shared definitions; BLOCKREDEFINE replaces one from selected sources; BLOCKRENAME retains references. HATCH/HATCHEDIT accept built-in name, scale, angle and island style. HATCHPOLY makes a solid polygon. Hatch settings import bounded custom PAT files. DWG import uses signature detection; SAVEAS offers host-declared DWG profiles with strict conversion checks. 3D solids, general curve trimming, AutoLISP and CTB/STB plotting are not implemented.'}),el('p',{class:'hint',text:'Ctrl+N/O/S: new/open/save · Ctrl+Z/Y: undo/redo · Ctrl+1: palettes · Ctrl+0: clean screen · Ctrl+9: command line · F2: history · F3: object snap · F7: grid · F8: ortho · F9: grid snap · F10: polar · F11: tracking · F12: dynamic input. Middle drag pans; wheel zooms about the pointer; right click opens command actions. Two-finger touch pans/zooms.'})],'Close');return;
+    case 'reset-ui':viewport.cancelSelectionCycle();for(const [key,value] of Object.entries({grid:true,snap:false,ortho:false,polar:false,osnap:true,dynamic:true,tracking:false,selectionCycling:false,polarAngle:15,polarTolerance:5,gridStep:10,snapModes:23}))viewport.settings[key]=value;$('studio').className='';docking.reset();chrome=chromePreferences();applyChrome();document.documentElement.style.removeProperty('--command-height');persist();modes();viewport.changed();return;
+    case 'help':await dialog('Shadow CAD command reference',[el('p',{class:'hint',text:'Native netDxf editing on immutable shadow transactions. Enter ends point chains; C closes; U removes the last draft point; Escape cancels. Coordinates: X,Y; @dx,dy; @distance<angle. A bare distance follows the cursor. All edits are undoable.'}),el('table',{class:'help-table'},Object.entries(commands).map(([name,s])=>el('tr',{},[el('td',{text:`${name} (${s.aliases.join(', ')})`}),el('td',{text:s.label})]))),el('p',{class:'hint',text:'STRETCH: draw one XY crossing window (drag or two corners), Enter, then base and second point or Displacement. Shift removes objects; C replaces the crossing window. BREAK: pick one object as the first break point, use F to replace it, or @ for a gap-free split. BREAKATPOINT asks for one interior point after selecting the object. Supported curves are listed in the drafting guide; unsupported geometry is refused atomically. TRIM/EXTEND: select target LINE first, then a LINE/CIRCLE boundary, Enter, then pick an endpoint. FILLET/CHAMFER: two intersecting XY lines. EXPLODE: 2D polylines and ordinary unattributed INSERTs, one level at a time. Array inserts, attached data, disabled exploding, and unrepresentable affine geometry are refused. SPLINE: cubic control points. These commands preserve native source geometry and refuse unsupported combinations. BLOCK creates shared definitions; BLOCKREDEFINE replaces one from selected sources; BLOCKRENAME retains references. HATCH/HATCHEDIT accept built-in name, scale, angle and island style. HATCHPOLY makes a solid polygon. Hatch settings import bounded custom PAT files. DWG import uses signature detection; SAVEAS offers host-declared DWG profiles with strict conversion checks. 3D solids, general curve trimming, AutoLISP and CTB/STB plotting are not implemented.'}),el('p',{class:'hint',text:'Ctrl+N/O/S: new/open/save · Ctrl+Z/Y: undo/redo · Ctrl+1: palettes · Ctrl+0: clean screen · Ctrl+9: command line · F2: history · F3: object snap · F7: grid · F8: ortho · F9: grid snap · F10: polar · F11: tracking · F12: dynamic input. CYCLE toggles overlap selection; Shift+Space in the viewport opens its chooser temporarily. Middle drag pans; wheel zooms about the pointer; right click opens command actions. Two-finger touch pans/zooms.'})],'Close');return;
     default:throw new Error(`Unknown workspace action: ${name}`);
   }
 }
 function modes() {
-  $('drafting-modes').replaceChildren(...[['snap','SNAP','F9'],['grid','GRID','F7'],['ortho','ORTHO','F8'],['polar','POLAR','F10'],['osnap','OSNAP','F3'],['tracking','OTRACK','F11'],['dynamic','DYN','F12']].map(([key,label,shortcut])=>button(label,()=>toggle(key),{'aria-pressed':viewport.settings[key],title:`${label} (${shortcut})`})));
+  $('drafting-modes').replaceChildren(...[['snap','SNAP','F9'],['grid','GRID','F7'],['ortho','ORTHO','F8'],['polar','POLAR','F10'],['osnap','OSNAP','F3'],['tracking','OTRACK','F11'],['dynamic','DYN','F12'],['selectionCycling','CYCLE','Shift+Space']].map(([key,label,shortcut])=>button(label,()=>toggle(key),{'aria-pressed':viewport.settings[key],title:`${label} (${shortcut})`})));
 }
-function toggle(key) {viewport.settings[key]=!viewport.settings[key];if(key==='ortho'&&viewport.settings.ortho)viewport.settings.polar=false;if(key==='polar'&&viewport.settings.polar)viewport.settings.ortho=false;persist();modes();viewport.invalidate();}
+function toggle(key) {viewport.settings[key]=!viewport.settings[key];if(key==='selectionCycling')viewport.cancelSelectionCycle();if(key==='ortho'&&viewport.settings.ortho)viewport.settings.polar=false;if(key==='polar'&&viewport.settings.polar)viewport.settings.ortho=false;persist();modes();viewport.invalidate();}
 function cursorChanged(p,pixel) {
   $('coordinates').textContent=`${format(p.x)}, ${format(p.y)}, ${format(p.z)}`;
   const node=$('dynamic-input');node.hidden=!viewport.settings.dynamic||!session||session.selecting||!pixel;
@@ -570,7 +582,7 @@ document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key.toLowerCase()==='a')return;
   if($('dialog').open)return;
   const input=e.target.closest('input,select,textarea'),control=e.ctrlKey||e.metaKey;
-  if(e.key==='Escape'){e.preventDefault();if(viewport.cancelGraphPick())return;cancel();viewport.panMode=false;$('context-menu').hidden=true;return;}
+  if(e.key==='Escape'){e.preventDefault();if(viewport.cancelSelectionCycle()||viewport.cancelGraphPick())return;cancel();viewport.panMode=false;$('context-menu').hidden=true;return;}
   if(control&&['s','o','n','z','y','0','1','9'].includes(e.key.toLowerCase())){e.preventDefault();run(()=>action({s:'save',o:'open',n:'new',z:e.shiftKey?'redo':'undo',y:'redo','0':'clean','1':'palette','9':'command-line'}[e.key.toLowerCase()]));return;}
   const toggles={F3:'osnap',F7:'grid',F8:'ortho',F9:'snap',F10:'polar',F11:'tracking',F12:'dynamic'};if(toggles[e.key]){e.preventDefault();toggle(toggles[e.key]);return;}
   if(e.key==='F1'){e.preventDefault();run(()=>action('help'));return;}if(e.key==='F2'){e.preventDefault();run(()=>action('command-history'));return;}

@@ -1,4 +1,5 @@
 """Shared native/WASM workspace checks through actual controls and pointer input."""
+import json
 from playwright.sync_api import expect
 from browser_ui import wait_for_ui
 
@@ -169,6 +170,26 @@ def verify_profile_persistence(page, output, check):
           saved['tab'] == 'Graph' and saved['chrome']['ribbonMode'] == 'titles' and
           not saved['chrome']['commandLineVisible'] and not saved['chrome']['commandHistoryVisible'] and
           saved['palettes']['panels']['Graph']['mode'] == 'float')
+    original_identity = drawing_identity(page.evaluate("shadowStudioAgentUi.snapshot()"))
+    page.get_by_text('Transfer UI workspace', exact=True).click()
+    with page.expect_download() as exported:
+        page.get_by_role('button', name='Export selected workspace', exact=True).click()
+    transfer_path = output / 'workspace-export.json'
+    exported.value.save_as(str(transfer_path))
+    transfer = json.loads(transfer_path.read_text())
+    check('workspace download contains a portable UI-only envelope',
+          transfer['format'] == 'shadow-studio-ui-workspace' and transfer['version'] == 1 and
+          transfer['layout'] == saved and set(transfer) == {'format', 'version', 'name', 'layout'})
+    page.get_by_label('Import UI workspace', exact=True).set_input_files(str(transfer_path))
+    expect(page.get_by_role('button', name='Save imported workspace', exact=True)).to_be_enabled()
+    page.get_by_role('textbox', name='Imported workspace name', exact=True).fill('Transferred analysis')
+    page.get_by_role('button', name='Save imported workspace', exact=True).click()
+    expect(select.locator('option:checked')).to_have_text('Transferred analysis')
+    check('workspace import previews and saves without changing drawing or active arrangement',
+          drawing_identity(page.evaluate("shadowStudioAgentUi.snapshot()")) == original_identity and
+          page.locator('#ribbon').get_attribute('data-mode') == 'titles')
+    page.get_by_role('button', name='Delete workspace', exact=True).click()
+    select.select_option(label=profile_name)
 
     select.select_option(label='Drafting (preset)')
     page.get_by_role('button', name='Apply layout', exact=True).click()

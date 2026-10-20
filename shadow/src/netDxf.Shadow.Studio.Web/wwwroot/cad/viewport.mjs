@@ -2,6 +2,7 @@ import { point, add, sub, distance, screen, world, zoom, fit, constrain, trackPo
 import { viewKey } from '../studio-state.mjs';
 import { InsertionPreview } from './insertion-preview.mjs';
 import { drawGraph, graphBounds, graphIdentity, hitGraph } from './graph-visualization.mjs';
+import { SelectionCycling } from './selection-cycling-ui.mjs';
 
 /** A cached page resumes its live viewport, including its frame and resize observer. */
 export function bindViewportPageLifetime(viewport, target = globalThis) {
@@ -14,10 +15,36 @@ export class CadViewport {
     this.element = element; this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.client = client; this.hooks = hooks;
     this.camera = { x: 0, y: 0, scale: 3 }; this.size = { w: 1, h: 1 }; this.dpr = 1;
     this.insertionPreview = new InsertionPreview(client, {invalidate:()=>this.invalidate(),error:error=>this.hooks.error?.(error)});
-    this.settings = { grid: true, snap: false, ortho: false, polar: false, osnap: true, dynamic: true, tracking: false, polarAngle: 15, polarTolerance: 5, gridStep: 10, snapModes: 23 };
+    this.settings = { grid: true, snap: false, ortho: false, polar: false, osnap: true, dynamic: true, tracking: false, selectionCycling:false, polarAngle: 15, polarTolerance: 5, gridStep: 10, snapModes: 23 };
     this.backend = 'skia'; this.snapshot = null; this.command = null; this.cursor = point(); this.pixel = null; this.frame = null;
     this.generation = 0; this.pointers = new Map(); this.abort = null; this.snapAbort = null; this.snapGeneration = 0; this.inputVersion = 0; this.pickAbort = null; this.panMode = false;
     this.trackingOrigins = []; this.trackingGuides = [];
+    this.selectionCycle = new SelectionCycling(element, {
+      scope:()=>this.selectionScope(),
+      eligible:()=>this.canCycleSelection(),
+      load:async(p,signal)=>{
+        const s=client.state;
+        const result=await client.read('selection-candidates',{method:'POST',body:{revision:s.revision,layout:s.layout,point:p,tolerance:8/this.camera.scale,limit:32},signal});
+        if(result && ['documentId','workspaceId','viewVersion','revision','changeVersion','layout'].some(k=>result[k]!==s[k]))
+          throw new Error('The drawing changed during the overlap query. Repeat the pick.');
+        return result;
+      },
+      choose:async(candidate,context)=>{
+        this.temporaryCycle=false;
+        if(!this.canCycleSelection() || client.key!==context.expectedKey)throw new Error('The drawing or command changed. Repeat the overlap pick.');
+        if(candidate)await this.hooks.selectCandidate?.(candidate,context.point,context.extend,context.remove,context.expectedKey);
+        else await this.hooks.select?.(context.point,context.extend,context.remove);
+      },
+      cancelled:()=>{this.temporaryCycle=false;},
+      invalidate:()=>this.invalidate(),error:error=>this.hooks.error?.(error)
+    });
+    this.cycleModifier = e => {
+      if(e.defaultPrevented || e.key!==' ' || !e.shiftKey || e.repeat || !this.element.contains(e.target) ||
+          e.target?.closest?.('input,textarea,select,[contenteditable="true"],dialog[open]') || !this.canCycleSelection())return;
+      e.preventDefault();e.stopImmediatePropagation();this.space=false;this.temporaryCycle=true;this.setTemporaryOrtho(false);
+      this.hooks.message?.('Selection cycling: click overlapping objects, click again to cycle, then press Enter.');
+    };
+    globalThis.addEventListener('keydown',this.cycleModifier,true);
     this.modifierDown = e => { if (e.key === 'Shift' && !e.target?.closest?.('input,textarea,select')) this.setTemporaryOrtho(true); };
     this.modifierUp = e => { if (e.key === 'Shift') this.setTemporaryOrtho(false); };
     this.modifierBlur = () => this.setTemporaryOrtho(false);
@@ -26,13 +53,26 @@ export class CadViewport {
     element.addEventListener('pointerdown', e => this.down(e)); element.addEventListener('pointermove', e => this.move(e));
     element.addEventListener('pointerup', e => this.up(e)); element.addEventListener('pointercancel', e => this.cancelPointer(e));
     element.addEventListener('lostpointercapture', e => { if (this.drag?.id === e.pointerId) this.cancelPointer(e); });
-    element.addEventListener('pointerleave', () => { if (!this.drag) { this.pixel = null; this.invalidate(); } });
+    element.addEventListener('pointerleave', () => { if (!this.drag) { this.pixel = null; if(!this.selectionCycle.active)this.selectionCycle.cancel();clearTimeout(this.cycleHoverTimer);this.invalidate(); } });
     element.addEventListener('wheel', e => { if (e.target !== canvas) return; this.client.beginInteraction?.(); e.preventDefault(); this.camera = zoom(this.camera, this.size, this.local(e), Math.exp(-Math.max(-300, Math.min(300, e.deltaY)) * .0015)); this.changed(); }, { passive: false });
     element.addEventListener('dblclick', e => { if (e.button === 1) this.fit(); });
     element.addEventListener('contextmenu', e => { if (e.target === canvas) { e.preventDefault(); this.hooks.context?.(e); } });
   }
   /** A background read must not advance its generation while a gesture owns input. */
-  get inputActive() { return this.pointers.size > 0 || !!this.pickAbort && !this.pickAbort.signal.aborted; }
+  get inputActive() { return this.pointers.size > 0 || !!this.pickAbort && !this.pickAbort.signal.aborted || !!this.selectionCycle?.active; }
+  get selectionCycleActive() { return !!this.selectionCycle?.active; }
+  selectionScope() {
+    if(this.cycleCommand!==this.command){this.cycleCommand=this.command;this.cycleCommandSerial=(this.cycleCommandSerial||0)+1;}
+    return JSON.stringify([this.client.key,this.client.epoch,this.inputVersion,this.cycleCommandSerial,this.command?.version,
+      this.snapshot,this.panMode,this.space,this.camera.x,this.camera.y,this.camera.scale,this.size.w,this.size.h]);
+  }
+  canCycleSelection() { return !!this.client.state && !this.client.busy && this.snapshot===null && !this.graphPick && !this.panMode && !this.space &&
+    !this.element.ownerDocument?.querySelector('dialog[open]') &&
+    (!this.command || this.command.selecting && !this.command.spec?.crossingSelection) && !!this.hooks.selectCandidate; }
+  cancelSelectionCycle() {
+    const active=!!this.temporaryCycle||!!this.selectionCycle?.active;this.temporaryCycle=false;clearTimeout(this.cycleHoverTimer);
+    this.selectionCycle?.cancel(active);return active;
+  }
   local(e) { const r = this.element.getBoundingClientRect(); return point(e.clientX - r.left, e.clientY - r.top); }
   resize() {
     const r = this.element.getBoundingClientRect(), size = { w: Math.max(1, r.width), h: Math.max(1, r.height) };
@@ -57,9 +97,10 @@ export class CadViewport {
     const s = this.client.state, identity = s ? `${this.client.id}:${s.serverId}:${s.documentId}:${s.workspaceId}` : '';
     if (identity !== this.identity) { this.clearFrame(); this.graph = null; this.snapHit = null; this.identity = identity; }
     if(this.graphPick&&this.graphPick.key!==graphIdentity(s))this.cancelGraphPick();
+    this.selectionCycle?.model.current();
     this.changed();
   }
-  changed() { this.invalidate(); this.hooks.camera?.(this.camera); this.requestFrame(); }
+  changed() { this.selectionCycle?.model.current();this.invalidate(); this.hooks.camera?.(this.camera); this.requestFrame(); }
   invalidate() { if (this.raf) return; this.raf = requestAnimationFrame(() => { this.raf = 0; this.draw(); }); }
   frameKey() {
     return JSON.stringify([this.client.key, this.backend, this.snapshot, this.camera.x, this.camera.y,
@@ -146,6 +187,7 @@ export class CadViewport {
   }
   cancelInput() {
     this.cancelGraphPick();
+    this.cancelSelectionCycle();
     const cameraActive = !!this.drag?.pan || !!this.pinch;
     this.inputVersion++; this.snapGeneration++;
     clearTimeout(this.snapTimer); this.snapAbort?.abort(); this.pickAbort?.abort();
@@ -157,6 +199,11 @@ export class CadViewport {
 
   down(e) {
     if (e.target !== this.canvas || e.button === 2) return;
+    clearTimeout(this.cycleHoverTimer);
+    if(e.button===0 && this.selectionCycle?.active && this.selectionCycle.model.state?.temporary && this.canCycleSelection()){
+      e.preventDefault();this.element.focus({preventScroll:true});this.selectionCycle.model.advance();return;
+    }
+    this.selectionCycle?.cancel();
     this.client.beginInteraction?.();
     e.preventDefault(); this.element.focus({ preventScroll: true }); const pixel = this.local(e);
     this.inputVersion++; this.pickAbort?.abort();
@@ -168,10 +215,11 @@ export class CadViewport {
     let grip;
     if (!pan && !this.command && !this.graphPick && this.snapshot === null) grip = this.client.data?.grips.find(g => distance(screen(g.position, this.camera, this.size), pixel) < 8);
     this.drag = { id: e.pointerId, inputVersion: this.inputVersion, key: this.client.key, epoch: this.client.epoch,
-      command: this.command, commandVersion: this.command?.version, graphPick:this.graphPick, snapshot: this.snapshot, pixel, last: pixel, first: p, current: p, pan, grip, moved: false, extend: e.ctrlKey || e.metaKey || this.settings.pickAdd !== false, remove: e.shiftKey };
+      command: this.command, commandVersion: this.command?.version, graphPick:this.graphPick, snapshot: this.snapshot, pixel, last: pixel, first: p, current: p, pan, grip, moved: false, extend: e.ctrlKey || e.metaKey || this.settings.pickAdd !== false, remove: e.shiftKey && !this.temporaryCycle };
     this.element.classList.toggle('panning', !!pan); this.invalidate();
   }
   move(e) {
+    if(e.target!==this.canvas&&!this.pointers.has(e.pointerId))return;
     const pixel = this.local(e); this.pixel = pixel;
     if (this.pointers.has(e.pointerId)) this.pointers.set(e.pointerId, pixel);
     if (this.pinch && this.pointers.size >= 2) {
@@ -197,6 +245,12 @@ export class CadViewport {
       this.resolved = position; this.hooks.move?.(position, this.pixel); this.invalidate();
     }, 70);
     else this.snapHit = null;
+    clearTimeout(this.cycleHoverTimer);
+    if(!drag && !this.selectionCycle?.active) {
+      this.selectionCycle?.cancel();
+      if(this.settings.selectionCycling && this.canCycleSelection())
+        this.cycleHoverTimer=setTimeout(()=>{if(this.canCycleSelection())void this.selectionCycle?.hover(this.cursor,pixel);},140);
+    }
     this.invalidate();
   }
   async up(e) {
@@ -227,6 +281,8 @@ export class CadViewport {
       } else if (this.command && !this.command.selecting) {
         const pos = await this.snapped(p, this.command.anchor, true, ['MOVE','STRETCH'].includes(this.command.name) && !!this.command.anchor); current(); this.snapOverride = undefined; await this.hooks.pick?.(pos);
       } else if (drag.moved) await this.hooks.box?.(drag.first, p, e.clientX < this.element.getBoundingClientRect().left + drag.pixel.x, drag.extend || !!this.command?.selecting, drag.remove);
+      else if(!drag.grip && (this.settings.selectionCycling || this.temporaryCycle) && this.canCycleSelection())
+        await this.selectionCycle.open(p,this.local(e),{extend:drag.extend||!!this.command?.selecting,remove:drag.remove,temporary:!!this.temporaryCycle,expectedKey:drag.key});
       else await this.hooks.select?.(p, drag.extend || !!this.command?.selecting, drag.remove);
     } catch (error) { this.hooks.error?.(error); }
     this.invalidate();
@@ -242,6 +298,16 @@ export class CadViewport {
       c.drawImage(f.image, center.x - f.size.w * scale / 2, center.y - f.size.h * scale / 2, f.size.w * scale, f.size.h * scale);
     }
     if (this.graphCurrent()) drawGraph(c,this.graph,p=>screen(p,this.camera,this.size),this.size);
+    const candidate=this.selectionCycle?.preview;
+    if(candidate){
+      c.save();c.strokeStyle='#ffe58c';c.lineWidth=3;
+      for(const path of candidate.preview)this.path(c,path.points,path.closed);
+      if(candidate.previewTruncated || !candidate.preview.length){
+        const b=candidate.bounds,a=screen(point(b.minX,b.minY),this.camera,this.size),z=screen(point(b.maxX,b.maxY),this.camera,this.size);
+        c.setLineDash([4,3]);c.strokeRect(a.x-2,z.y-2,Math.max(4,z.x-a.x+4),Math.max(4,a.y-z.y+4));
+      }
+      c.restore();
+    }
     if (this.snapshot === null) {
       for (const grip of this.client.data?.grips || []) {
         const p = screen(grip.position, this.camera, this.size); c.fillStyle = '#429ced'; c.strokeStyle = '#bddefc'; c.lineWidth = 1;
@@ -266,6 +332,9 @@ export class CadViewport {
     if (this.pixel && !this.drag?.pan) {
       const p = this.pixel; c.strokeStyle = '#dce5ef'; c.lineWidth = 1; c.beginPath(); c.moveTo(0, p.y + .5); c.lineTo(p.x - 5, p.y + .5); c.moveTo(p.x + 5, p.y + .5); c.lineTo(w, p.y + .5);
       c.moveTo(p.x + .5, 0); c.lineTo(p.x + .5, p.y - 5); c.moveTo(p.x + .5, p.y + 5); c.lineTo(p.x + .5, h); c.stroke(); c.strokeRect(p.x - 4.5, p.y - 4.5, 9, 9);
+      if(this.settings.selectionCycling && this.selectionCycle?.overlap){
+        c.strokeStyle='#ffe58c';c.strokeRect(p.x+12,p.y+12,10,10);c.strokeRect(p.x+16,p.y+16,10,10);
+      }
     }
   }
   grid(c) {
@@ -319,5 +388,6 @@ export class CadViewport {
     const q = screen(cursor, this.camera, this.size); c.fillStyle = '#a8c4dd'; c.font = '11px Consolas'; c.fillText(format(distance(p.at(-1), cursor)), q.x + 12, q.y + 19);
   }
   dispose() {
+    globalThis.removeEventListener?.('keydown',this.cycleModifier,true);this.selectionCycle?.dispose();clearTimeout(this.cycleHoverTimer);
     globalThis.removeEventListener?.('keydown', this.modifierDown); globalThis.removeEventListener?.('keyup', this.modifierUp); globalThis.removeEventListener?.('blur', this.modifierBlur); this.insertionPreview.clear(); this.cancelInput(); this.generation++; this.pendingFrame = null; this.clearFrame(); this.resizeObserver.disconnect(); this.abort?.abort(); this.snapAbort?.abort(); clearTimeout(this.renderTimer); clearTimeout(this.snapTimer); cancelAnimationFrame(this.raf); }
 }

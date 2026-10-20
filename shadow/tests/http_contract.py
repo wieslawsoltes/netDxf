@@ -15,6 +15,7 @@ import tempfile
 import time
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
+from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parents[2]
 STUDIO = ROOT / 'shadow/samples/netDxf.Shadow.Studio'
@@ -95,6 +96,18 @@ def run(dotnet: str, configuration: str, published: Path | None = None) -> None:
                 'modes': 1, 'anchor': {'x': '1.25', 'y': 0, 'z': 0}}, cad['state'])
             assert {axis: snap['position'][axis] for axis in ['x', 'y', 'z']} == {'x': 0.125, 'y': -2.5, 'z': 0}
             passed('CAD endpoint metadata and nullable math request binding')
+            overlap_query = {'revision': cad['state']['revision'], 'layout': cad['state']['layout'],
+                             'point': {'x': .125, 'y': -2.5, 'z': 0}, 'tolerance': .5}
+            overlaps = request(cad_prefix + '/selection-candidates', overlap_query, cad['state'])
+            assert len(overlaps['candidates']) == 1 and not overlaps['truncated']
+            assert overlaps['documentId'] == cad['state']['documentId']
+            assert overlaps['candidates'][0]['entity'] == cad['items'][0]['id']
+            request(cad_prefix + '/selection-candidates', overlap_query, expected=409,
+                    custom={'X-Shadow-Studio': '1'})
+            request(cad_prefix + '/selection-candidates', {**overlap_query, 'layout': 'wrong'},
+                    cad['state'], expected=409)
+            assert request(cad_prefix + '/state')['state'] == cad['state']
+            passed('overlap selection candidates preserve identity and never change selection or history')
             # The graph workspace uses this same route in native and WASM hosts.
             # Numeric graph IDs are valid only under the returned build key and receipt.
             graph_state = cad['state']
@@ -156,6 +169,27 @@ def run(dotnet: str, configuration: str, published: Path | None = None) -> None:
             assert not request(cad_prefix + '/resources')['layerIsolation']['active']
             assert next(item for item in cad['layers'] if item['name'] == 'HTTP-É-日本語')['color'] == '#123456'
             passed('typed layer isolation binds native IDs preserves unrelated fields and fences stale revisions')
+            cad = post(cad_prefix + '/layer-state', cad['state'], state={'action': 'save', 'name': 'HTTP saved layers'})
+            saved_state = next(item for item in request(cad_prefix + '/resources')['layerStates']
+                               if item['name'] == 'HTTP saved layers')
+            saved_id = saved_state['id']['value']
+            exported_state = request(cad_prefix + '/layer-state/export?id=' + quote(saved_id, safe=''), s=cad['state'])
+            details = request(cad_prefix + '/layer-state/details?id=' + quote(saved_id, safe=''), s=cad['state'])
+            assert details['state']['name'] == 'HTTP saved layers' and exported_state['fileName'].endswith('.las')
+            las_query = {'revision': cad['state']['revision'], 'text': exported_state['text'],
+                         'options': {'name': 'HTTP imported layers'}}
+            las_preview = request(cad_prefix + '/layer-state/preview', las_query, cad['state'])
+            assert las_preview['token'] and not las_preview['conflicts']
+            assert request(cad_prefix + '/state')['state'] == cad['state']
+            before_import = cad['state']
+            cad = post(cad_prefix + '/layer-state/import', before_import, token=las_preview['token'])
+            assert cad['state']['undoCount'] == before_import['undoCount'] + 1
+            assert any(item['name'] == 'HTTP imported layers' for item in request(cad_prefix + '/resources')['layerStates'])
+            request(cad_prefix + '/layer-state/import', {'revision': cad['state']['revision'], 'token': las_preview['token']},
+                    cad['state'], expected=409)
+            cad = post(cad_prefix + '/history/undo', cad['state'])
+            assert not any(item['name'] == 'HTTP imported layers' for item in request(cad_prefix + '/resources')['layerStates'])
+            passed('LAS export preview import and undo use typed identity-bound routes')
             receipt = cad['state']
             unchanged = request(cad_prefix + '/state?knownServer=' + receipt['serverId'] + '&knownChange=' + str(receipt['changeVersion']), raw=True)
             assert unchanged == b'null'
@@ -176,6 +210,11 @@ def run(dotnet: str, configuration: str, published: Path | None = None) -> None:
             assert continuation['nodes']['offset'] == 1 and continuation['graphKey'] == network['graphKey']
             request(prefix + '/modules/connectivity', query, expected=409, custom={'X-Shadow-Studio': '1'})
             assert request(prefix + '/state')['state'] == before_network
+            structure = request(prefix + '/modules/connectivity', {**query, 'operation': 'structure'}, before_network)
+            assert structure['structure']['scopeComplete'] and structure['strongComponents']['total'] > 0
+            assert structure['portStructures']['total'] == structure['nodes']['total']
+            assert request(prefix + '/state')['state'] == before_network
+            passed('discipline structure exposes separate bounded membership and proof streams')
             disabled = post(prefix + '/modules/toggle', before_network, module='pid', enabled=False)['state']
             request(prefix + '/modules/connectivity', {**query, 'revision': disabled['revision']}, disabled, expected=400)
             post(prefix + '/close', disabled, discard=True)

@@ -404,9 +404,15 @@ test('semantic Studio controls validate all settings before mutation and fence t
   assert.deepEqual(selections[3],['attributes',attributes,{expectedKey:'a/live/1'}]);
   await ui.execute('cad.read',{path:'attribute-definitions',block:'H:12&other'},'a');
   assert.equal(reads[1],'attribute-definitions?revision=7&block=H%3A12%26other');
+  for(const path of ['layer-state/details','layer-state/export']){
+    await ui.execute('cad.read',{path,id:'H:12&other'},'a');
+    assert.equal(reads.at(-1),`${path}?revision=7&id=H%3A12%26other`);
+    for(const id of [undefined,{},'', 'x'.repeat(257)])
+      await assert.rejects(ui.execute('cad.read',{path,id},'a'),/bounded saved layer-state identity/);
+  }
   await assert.rejects(ui.execute('cad.read',{path:'attribute-definitions',block:{}},'a'),/bounded block identity/);
   await assert.rejects(ui.execute('cad.read',{path:'attribute-definitions',block:'x'.repeat(1025)},'a'),/bounded block identity/);
-  assert.equal(reads.length,2);
+  assert.equal(reads.length,4);
   const definition={definition:{block:{value:'H:12'},changes:{add:[{tag:'SERVICE'}]}}};
   await ui.execute('cad.edit',{path:'attribute-definitions',body:definition},'a');
   assert.deepEqual(selections[4],['attribute-definitions',definition,{expectedKey:'a/live/1'}]);
