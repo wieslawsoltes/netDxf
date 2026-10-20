@@ -35,6 +35,14 @@ test('Escape and explicit close cancel without selecting; outside clicks retain 
   await f.open();f.chooser.close.emit('click');assert.equal(f.chooser.active,false);assert.equal(document.activeElement,f.panel);
   await f.open();f.tab.focus();f.events.emit('pointerdown',{target:f.tab});assert.equal(f.chooser.active,false);
   assert.equal(document.activeElement,f.tab);assert.equal(f.picked.length,0);
+  assert.deepEqual(f.errors,[],'reopening cached query results must rebuild cleared option nodes');
+});
+test('Enter on the Cancel button remains native cancellation, never candidate acceptance',async t=>{
+  const f=fixture(t);await f.open();f.chooser.close.focus();
+  assert.equal(f.key('Enter',f.chooser.close),false,'capture handler must not consume native button activation');
+  f.chooser.close.emit('click');await tick();
+  assert.equal(f.picked.length,0);assert.equal(f.chooser.active,false);assert.equal(document.activeElement,f.panel);
+  await f.open();assert.equal(f.chooser.list.children.length,2);assert.deepEqual(f.errors,[]);
 });
 test('pending responses are cancelled by outside focus and cannot select even a single candidate',async t=>{
   const wait=gate(),f=fixture(t,()=>wait.promise),loading=f.open();assert(f.chooser.active);

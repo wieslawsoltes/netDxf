@@ -65,6 +65,9 @@ export class SelectionCycling {
     if(event.defaultPrevented || event.target?.closest?.('input,textarea,select,[contenteditable="true"],dialog[open]'))return;
     const state=this.model.current();
     if(!state?.active || !this.eligible() || !this.element.contains(event.target))return;
+    // Native buttons retain Enter/Space activation (especially Cancel). Only the listbox
+    // and the viewport's temporary cycle own candidate navigation and acceptance.
+    if(event.key!=='Escape' && !this.list.contains(event.target) && !(state.temporary && event.target===this.element))return;
     if(!['Escape','Enter','ArrowDown','ArrowUp','Home','End',' '].includes(event.key))return;
     if(event.key===' '&&!event.shiftKey)return;
     event.preventDefault(); event.stopImmediatePropagation();
@@ -77,7 +80,7 @@ export class SelectionCycling {
   render() {
     const state=this.model.state, active=!!state?.active;
     this.host.hidden=!active; this.invalidate?.();
-    if(!active) { this.list.replaceChildren(); return; }
+    if(!active) { this.renderedResult=null;this.list.replaceChildren(); return; }
     const result=state.result, selected=result.candidates[state.index];
     this.title.textContent=`${result.candidates.length}${result.truncated?'+':''} overlapping objects`;
     this.list.hidden=!!state.temporary;
