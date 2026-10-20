@@ -13,12 +13,14 @@ public enum LayerStateFields
 
 public sealed record LayerStateEdit(string Action, ObjectId? Id = null, string? Name = null,
     string Description = "", LayerStateFields Fields = LayerStateFields.All,
-    bool RestoreCurrentLayer = true, bool TurnOffUnlistedLayers = false);
+    bool RestoreCurrentLayer = true, bool TurnOffUnlistedLayers = false,
+    ImmutableArray<LayerStateEntryEdit> Entries = default, ImmutableArray<string> AddLayers = default,
+    ImmutableArray<string> RemoveLayers = default, string? CurrentLayer = null);
 public sealed record DraftingLayerState(ObjectId Id, string Name, string Description, string CurrentLayer,
-    bool PaperSpace, ImmutableArray<string> Layers);
+    bool PaperSpace, ImmutableArray<string> Layers, LayerStateFields Fields = LayerStateFields.All, int RestoreMask = 2047);
 
 /// <summary>Native DXF layer-state authoring and selective restoration as detached, atomic plans.</summary>
-public static class DraftingLayerStates
+public static partial class DraftingLayerStates
 {
     [Flags]
     private enum StoredFlags { None = 0, Hidden = 1, Frozen = 2, Locked = 4, Plot = 8, NewVpFrozen = 16, VpFrozen = 32 }
@@ -27,7 +29,8 @@ public static class DraftingLayerStates
     private static ShadowReader Manager(ShadowSnapshot snapshot) => snapshot.Document["Layers"]["StateManager"];
     public static ImmutableArray<DraftingLayerState> Read(ShadowSnapshot snapshot) => Manager(snapshot).Items
         .Select(s => new DraftingLayerState(s.Id!.Value, s["Name"].Text, s["Description"].Text, s["CurrentLayer"].Text,
-            s["PaperSpace"].Boolean(), s["Properties"].Items.Select(p => p["Key"].Text).Order(StringComparer.OrdinalIgnoreCase).ToImmutableArray()))
+            s["PaperSpace"].Boolean(), s["Properties"].Items.Select(p => p["Key"].Text).Order(StringComparer.OrdinalIgnoreCase).ToImmutableArray(),
+            FieldsFromMask(Mask(s)), Mask(s)))
         .OrderBy(s => s.Name, StringComparer.OrdinalIgnoreCase).ToImmutableArray();
 
     public static DraftingPlan Plan(ShadowSnapshot snapshot, LayerStateEdit request, string layout = "Model",
@@ -58,6 +61,7 @@ public static class DraftingLayerStates
                 edit.Set(id, "Description", ShadowValue.From(request.Description));
                 edit.Set(id, "CurrentLayer", ShadowValue.From(DraftingResources.Current(snapshot, "layer")));
                 edit.Set(id, "PaperSpace", ShadowValue.From(!layout.Equals("Model", StringComparison.OrdinalIgnoreCase)));
+                if (!current.Exists) SetMask(edit, id, MaskFromFields(request.Fields));
                 var entries = new List<ShadowValue>(layers.Length);
                 var previousProperties = current["Properties"].Items.ToDictionary(p => p["Key"].Text, p => p["Value"], StringComparer.OrdinalIgnoreCase);
                 foreach (var layer in layers)
@@ -86,7 +90,13 @@ public static class DraftingLayerStates
                 edit.ReplaceSequence(managerId, "$items", states.Where(s => s.Id != current.Id).Select(s => s.Value)); break;
             case "restore":
                 RequireState(current); Restore(snapshot, edit, current, request, cancellationToken); break;
-            default: throw new ArgumentException("Use save, rename, delete or restore for a layer state.");
+            case "options":
+                RequireState(current);
+                SetMask(edit, current.Id!.Value, (Mask(current) & ~SupportedMask) | MaskFromFields(request.Fields));
+                break;
+            case "edit":
+                RequireState(current); EditEntries(snapshot, edit, current, request, cancellationToken); break;
+            default: throw new ArgumentException("Use save, rename, delete, restore, options or edit for a layer state.");
         }
         cancellationToken.ThrowIfCancellationRequested(); edit.PruneUnreachable();
         return new(request.Action.ToUpperInvariant() + " LAYER STATE", edit.Build(), []);
