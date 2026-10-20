@@ -16,3 +16,22 @@
 .ribbon-tabs button[data-contextual="block"] { color:#d3ebc6; border-top:2px solid #78a85e; }
 .ribbon-tabs button[data-contextual="block"][aria-selected=true] { background:#354632; border-bottom-color:#354632; }
 .ribbon-tabs button:disabled { opacity:.45; cursor:not-allowed; }
+.ribbon-group-title { position:relative; cursor:grab; touch-action:none; }
+.ribbon-tear-button { position:absolute; right:0; top:0; font-size:12px; padding:0 3px; line-height:16px; min-width:18px; }
+.ribbon-group-title:has(.ribbon-tear-button) { padding-right:21px; }
+.ribbon-floating { position:fixed; z-index:39; max-width:calc(100dvw - 8px); max-height:calc(100dvh - 8px); min-width:130px; overflow:auto; background:#303742; border:1px solid #7a90a8; box-shadow:0 8px 22px #0008; }
+.ribbon-floating-header { display:flex; align-items:center; position:sticky; top:0; z-index:1; background:#242c36; border-bottom:1px solid #596573; }
+.ribbon-floating-header button { min-height:26px; }
+.ribbon-floating-grip { flex:1; text-align:left; cursor:move; touch-action:none; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+.ribbon-floating-content { overflow:auto; padding:4px; }
+.ribbon-floating .ribbon-group { min-width:0; border:0; padding:0; }
+.ribbon-floating .ribbon-group-title,.ribbon-floating .ribbon-launcher { display:none; }
+.ribbon-floating .ribbon-tools { min-height:90px; max-width:calc(100dvw - 18px); overflow:auto; }
+.ribbon-flyout-float { grid-row:1 / span 3; max-width:75px; white-space:normal; }
+#studio.clean .ribbon-floating { display:none; }
+.ribbon-customization { display:grid; gap:10px; max-width:100%; }
+.ribbon-customization section { border:1px solid #495563; padding:8px; min-width:0; }
+.ribbon-customization h3 { margin:0 0 6px; }
+.ribbon-customization .toolbar { flex-wrap:wrap; gap:4px; }
+.ribbon-customization input,.ribbon-customization select { min-width:0; max-width:100%; }
+.ribbon-customization-status { min-height:1.5em; }
