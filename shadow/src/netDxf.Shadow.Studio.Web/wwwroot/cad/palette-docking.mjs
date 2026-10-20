@@ -1,4 +1,4 @@
-import { changePaletteLayout, paletteDockWidths, paletteLayout, paletteRect, resizePaletteRect, paletteDropSide, paletteDropPreview, paletteStorageKey } from './palette-layout.mjs';
+import { changePaletteLayout, paletteDockWidths, paletteLayout, paletteRect, resizePaletteRect, paletteDropSide, paletteDropPreview, paletteStorageKey, paletteGroups, paletteGroupFor, paletteStackHeights } from './palette-layout.mjs';
 
 const element = (tag, attributes = {}, children = []) => {
   const result = document.createElement(tag);
@@ -29,7 +29,7 @@ export class PaletteDock {
     if (!workspace || typeof render !== 'function') throw new Error('A palette workspace and content renderer are required.');
     this.workspace = workspace; this.definitions = palettes.map(value => typeof value === 'string' ? { id: value, title: value } : value);
     this.ids = this.definitions.map(value => value.id); this.render = render; this.onActiveChange = onActiveChange; this.onLayoutChange = onLayoutChange; this.onHide = onHide; this.keepOpen = keepOpen; this.report = report;
-    this.storageKey = storageKey; this.frames = new Map(); this.autoId = null; this.hideTimer = null; this.disposed = false; this.gesture = null; this.frame = 0;
+    this.storageKey = storageKey; this.frames = new Map(); this.groups = new Map(); this.autoId = null; this.hideTimer = null; this.disposed = false; this.gesture = null; this.frame = 0;
     try { this.storage = storage === undefined ? globalThis.localStorage : storage; } catch { this.storage = null; }
     let saved;
     try { const text = this.storage?.getItem(this.storageKey); if (text && text.length < 65536) saved = JSON.parse(text); } catch { /* Storage is optional. */ }
@@ -61,7 +61,7 @@ export class PaletteDock {
       else if (this.autoId && this.keepOpen(this.autoId)) { event.preventDefault(); event.stopPropagation(); this.hideAuto(); }
     };
     document.addEventListener('keydown', this.escape, true);
-    this.apply(); this.refresh(); this.persist(); this.onActiveChange(this.state.active);
+    this.apply(); this.persist(); this.onActiveChange(this.state.active);
   }
 
   bounds() {
@@ -70,34 +70,50 @@ export class PaletteDock {
     return { width: Math.max(1, rect.width - other.reduce((sum, child) => sum + child.getBoundingClientRect().width, 0)), height: rect.height };
   }
   snapshot() { return JSON.parse(JSON.stringify(this.state)); }
-  containsFocus() { return [...this.frames.values()].some(frame => frame.element.contains(document.activeElement)) || this.launcher.contains(document.activeElement); }
+  containsFocus() { return this.leftDock.contains(document.activeElement) || this.rightDock.contains(document.activeElement) || [...this.frames.values()].some(frame => frame.element.contains(document.activeElement)) || this.launcher.contains(document.activeElement); }
   contentFor(id) { return this.frames.get(id)?.content || null; }
-  isVisible(id) { const panel = this.state.panels[id]; return !!panel?.open && !this.state.hidden && (!this.anchored(panel) || this.autoId === id); }
+  isVisible(id) {
+    const panel = this.state.panels[id];
+    if (!panel?.open || this.state.hidden) return false;
+    if (this.anchored(panel)) return this.autoId === id;
+    return panel.mode !== 'dock' || paletteGroups(this.state, panel.side).some(group => group.active === id);
+  }
   anchored(panel) { return panel.mode === 'auto' || panel.mode === 'dock' && this.compact; }
   persist() { try { this.storage?.setItem(this.storageKey, JSON.stringify(this.state)); } catch { /* Private or full storage does not block the drawing. */ } }
   announce(text) { this.live.textContent = text; }
   commit(action, { announce = '', apply = true, save = true } = {}) {
     const previous = this.state; this.state = changePaletteLayout(previous, action, this.bounds());
-    if (previous === this.state) { this.announce('Palette positions are locked. Unlock the layout to move or resize them.'); return; }
+    if (previous === this.state) {
+      if (this.state.locked) this.announce('Palette positions are locked. Unlock the layout to move or resize them.');
+      else if (this.state.panels[action.id]?.allowDocking === false) this.announce('Allow docking is off for this palette.');
+      return;
+    }
     if (apply) this.apply(); if (save) this.persist();
     if (previous.active !== this.state.active) this.onActiveChange(this.state.active);
     if (announce) this.announce(announce);
   }
   show(id = this.state.active, options = {}) {
+    const wasRendered = this.isVisible(id) && this.frames.get(id)?.rendered;
     this.commit({ type: 'show', id });
     if (options.mode || options.side) this.commit({ type: 'place', id, ...options });
-    const frame = this.frames.get(id); this.refresh(id);
+    // Explicit Show also refreshes out-of-band data (for example a prepared edit
+    // preview). New visibility is rendered by apply(), so only refresh it once.
+    const frame = this.frames.get(id); if (wasRendered || !frame.rendered) this.refresh(id);
     if (this.anchored(this.state.panels[id])) this.reveal(id);
     else this.raise(id);
     if (options.focus !== false) frame.selector.focus({ preventScroll: true });
     this.onActiveChange(id); return frame.content;
   }
   close(id = this.state.active) {
-    const frame = this.frames.get(id), hadFocus = frame?.element.contains(document.activeElement);
+    const frame = this.frames.get(id), hadFocus = frame?.element.contains(document.activeElement) || [...this.groups.values()].some(group => group.tabs.get(id) === document.activeElement);
     this.commit({ type: 'close', id }, { announce: `${this.title(id)} closed. Reopen it from Palettes.` });
-    if (hadFocus) this.launcher.querySelector('summary').focus({ preventScroll: true });
+    if (hadFocus) {
+      const group = paletteGroupFor(this.state, id), active = group && paletteGroups(this.state, group.side).find(value => value.key === group.group.tabs[0])?.active;
+      if (active && this.isVisible(active)) this.frames.get(active)?.selector.focus({ preventScroll: true });
+      else this.launcher.querySelector('summary').focus({ preventScroll: true });
+    }
   }
-  toggle() { this.hideAuto(); this.commit({ type: 'toggle' }); if (!this.state.hidden) this.refresh(); }
+  toggle() { this.hideAuto(); this.commit({ type: 'toggle' }); }
   dockSide(side) {
     const id = this.state.active, panel = this.state.panels[id];
     this.place(id, 'dock', side || (panel.side === 'left' ? 'right' : 'left'));
@@ -109,19 +125,37 @@ export class PaletteDock {
   /** Restore a detached snapshot or defaults. Explicit restoration also replaces the prior lock state. */
   restore(layout) {
     this.endGesture(true); clearTimeout(this.hideTimer); this.autoId = null; this.launcher.open = false;
-    const focused = [...this.frames.values()].some(frame => frame.element.contains(document.activeElement));
+    const focused = this.containsFocus();
     for (const frame of this.frames.values()) if (frame.visible) { this.releaseFrame(frame); frame.visible = false; }
     this.state = paletteLayout(layout, this.ids);
     const bounds = this.bounds();
     for (const [id, panel] of Object.entries(this.state.panels)) if (panel.mode === 'float') this.state.panels[id] = { ...panel, ...paletteRect(panel, bounds) };
-    this.apply(); this.refresh(); this.persist(); this.onActiveChange(this.state.active);
+    this.apply(); this.persist(); this.onActiveChange(this.state.active);
     if (focused) this.launcher.querySelector('summary').focus({ preventScroll: true });
     this.announce('Palette layout restored.'); return this.snapshot();
   }
   place(id, mode, side) {
     if (this.state.locked) { this.announce('Palette positions are locked. Unlock the layout to change docking.'); return; }
+    if (!this.state.panels[id].allowDocking && mode !== 'float') { this.announce('Allow docking is off for this palette.'); return; }
     this.hideAuto(); this.commit({ type: 'place', id, mode, side }, { announce: `${this.title(id)} ${mode === 'auto' ? 'auto-hidden' : mode === 'float' ? 'floating' : 'docked'}${mode !== 'float' ? ` on the ${side || this.state.panels[id].side}` : ''}.` });
     if (this.isVisible(id) && !this.frames.get(id).rendered) this.refresh(id);
+  }
+  /** Dock groups are layout state only; palette renderers never need to know their container. */
+  groupWith(id, target) { this.hideAuto(); this.commit({ type: 'group', id, target }); this.focusPalette(id); }
+  detach(id) { this.commit({ type: 'detach', id }); this.focusPalette(id); }
+  reorder(id, delta, tab = false) { this.commit({ type: tab ? 'move-tab' : 'move-group', id, delta }); this.focusPalette(id); }
+  focusPalette(id) {
+    const location = paletteGroupFor(this.state, id), group = location && this.groups.get(`${location.side}:${location.group.tabs[0]}`);
+    const tab = group?.tabs.get(id);
+    if (tab && !group.tablist.hidden && this.isVisible(id)) tab.focus({ preventScroll: true });
+    else if (this.isVisible(id)) this.frames.get(id)?.selector.focus({ preventScroll: true });
+  }
+  setAllowDocking(id, value) {
+    this.endGesture(true);
+    const frame = this.frames.get(id), rect = frame?.element.getBoundingClientRect(), origin = this.workspace.getBoundingClientRect();
+    this.commit({ type: 'allow-docking', id, value,
+      rect: this.isVisible(id) && rect ? { x: rect.left - origin.left, y: rect.top - origin.top, width: rect.width, height: rect.height } : undefined });
+    this.focusPalette(id);
   }
   title(id) { return this.definitions.find(value => value.id === id)?.title || id; }
 
@@ -153,6 +187,68 @@ export class PaletteDock {
     const dock = element('div', { class: `pd-dock pd-dock-${side}` }, side === 'left' ? [panes, splitter] : [splitter, panes]);
     dock.panes = panes; dock.splitter = splitter; return dock;
   }
+  createGroup(key) {
+    const tablist = element('div', { class: 'pd-tabs', role: 'tablist', 'aria-label': 'Docked palette group' });
+    const body = element('div', { class: 'pd-group-body' });
+    const frame = element('div', { class: 'pd-group', 'data-group': key }, [body, tablist]);
+    const splitter = element('div', { class: 'pd-stack-splitter', role: 'separator', tabindex: '0', 'aria-orientation': 'horizontal' });
+    const group = { element: frame, body, tablist, splitter, tabs: new Map(), panels: new Map(), key };
+    splitter.addEventListener('pointerdown', event => this.beginStackResize(event, group));
+    splitter.addEventListener('keydown', event => {
+      if (!['ArrowUp', 'ArrowDown'].includes(event.key) || this.state.locked) return;
+      event.preventDefault(); event.stopPropagation();
+      this.commit({ type: 'resize-groups', id: group.id, nextId: group.nextId,
+        firstHeight: group.height + (event.key === 'ArrowDown' ? 1 : -1) * (event.shiftKey ? 1 : 20), height: this.bounds().height });
+    });
+    this.groups.set(key, group); return group;
+  }
+  applyGroups(side, height) {
+    const values = this.compact ? [] : paletteGroups(this.state, side), sizes = paletteStackHeights(values, height), nodes = [], hosts = new Map();
+    values.forEach((value, index) => {
+      const key = `${side}:${value.key}`, group = this.groups.get(key) || this.createGroup(key);
+      group.id = value.key; group.nextId = values[index + 1]?.key; group.height = sizes[index]; group.visibleTabs = value.tabs;
+      group.element.style.height = `${sizes[index]}px`; group.tablist.hidden = value.tabs.length < 2;
+      const panels = [], tabs = value.tabs.map(id => {
+        let tab = group.tabs.get(id);
+        if (!tab) {
+          tab = control(`Show ${this.title(id)} in palette group`, this.title(id), () => { this.show(id, { focus: false }); this.focusPalette(id); }, 'pd-tab');
+          tab.setAttribute('role', 'tab'); tab.setAttribute('id', `pd-tab-${this.ids.indexOf(id)}`);
+          tab.addEventListener('keydown', event => {
+            if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+            event.preventDefault(); event.stopPropagation();
+            const current = group.visibleTabs.indexOf(id), count = group.visibleTabs.length;
+            const next = event.key === 'Home' ? 0 : event.key === 'End' ? count - 1 : (current + (event.key === 'ArrowRight' ? 1 : -1) + count) % count;
+            this.show(group.visibleTabs[next], { focus: false }); this.focusPalette(group.visibleTabs[next]);
+          });
+          group.tabs.set(id, tab);
+        }
+        tab.setAttribute('aria-selected', String(id === value.active)); tab.tabIndex = id === value.active ? 0 : -1;
+        const panelId = `pd-panel-${this.ids.indexOf(id)}`;
+        tab.setAttribute('aria-controls', panelId);
+        let panel = group.panels.get(id);
+        if (!panel) { panel = element('div', { class: 'pd-tab-panel', id: panelId }); group.panels.set(id, panel); }
+        panel.hidden = id !== value.active;
+        if (value.tabs.length > 1) { panel.setAttribute('role', 'tabpanel'); panel.setAttribute('aria-labelledby', `pd-tab-${this.ids.indexOf(id)}`); }
+        else { panel.removeAttribute('role'); panel.removeAttribute('aria-labelledby'); }
+        panels.push(panel); if (id === value.active) hosts.set(id, panel);
+        return tab;
+      });
+      this.orderNodes(group.tablist, tabs); this.orderNodes(group.body, panels);
+      nodes.push(group.element);
+      if (group.nextId) {
+        group.splitter.setAttribute('aria-label', `Resize ${this.title(value.active)} and ${this.title(values[index + 1].active)} palette groups`);
+        group.splitter.setAttribute('aria-valuenow', String(Math.round(group.height)));
+        group.splitter.setAttribute('aria-valuemin', '160'); group.splitter.setAttribute('aria-valuemax', String(Math.round(group.height + sizes[index + 1] - 160)));
+        group.splitter.setAttribute('aria-disabled', String(this.state.locked)); group.splitter.tabIndex = this.state.locked ? -1 : 0;
+        nodes.push(group.splitter);
+      }
+    });
+    this.orderNodes(this[`${side}Dock`].panes, nodes); return hosts;
+  }
+  orderNodes(parent, nodes) {
+    for (const child of [...parent.children]) if (!nodes.includes(child)) child.remove();
+    nodes.forEach((node, index) => { if (parent.children[index] !== node) { if (parent.children[index]) parent.insertBefore(node, parent.children[index]); else parent.append(node); } });
+  }
   createFrame(id) {
     const title = this.title(id), key = `pd-${this.ids.indexOf(id)}`;
     const selector = element('select', { class: 'pd-selector', 'aria-label': `Palette shown in ${title}` }, this.definitions.map(value => element('option', { value: value.id, text: value.title })));
@@ -161,7 +257,10 @@ export class PaletteDock {
       const selected = selector.value; selector.value = id;
       if (selected !== id) {
         const target = this.state.panels[selected];
-        if (!target.open && !this.state.locked) this.state.panels[selected] = { ...this.state.panels[id], open: false };
+        if (!target.open && !this.state.locked) this.state.panels[selected] = {
+          ...this.state.panels[id], allowDocking: target.allowDocking,
+          mode: target.allowDocking ? this.state.panels[id].mode : 'float', open: false
+        };
         this.close(id); this.show(selected);
       }
     });
@@ -177,8 +276,21 @@ export class PaletteDock {
     const pin = control(`Auto-hide ${title} palette`, '⌖', () => { const panel = this.state.panels[id]; this.place(id, panel.mode === 'auto' ? 'dock' : 'auto', panel.side); });
     const close = control(`Close ${title} palette`, '×', () => this.close(id));
     const choices = [ ['Dock left', 'dock', 'left'], ['Dock right', 'dock', 'right'], ['Float palette', 'float'], ['Auto-hide left', 'auto', 'left'], ['Auto-hide right', 'auto', 'right'] ];
+    const placementButtons = choices.map(([label, mode, side]) => {
+      const button = control(`${label}: ${title}`, label, () => { menu.open = false; this.place(id, mode, side); });
+      button.dataset.docking = String(mode !== 'float'); return button;
+    });
+    const allowDocking = control(`Allow docking: ${title}`, 'Allow docking', () => { menu.open = false; this.setAllowDocking(id, !this.state.panels[id].allowDocking); });
+    allowDocking.setAttribute('role', 'menuitemcheckbox');
+    const groupTarget = element('select', { 'aria-label': `Group ${title} with` });
+    const groupButton = control(`Group ${title} with chosen palette`, 'Group with chosen palette', () => { menu.open = false; if (groupTarget.value) this.groupWith(id, groupTarget.value); });
+    const detach = control(`Separate ${title} from group`, 'Separate from group', () => { menu.open = false; this.detach(id); });
+    const groupUp = control(`Move ${title} group up`, 'Move group up', () => { menu.open = false; this.reorder(id, -1); });
+    const groupDown = control(`Move ${title} group down`, 'Move group down', () => { menu.open = false; this.reorder(id, 1); });
+    const tabLeft = control(`Move ${title} tab left`, 'Move tab left', () => { menu.open = false; this.reorder(id, -1, true); });
+    const tabRight = control(`Move ${title} tab right`, 'Move tab right', () => { menu.open = false; this.reorder(id, 1, true); });
     const menu = element('details', { class: 'pd-menu' }, [element('summary', { text: '⋯', 'aria-label': `${title} palette layout` }),
-      element('div', { class: 'pd-menu-body' }, choices.map(([label, mode, side]) => control(`${label}: ${title}`, label, () => { menu.open = false; this.place(id, mode, side); }))) ]);
+      element('div', { class: 'pd-menu-body' }, [...placementButtons, allowDocking, element('hr'), groupTarget, groupButton, detach, groupUp, groupDown, tabLeft, tabRight]) ]);
     const content = element('div', { class: 'palette-content pd-content', id: `${key}-content` });
     const resize = element('div', { class: 'pd-resize', role: 'separator', tabindex: '0', 'aria-label': `Resize ${title} palette`, 'aria-orientation': 'horizontal', title: 'Drag to resize; arrow keys resize, Shift for one pixel' });
     resize.addEventListener('pointerdown', event => this.beginResize(event, id));
@@ -192,7 +304,9 @@ export class PaletteDock {
       element('span', { class: 'pd-sr-only', id: `${key}-help`, text: 'Drag to move; release at an edge to dock. Hold Ctrl to keep floating. Escape cancels. Arrow keys move a floating palette; Shift moves one pixel. The layout menu offers docking and auto-hide.' })]);
     const edge = control(`Show ${title} palette`, title, () => this.activateAnchor(id), 'pd-edge-button');
     edge.setAttribute('aria-controls', `${key}-content`); edge.setAttribute('aria-expanded', 'false');
-    const frame = { id, element: window, selector, header, content, resize, move, pin, menu, close, edge, rendered: false, visible: false, generation: 0, hovered: false, edgeHovered: false, cleanup: null };
+    const frame = { id, element: window, selector, header, content, resize, move, pin, menu, close, edge,
+      placementButtons, allowDocking, groupTarget, groupButton, detach, groupUp, groupDown, tabLeft, tabRight,
+      rendered: false, visible: false, generation: 0, hovered: false, edgeHovered: false, cleanup: null };
     menu.addEventListener('toggle', () => { if (menu.open) this.positionMenu(menu); });
     edge.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') { frame.edgeHovered = true; this.reveal(id); } });
     edge.addEventListener('pointerleave', () => { frame.edgeHovered = false; this.queueHide(); });
@@ -232,18 +346,20 @@ export class PaletteDock {
       dock.splitter.setAttribute('aria-valuenow', String(Math.round(dockWidths[side]))); dock.splitter.setAttribute('aria-valuemin', '180'); dock.splitter.setAttribute('aria-valuemax', '640'); dock.splitter.setAttribute('aria-disabled', String(this.state.locked)); dock.splitter.tabIndex = this.state.locked ? -1 : 0;
     }
     if (this.autoId && (!this.state.panels[this.autoId].open || this.state.hidden || !this.anchored(this.state.panels[this.autoId]))) this.autoId = null;
+    const groupHosts = new Map([...this.applyGroups('left', bounds.height), ...this.applyGroups('right', bounds.height)]);
+    const toRender = [];
     for (const id of this.ids) {
       const panel = this.state.panels[id], frame = this.frames.get(id) || (panel.open ? this.createFrame(id) : null); if (!frame) continue;
-      const anchored = this.anchored(panel), visible = panel.open && !this.state.hidden && (!anchored || this.autoId === id);
+      const anchored = this.anchored(panel), visible = this.isVisible(id);
       if (frame.visible && !visible) this.releaseFrame(frame);
       frame.visible = visible;
       frame.element.hidden = !visible; frame.edge.hidden = !panel.open || this.state.hidden || !anchored;
       frame.edge.setAttribute('aria-expanded', String(visible && anchored)); frame.pin.setAttribute('aria-pressed', String(panel.mode === 'auto'));
-      frame.move.disabled = this.state.locked; frame.pin.disabled = this.state.locked;
-      for (const item of frame.menu.querySelectorAll('button')) item.disabled = this.state.locked;
+      frame.move.disabled = this.state.locked; frame.pin.disabled = this.state.locked || !panel.allowDocking;
+      this.updateGroupMenu(frame);
       frame.resize.hidden = panel.mode !== 'float' || this.state.locked;
       frame.element.classList.toggle('pd-floating', panel.mode === 'float'); frame.element.classList.toggle('pd-anchored', anchored);
-      const host = panel.mode === 'float' || anchored ? this.overlay : this[`${panel.side}Dock`].panes;
+      const host = panel.mode === 'float' || anchored ? this.overlay : groupHosts.get(id);
       if (!visible) frame.element.remove(); else if (frame.element.parentNode !== host) host.append(frame.element);
       const rail = this[`${panel.side}Rail`]; if (frame.edge.parentNode !== rail) rail.append(frame.edge);
       if (panel.mode === 'float') this.position(frame, paletteRect(panel, bounds));
@@ -254,9 +370,31 @@ export class PaletteDock {
         this.position(frame, paletteRect(rect, bounds));
       } else for (const property of ['left', 'top', 'width', 'height']) frame.element.style.removeProperty(property);
       if (frame.menu.open) this.positionMenu(frame.menu);
+      if (visible && !frame.rendered) toRender.push(id);
     }
     this.launcher.style.left = `${(dockWidths.left + bounds.width - dockWidths.right) / 2}px`;
     this.onLayoutChange(this.snapshot());
+    for (const id of toRender) this.refresh(id);
+  }
+  updateGroupMenu(frame) {
+    const { id } = frame, panel = this.state.panels[id], locked = this.state.locked, found = paletteGroupFor(this.state, id);
+    frame.allowDocking.disabled = locked; frame.allowDocking.setAttribute('aria-checked', String(panel.allowDocking));
+    for (const button of frame.placementButtons) button.disabled = locked || !panel.allowDocking && button.dataset.docking === 'true';
+    const candidates = this.ids.filter(other => other !== id && this.state.panels[other].open && this.state.panels[other].mode === 'dock' && this.state.panels[other].allowDocking && !found?.group.tabs.includes(other));
+    const current = frame.groupTarget.value;
+    // Keep the native select and its options stable while the menu is being used.
+    const signature = candidates.join('\0');
+    if (frame.groupSignature !== signature) {
+      frame.groupTarget.replaceChildren(...candidates.map(other => element('option', { value: other, text: this.title(other) })));
+      if (candidates.includes(current)) frame.groupTarget.value = current;
+      frame.groupSignature = signature;
+    }
+    frame.groupTarget.disabled = frame.groupButton.disabled = locked || !panel.allowDocking || !candidates.length;
+    frame.detach.disabled = locked || !found || found.group.tabs.length < 2;
+    const groups = found ? paletteGroups(this.state, found.side) : [], index = groups.findIndex(group => group.tabs.includes(id));
+    frame.groupUp.disabled = locked || index <= 0; frame.groupDown.disabled = locked || index < 0 || index >= groups.length - 1;
+    const tabs = found?.group.tabs.filter(tab => this.state.panels[tab].open) || [], tabIndex = tabs.indexOf(id);
+    frame.tabLeft.disabled = locked || tabIndex <= 0; frame.tabRight.disabled = locked || tabIndex < 0 || tabIndex >= tabs.length - 1;
   }
   position(frame, rect) { for (const [property, value] of Object.entries({ left: rect.x, top: rect.y, width: rect.width, height: rect.height })) frame.element.style[property] = `${Math.round(value)}px`; }
   schedule() { if (!this.frame && !this.disposed) this.frame = requestAnimationFrame(() => { this.frame = 0; this.apply(); for (const [id, frame] of this.frames) if (this.isVisible(id) && !frame.rendered) this.refresh(id); }); }
@@ -290,8 +428,8 @@ export class PaletteDock {
   }
   reveal(id) {
     const panel = this.state.panels[id]; if (this.state.hidden || !panel.open || !this.anchored(panel)) return;
-    clearTimeout(this.hideTimer); const changed = this.autoId !== id; this.autoId = id; this.apply();
-    if (changed || !this.frames.get(id).rendered) this.refresh(id);
+    clearTimeout(this.hideTimer); this.autoId = id; this.apply();
+    if (!this.frames.get(id).rendered) this.refresh(id);
   }
   activateAnchor(id) {
     this.reveal(id);
@@ -323,8 +461,8 @@ export class PaletteDock {
   }
   updateDropPreview(id, event) {
     const bounds = this.bounds(), origin = this.workspace.getBoundingClientRect();
-    const side = this.state.locked || event.ctrlKey ? null : paletteDropSide({ x: event.clientX - origin.left, y: event.clientY - origin.top }, bounds);
-    this.dropZones.hidden = false; this.dropZones.style.width = `${bounds.width}px`;
+    const side = this.state.locked || !this.state.panels[id].allowDocking || event.ctrlKey ? null : paletteDropSide({ x: event.clientX - origin.left, y: event.clientY - origin.top }, bounds);
+    this.dropZones.hidden = !this.state.panels[id].allowDocking; this.dropZones.style.width = `${bounds.width}px`;
     const zoneWidth = Math.min(40, bounds.width / 2);
     for (const zone of this.dropZones.querySelectorAll('.pd-drop-zone')) zone.style.width = `${zoneWidth}px`;
     const rect = side && paletteDropPreview(this.state, id, side, bounds, parseFloat(getComputedStyle(this.leftRail).width) || 28);
@@ -345,6 +483,11 @@ export class PaletteDock {
     if (event.button !== 0 || this.state.locked) return;
     const width = this[`${side}Dock`].getBoundingClientRect().width;
     this.startGesture(event, dx => this.commit({ type: 'dock-width', side, width: width + dx * (side === 'left' ? 1 : -1) }, { save: false }));
+  }
+  beginStackResize(event, group) {
+    if (event.button !== 0 || this.state.locked || !group.nextId) return;
+    const firstHeight = group.height, height = this.bounds().height, id = group.id, nextId = group.nextId;
+    this.startGesture(event, (_, dy) => this.commit({ type: 'resize-groups', id, nextId, firstHeight: firstHeight + dy, height }, { save: false }));
   }
   startGesture(event, update, options = {}) {
     this.endGesture(true); event.preventDefault(); event.stopPropagation(); const target = this.workspace, before = this.snapshot(), x = event.clientX, y = event.clientY;
