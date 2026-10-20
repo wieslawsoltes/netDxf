@@ -18,7 +18,7 @@ public sealed partial class Studio
                 layerStatus = snapshot.Document["Layers"].Items.Select(l => new DraftingResourceStatus(l.Id!.Value.Value, l["Name"].Text,
                     l["Name"].Text.Equals(DraftingResources.Current(snapshot, "layer"), StringComparison.OrdinalIgnoreCase), DraftingResources.Reserved(l, "layer"), DraftingResources.Uses(snapshot, l.Id.Value))).ToArray(),
                 linetypes = DraftingResources.Linetypes(snapshot), textStyles = DraftingResources.TextStyles(snapshot),
-                layerStates = DraftingLayerStates.Read(snapshot),
+                layerStates = DraftingLayerStates.Read(snapshot), layerIsolation = DraftingLayerIsolation.Read(snapshot),
                 shapeStyles = snapshot.Document["ShapeStyles"].Items.Select(s => new { id = s.Id!.Value.Value, name = s["Name"].Text, file = s["File"].Text }).ToArray()
             };
         }
