@@ -33,7 +33,7 @@ public static class SymbolNative
             { Value = attribute.Default, Position = V(attribute.Position), Height = attribute.Height,
                 Flags = attribute.Visible ? AttributeFlags.None : AttributeFlags.Hidden, Color = AciColor.ByBlock });
         DomainMetadata.Write(block, new("symbols", "definition", symbol.Id + "@" + symbol.Version, symbol.Name,
-            symbol.Id, symbol.Version, Properties: DefinitionProperties(symbol), Ports: symbol.Ports));
+            symbol.Id, symbol.Version, Properties: DefinitionProperties(symbol), Ports: symbol.Ports) { Passages = symbol.Passages });
         return block;
     }
     public static Insert Place(DxfDocument document, SymbolDefinition symbol, Vec3 position, string module, string tag,
@@ -46,7 +46,7 @@ public static class SymbolNative
         var insert = new Insert(block, V(position)) { Rotation = rotation, Scale = new(scale), Layer = document.Layers.TryGetValue(layer, out var found) ? found : throw new ArgumentException("Unknown insertion layer.") };
         foreach (var attr in insert.Attributes) if (values.TryGetValue(attr.Tag, out var value)) attr.Value = value;
         DomainMetadata.Write(insert, new(module, symbol.Category, key ?? Guid.NewGuid().ToString("N"), tag,
-            symbol.Id, symbol.Version, values.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase), Ports(symbol.Ports, values), []));
+            symbol.Id, symbol.Version, values.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase), Ports(symbol.Ports, values), []) { Passages = symbol.Passages });
         document.Entities.Add(insert); insert.TransformAttributes(); return insert;
     }
     internal static Dictionary<string,string> Attributes(SymbolDefinition symbol, string tag, IReadOnlyDictionary<string,string>? supplied)

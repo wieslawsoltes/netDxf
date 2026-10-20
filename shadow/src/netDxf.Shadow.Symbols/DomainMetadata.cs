@@ -24,7 +24,7 @@ public static class DomainMetadata
         ? Decode(data.XDataRecord.Select(r => r.Code == XDataCode.String && r.Value is string value ? value : throw new FormatException("Unexpected domain XDATA code."))) : null;
     public static DomainRecord? Read(ShadowReader entity)
     {
-        var value = entity["XData"].Items.FirstOrDefault(p => p["Key"].Text == ApplicationName)["Value"];
+        var value = entity["XData"].Items.FirstOrDefault(p => p["Key"].Text.Equals(ApplicationName, StringComparison.OrdinalIgnoreCase))["Value"];
         if (!value.Exists) return null;
         return Decode(value["XDataRecord"].Items.Select(r => r["Code"].Text == "String" ? r["Value"].Text : throw new FormatException("Unexpected domain XDATA code.")));
     }
@@ -63,6 +63,11 @@ public static class DomainMetadata
             !Point(p.Position) || !Point(p.Direction) || p.NominalSize is not null && !Text(p.NominalSize, 64, true)) ||
             ports.Select(p => p.Id).Distinct(StringComparer.Ordinal).Count() != ports.Length)
             throw new ArgumentException("Invalid domain ports.");
+        if (value.Passages is { } passages && (passages.IsDefault || passages.Length > 128 || passages.Any(p =>
+            p is null || !Text(p.FromPort, 64) || !Text(p.ToPort, 64) || p.FromPort == p.ToPort ||
+            p.Direction is not ("both" or "forward" or "reverse") || !ports.Any(a => a.Id == p.FromPort) ||
+            !ports.Any(a => a.Id == p.ToPort) || ports.First(a => a.Id == p.FromPort).Kind != ports.First(a => a.Id == p.ToPort).Kind)))
+            throw new ArgumentException("Passages require distinct declared ports of the same kind and a supported direction, at most 128 entries.");
         if (references.Any(r => r is null || !Text(r.PortId, 64) || !Text(r.TargetKey, 128) || !Text(r.TargetPortId, 64) ||
             r.Role is not ("connection" or "association") || !ports.Any(p => p.Id == r.PortId)))
             throw new ArgumentException("References require declared source ports and bounded target keys, ports and supported roles.");

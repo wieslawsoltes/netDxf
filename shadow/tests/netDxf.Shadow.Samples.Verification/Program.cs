@@ -45,7 +45,7 @@ void Verify(DxfDocument drawing)
     Require(analysis.Records.Count(r => r.Class == "pipe") == 12 && analysis.Records.Count(r => r.Class == "signal") == 4,
         "Arrow strokes, legend and symbol outlines do not become process-network segments.");
     Require(analysis.Issues.IsEmpty, "Default P&ID has complete consistent explicit references: " + string.Join("; ", analysis.Issues.Select(i => i.Code + ": " + i.Message)));
-    Require(drawing.Entities.Inserts.All(i => DomainMetadata.Read(i)?.SymbolVersion == "1.0.0"), "Every sample component retains its catalog version.");
+    Require(drawing.Entities.Inserts.All(i => DomainMetadata.Read(i)?.SymbolVersion == "1.1.0"), "Every sample component retains its explicit-passage catalog version.");
     var inserts = drawing.Entities.Inserts.ToArray();
     var tags = inserts.Select(i => i.Attributes.AttributeWithTag("TAG").Value).ToArray();
     Require(tags.Length == tags.Distinct(StringComparer.Ordinal).Count(), "Equipment and PCE tags are unique.");

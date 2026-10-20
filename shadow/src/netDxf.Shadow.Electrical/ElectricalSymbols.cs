@@ -5,7 +5,20 @@ namespace netDxf.Shadow.Electrical;
 
 public static class ElectricalSymbols
 {
-    public static SymbolCatalog Catalog { get; } = new(Definitions());
+    public static SymbolCatalog Catalog { get; } = new(VersionedDefinitions());
+    private static IEnumerable<SymbolDefinition> VersionedDefinitions()
+    {
+        foreach (var symbol in Definitions())
+        {
+            yield return symbol; // Keep exact legacy versions available without inventing their missing declarations.
+            yield return symbol with { Version = "1.1.0", Passages = symbol.Id switch
+            {
+                "electrical.terminal" or "electrical.resistor" => [new("1", "2")],
+                "electrical.motor" => [new("L", "N")],
+                _ => [] // Normally open switch and protective earth have no internal terminal-to-terminal passage.
+            } };
+        }
+    }
     private static IEnumerable<SymbolDefinition> Definitions()
     {
         SymbolStroke L(double x,double y,double x2,double y2)=>new(SymbolStrokeKind.Line,new(x,y),new(x2,y2));

@@ -5,7 +5,16 @@ namespace netDxf.Shadow.Piping;
 
 public static class PipingSymbols
 {
-    public static SymbolCatalog Catalog { get; } = new(Definitions());
+    public static SymbolCatalog Catalog { get; } = new(VersionedDefinitions());
+    private static IEnumerable<SymbolDefinition> VersionedDefinitions()
+    {
+        foreach (var symbol in Definitions())
+        {
+            yield return symbol; // Keep exact legacy versions available without inventing their missing declarations.
+            yield return symbol with { Version = "1.1.0", Passages = symbol.Id == "piping.tee"
+                ? [new("inlet", "outlet"), new("inlet", "branch")] : [new("inlet", "outlet")] };
+        }
+    }
     private static IEnumerable<SymbolDefinition> Definitions()
     {
         SymbolStroke L(double x,double y,double x2,double y2)=>new(SymbolStrokeKind.Line,new(x,y),new(x2,y2));

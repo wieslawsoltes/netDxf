@@ -10,13 +10,22 @@ public sealed record SymbolStroke(SymbolStrokeKind Kind, Vec3 Start, Vec3 End = 
     double Radius = 0, double StartAngle = 0, double EndAngle = 360, string Text = "");
 public sealed record SymbolDefinition(string Id, string Version, string Name, string Description, string Category,
     string Units, Vec3 BasePoint, ImmutableArray<string> Standards, ImmutableArray<SymbolAttribute> Attributes,
-    ImmutableArray<SymbolPort> Ports, ImmutableArray<SymbolStroke> Geometry);
+    ImmutableArray<SymbolPort> Ports, ImmutableArray<SymbolStroke> Geometry)
+{
+    /// <summary>Null means internal connectivity is unspecified; empty explicitly declares no passages.</summary>
+    public ImmutableArray<DomainPassage>? Passages { get; init; }
+}
 public sealed record SymbolCatalogPage(int Offset, int Limit, int Total, ImmutableArray<SymbolDefinition> Items);
+public sealed record DomainPassage(string FromPort, string ToPort, string Direction = "both");
 public sealed record DomainReference(string PortId, string TargetKey, string TargetPortId, string Role = "connection");
 /// <summary>Portable identity and explicit domain relations. Keys are stable IDs, never DXF handles or shadow IDs.</summary>
 public sealed record DomainRecord(string Module, string Class, string Key, string Tag,
     string? SymbolId = null, string? SymbolVersion = null, ImmutableDictionary<string, string>? Properties = null,
-    ImmutableArray<SymbolPort> Ports = default, ImmutableArray<DomainReference> References = default, int SchemaVersion = 1);
+    ImmutableArray<SymbolPort> Ports = default, ImmutableArray<DomainReference> References = default, int SchemaVersion = 1)
+{
+    /// <summary>Persisted declarations only. Null is legacy/unspecified; an empty array declares isolated terminals.</summary>
+    public ImmutableArray<DomainPassage>? Passages { get; init; }
+}
 public sealed record DomainEntity(ObjectId Entity, DomainRecord Data, ImmutableArray<SymbolPort> WorldPorts);
 
 /// <summary>An immutable versioned catalog. Resolution never silently substitutes another version.</summary>
@@ -46,7 +55,7 @@ public sealed class SymbolCatalog
         if (string.IsNullOrWhiteSpace(definition.Name) || definition.Name.Length > 128 || definition.Description is null || definition.Description.Length > 1024 ||
             string.IsNullOrWhiteSpace(definition.Category) || definition.Category.Length > 64 || definition.Standards.IsDefault || definition.Standards.Length > 16 || definition.Standards.Any(s => string.IsNullOrWhiteSpace(s) || s.Length > 128))
             throw new ArgumentException("Symbol names, descriptions and standards references must be bounded.");
-        DomainMetadata.Validate(new("symbols", definition.Category, definition.Id, definition.Name, definition.Id, definition.Version, Ports: definition.Ports));
+        DomainMetadata.Validate(new("symbols", definition.Category, definition.Id, definition.Name, definition.Id, definition.Version, Ports: definition.Ports) { Passages = definition.Passages });
         if (definition.Id.Any(c => !char.IsAsciiLetterOrDigit(c) && c is not ('.' or '-' or '_'))) throw new ArgumentException("Symbol IDs use ASCII letters, digits, dot, hyphen and underscore.");
         if (!Enum.TryParse<netDxf.Units.DrawingUnits>(definition.Units, out var units) || !Enum.IsDefined(units)) throw new ArgumentException("Unknown symbol units.");
         if ((!definition.BasePoint.IsFinite || definition.BasePoint.Length > 1e12) || definition.Geometry.IsDefaultOrEmpty || definition.Geometry.Length > 512 || definition.Ports.IsDefault || definition.Ports.Length > 64 || definition.Attributes.IsDefault || definition.Attributes.Length > 64)
