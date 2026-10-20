@@ -1,4 +1,4 @@
-import { changePaletteLayout, paletteDockWidths, paletteLayout, paletteRect, resizePaletteRect, paletteStorageKey } from './palette-layout.mjs';
+import { changePaletteLayout, paletteDockWidths, paletteLayout, paletteRect, resizePaletteRect, paletteDropSide, paletteDropPreview, paletteStorageKey } from './palette-layout.mjs';
 
 const element = (tag, attributes = {}, children = []) => {
   const result = document.createElement(tag);
@@ -42,6 +42,10 @@ export class PaletteDock {
     workspace.insertBefore(this.leftRail, this.viewport); workspace.insertBefore(this.leftDock, this.viewport);
     this.viewport.after(this.rightDock, this.rightRail);
     this.overlay = element('div', { class: 'pd-overlay' }); workspace.append(this.overlay);
+    this.dropPreview = element('div', { class: 'pd-drop-preview', hidden: true }, [element('span')]);
+    this.dropZones = element('div', { class: 'pd-drop-zones', hidden: true, 'aria-hidden': 'true' }, [
+      element('div', { class: 'pd-drop-zone pd-drop-left', text: 'Dock left' }), element('div', { class: 'pd-drop-zone pd-drop-right', text: 'Dock right' }), this.dropPreview]);
+    workspace.append(this.dropZones);
     this.launcher = this.createLauncher(); workspace.append(this.launcher);
     this.live = element('span', { class: 'pd-sr-only', role: 'status', 'aria-live': 'polite' }); workspace.append(this.live);
     this.observer = new ResizeObserver(() => this.schedule()); this.observer.observe(workspace); this.observer.observe(this.viewport);
@@ -61,7 +65,7 @@ export class PaletteDock {
   }
 
   bounds() {
-    const rect = this.workspace.getBoundingClientRect(), owned = [this.viewport, this.leftDock, this.rightDock, this.leftRail, this.rightRail, this.overlay, this.launcher, this.live];
+    const rect = this.workspace.getBoundingClientRect(), owned = [this.viewport, this.leftDock, this.rightDock, this.leftRail, this.rightRail, this.overlay, this.dropZones, this.launcher, this.live];
     const other = [...this.workspace.children].filter(child => !owned.includes(child) && !child.hidden && !['absolute', 'fixed'].includes(getComputedStyle(child).position));
     return { width: Math.max(1, rect.width - other.reduce((sum, child) => sum + child.getBoundingClientRect().width, 0)), height: rect.height };
   }
@@ -100,8 +104,19 @@ export class PaletteDock {
   }
   setLocked(value) { this.endGesture(true); this.commit({ type: 'lock', value }, { announce: value ? 'Palette layout locked.' : 'Palette layout unlocked.' }); }
   reset() {
-    this.endGesture(true); this.hideAuto(); this.state = paletteLayout(null, this.ids); this.apply(); this.refresh(); this.persist();
-    this.onActiveChange(this.state.active); this.announce(`Palette layout reset. ${this.title(this.ids[0])} is docked on the right.`);
+    this.restore(null); this.announce(`Palette layout reset. ${this.title(this.ids[0])} is docked on the right.`);
+  }
+  /** Restore a detached snapshot or defaults. Explicit restoration also replaces the prior lock state. */
+  restore(layout) {
+    this.endGesture(true); clearTimeout(this.hideTimer); this.autoId = null; this.launcher.open = false;
+    const focused = [...this.frames.values()].some(frame => frame.element.contains(document.activeElement));
+    for (const frame of this.frames.values()) if (frame.visible) { this.releaseFrame(frame); frame.visible = false; }
+    this.state = paletteLayout(layout, this.ids);
+    const bounds = this.bounds();
+    for (const [id, panel] of Object.entries(this.state.panels)) if (panel.mode === 'float') this.state.panels[id] = { ...panel, ...paletteRect(panel, bounds) };
+    this.apply(); this.refresh(); this.persist(); this.onActiveChange(this.state.active);
+    if (focused) this.launcher.querySelector('summary').focus({ preventScroll: true });
+    this.announce('Palette layout restored.'); return this.snapshot();
   }
   place(id, mode, side) {
     if (this.state.locked) { this.announce('Palette positions are locked. Unlock the layout to change docking.'); return; }
@@ -118,7 +133,7 @@ export class PaletteDock {
       element('div', { class: 'pd-launcher-body' }, [element('label', { text: 'Open a palette' }, [select]),
         element('label', { class: 'pd-lock-label' }, [this.lock, document.createTextNode('Lock palette layout')]),
         control('Reset palette layout', 'Reset palette layout', () => { result.open = false; this.reset(); }),
-        element('p', { text: 'Open several palettes together. Drag a title grip to float; dock or auto-hide from its layout menu.' })])]);
+        element('p', { text: 'Drag a title grip to move, then release over an edge target to dock. Hold Ctrl to keep floating. Escape cancels. The layout menu also offers docking and auto-hide.' })])]);
     result.addEventListener('keydown', event => handlePaletteEscape(event, () => {
       if (!result.open) return false; result.open = false; result.querySelector('summary').focus(); return true;
     }));
@@ -174,7 +189,7 @@ export class PaletteDock {
     });
     const header = element('header', { class: 'pd-title' }, [move, selector, pin, menu, close]);
     const window = element('section', { class: 'pd-window', 'data-palette': id, 'aria-label': `${title} palette` }, [header, content, resize,
-      element('span', { class: 'pd-sr-only', id: `${key}-help`, text: 'Drag to float and move. Arrow keys move a floating palette; Shift moves one pixel. Use the layout menu to dock or auto-hide.' })]);
+      element('span', { class: 'pd-sr-only', id: `${key}-help`, text: 'Drag to move; release at an edge to dock. Hold Ctrl to keep floating. Escape cancels. Arrow keys move a floating palette; Shift moves one pixel. The layout menu offers docking and auto-hide.' })]);
     const edge = control(`Show ${title} palette`, title, () => this.activateAnchor(id), 'pd-edge-button');
     edge.setAttribute('aria-controls', `${key}-content`); edge.setAttribute('aria-expanded', 'false');
     const frame = { id, element: window, selector, header, content, resize, move, pin, menu, close, edge, rendered: false, visible: false, generation: 0, hovered: false, edgeHovered: false, cleanup: null };
@@ -297,11 +312,29 @@ export class PaletteDock {
     if (event.button !== 0 || this.state.locked) return;
     const window = this.frames.get(id).element.getBoundingClientRect(), workspace = this.workspace.getBoundingClientRect();
     const rect = { x: window.left - workspace.left, y: window.top - workspace.top, width: window.width, height: window.height };
-    this.startGesture(event, (dx, dy) => {
-      if (Math.abs(dx) + Math.abs(dy) < 4 && this.state.panels[id].mode !== 'float') return;
+    this.startGesture(event, (dx, dy, current) => {
+      if (!this.gesture.moved && Math.abs(dx) + Math.abs(dy) < 4) return;
+      if (!this.gesture.moved) this.commit({ type: 'activate', id }, { apply: false, save: false });
+      this.gesture.moved = true;
       if (this.state.panels[id].mode !== 'float') this.commit({ type: 'place', id, mode: 'float' }, { save: false });
       this.commit({ type: 'rect', id, rect: { ...rect, x: rect.x + dx, y: rect.y + dy } }, { save: false });
-    });
+      this.updateDropPreview(id, current);
+    }, { kind: 'move', id });
+  }
+  updateDropPreview(id, event) {
+    const bounds = this.bounds(), origin = this.workspace.getBoundingClientRect();
+    const side = this.state.locked || event.ctrlKey ? null : paletteDropSide({ x: event.clientX - origin.left, y: event.clientY - origin.top }, bounds);
+    this.dropZones.hidden = false; this.dropZones.style.width = `${bounds.width}px`;
+    const zoneWidth = Math.min(40, bounds.width / 2);
+    for (const zone of this.dropZones.querySelectorAll('.pd-drop-zone')) zone.style.width = `${zoneWidth}px`;
+    const rect = side && paletteDropPreview(this.state, id, side, bounds, parseFloat(getComputedStyle(this.leftRail).width) || 28);
+    this.dropPreview.hidden = !rect;
+    if (rect) {
+      for (const key of ['x', 'y', 'width', 'height']) this.dropPreview.style[{ x: 'left', y: 'top' }[key] || key] = `${rect[key]}px`;
+      this.dropPreview.firstElementChild.textContent = `Release to ${rect.compact ? 'anchor' : 'dock'} ${this.title(id)} on the ${side}`;
+    }
+    if (this.gesture.dropSide !== side) this.announce(side ? `Release to dock ${this.title(id)} on the ${side}. Escape cancels.` : 'Release to leave the palette floating. Escape cancels.');
+    this.gesture.dropSide = side;
   }
   beginResize(event, id) {
     if (event.button !== 0 || this.state.locked || this.state.panels[id].mode !== 'float') return;
@@ -313,26 +346,35 @@ export class PaletteDock {
     const width = this[`${side}Dock`].getBoundingClientRect().width;
     this.startGesture(event, dx => this.commit({ type: 'dock-width', side, width: width + dx * (side === 'left' ? 1 : -1) }, { save: false }));
   }
-  startGesture(event, update) {
-    this.endGesture(); event.preventDefault(); event.stopPropagation(); const target = this.workspace, before = this.snapshot(), x = event.clientX, y = event.clientY;
+  startGesture(event, update, options = {}) {
+    this.endGesture(true); event.preventDefault(); event.stopPropagation(); const target = this.workspace, before = this.snapshot(), x = event.clientX, y = event.clientY;
     this.launcher.open = false; for (const frame of this.frames.values()) frame.menu.open = false;
     target.setPointerCapture(event.pointerId);
-    const move = current => { if (current.pointerId === event.pointerId) update(current.clientX - x, current.clientY - y); };
-    const end = current => { if (current.pointerId === event.pointerId) this.endGesture(current.type === 'pointercancel' || current.type === 'lostpointercapture'); };
-    this.gesture = { target, pointer: event.pointerId, before, move, end };
+    const move = current => { if (current.pointerId === event.pointerId) update(current.clientX - x, current.clientY - y, current); };
+    const end = current => { if (current.pointerId === event.pointerId) { if (current.type === 'pointerup' && options.kind === 'move') move(current); this.endGesture(current.type !== 'pointerup'); } };
+    this.gesture = { ...options, target, pointer: event.pointerId, before, autoId: this.autoId, focus: document.activeElement, moved: false, dropSide: null, move, end };
     target.addEventListener('pointermove', move); target.addEventListener('pointerup', end); target.addEventListener('pointercancel', end); target.addEventListener('lostpointercapture', end);
   }
   endGesture(cancel = false) {
     const value = this.gesture; if (!value) return; this.gesture = null;
+    const previousActive = this.state.active;
     value.target.removeEventListener('pointermove', value.move); value.target.removeEventListener('pointerup', value.end); value.target.removeEventListener('pointercancel', value.end); value.target.removeEventListener('lostpointercapture', value.end);
     if (value.target.hasPointerCapture(value.pointer)) value.target.releasePointerCapture(value.pointer);
-    if (cancel) { this.state = paletteLayout(value.before, this.ids); this.apply(); }
+    this.dropZones.hidden = true; this.dropPreview.hidden = true;
+    if (cancel) { this.state = value.before; this.autoId = value.autoId; this.apply(); }
+    else if (value.kind === 'move' && value.moved && value.dropSide && !this.state.locked) {
+      this.state = changePaletteLayout(this.state, { type: 'place', id: value.id, mode: 'dock', side: value.dropSide }, this.bounds());
+      if (this.bounds().width < 700) this.autoId = value.id;
+      this.apply(); this.announce(`${this.title(value.id)} docked on the ${value.dropSide}.`);
+    }
+    if (this.state.active !== previousActive) this.onActiveChange(this.state.active);
+    if (!this.disposed && value.focus?.isConnected && document.activeElement !== value.focus) value.focus.focus({ preventScroll: true });
     this.persist();
   }
   dispose() {
     this.disposed = true; this.endGesture(true); clearTimeout(this.hideTimer); cancelAnimationFrame(this.frame); this.observer.disconnect(); document.removeEventListener('pointerdown', this.outside); document.removeEventListener('keydown', this.escape, true);
     for (const frame of this.frames.values()) this.releaseFrame(frame);
-    for (const node of [this.leftDock, this.rightDock, this.leftRail, this.rightRail, this.overlay, this.launcher, this.live]) node.remove();
+    for (const node of [this.leftDock, this.rightDock, this.leftRail, this.rightRail, this.overlay, this.dropZones, this.launcher, this.live]) node.remove();
     this.workspace.classList.remove('pd-workspace', 'pd-locked');
   }
 }

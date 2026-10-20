@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { changePaletteLayout, paletteDockWidths, paletteLayout, paletteRect, resizePaletteRect } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/palette-layout.mjs';
+import { changePaletteLayout, paletteDockWidths, paletteDropSide, paletteDropPreview, paletteLayout, paletteRect, resizePaletteRect } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/palette-layout.mjs';
 
 const ids = ['Properties', 'Graph', 'Layers'], bounds = { width: 1280, height: 600 };
 const update = (value, action) => changePaletteLayout(value, action, bounds);
@@ -91,4 +91,40 @@ test('dock width changes affect that column while preserving floating and opposi
   assert.equal(value.panels.Properties.width, 480); assert.equal(value.panels.Graph.width, 480); assert.equal(value.panels.Layers.width, 310);
   assert.throws(() => update(value, { type: 'show', id: 'toString' }), /Unknown/);
   assert.throws(() => update(value, { type: 'place', id: 'Graph', mode: 'script' }), /supported/);
+});
+
+test('drop targets accept only workspace-local side edges, never another dock or outside the workspace', () => {
+  assert.equal(paletteDropSide({ x: 0, y: 0 }, bounds), 'left');
+  assert.equal(paletteDropSide({ x: 40, y: 300 }, bounds), 'left');
+  assert.equal(paletteDropSide({ x: 1240, y: 300 }, bounds), 'right');
+  assert.equal(paletteDropSide({ x: 1280, y: 600 }, bounds), 'right');
+  for (const point of [{ x: 41, y: 300 }, { x: 900, y: 300 }, { x: -1, y: 300 }, { x: 1281, y: 300 }, { x: 5, y: -1 }, { x: 5, y: 601 }, { x: NaN, y: 5 }])
+    assert.equal(paletteDropSide(point, bounds), null);
+  assert.equal(paletteDropSide({ x: 1, y: 1 }, { width: 0, height: 100 }), null);
+  assert.equal(paletteDropSide({ x: 1, y: 1 }, { width: Infinity, height: 100 }), null);
+  assert.equal(paletteDropSide({ x: 49, y: 1 }, { width: 50, height: 100 }), 'right');
+});
+
+test('drop preview projects the shared column budget without mutating independent palette state', () => {
+  let layout = update(paletteLayout(null, ids), { type: 'place', id: 'Graph', mode: 'float' });
+  layout = update(layout, { type: 'place', id: 'Layers', mode: 'auto', side: 'left' });
+  layout.panels.Properties.width = 600; layout.panels.Graph.width = 550;
+  const before = JSON.stringify(layout), size = { width: 1000, height: 600 };
+  const preview = paletteDropPreview(layout, 'Graph', 'left', size);
+  const columns = paletteDockWidths(550, 600, size.width, 28);
+  assert.deepEqual(preview, { x: 28, y: 0, width: columns.left, height: 600, side: 'left', compact: false });
+  assert.equal(JSON.stringify(layout), before);
+  assert.equal(paletteDropPreview(layout, 'Graph', 'top', size), null);
+  assert.equal(paletteDropPreview(layout, 'Missing', 'left', size), null);
+  assert.equal(paletteDropPreview({ ...layout, locked: true }, 'Graph', 'left', size), null);
+});
+
+test('compact drop previews fit between edge strips without reserving permanent drawing columns', () => {
+  const layout = update(paletteLayout(null, ids), { type: 'place', id: 'Graph', mode: 'float' });
+  for (const width of [390, 699, 110, 1]) for (const side of ['left', 'right']) {
+    const preview = paletteDropPreview(layout, 'Graph', side, { width, height: 240 }, 32);
+    assert.equal(preview.compact, true); assert.equal(preview.y, 0); assert.equal(preview.height, 240);
+    assert(preview.width > 0 && preview.x >= 0 && preview.x + preview.width <= width);
+    if (width === 390) assert.equal(preview.x, side === 'left' ? 32 : 48);
+  }
 });

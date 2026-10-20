@@ -6,7 +6,7 @@ const sides = new Set(['left', 'right']), modes = new Set(['dock', 'float', 'aut
 export function paletteLayout(saved, ids, legacy = {}) {
   if (!Array.isArray(ids) || ids.length === 0 || ids.length > 32 || new Set(ids).size !== ids.length || ids.some(id => typeof id !== 'string' || !id || id.length > 80))
     throw new Error('Register 1–32 uniquely named palettes.');
-  const valid = saved && typeof saved === 'object' && !Array.isArray(saved) && saved.version === 2;
+  const valid = !!(saved && typeof saved === 'object' && !Array.isArray(saved) && saved.version === 2);
   const panels = Object.create(null);
   ids.forEach((id, index) => {
     const value = valid && Object.hasOwn(saved.panels || {}, id) ? saved.panels[id] : null;
@@ -36,6 +36,33 @@ export function resizePaletteRect(rect, dx, dy, bounds) {
   return { ...current,
     width: number(current.width + dx, current.width, Math.min(220, bounds.width - current.x), bounds.width - current.x),
     height: number(current.height + dy, current.height, Math.min(160, bounds.height - current.y), bounds.height - current.y) };
+}
+
+/** Side drop zones use workspace-local pointer coordinates and never extend into another dock such as chat. */
+export function paletteDropSide(point, bounds, zoneSize = 40) {
+  if (![point.x, point.y, bounds.width, bounds.height].every(Number.isFinite) || bounds.width <= 0 || bounds.height <= 0 ||
+      point.x < 0 || point.y < 0 || point.x > bounds.width || point.y > bounds.height) return null;
+  const width = Math.min(number(zoneSize, 40, 16, 80), bounds.width / 2);
+  if (point.x <= width) return 'left';
+  if (point.x >= bounds.width - width) return 'right';
+  return null;
+}
+
+/** Preview the destination column, or its compact anchored overlay, without changing layout state. */
+export function paletteDropPreview(layout, id, side, bounds, railWidth = 28) {
+  if (!sides.has(side) || !Object.hasOwn(layout.panels, id) || layout.locked) return null;
+  railWidth = number(railWidth, 28, 0, Math.min(64, Math.max(0, bounds.width / 2)));
+  const panel = layout.panels[id], compact = bounds.width < 700;
+  const panels = Object.entries(layout.panels).filter(([key, value]) => key !== id && value.open && !layout.hidden).map(([, value]) => value);
+  panels.push({ ...panel, mode: 'dock', side });
+  const rail = edge => panels.some(value => value.side === edge && (value.mode === 'auto' || compact && value.mode === 'dock')) ? railWidth : 0;
+  const width = edge => Math.max(0, ...panels.filter(value => value.mode === 'dock' && value.side === edge).map(value => value.width));
+  const docks = paletteDockWidths(width('left'), width('right'), bounds.width, rail('left') + rail('right'));
+  const available = Math.max(1, bounds.width - docks.left - docks.right - rail('left') - rail('right'));
+  const size = compact ? Math.min(panel.width, available) : docks[side];
+  const rect = paletteRect({ x: 0, y: 0, width: size, height: bounds.height }, { width: compact ? available : size, height: bounds.height });
+  rect.x = side === 'left' ? rail('left') : bounds.width - rail('right') - rect.width;
+  return { ...paletteRect(rect, bounds), side, compact };
 }
 
 /** Dock columns consume space while keeping a usable drawing area. Small workspaces use anchored overlays. */
