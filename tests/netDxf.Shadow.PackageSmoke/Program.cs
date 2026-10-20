@@ -371,6 +371,18 @@ internal static class Program
             "Installed reference graph lost directed source property links or incoming traversal.");
         Require(references.Explore(new() { Roots = [Id(fixture.Line)], MaximumNodes = 1 }).NodeLimitReached,
             "Installed reference graph did not report the exploration budget.");
+        var dependency = references.ShortestPath(Id(fixture.Line), new(layerReference.Target));
+        Require(dependency.Status == ReferencePathStatus.Found && dependency.Edges.Length == 1 &&
+                dependency.Edges[0] == layerReference,
+            "Installed shortest dependency path lost its exact property proof.");
+        var impact = references.Impact(new() { Roots = [new(layerReference.Target)], MaximumDepth = 1 });
+        Require(impact.PathToRoot(Id(fixture.Line).Value).SequenceEqual([layerReference]),
+            "Installed impact exploration lost the incoming dependency proof.");
+        var components = references.StronglyConnectedComponents(new() { Roots = [Id(fixture.Line)], MaximumDepth = 1 });
+        Require(components.Components.SelectMany(component => component.Nodes).Order()
+                .SequenceEqual(components.Scope.Nodes.Select(node => node.Id).Order()) &&
+                components.CondensationEdges.All(link => link.Source != link.Target),
+            "Installed directed components lost nodes or retained a condensation self-edge.");
         var page = topology.Visualize(new GraphVisualizationOptions { NodeLimit = 2, EdgeLimit = 1 });
         Require(page.NodeCount == 5 && page.EdgeCount == 4 && page.ComponentCount == 1 &&
             page.Nodes.Total == 5 && page.Edges.Total == 4 && page.Nodes.Items.Length == 2 && page.Edges.Items.Length == 1 &&

@@ -27,7 +27,7 @@ public sealed record ReferenceGraph(ImmutableArray<string> Roots, ReferenceGraph
 /// Immutable source-reference index. It describes captured object relationships, never drawing
 /// geometry or inferred process connectivity. Build limits fail explicitly instead of omitting edges.
 /// </summary>
-public sealed class ReferenceGraphIndex
+public sealed partial class ReferenceGraphIndex
 {
     private readonly ShadowSnapshot snapshot;
     private readonly Dictionary<string, List<ReferenceGraphEdge>> outgoing = new(StringComparer.Ordinal);
