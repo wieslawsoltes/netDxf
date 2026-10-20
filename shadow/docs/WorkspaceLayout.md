@@ -45,6 +45,8 @@ to keyboard and touch users, and the layout lock also prevents drag docking.
 **UI workspaces** in the document bar, View or Manage ribbon opens saved layouts.
 The Drafting and Graph analysis presets provide starting arrangements.
 Dependency analysis opens a wider References/Graph tab group beside Properties.
+Discipline analysis groups Modules, Graph and References beside Properties,
+leaving discipline enablement under the Modules controls.
 Save the
 current palette groups/sizes/transparency, ribbon display/tab/customization, Quick Access commands and command-line visibility under
 a name, then apply, update, rename or delete it later. Up to 24 layouts are stored
@@ -55,6 +57,15 @@ the task-oriented display arrangement described in Autodesk's
 Drawing branches remain under **Immutable workspaces**. UI layouts exclude
 drawings, drafting aids, discipline enablement and agent credentials/settings.
 Storage failures are reported instead of claiming a layout was saved.
+
+**Transfer UI workspace** exports the selected layout as versioned Studio JSON.
+Import validates the file, shows its palette/ribbon summary, and saves it under
+a chosen name. Replacing an existing name requires the explicit checkbox.
+Saving an import does not activate it; use **Apply layout** to switch.
+Files are limited to 500 KiB of UTF-8 data. Only supported UI fields are copied,
+unknown palettes are omitted, and the destination host fits window positions to
+its screen. Imported custom commands still resolve against the destination's
+registered command catalog. This format does not provide CUIx interoperability.
 
 **Search commands** in Quick Access, **Manage → Find a command**, or Ctrl/Cmd+K
 opens command search. Search labels, aliases and categories for drawing commands,

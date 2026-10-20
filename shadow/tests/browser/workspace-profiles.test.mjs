@@ -111,6 +111,15 @@ test('dependency workspace provides a wide References tab beside source Properti
   assert(!entry.layout.palettes.groups.right.some(group=>group.tabs.includes('References')||group.tabs.includes('Graph')));
 });
 
+test('discipline workspace groups domain, topology and references without enabling modules', () => {
+  const entry = workspacePresets([...ids, 'References', 'Modules']).find(preset => preset.name === 'Discipline analysis');
+  assert.equal(entry.layout.palettes.active, 'Modules');
+  assert.deepEqual(entry.layout.palettes.groups.left, [{ tabs: ['Modules','Graph','References'], active: 'Modules', weight: 1 }]);
+  assert.equal(entry.layout.palettes.panels.Properties.open, true);
+  assert.equal(entry.layout.palettes.panels.Modules.width, 540);
+  assert(!Object.hasOwn(entry.layout, 'modules'));
+});
+
 test('UI manager applies presets and manages current layouts without touching drawings', async t => {
   const root=installDom(t),applied=[],errors=[];let stored=null;
   const show=workspaceProfileTools({paletteIds:ids,storage:{getItem:()=>stored,setItem:(key,text)=>stored=text},
