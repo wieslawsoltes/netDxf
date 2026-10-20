@@ -3,5 +3,6 @@
   <ItemGroup>
     <ProjectReference Include="../netDxf.Shadow.NetDxf/netDxf.Shadow.NetDxf.csproj" />
     <ProjectReference Include="../netDxf.Shadow.Drafting/netDxf.Shadow.Drafting.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Graph/netDxf.Shadow.Graph.csproj" />
   </ItemGroup>
 </Project>
