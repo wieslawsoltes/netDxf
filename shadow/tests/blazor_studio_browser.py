@@ -16,6 +16,7 @@ import ezdxf
 from cad_modify_browser import verify_modify
 from graph_analysis_browser import verify_graph_analysis
 from cad_layer_states_browser import verify_layer_states
+from cad_layer_state_transfer_browser import verify_layer_state_transfer
 from cad_attributes_browser import verify_attributes
 from cad_attribute_definitions_browser import verify_attribute_definitions
 from cad_insert_attributes_browser import verify_insert_attributes
@@ -243,6 +244,7 @@ def verify(base, mount, browser, passed):
         verify_modify(page, OUTPUT, state, command, wait_state, idle, check)
         verify_graph_analysis(page, OUTPUT, state, command, wait_state, idle, check)
         verify_layer_states(page, OUTPUT, state, command, wait_state, idle, check)
+        verify_layer_state_transfer(page, OUTPUT, state, command, wait_state, idle, check)
         verify_attributes(page, OUTPUT, state, command, wait_state, idle, check)
         verify_attribute_sync(page, OUTPUT, state, command, wait_state, idle, check)
         verify_attribute_definitions(page, OUTPUT, state, command, wait_state, idle, check)
