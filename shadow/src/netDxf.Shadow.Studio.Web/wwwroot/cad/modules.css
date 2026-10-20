@@ -10,3 +10,15 @@
 .module-card dt,.module-card dd { margin:0; overflow-wrap:anywhere; }
 .module-issue { border-left:3px solid #d7b46b; }.module-issue.error { border-color:#df8282; }
 .module-dialog { min-width:0; }.module-dialog .form-row { align-items:start; }.module-dialog textarea { width:100%; min-height:70px; }
+
+/* Discipline graphs keep their own bounded schematic, independent of the geometric viewport overlay. */
+.domain-connectivity { min-width: 0; }
+.domain-connectivity code { display: block; overflow-wrap: anywhere; font-size: 11px; }
+.domain-connectivity .module-actions { flex-wrap: wrap; }
+.domain-diagram { min-width: 0; max-width: 100%; overflow: auto; max-height: 420px; margin-block: 10px; }
+.domain-graph-image { width: auto; max-width: none; height: auto; display: block; }
+.domain-inspector { border: 1px solid var(--border, #bbc4cf); border-radius: 5px; padding: 8px; margin-block: 10px; overflow-wrap: anywhere; }
+.domain-inspector:empty { display: none; }
+.domain-connection { display: grid; gap: 4px; margin-block: 6px; }
+.domain-connection button { text-align: left; white-space: normal; overflow-wrap: anywhere; }
+.domain-result { font-weight: 600; }
