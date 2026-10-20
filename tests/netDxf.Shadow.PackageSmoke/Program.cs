@@ -362,6 +362,15 @@ internal static class Program
         Require(geometry.Occurrences.Length == 2 && topology.Edges.Length == 4 && topology.Nodes.Length == 5,
             "Crossing geometry/topology failed.");
         Require(topology.Junctions.Single().Edges.Length == 4, "Missing topology junction.");
+        var references = new ReferenceGraphIndex(fixture.Session.Current);
+        var dependencies = references.Explore(new() { Roots = [Id(fixture.Line)], MaximumDepth = 1 });
+        var layerReference = dependencies.Edges.Single(link => link.Source == Id(fixture.Line).Value && link.Path == "/Layer");
+        var users = references.Explore(new() { Roots = [new(layerReference.Target)],
+            Direction = ReferenceGraphDirection.Incoming, MaximumDepth = 1 });
+        Require(users.Edges.Contains(layerReference) && users.Nodes.Any(node => node.Id == Id(fixture.Line).Value),
+            "Installed reference graph lost directed source property links or incoming traversal.");
+        Require(references.Explore(new() { Roots = [Id(fixture.Line)], MaximumNodes = 1 }).NodeLimitReached,
+            "Installed reference graph did not report the exploration budget.");
         var page = topology.Visualize(new GraphVisualizationOptions { NodeLimit = 2, EdgeLimit = 1 });
         Require(page.NodeCount == 5 && page.EdgeCount == 4 && page.ComponentCount == 1 &&
             page.Nodes.Total == 5 && page.Edges.Total == 4 && page.Nodes.Items.Length == 2 && page.Edges.Items.Length == 1 &&

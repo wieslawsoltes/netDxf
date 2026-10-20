@@ -15,8 +15,8 @@ below are follow-up backlog, not claims of completion or new merge-blocking scop
 | User requirement | Current implementation and evidence | Remaining work / completion evidence |
 | --- | --- | --- |
 | Rapid drawing creation, editing and a complete MCP toolset | Generic source/schema/collection/method tools, atomic drawing batches, typed Studio routes; MCP and AgentStudio verification programs | Build a per-native-entity/property/method coverage inventory, close unsupported authoring/editing shapes, and exercise them through actual Studio/MCP workflows. Generic reflection access alone does not prove safe full editing support. |
-| Full graph analysis in Studio | Nodes, edges, components, path/traversal, cut vertices/bridges, nearest node, diagnostics, fundamental cycles and minimum spanning forests share reusable algorithms and MCP tools | Interactive component/feature/result visualization, source selection including nested INSERT roots, visual path endpoints and bounded SVG/JSON export are covered by the Graph workspace increment. Continue large-drawing validation and broader semantic reference-graph exploration; geometric topology does not imply discipline connectivity. |
-| AutoCAD-like ribbon and command/log visibility | Adaptive ribbon panels with four display modes, keyboard command workflow, independent command/history visibility, clean screen and independent docked/floating/anchored palettes; browser tests | Continue command discoverability, keyboard navigation, focus/accessibility and small-screen validation as commands are added. |
+| Full graph analysis in Studio | All existing geometric topology analyses have MCP and Graph workspace controls, source links, picking and exports. A separate directed source-reference explorer exposes incoming/outgoing object dependencies with exact property paths, snapshot keys, bounded paging and exports. | Continue large/imported drawing validation and discipline-specific connectivity/report workflows. Geometric topology and source ownership/dependencies do not imply physical process connectivity or engineering simulation. |
+| AutoCAD-like ribbon and command/log visibility | Four ribbon display modes, contextual Block Editor tab, independent command/history visibility, clean screen, docked/floating/anchored palettes with edge-drop previews, and named UI workspace save/restore; browser tests | Continue command discoverability and accessibility as commands are added. Full CUI customization, tear-off ribbon panels, tabbed palette groups, native multi-monitor windows and palette transparency remain outside the implemented browser workspace. |
 | Block definition and insertion workflow | Reusable block authoring, nested units, insertion base points/scales/rotation, repeated insert, block editing, safe explode; exact attribute history; shared instance editor, BATTMAN/ATTDEF for named blocks and standalone layout definitions, ATTSYNC previews, insertion-time value/verify prompts, cursor-following insertion previews, explicit insertion attributes and DXF block-library transfer with conflict policies/previews | Command-line -ATTDEF and richer definition text settings, duplicate-tag layout copying, library catalog/version workflows and remaining transfer metadata, richer insertion/array workflows and supported attributed/nonuniform explode cases. Dynamic/parametric block behavior is not implemented. |
 | MOVE and other editing tools with drafting aids | MOVE/COPY/ROTATE/SCALE/MIRROR, basic topology edits, STRETCH/BREAK/BREAKATPOINT increment, object/grid snap, Ortho/polar/tracking; native and browser regressions | Extend entity/coordinate-system coverage for each command, curve trim/extend/offset, reference/copy variants of transforms, richer arrays, selection cycling and additional acquisition modes. Existing planar restrictions remain material. |
 | Full line, text style and layer UI | Managers expose supported table fields, complex linetypes, LIN import, fixed-height/font metadata, layer color/plot/lock/freeze/transparency; native layer-state save/update/rename/delete/selective restore with history and DXF persistence | Layer filters/isolation, saved-layer editing, persisted restore masks, LAS transfer, unresolved-resource repair, individual viewport overrides, plot-style workflows, text editing/formatting and externally referenced resource behavior. |
@@ -130,6 +130,33 @@ exact pushed revision, including each operating-system and package-consumer job.
 Credentials supplied in conversation are neither used nor persisted. Paid testing
 remains disabled, with actual spend USD 0. Any later opt-in evaluation must retain
 the user's cumulative USD 20 ceiling. There is no credential material in this audit.
+
+### Saved workspace and source-reference graph increment
+
+- Palette edge drops now have visible targets, docking previews, Ctrl bypass and
+  Escape/pointer-cancel rollback. Named UI workspaces capture palette geometry,
+  ribbon and command-line display independently of drawing branches. Restore
+  sanitizes data, clamps geometry and releases old asynchronous content.
+- The contextual Block Editor ribbon restores the prior enabled tab after exit.
+  Titles-mode hover/click now enters the panel instead of closing it, and title
+  labels retain enough width. Native and WASM use the same controls.
+- All previously available geometric topology algorithms remain exposed. The new
+  source-reference graph adds directed incoming/outgoing exploration with exact
+  property paths, root discovery, object inspection, explicit drawing selection,
+  and bounded JSON/SVG export. It is separate from discipline connectivity.
+- Independent review identified a pending-stack allocation gap in the reference
+  index. Scheduled values and cumulative path text are now bounded before
+  enqueueing; nested-wide and long-prefix fixtures cover the failure paths.
+- Local verification passes 6,174 Graph checks (692 reference checks), 127 MCP,
+  534 browser unit, 33 native HTTP, 201 native CAD browser, 357 WASM CAD and
+  326 WASM agent checks. The native browser run reports zero uncaught errors and
+  CSP violations. WASM checks cover both root and subpath hosting. All 97 route
+  contracts and 1,032 published assets validate. Provider fixtures make no live
+  paid calls.
+- Package consumers exercise the new public reference API as well as existing
+  geometry/topology APIs. Final package qualification and hosted CI must pass
+  for the committed revision before merge. The remaining parity gaps in the
+  requirement table continue as follow-up work rather than stable-merge blockers.
 
 ### Production block-library increment
 

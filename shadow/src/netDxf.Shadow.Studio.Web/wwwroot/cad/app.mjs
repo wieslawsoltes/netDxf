@@ -5,13 +5,16 @@ import { drawingFileName, inspectDrawing } from './exchange-contracts.mjs';
 import { saveDrawingAs } from './exchange-ui.mjs';
 import { authoringRequest } from './authoring-contracts.mjs';
 import { authoringDialog, isAuthoringAction } from './authoring-ui.mjs';
-import { RibbonLayout, chromePreferences, ribbonModes } from './ribbon-layout.mjs';
+import { RibbonLayout, chromePreferences, ribbonModes, reconcileRibbonContext } from './ribbon-layout.mjs';
 import { PaletteDock } from './palette-docking.mjs';
+import { workspaceProfileTools } from './workspace-profile-ui.mjs';
+import { workspaceProfileLayout } from './workspace-profiles.mjs';
 import { layerStateTools } from './layer-state-ui.mjs';
 import { attributeTools } from './attribute-ui.mjs';
 import { synchronizeAttributes } from './attribute-sync-ui.mjs';
 import { definitionTools } from './attribute-definition-ui.mjs';
 import { graphPalette } from './graph-ui.mjs';
+import { referenceGraphPalette } from './reference-graph-ui.mjs';
 import { CadClient } from './client.mjs';
 import { blockTools } from './block-ui.mjs';
 import { blockLibraryTools } from './block-library-ui.mjs';
@@ -20,7 +23,7 @@ import { insertionDefinitions, InsertAttributeSession } from './insert-attribute
 import { insertionAttributeDialog } from './insert-attribute-ui.mjs';
 import { CadViewport, bindViewportPageLifetime } from './viewport.mjs';
 import { CommandSession, commands, commandName, number, point, distance, polygonArea, format, fit } from './core.mjs';
-import { $, el, icon, tool, tabs, ribbon } from './ui.mjs';
+import { $, el, icon, tool, ribbon, ribbonEntries as describeRibbonEntries } from './ui.mjs';
 import { viewKey } from '../studio-state.mjs';
 import { mountAgentWorkspace } from '../agents/workspace.mjs';
 import { installStudioControl } from '../agents/studio-control.mjs';
@@ -38,9 +41,13 @@ const viewport = new CadViewport($('viewport'), $('drawing'), client, {
 let session = null, tab = 'Home', palette = 'Properties', currentLayer = '0', lastCommand = 'LINE';
 let documents = [], viewId = '', stateKey = '', activeIdentity = '', snapshot = null, lastInput = [], historyIndex = 0, toastTimer;
 let agentWorkspace = null;
+let ribbonContext = {};
 const renderGraph = graphPalette({client, viewport, report, snapshot:()=>snapshot,
   beginPick:()=>cancel(false), download:(name,text,type)=>download(new Blob([text],{type}),name),
   selectSources:(sources,expectedKey)=>edit('select',{mode:'entities',entities:[...new Set(sources.map(source=>source.rootEntity).filter(Boolean))].map(value=>({value}))},{expectedKey})});
+const renderReferences=referenceGraphPalette({client,report,snapshot:()=>snapshot,
+  download:(name,text,type)=>download(new Blob([text],{type}),name),
+  selectSources:(ids,expectedKey)=>edit('select',{mode:'entities',entities:ids.map(value=>({value}))},{expectedKey})});
 const views = new Map(), layers = new Map();
 const ribbonLayout = new RibbonLayout($('ribbon'));
 let chrome = chromePreferences();
@@ -61,10 +68,20 @@ if (Number.isFinite(settings.gridStep) && settings.gridStep>=1e-6 && settings.gr
 if (Number.isFinite(settings.polarAngle) && settings.polarAngle>0 && settings.polarAngle<=90) viewport.settings.polarAngle=settings.polarAngle;
 if (Number.isFinite(settings.polarTolerance) && settings.polarTolerance>=0 && settings.polarTolerance<=15) viewport.settings.polarTolerance=settings.polarTolerance;
 if (Number.isInteger(settings.snapModes) && settings.snapModes>=0 && settings.snapModes<=511) viewport.settings.snapModes=settings.snapModes;
-const paletteNames=['Properties','Layers','Blocks','Explorer','Workspaces','Graph','Modules','Health','Edit previews','Workflows','Diagnostics'];
+const paletteNames=['Properties','Layers','Blocks','Explorer','Workspaces','Graph','References','Modules','Health','Edit previews','Workflows','Diagnostics'];
 const docking=new PaletteDock({workspace:$('workspace'),legacyPalette:$('palette'),legacySplitter:$('palette-splitter'),
   palettes:paletteNames.map(id=>({id,title:id})),legacySettings:settings,render:renderPaletteContent,
-  onActiveChange:id=>{palette=id;},onLayoutChange:()=>viewport.resize(),keepOpen:id=>id==='Graph'&&!!viewport.graphPick,onHide:id=>{analysisPalettes[id]?.destroy();if(id==='Graph')renderGraph.hide();},report});
+  onActiveChange:id=>{palette=id;},onLayoutChange:()=>viewport.resize(),keepOpen:id=>id==='Graph'&&!!viewport.graphPick,onHide:id=>{analysisPalettes[id]?.destroy();if(id==='Graph')renderGraph.hide();if(id==='References')renderReferences.hide();},report});
+let profileStorage;try{profileStorage=localStorage;}catch{/* Storage may be unavailable in embedded hosts. */}
+const uiWorkspaces=workspaceProfileTools({paletteIds:paletteNames,storage:profileStorage,dialog,report,
+  capture:()=>({chrome,tab,commandHeight:parseFloat(document.documentElement.style.getPropertyValue('--command-height'))||90,palettes:docking.snapshot()}),
+  restore:value=>{
+    const layout=workspaceProfileLayout(value,paletteNames);
+    ribbonLayout.hide();chrome=layout.chrome;
+    document.documentElement.style.setProperty('--command-height',`${Math.min(innerHeight*.55,layout.commandHeight)}px`);
+    tab=ribbonEntries().some(entry=>entry.key===layout.tab&&!entry.disabled)?layout.tab:'Home';
+    docking.restore(layout.palettes);applyChrome();drawRibbonTabs();drawRibbon();persist();viewport.resize();
+  }});
 if(Number.isFinite(settings.commandHeight))document.documentElement.style.setProperty('--command-height',`${Math.max(32,Math.min(innerHeight*.55,settings.commandHeight))}px`);
 applyChrome();
 function persist() { try { const {temporaryOrtho,...drafting}=viewport.settings;localStorage.setItem('netdxf-cad-ui-v1',JSON.stringify({...drafting,...chrome,...insertionSettings,commandHeight:parseFloat(document.documentElement.style.getPropertyValue('--command-height'))||90})); } catch { /* Private browsing can disable storage. */ } }
@@ -178,7 +195,7 @@ async function submit(text) {
     if(input===null)return;if(!/^[01]$/.test(input))throw new Error(`${name} accepts 0 or 1.`);
     insertionSettings[key]=Number(input);persist();log(`${name} = ${input}`);return;
   }
-  const aliases={BATTMAN:'attribute-definitions',ATTDEF:'attribute-create',ATTSYNC:'attribute-sync',EATTEDIT:'attributes',ATTEDIT:'attributes',ATE:'attributes',BEDIT:'block-edit',BE:'block-edit',BSAVE:'block-save',BCLOSE:'block-close',U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save-as',SAVEAS:'save-as',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LAYERSTATE:'layer-states',LAS:'layer-states',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot',GRAPH:'graph-analysis',TOPOLOGY:'graph-analysis'};
+  const aliases={WORKSPACE:'ui-workspaces',WSSAVE:'ui-workspaces',REFGRAPH:'reference-graph',BATTMAN:'attribute-definitions',ATTDEF:'attribute-create',ATTSYNC:'attribute-sync',EATTEDIT:'attributes',ATTEDIT:'attributes',ATE:'attributes',BEDIT:'block-edit',BE:'block-edit',BSAVE:'block-save',BCLOSE:'block-close',U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save-as',SAVEAS:'save-as',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LAYERSTATE:'layer-states',LAS:'layer-states',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot',GRAPH:'graph-analysis',TOPOLOGY:'graph-analysis'};
   if(name==='Z'||name==='ZOOM') { if(!rest||['E','EXTENTS','A','ALL'].includes(rest.toUpperCase())) viewport.fit(); else if(rest.toUpperCase()==='IN') await action('zoom-in'); else if(rest.toUpperCase()==='OUT') await action('zoom-out'); else throw new Error('ZOOM accepts Extents, In or Out.'); return; }
   if(aliases[name]==='block-edit' && rest.trim()) {
     const text=rest.trim(), quoted=text.length>1 && ['"',"'"].includes(text[0]) && text.at(-1)===text[0];
@@ -216,13 +233,14 @@ function updateTools() {
   for(const [name,enabled] of [['undo',client.state?.undoCount],['redo',client.state?.redoCount]]) document.querySelectorAll(`[data-action="${name}"]`).forEach(b=>b.disabled=!enabled||!!client.busy||snapshot!==null);
 }
 async function setCurrentLayer(name) { const layer=client.data?.layers.find(l=>l.name===name);if(!layer)throw new Error('Choose an existing layer.');await edit('resource',{resource:{kind:'layer',action:'current',id:layer.id}}); }
-function ribbonEntries(){return [...tabs.map(name=>({key:name,name})),...(client.data?.modules||[]).filter(m=>m.enabled).map(m=>({key:`module:${m.id}`,name:m.name}))];}
+function ribbonEntries(){return describeRibbonEntries(client.data);}
 function drawRibbonTabs(){
-  const entries=ribbonEntries();if(!entries.some(e=>e.key===tab))tab='Home';
-  $('ribbon-tabs').replaceChildren(...entries.map(({key,name})=>button(name,()=>selectRibbon(key),{id:`ribbon-tab-${key.replaceAll(' ','-')}`,role:'tab','data-tab':key,'aria-controls':'ribbon','aria-selected':key===tab,tabindex:key===tab?0:-1})));
+  const entries=ribbonEntries();ribbonContext=reconcileRibbonContext(tab,ribbonContext,entries);tab=ribbonContext.tab;
+  $('ribbon-tabs').replaceChildren(...entries.map(({key,name,disabled,title,contextual})=>button(name,()=>selectRibbon(key),{id:`ribbon-tab-${key.replaceAll(' ','-')}`,role:'tab','data-tab':key,'data-contextual':contextual||false,disabled:!!disabled,title:title||name,'aria-controls':'ribbon','aria-selected':key===tab,tabindex:key===tab?0:-1})));
 }
 function drawRibbon() { ribbonLayout.set(tab.startsWith('module:')?moduleUi.ribbon(tab.slice(7)):ribbon(tab,client.data,currentLayer,value=>run(()=>setCurrentLayer(value)))); $('ribbon').setAttribute('aria-label',`${ribbonEntries().find(e=>e.key===tab)?.name||tab} tools`); $('ribbon').setAttribute('aria-labelledby',`ribbon-tab-${tab.replaceAll(' ','-')}`); updateTools(); }
 function selectRibbon(name, focus=false) {
+  if(!ribbonEntries().some(entry=>entry.key===name&&!entry.disabled))return;
   tab=name; drawRibbon();
   $('ribbon-tabs').querySelectorAll('[role=tab]').forEach(button=>{const active=button.dataset.tab===name;button.setAttribute('aria-selected',String(active));button.tabIndex=active?0:-1;if(active){button.scrollIntoView({block:'nearest',inline:'nearest'});if(focus)button.focus({preventScroll:true});}});
   ribbonLayout.reveal();
@@ -329,6 +347,8 @@ function renderPaletteContent(palette,content) {
     content.append(toolbar(button('Select all',()=>select('all')),button('Clear',()=>select('clear'))),filter,el('p',{class:'hint',text:`${data.itemCount} visible source objects; explorer enumerates up to 5,000. Selection in the drawing remains geometric.`}),list);filter.addEventListener('input',update);update();
   } else if(palette==='Graph') {
     renderGraph(content);
+  } else if(palette==='References') {
+    renderReferences(content);
   } else if(palette==='Workspaces') {
     content.append(toolbar(button('Fork branch',()=>action('fork')),button('Retain snapshot',()=>action('snapshot'))),el('h3',{text:'Isolated workspaces'}));
     content.append(button('Live document',()=>switchWorkspace('live'),{class:'block-card'}));
@@ -399,6 +419,8 @@ async function action(name) {
   if(['properties','layers','blocks','explorer','workspaces','diagnostics'].includes(name))return showPalette(name[0].toUpperCase()+name.slice(1));
   switch(name) {
     case 'agents':agentWorkspace?.show();return;
+    case 'ui-workspaces':return uiWorkspaces();
+    case 'reference-graph':showPalette('References');return;
     case 'health':showPalette('Health');return;
     case 'edit-previews':showPalette('Edit previews');return;
     case 'workflows':showPalette('Workflows');return;
@@ -489,7 +511,7 @@ function workspaceMenu(anchor, entries) {
 }
 $('quick-access').replaceChildren(...[['new','New (Ctrl+N)'],['open','Open (Ctrl+O)'],['save','Save (Ctrl+S)'],['undo','Undo (Ctrl+Z)'],['redo','Redo (Ctrl+Y)']].map(([name,label])=>{const b=tool(name,label,true);b.querySelector('span').remove();return b;}));
 drawRibbonTabs();
-$('ribbon-tabs').addEventListener('keydown',event=>{const entries=ribbonEntries(),key=event.key,index=entries.findIndex(e=>e.key===tab);let next;if(key==='ArrowDown'){event.preventDefault();ribbonLayout.reveal(true);return;}if(key==='ArrowRight')next=(index+1)%entries.length;else if(key==='ArrowLeft')next=(index+entries.length-1)%entries.length;else if(key==='Home')next=0;else if(key==='End')next=entries.length-1;else return;event.preventDefault();selectRibbon(entries[next].key,true);});
+$('ribbon-tabs').addEventListener('keydown',event=>{const entries=ribbonEntries().filter(entry=>!entry.disabled),key=event.key,index=entries.findIndex(e=>e.key===tab);let next;if(key==='ArrowDown'){event.preventDefault();ribbonLayout.reveal(true);return;}if(key==='ArrowRight')next=(index+1)%entries.length;else if(key==='ArrowLeft')next=(index+entries.length-1)%entries.length;else if(key==='Home')next=0;else if(key==='End')next=entries.length-1;else return;event.preventDefault();selectRibbon(entries[next].key,true);});
 $('ribbon-tabs').addEventListener('dblclick',event=>{if(event.target.closest('[role=tab]'))run(()=>action('ribbon-minimize'));});
 $('file-menu').addEventListener('click',()=>{const menu=$('context-menu');menu.replaceChildren(...[['new','New drawing'],['demo','New sample drawing'],['open','Open DXF / DWG…'],['save','Save DXF'],['save-as','Save drawing as…'],['export-png','Export PNG'],['export-svg','Export SVG'],['legacy','Advanced diagnostics']].map(([name,label])=>button(label,()=>action(name))));menu.style.left='3px';menu.style.top='32px';menu.hidden=false;});
 document.addEventListener('click',e=>{const command=e.target.closest('[data-command]'),target=e.target.closest('[data-action]');if(command)run(()=>start(command.dataset.command));else if(target)run(()=>action(target.dataset.action));if(!e.target.closest('#file-menu'))$('context-menu').hidden=true;});

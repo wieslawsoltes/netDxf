@@ -30,7 +30,7 @@ async Task Error(string name, object args)
 {
     var result = await registry.ExecuteAsync(name, McpJson.Element(args)); Check(result.IsError, name + " accepted invalid arguments.");
 }
-Check(registry.Tools.Count(t => t.Name.StartsWith("graph_", StringComparison.Ordinal) && t.ReadOnly) == 12, "Graph catalog incomplete.");
+Check(registry.Tools.Count(t => t.Name.StartsWith("graph_", StringComparison.Ordinal) && t.ReadOnly) == 13, "Graph catalog incomplete.");
 var summary = await Data("graph_summary");
 Check(Number(summary, "nodeCount") == 10 && Number(summary, "edgeCount") == 9 && Number(summary, "componentCount") == 2, "Crossing/component counts incorrect.");
 Check(Number(summary, "cycleRank") == 1 && Number(summary, "bridgeCount") == 5 && Number(summary, "articulationPointCount") == 2 && Number(summary, "deadEndCount") == 5, "Feature summary incorrect.");
@@ -203,4 +203,5 @@ Check(Number(StudioData("graph_summary"), "edgeCount") == 1, "Studio graph branc
 Throws<ArgumentException>(() => studio.GraphQuery(new("shadow_undo", McpJson.EmptyObject)));
 Check(McpJson.Element(studio.GraphQuery(new("graph_summary", McpJson.Element(new { revision = 999 })))).GetProperty("isError").GetBoolean(), "Studio graph endpoint ignored stale revision.");
 checks += await GraphVisualizationVerification.RunAsync();
+checks += await ReferenceGraphVerification.RunAsync();
 Console.WriteLine($"Graph verification passed: {checks} checks covering algorithms, pagination, options, source linkage, budgets, cancellation, branch isolation and Studio integration.");

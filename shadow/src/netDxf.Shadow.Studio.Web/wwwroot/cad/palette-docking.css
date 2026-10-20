@@ -14,6 +14,11 @@
 .pd-locked .pd-splitter { cursor:default; }
 .pd-overlay { position:absolute; inset:0; pointer-events:none; z-index:12; }
 .pd-overlay .pd-window { position:absolute; pointer-events:auto; box-shadow:0 7px 24px #080f1a88; }
+.pd-drop-zones { position:absolute; inset:0 auto 0 0; pointer-events:none; z-index:14; }
+.pd-drop-zone { position:absolute; top:0; bottom:0; width:40px; display:flex; align-items:center; justify-content:center; writing-mode:vertical-rl; border:1px dashed #8dcafa; background:#235d8066; color:#d9f0ff; font-size:11px; }
+.pd-drop-left { left:0; }.pd-drop-right { right:0; }
+.pd-drop-preview { position:absolute; border:2px solid #8dcafa; background:#28699855; box-shadow:inset 0 0 0 1px #123b5e; }
+.pd-drop-preview>span { display:block; padding:8px; color:#e8f7ff; background:#1d4b70e6; font-size:11px; overflow-wrap:anywhere; }
 .pd-floating { border-color:#6d849b; border-radius:4px; }
 .pd-floating .pd-title { border-radius:3px 3px 0 0; }
 .pd-resize { position:absolute; right:0; bottom:0; width:20px; height:20px; cursor:nwse-resize; touch-action:none; background:linear-gradient(135deg,transparent 55%,#7892aa 57%,transparent 61%,transparent 70%,#7892aa 73%,transparent 77%); }
@@ -37,5 +42,5 @@
 .pd-launcher-body>button { border:1px solid #617d97; width:100%; text-align:left; }
 .pd-launcher-body p { margin:10px 0 0; font-size:10px; line-height:1.6; color:#a6bdcf; }
 .pd-sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
-#studio.clean .pd-dock,#studio.clean .pd-edge,#studio.clean .pd-overlay,#studio.clean .pd-launcher { display:none; }
+#studio.clean .pd-dock,#studio.clean .pd-edge,#studio.clean .pd-overlay,#studio.clean .pd-drop-zones,#studio.clean .pd-launcher { display:none; }
 @media(pointer:coarse) { .pd-title { height:38px; min-height:38px; }.pd-title button,.pd-title summary { min-height:34px; min-width:30px; }.pd-edge { width:32px; }.pd-edge-button { padding:12px 5px; }.pd-splitter { width:9px; }.pd-resize { width:30px; height:30px; }.pd-launcher>summary { padding:7px 12px; } }

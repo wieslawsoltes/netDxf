@@ -20,6 +20,21 @@ export function flyoutPosition(anchor, size, viewport) {
     top:Math.max(4,Math.min(anchor.bottom+3,viewport.height-size.height-4))};
 }
 
+/** Contextual tabs never leave the user on a hidden or disabled module tab. */
+export function reconcileRibbonContext(currentTab, context = {}, entries = []) {
+  const blockEditing = entries.some(entry => entry.key === 'Block Editor');
+  const enabled = key => entries.some(entry => entry.key === key && !entry.disabled);
+  let tab = currentTab, previousTab = context.previousTab || null;
+  if (blockEditing && !context.blockEditing) {
+    previousTab = currentTab === 'Block Editor' ? 'Home' : currentTab;
+    tab = 'Block Editor';
+  } else if (!blockEditing && context.blockEditing) {
+    tab = enabled(previousTab) ? previousTab : 'Home'; previousTab = null;
+  }
+  if (!enabled(tab)) tab = blockEditing ? 'Block Editor' : 'Home';
+  return { tab, blockEditing, previousTab };
+}
+
 /** Adaptive native-style ribbon panels. The flyout reuses controls and event handlers. */
 export class RibbonLayout {
   constructor(panel) {
@@ -38,8 +53,11 @@ export class RibbonLayout {
   set(groups) {
     this.close(); this.groups=groups; this.panel.replaceChildren(...groups);
     groups.forEach(group=>{
-      group.querySelector('.ribbon-launcher').addEventListener('click',()=>this.open(group));
+      group.querySelector('.ribbon-launcher').addEventListener('click',()=>this.activate(group));
       group.querySelector('.ribbon-launcher').addEventListener('pointerenter',event=>{if(this.mode==='titles'&&event.pointerType==='mouse'&&this.popup?.group!==group)this.open(group,false);});
+      group.querySelector('.ribbon-launcher').addEventListener('keydown',event=>{
+        if(event.key!=='ArrowDown')return;event.preventDefault();event.stopPropagation();this.open(group,true);
+      });
     });
     this.schedule();
   }
@@ -61,8 +79,14 @@ export class RibbonLayout {
     const collapsed=collapsedPanels(widths,this.panel.clientWidth-8);
     this.groups.forEach((group,index)=>group.classList.toggle('collapsed',collapsed[index]));
   }
+  activate(group) {
+    // Mouse hover precedes click. Promote that preview instead of closing it.
+    if(this.popup?.group===group&&!this.popup.preview){this.close(true);return;}
+    this.open(group,true);
+  }
+  focusTools() {this.popup?.tools.querySelector('button:not(:disabled),select:not(:disabled)')?.focus({preventScroll:true});}
   open(group, focus=true) {
-    if(this.popup?.group===group){this.close();return;}
+    if(this.popup?.group===group){if(focus){this.popup.preview=false;this.focusTools();}return;}
     this.close();
     const tools=group.querySelector('.ribbon-tools'),button=group.querySelector('.ribbon-launcher');
     if(!tools)return;
@@ -72,8 +96,8 @@ export class RibbonLayout {
     tools.style.left='4px';tools.style.top=`${bounds.bottom+3}px`;
     const position=flyoutPosition(bounds,tools.getBoundingClientRect(),{width:innerWidth,height:innerHeight});
     tools.style.left=`${position.left}px`;tools.style.top=`${position.top}px`;
-    button.setAttribute('aria-expanded','true');this.popup={group,tools,button,marker};
-    if(focus)tools.querySelector('button:not(:disabled),select:not(:disabled)')?.focus({preventScroll:true});
+    button.setAttribute('aria-expanded','true');this.popup={group,tools,button,marker,preview:!focus};
+    if(focus)this.focusTools();
     this.onChoose=event=>{if(event.target.closest('button[data-command],button[data-action]'))this.hide();};tools.addEventListener('click',this.onChoose);
   }
   close(focus=false) {

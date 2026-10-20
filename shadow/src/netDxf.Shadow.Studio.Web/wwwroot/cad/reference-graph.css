@@ -1,0 +1,17 @@
+.reference-workspace{display:flex;flex-direction:column;gap:8px;min-width:0}
+.reference-workspace .toolbar{flex-wrap:wrap}
+.reference-workspace .property-row input,.reference-workspace .property-row select{min-width:0}
+.reference-workspace details{border:1px solid var(--line,#405061);border-radius:5px;padding:7px}
+.reference-workspace details>*+*{margin-top:6px}
+.reference-workspace details input,.reference-workspace details select{width:100%;box-sizing:border-box}
+.reference-stats{font-weight:600;font-variant-numeric:tabular-nums}
+.reference-diagram{overflow:auto;max-height:350px;border:1px solid var(--line,#405061);border-radius:5px;background:#17212b}
+.reference-diagram:empty{display:none}
+.reference-diagram img{display:block;max-width:none;cursor:pointer}
+.reference-inspector{border-left:3px solid #5bc0eb;padding-left:9px;min-width:0}
+.reference-inspector:empty{display:none}
+.reference-list{display:flex;flex-direction:column;gap:5px}
+.reference-list>button{text-align:left;white-space:normal;overflow-wrap:anywhere}
+.reference-list>button[aria-pressed=true]{border-color:#5bc0eb}
+.reference-edge{border-bottom:1px solid var(--line,#405061);padding:8px 0;display:flex;gap:6px;flex-wrap:wrap}
+.reference-edge code{display:block;flex-basis:100%;overflow-wrap:anywhere;white-space:pre-wrap}
