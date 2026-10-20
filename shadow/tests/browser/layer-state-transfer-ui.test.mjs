@@ -28,9 +28,12 @@ test('saved mask initializes checkboxes and saves separately from restore',async
 test('saved entry form submits changed values and add/remove membership in one transaction',async t=>{
   const f=fixture(t);f.client.read=async()=>({state:{currentLayer:'0'},entries:[entry,{...entry,name:'0'}]});
   const pending=editSavedLayers({...f,state:{id:{value:'s:1'}}});await tick();
+  assert.equal(byLabel(f.root,'Drawing layer to add').parentNode.tagName,'LABEL');
+  assert.equal(byLabel(f.root,'Pending saved additions').parentNode.hidden,true);
   byLabel(f.root,'Saved Locked').checked=true;byLabel(f.root,'Saved transparency').value='20';
   const list=byLabel(f.root,'Saved layer entries');list.value='0';await list.dispatch('change');await byText(f.root,'Remove saved layer').click();
   byLabel(f.root,'Drawing layer to add').value='Added';await byText(f.root,'Add drawing layer').click();
+  assert.equal(byLabel(f.root,'Pending saved additions').parentNode.hidden,false);
   f.answers[0].resolve(true);await pending;
   assert.deepEqual(f.edits,[['layer-state',{state:{action:'edit',id:{value:'s:1'},entries:[{name:'Pipes',locked:true,transparency:20}],addLayers:['Added'],removeLayers:['0']}},{expectedKey:'drawing/1'}]]);
 });

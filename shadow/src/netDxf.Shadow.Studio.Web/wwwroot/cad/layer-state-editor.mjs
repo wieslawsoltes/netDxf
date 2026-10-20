@@ -28,8 +28,10 @@ export async function editSavedLayers({client,edit,dialog,editable,key,state,res
   if(!receipt||client.key!==key)return;
   const entries=receipt.entries||[],removed=new Set(),added=new Set(),drafts=new Map();
   const list=el('select',{'aria-label':'Saved layer entries',size:12}),search=input('Find saved layers','','search'),form=el('div',{class:'resource-fields'});
+  search.placeholder='Find saved layers';
   const available=select('Drawing layer to add',(resources.layers||[]).map(l=>l.name),'');
   const pendingAdditions=select('Pending saved additions',[],'');
+  const availableRow=row('Drawing layer to add',available),pendingRow=row('Pending additions',pendingAdditions);
   const current=select('Saved current layer',(resources.layers||[]).map(l=>l.name),receipt.state.currentLayer);
   const status=el('p',{class:'hint'});let selected=null,readValues=null;
   const keep=()=>{if(selected&&readValues)drafts.set(selected.name,readValues());};
@@ -56,6 +58,7 @@ export async function editSavedLayers({client,edit,dialog,editable,key,state,res
     available.value=available.children[0]?.value||'';add.disabled=!available.value;remove.disabled=!selected;
     pendingAdditions.replaceChildren(...[...added].map(name=>el('option',{value:name,text:name})));
     pendingAdditions.value=pendingAdditions.children[0]?.value||'';removePending.disabled=!added.size;
+    pendingRow.hidden=removePending.hidden=!added.size;
     status.textContent=`${entries.length-removed.size} retained · ${added.size} to add · ${removed.size} to remove. ${[...added].join(', ')}`;
   }
   const add=el('button',{type:'button',text:'Add drawing layer',onclick:()=>{const name=available.value;if(!name)return;if(removed.has(name))removed.delete(name);else added.add(name);render();}});
@@ -64,7 +67,7 @@ export async function editSavedLayers({client,edit,dialog,editable,key,state,res
   list.addEventListener('change',()=>choose(entries.find(e=>e.name===list.value)||null));search.addEventListener('input',render);
   render();
   const accepted=await dialog('Edit saved layer properties',[row('Saved current layer',current),el('div',{class:'resource-manager'},[
-    el('aside',{},[search,list,remove,available,add,pendingAdditions,removePending,status]),form]),el('p',{class:'hint',text:'These edits change only the saved state. Added entries capture current drawing layer properties; save and reopen to edit those entries. Restore applies the state to the drawing.'})],'Save saved properties');
+    el('aside',{},[search,list,remove,availableRow,add,pendingRow,removePending,status]),form]),el('p',{class:'hint',text:'These edits change only the saved state. Added entries capture current drawing layer properties; save and reopen to edit those entries. Restore applies the state to the drawing.'})],'Save saved properties');
   if(!accepted)return;editable();if(client.key!==key||client.busy)throw new Error('The drawing changed while editing saved properties. Reopen the manager.');
   keep();const changes=entries.filter(e=>!removed.has(e.name)&&drafts.has(e.name)).map(e=>savedLayerPatch(e,drafts.get(e.name))).filter(Boolean);
   if(!changes.length&&!added.size&&!removed.size&&current.value===receipt.state.currentLayer)return;
