@@ -1,9 +1,11 @@
+import { ribbonPreferences } from './ribbon-customization.mjs';
 import { chromePreferences } from './ribbon-layout.mjs';
 import { paletteLayout } from './palette-layout.mjs';
 import { quickAccessPreferences } from './command-catalog.mjs';
 
 export const workspaceProfileKey = 'netdxf-cad-workspaces-v1';
 export const workspaceProfileLimit = 24;
+export const workspaceProfileStorageLimit = 512000;
 const record = value => value && typeof value === 'object' && !Array.isArray(value);
 const nameOf = value => typeof value === 'string' ? value.trim().slice(0, 80) : '';
 
@@ -15,7 +17,8 @@ export function workspaceProfileLayout(value, paletteIds) {
     tab: typeof source.tab === 'string' && source.tab.length <= 100 ? source.tab : 'Home',
     commandHeight: Number.isFinite(source.commandHeight) ? Math.max(32, Math.min(600, source.commandHeight)) : 90,
     palettes: paletteLayout(source.palettes, paletteIds),
-    quickAccess: quickAccessPreferences(source.quickAccess)
+    quickAccess: quickAccessPreferences(source.quickAccess),
+    ribbonCustomization: ribbonPreferences(source.ribbonCustomization)
   };
 }
 
@@ -86,14 +89,17 @@ export class WorkspaceProfiles {
   read() {
     try {
       const text = this.storage?.getItem(this.key);
-      return workspaceProfiles(text && text.length <= 512000 ? JSON.parse(text) : null, this.paletteIds);
+      return workspaceProfiles(text && text.length <= workspaceProfileStorageLimit ? JSON.parse(text) : null, this.paletteIds);
     } catch { return workspaceProfiles(null, this.paletteIds); }
   }
   change(action) {
     const next = changeWorkspaceProfiles(this.read(), action, this.paletteIds);
+    const text = JSON.stringify(next);
+    if (text.length > workspaceProfileStorageLimit)
+      throw new Error('Saved UI workspaces exceed the storage limit. Remove an unused workspace or simplify its ribbon customization.');
     try {
       if (!this.storage) throw new Error();
-      this.storage.setItem(this.key, JSON.stringify(next));
+      this.storage.setItem(this.key, text);
     } catch { throw new Error('UI workspace could not be saved. Browser storage is unavailable or full.'); }
     return next;
   }

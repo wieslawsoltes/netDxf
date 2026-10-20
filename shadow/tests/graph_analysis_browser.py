@@ -4,8 +4,12 @@ from playwright.sync_api import expect
 from reference_graph_browser_checks import verify_reference_graph
 from workspace_layout_browser_checks import verify_workspace_layout
 from palette_groups_browser_checks import verify_palette_groups
+from palette_appearance_browser_checks import verify_palette_appearance
+from ribbon_customization_browser_checks import verify_ribbon_customization
+from layer_filter_browser_checks import verify_layer_filters
 from command_access_browser_checks import verify_command_access
 from reference_analysis_browser_checks import verify_reference_analysis
+from domain_connectivity_browser_checks import verify_domain_connectivity
 
 
 def verify_graph_analysis(page, output, state, command, wait_state, idle, check):
@@ -102,10 +106,14 @@ def verify_graph_analysis(page, output, state, command, wait_state, idle, check)
     verify_palette_ribbon(page, output, check)
     verify_workspace_layout(page, output, state, command, wait_state, idle, check)
     verify_palette_groups(page, output, state, command, wait_state, idle, check)
+    verify_palette_appearance(page, output, state, command, wait_state, idle, check)
+    verify_ribbon_customization(page, output, state, command, wait_state, idle, check)
+    verify_layer_filters(page, output, state, command, wait_state, idle, check)
     verify_large_graph_projection(page, output, state, command, wait_state, idle, check)
     verify_reference_graph(page, output, state, command, wait_state, idle, check)
     verify_reference_analysis(page, output, state, command, wait_state, idle, check)
     verify_command_access(page, output, state, command, wait_state, idle, check)
+    verify_domain_connectivity(page, output, state, command, wait_state, idle, check)
 
 
 def verify_large_graph_projection(page, output, state, command, wait_state, idle, check):

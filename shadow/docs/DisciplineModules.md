@@ -22,7 +22,7 @@ Applications owning a mutable `DxfDocument` can call `SymbolNative.Place`. Edito
 var module = new netDxf.Shadow.Pid.PidModule();
 var plan = module.Plan(session.Current, new CadModuleCommandRequest(
     "place", Points: [new Vec3(50, 25)], SymbolId: "pid.pump.liquid",
-    SymbolVersion: "1.0.0",
+    SymbolVersion: "1.1.0",
     Properties: ImmutableDictionary<string, string>.Empty.Add("tag", "P-101")));
 plan.Execute(editor);
 var report = module.Analyze(session.Current);
@@ -42,6 +42,26 @@ Shared checks cover missing/duplicate tags, ambiguous copied identities, attribu
 
 Analysis accepts object and issue limits, selection scope, connection tolerance and cancellation. Reports expose `Complete`, `ObjectsVisited` and `Limitation`; reaching either a shared or discipline issue limit marks the result incomplete. Selection scopes the returned domain objects while reference checks can inspect other scanned layout objects.
 
+`DomainConnectivity.Build` projects declared ports into an immutable network with
+weak components, directional minimum-link paths and bounded traces. Internal
+`DomainPassage` records explicitly connect two ports with `both`, `forward` or
+`reverse` direction; external connection references join compatible endpoints.
+Associations remain findings rather than physical edges. A trace includes
+predecessor edges for inspecting why each port was reached.
+
+Starter symbol version `1.1.0` adds these passage declarations. Exact `1.0.0`
+definitions remain available with their original unspecified internal
+connectivity. Missing passage data in older drawings is never inferred from
+geometry or silently migrated. An explicit empty passage list means the ports
+are separate; absent declarations on a multi-port object report incomplete
+interpretation. Newly authored routes and the pump/tank sample declare their
+passages.
+
+The [discipline connectivity UI and API](GraphAnalysis.md#discipline-connectivity)
+share this library in native Studio, standalone WebAssembly and MCP. Reports
+distinguish scan completeness, declaration completeness, truncated findings and
+unloaded pages. Source selection is explicit; analysis does not edit the drawing.
+
 ## Drawing conventions
 
 The supplied symbols are original schematic artwork and a small reusable starter catalog. P&ID convention references point to [ISO 10628-2](https://www.iso.org/standard/51841.html) and [IEC 62424](https://webstore.iec.ch/en/publication/25442). The electrical catalog identifies [IEC 60617](https://webstore.iec.ch/en/publication/2723) as its reference family; IEC's licensed database remains the authoritative symbol source. The supplied catalogs do not reproduce that database or assert full standards certification. Applications can provide reviewed, versioned catalogs through the same contracts.
@@ -53,4 +73,4 @@ dotnet run --project shadow/tests/netDxf.Shadow.Disciplines.Verification
 dotnet run --project shadow/tests/netDxf.Shadow.Samples.Verification
 ```
 
-The fixtures exercise native and planned placement, new blocks, attributes, Unicode, base points and unit transforms, undo/redo, text/binary DXF persistence, direct JSON discovery, pure route planning, reference continuity, malformed-data bounds, cancellation and partial reports, plus actual process-flow, reducer and circuit failures. Sample checks verify the explicit process network separately from the visible geometry and preserve the gallery layouts.
+The fixtures exercise native and planned placement, new blocks, attributes, Unicode, base points and unit transforms, undo/redo, text/binary DXF persistence, direct JSON discovery, pure route planning, reference continuity, malformed-data bounds, cancellation and partial reports, plus actual process-flow, reducer and circuit failures. Connectivity fixtures cover components, directed paths, predecessor proofs, legacy declarations, ambiguous keys, scan/search limits and metadata updates. Sample checks verify the explicit process network separately from the visible geometry and preserve the gallery layouts.

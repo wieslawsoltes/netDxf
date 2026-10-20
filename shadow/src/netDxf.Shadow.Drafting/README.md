@@ -133,6 +133,42 @@ The shared Studio ribbon opens the Layer manager, Linetype manager, and Text sty
 
 Layer fields include on/off, freeze, lock, plot, RGB or indexed color, existing linetype, native lineweight, transparency (0–90%), description, and freeze in new viewports. Current layers cannot be frozen, and a layer must be on and thawed before this manager makes it current. New-viewport freeze is stored metadata; individual viewport overrides and CTB/STB plotting are not implemented.
 
+The **Layer filters and isolation** manager combines AND predicates into up to
+eight OR rules: name/description/linetype patterns, indexed or RGB color,
+lineweight, transparency range, on/frozen/locked/plot/new-viewport flags, use and
+current status. Patterns support `*`, `?`, comma-separated alternatives and `~`
+negation. Search and inversion affect the current view. Up to 32 property filters
+and 32 explicit groups are saved per drawing in browser-local storage; saving an
+existing name replaces that filter or group's contents. Groups retain stable
+layer IDs through rename and prune deleted IDs. This metadata is not a native
+DXF layer-filter dictionary and is not carried with an exported drawing.
+
+`DraftingLayerIsolation.Plan(snapshot, new LayerIsolationEdit("isolate", ids,
+"off"))` returns a detached, revision-checked plan. Mode `"off"` turns other
+layers off; `"lock"` locks them. Chosen layers become on, thawed and unlocked.
+Studio `POST layer-isolation` accepts `CadLayerIsolationRequest`; omitted layers
+for isolate derive from the current source selection. `LAYISO` uses off mode and
+`LAYUNISO` restores the preceding isolation. Both are one undo transaction, and
+the manager exposes both methods and checked-layer scope. Global isolation is
+unavailable inside block editing.
+
+Versioned, bounded restore receipts on layer XDATA use the reserved APPID
+`SHADOW_LAYER_ISOLATION`. The APPID is reused case-insensitively; foreign or
+malformed layer payloads cause an atomic refusal rather than an inferred
+restore. A bare APPID is safe to reuse. `Read` reports invalid status without
+blocking unrelated resource editing. Receipts follow native Undo/Redo,
+ASCII/binary DXF and workflow replay. Re-isolating first restores the previous
+baseline in memory, then applies the new scope in one operation. Restoration
+changes only fields changed by isolation whose current values still equal the
+applied values; unrelated properties and newly created layers remain intact.
+A subsequent change to the same value cannot be distinguished from no change.
+Restoring a frozen flag onto the now-current layer refuses the entire operation;
+turn on/thaw another layer and make it current before retrying. These operations
+change global flags, with no locked-layer fading or viewport-only isolation.
+Behavior references: Autodesk
+[LAYISO](https://help.autodesk.com/cloudhelp/2025/ENG/AutoCAD-Core/files/GUID-E24B9866-9538-43BF-A3DF-AA7E2341C624.htm)
+and [LAYUNISO](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-0795CBC9-7A9D-4A36-B49E-244C146FF6EA.htm).
+
 `DraftingLayerStates.Read` and `Plan` expose native saved layer states. Studio's
 Home/Manage ribbon and `LAYERSTATE`/`LAS` commands open the shared manager. Save,
 update, rename, delete and restore each create one undo operation. Restoration

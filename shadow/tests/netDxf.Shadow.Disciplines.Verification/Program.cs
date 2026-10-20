@@ -59,6 +59,7 @@ var detachedAttribute = new netDxf.Entities.Attribute(detachedDefinition);
 Throws<ArgumentException>(() => Insert.CreateWithAttributes(new netDxf.Blocks.Block("Rejected"), [detachedAttribute, detachedAttribute]), "Duplicate attributes rejected before ownership changes.");
 Check(detachedAttribute.Owner is null, "Rejected native factory leaves detached inputs unchanged.");
 checks += DisciplineChecks.Run();
+checks += ConnectivityChecks.Run();
 checks += CadReviewChecks.Run();
 Console.WriteLine($"{checks} discipline verification checks passed.");
 void Check(bool condition, string message) { checks++; if (!condition) throw new InvalidOperationException(message); }

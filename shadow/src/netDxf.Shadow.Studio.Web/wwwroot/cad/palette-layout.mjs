@@ -1,4 +1,5 @@
 /** Bounded, credential-free palette workspace preferences. */
+import { paletteAppearance } from './palette-appearance.mjs';
 export const paletteStorageKey = 'netdxf-cad-palettes-v2';
 const number = (value, fallback, low, high) => Number.isFinite(value) ? Math.max(low, Math.min(high, value)) : fallback;
 const sides = new Set(['left', 'right']), modes = new Set(['dock', 'float', 'auto']);
@@ -12,6 +13,7 @@ export function paletteLayout(saved, ids, legacy = {}) {
     const value = valid && Object.hasOwn(saved.panels || {}, id) ? saved.panels[id] : null;
     const source = value && typeof value === 'object' ? value : {};
     panels[id] = {
+      ...paletteAppearance(source),
       open: valid ? source.open === true : index === 0,
       allowDocking: source.allowDocking !== false,
       mode: source.allowDocking === false ? 'float' : modes.has(source.mode) ? source.mode : 'dock', side: sides.has(source.side) ? source.side : legacy.left === true ? 'left' : 'right',
@@ -20,7 +22,8 @@ export function paletteLayout(saved, ids, legacy = {}) {
     };
   });
   return { version: 3, active: valid && ids.includes(saved.active) ? saved.active : ids[0],
-    hidden: valid ? saved.hidden === true : legacy.hidden === true, locked: valid && saved.locked === true, panels,
+    hidden: valid ? saved.hidden === true : legacy.hidden === true, locked: valid && saved.locked === true,
+    transparencyDisabled: valid && saved.transparencyDisabled === true, panels,
     groups: normalizeGroups(valid && saved.version === 3 ? saved.groups : null, panels) };
 }
 
@@ -137,6 +140,7 @@ export function changePaletteLayout(layout, action, bounds = { width: 1024, heig
   };
   const activate = target => { const found = paletteGroupFor(result, target); if (found) found.group.active = target; };
   if (action.type === 'lock') { result.locked = action.value === undefined ? !layout.locked : action.value === true; return result; }
+  if (action.type === 'transparency-disabled') { result.transparencyDisabled = action.value === true; return result; }
   if (action.type === 'toggle') {
     const anyOpen = Object.values(panels).some(value => value.open);
     result.hidden = anyOpen ? !layout.hidden : false;
@@ -144,6 +148,14 @@ export function changePaletteLayout(layout, action, bounds = { width: 1024, heig
     return result;
   }
   if (!panel) throw new Error('Unknown drawing palette.');
+  if (action.type === 'opacity') {
+    if (![action.opacity, action.rolloverOpacity].every(value => Number.isInteger(value) && value >= 0 && value <= 100) || action.rolloverOpacity < action.opacity)
+      throw new Error('Choose opacity values from 0 to 100; rollover must be at least the resting opacity.');
+    for (const key of action.all === true ? Object.keys(panels) : [id])
+      panels[key] = { ...panels[key], ...paletteAppearance(action) };
+    if (typeof action.disabled === 'boolean') result.transparencyDisabled = action.disabled;
+    return result;
+  }
   if (action.type === 'show') { panels[id] = { ...panel, open: true }; result.active = id; result.hidden = false; activate(id); return finish(); }
   if (action.type === 'close') { panels[id] = { ...panel, open: false }; return finish(); }
   if (action.type === 'activate') { result.active = id; activate(id); return finish(); }

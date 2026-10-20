@@ -252,6 +252,22 @@ internal static class Program
         Require(importedDrawing.Blocks.Contains("PackageLibrary"), "Installed drawing library import failed.");
         importedEditor.Undo(); importedEditor.Redo();
         Require(importedDrawing.Blocks.Contains("PackageLibrary"), "Installed drawing library history failed.");
+        var connectivity = DomainConnectivity.Build(librarySource, "pid");
+        var inlet = connectivity.Nodes.Single(n => n.Tag == "P-101" && n.Port == "inlet");
+        var outlet = connectivity.Nodes.Single(n => n.Tag == "P-101" && n.Port == "outlet");
+        var passagePath = connectivity.ShortestPath(inlet.Id, outlet.Id, "forward");
+        var passageProof = passagePath.Path ?? throw new InvalidOperationException("Installed discipline path did not return its proof.");
+        Require(connectivity.Complete && connectivity.DeclarationsComplete && connectivity.Components.Length > 1 &&
+            passagePath.Status == "found" && passageProof.Edges.Length == 1 &&
+            connectivity.Trace(inlet.Id, "forward").ProofTo(outlet.Id).Edges.SequenceEqual(passageProof.Edges),
+            "Installed discipline connectivity lost declared passages, components or exact proof links.");
+        using (var graphDxf = new MemoryStream())
+        {
+            Require(demo.Save(graphDxf, true), "Installed connectivity DXF save failed."); graphDxf.Position = 0;
+            var importedGraph = DomainConnectivity.Build(new ShadowSession(DxfDocument.Load(graphDxf)).Current, "pid");
+            Require(importedGraph.ShortestPath(inlet.Id, outlet.Id, "forward").Path!.Edges.SequenceEqual(passageProof.Edges),
+                "Installed connectivity port identities or passage directions did not survive DXF import.");
+        }
         var report = new netDxf.Shadow.Pid.PidModule().Analyze(new ShadowSession(demo).Current);
         Require(report.Complete && report.Records.Length == 26 && report.Issues.IsEmpty,
             "Installed P&ID sample lost its explicit process network.");

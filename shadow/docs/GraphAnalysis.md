@@ -151,3 +151,43 @@ using its returned `nextOffset` as `nodeOffset`, `edgeOffset`, `resultOffset` or
 to fit its serialized response budget. Path and impact still return the empty
 `results` and `links` streams. Exhausted streams use their total as the offset
 while other streams continue.
+
+## Discipline connectivity
+
+Each enabled discipline's ribbon and Modules palette exposes **Connectivity**.
+The network follows explicit named ports, declared external connections and
+internal passages. Geometric crossings do not create connectivity. Associations
+are reported separately. Only tagged roots in the active layout and selected
+discipline are traversed; references to other modules remain scope boundaries.
+
+`DomainConnectivity` in `netDxf.Shadow.Symbols` builds an immutable bounded graph
+with weak components, minimum-link paths and directional traces. Every non-root reached
+port has a predecessor connection for inspection. `DomainPassage` declarations
+specify a pair of ports and `both`, `forward` or `reverse`. Legacy records with no
+passage declarations retain separate terminals and report incomplete declarations.
+Known-open boundaries remain explicit. This describes the authored schematic;
+it does not calculate pressure, flow, switching states or electrical protection.
+
+The shared UI lists ports, component membership, incident connections and
+findings. It supports source/target selection, predecessor inspection, explicit
+source-object selection and bounded JSON/SVG/CSV exports. The SVG is a schematic
+layout of at most 180 loaded ports and 360 links; it is not the drawing geometry.
+Exports report scan, declaration, finding and paging coverage separately.
+The schematic retains readable label sizes and scrolls within narrow palettes.
+Direction arrows end at port-card borders, and a fresh analysis clears the
+previous path highlight. Open a wider floating Modules palette to inspect the
+schematic beside a port's source and predecessor details.
+
+Native and standalone WASM expose `POST /api/cad/{id}/modules/connectivity`.
+The read-only MCP tool `studio_module_connectivity` uses the same implementation;
+`studio_request_schema` exposes `CadModuleConnectivityRequest`. Supply the exact
+revision and identity, module, operation (`network`, `path`, `trace`), source and
+optional target port ID, direction, scan limits, visit/depth bounds and tolerance.
+Disabled modules and block-editor scopes are rejected.
+
+Five streams (`nodes`, `edges`, `issues`, `components`, `visits`) have independent
+cursors. Continue with each stream's actual `nextOffset` (or its total when
+exhausted), retaining `graphKey` and the original query. Receipt size can shorten
+individual pages. The key binds snapshot, workspace, view, layout, module
+configuration and all query options; changing any of these requires a fresh
+query. Partial graph/search coverage cannot establish absence of a connection.

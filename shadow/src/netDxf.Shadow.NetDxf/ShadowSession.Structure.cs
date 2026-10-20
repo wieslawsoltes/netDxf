@@ -232,6 +232,27 @@ public sealed partial class ShadowSession
                 try
                 {
                     var restored = capture.Capture(document, before);
+                    if (failures.Count == 1 && !ReferenceEquals(restored, before))
+                    {
+                        var differences = ShadowGraphPatch.Between(before, restored).Changes;
+                        // Failed table adoption can consume handles before callbacks
+                        // throw. Restore its public header value only after proving
+                        // every semantic object/property was restored. The private
+                        // allocator remains monotonic; later adoption/save refreshes
+                        // the header and never reuses the abandoned handles.
+                        if (differences.Length == 1 && differences[0].Before is { } oldHeader &&
+                            differences[0].After is { } newHeader && oldHeader.TypeName == "netDxf.Header.HeaderVariables" &&
+                            oldHeader.Properties.Keys.Union(newHeader.Properties.Keys)
+                                .Where(name => !ShadowValue.Equivalent(oldHeader[name], newHeader[name])).SequenceEqual(["HandleSeed"]) &&
+                            oldHeader["HandleSeed"] is ShadowValue.Atom oldSeed && newHeader["HandleSeed"] is ShadowValue.Atom newSeed &&
+                            long.TryParse(oldSeed.Text, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out var oldNumber) &&
+                            long.TryParse(newSeed.Text, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out var newNumber) &&
+                            newNumber > oldNumber)
+                        {
+                            document.DrawingVariables.KnownValues().Single(value => value.Name == "$HANDSEED").Value = oldSeed.Text;
+                            restored = capture.Capture(document, before);
+                        }
+                    }
                     if (!ReferenceEquals(restored, before))
                     {
                         var differences = ShadowGraphPatch.Between(before, restored).Changes.Take(8).Select(change =>

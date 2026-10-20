@@ -30,7 +30,7 @@ public static class DomainPlans
             var direction = (points[i+1]-points[i]).Normalized;
             var data = new DomainRecord(module, kind, keys[i], tag, Properties:values,
                 Ports:[new("start", kind == "wire" ? "electrical" : kind == "signal" ? "signal" : "process", points[i], -direction, values.GetValueOrDefault("nominalSize")),
-                    new("end", kind == "wire" ? "electrical" : kind == "signal" ? "signal" : "process", points[i+1], direction, values.GetValueOrDefault("nominalSize"))], References:refs.ToImmutable());
+                    new("end", kind == "wire" ? "electrical" : kind == "signal" ? "signal" : "process", points[i+1], direction, values.GetValueOrDefault("nominalSize"))], References:refs.ToImmutable()) { Passages = [new("start", "end", values.GetValueOrDefault("flow") switch { "forward" => "forward", "reverse" => "reverse", _ => "both" })] };
             working = Attach(working, created[i], data).Patch.Apply(working);
         }
         return new("Route " + kind, ShadowGraphPatch.Between(snapshot, working), created.ToImmutable());
@@ -46,7 +46,10 @@ public static class DomainPlans
             var values = (data.Properties ?? ImmutableDictionary<string,string>.Empty).ToBuilder();
             foreach (var pair in properties) if (pair.Key != "tag") values[pair.Key] = pair.Value;
             var tag = properties.GetValueOrDefault("tag", data.Tag);
-            working = Attach(working,id,data with { Tag=tag, Properties=values.ToImmutable(), Ports=SymbolNative.Ports(data.Ports, values) }).Patch.Apply(working);
+            var passages = data.Passages;
+            if (entity.Type == "Line" && properties.Keys.Any(k => k.Equals("flow", StringComparison.OrdinalIgnoreCase)) && passages is { } declared)
+                passages = declared.Select(p => p.FromPort == "start" && p.ToPort == "end" ? p with { Direction = values.GetValueOrDefault("flow") switch { "forward" => "forward", "reverse" => "reverse", _ => "both" } } : p).ToImmutableArray();
+            working = Attach(working,id,data with { Tag=tag, Properties=values.ToImmutable(), Ports=SymbolNative.Ports(data.Ports, values), Passages=passages }).Patch.Apply(working);
             var edit = new ShadowGraphEdit(working);
             foreach (var attr in working.Read(id)["Attributes"].Items)
                 if (attr.Id is { } attributeId && (attr["Tag"].Text.Equals("TAG",StringComparison.OrdinalIgnoreCase) || values.ContainsKey(attr["Tag"].Text)))

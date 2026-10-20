@@ -34,6 +34,8 @@ public static class StudioCadHttp
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadModuleSymbols(request))));
         routes.MapPost("/{id}/modules/analyze", (string id, StudioDocumentHub hub, HttpRequest http, CadModuleAnalysisRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadAnalyzeModule(request, token))));
+        routes.MapPost("/{id}/modules/connectivity", (string id, StudioDocumentHub hub, HttpRequest http, CadModuleConnectivityRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadModuleConnectivity(request, token))));
         routes.MapPost("/{id}/modules/command", (string id, StudioDocumentHub hub, HttpRequest http, CadModuleExecuteRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadRunModule(request, token))));
         routes.MapPost("/{id}/references/capture", (string id, StudioDocumentHub hub, HttpRequest http, DrawingReferenceCaptureRequest request) =>
@@ -116,6 +118,8 @@ public static class StudioCadHttp
         routes.MapGet("/{id}/resources", (string id, StudioDocumentHub hub) => hub.Use(id, s => s.CadResources()));
         routes.MapPost("/{id}/resource", (string id, StudioDocumentHub hub, HttpRequest http, CadResourceRequest request) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadResource(request))));
+        routes.MapPost("/{id}/layer-isolation", (string id, StudioDocumentHub hub, HttpRequest http, CadLayerIsolationRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadLayerIsolation(request, token))));
         routes.MapPost("/{id}/layer-state", (string id, StudioDocumentHub hub, HttpRequest http, CadLayerStateRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadLayerState(request, token))));
         routes.MapPost("/{id}/layer", (string id, StudioDocumentHub hub, HttpRequest http, CadLayerRequest request) =>

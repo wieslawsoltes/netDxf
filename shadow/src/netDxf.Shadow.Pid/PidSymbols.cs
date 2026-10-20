@@ -6,7 +6,21 @@ namespace netDxf.Shadow.Pid;
 /// <summary>Original schematic artwork with cited symbol conventions; not a licensed standards database.</summary>
 public static class PidSymbols
 {
-    public static SymbolCatalog Catalog { get; } = new(Definitions());
+    public static SymbolCatalog Catalog { get; } = new(VersionedDefinitions());
+    private static IEnumerable<SymbolDefinition> VersionedDefinitions()
+    {
+        foreach (var symbol in Definitions())
+        {
+            yield return symbol; // Keep exact legacy versions available without inventing their missing declarations.
+            yield return symbol with { Version = "1.1.0", Passages = symbol.Id switch
+            {
+                "pid.tank.storage" => [new("inlet", "outlet"), new("outlet", "vent"), new("outlet", "drain")],
+                "pid.pump.liquid" or "pid.valve.check" => [new("inlet", "outlet", "forward")],
+                "pid.valve.manual" => [new("inlet", "outlet")],
+                _ => []
+            } };
+        }
+    }
     private static IEnumerable<SymbolDefinition> Definitions()
     {
         SymbolStroke L(double x,double y,double x2,double y2)=>new(SymbolStrokeKind.Line,new(x,y),new(x2,y2));

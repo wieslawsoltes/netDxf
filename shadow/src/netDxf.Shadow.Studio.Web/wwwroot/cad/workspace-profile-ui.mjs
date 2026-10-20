@@ -30,7 +30,7 @@ export function workspaceProfileTools({ paletteIds, storage, capture, restore, d
       for (const index of [2, 3, 4]) buttons[index].disabled = !current || current.preset === true;
     };
     const content = [
-      el('p', { text: 'Save and restore palette groups and sizes, ribbon display, Quick Access commands and command line visibility. UI layouts are stored in this browser.' }),
+      el('p', { text: 'Save and restore palette groups, sizes and transparency, ribbon display and customization, Quick Access commands and command line visibility. UI layouts are stored in this browser.' }),
       el('label', { class: 'property-row' }, [el('span', { text: 'Restore layout' }), select]),
       el('label', { class: 'property-row' }, [el('span', { text: 'Name' }), name]),
       el('div', { class: 'toolbar' }, [

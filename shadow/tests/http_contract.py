@@ -144,12 +144,42 @@ def run(dotnet: str, configuration: str, published: Path | None = None) -> None:
             assert json.loads(state_bytes) == cad and 'HTTP-É-日本語'.encode() in state_bytes
             assert next(layer for layer in cad['layers'] if layer['name'] == 'HTTP-É-日本語')['color'] == '#123456'
             passed('native presentation preserves HTTP encoding and nullable layer identity')
+            before_isolation = cad['state']
+            cad = post(cad_prefix + '/layer-isolation', before_isolation,
+                       isolation={'action': 'isolate', 'layers': [layer['id']]})
+            resources = request(cad_prefix + '/resources')
+            assert resources['layerIsolation']['active']
+            assert cad['state']['undoCount'] == before_isolation['undoCount'] + 1
+            request(cad_prefix + '/layer-isolation', {'revision': before_isolation['revision'],
+                    'isolation': {'action': 'restore'}}, before_isolation, expected=409)
+            cad = post(cad_prefix + '/layer-isolation', cad['state'], isolation={'action': 'restore'})
+            assert not request(cad_prefix + '/resources')['layerIsolation']['active']
+            assert next(item for item in cad['layers'] if item['name'] == 'HTTP-É-日本語')['color'] == '#123456'
+            passed('typed layer isolation binds native IDs preserves unrelated fields and fences stale revisions')
             receipt = cad['state']
             unchanged = request(cad_prefix + '/state?knownServer=' + receipt['serverId'] + '&knownChange=' + str(receipt['changeVersion']), raw=True)
             assert unchanged == b'null'
             post(cad_prefix + '/close', receipt, discard=True)
             assert state()['entities'] == count
             passed('native conditional presentation and isolated document cleanup')
+            document = request('cad/documents', {'name': 'Connectivity HTTP', 'demo': True},
+                               custom={'X-Shadow-Studio': '1'})
+            prefix = 'cad/' + document['id']
+            before_network = request(prefix + '/state')['state']
+            query = {'revision': before_network['revision'], 'module': 'pid', 'limit': 1}
+            network = request(prefix + '/modules/connectivity', query, before_network)
+            assert network['nodes']['total'] > 1 and len(network['nodes']['items']) == 1
+            assert network['documentId'] == before_network['documentId']
+            assert network['nodes']['nextOffset'] == 1
+            continuation = request(prefix + '/modules/connectivity',
+                                   {**query, 'graphKey': network['graphKey'], 'nodeOffset': 1}, before_network)
+            assert continuation['nodes']['offset'] == 1 and continuation['graphKey'] == network['graphKey']
+            request(prefix + '/modules/connectivity', query, expected=409, custom={'X-Shadow-Studio': '1'})
+            assert request(prefix + '/state')['state'] == before_network
+            disabled = post(prefix + '/modules/toggle', before_network, module='pid', enabled=False)['state']
+            request(prefix + '/modules/connectivity', {**query, 'revision': disabled['revision']}, disabled, expected=400)
+            post(prefix + '/close', disabled, discard=True)
+            passed('discipline connectivity HTTP paging is read-only identity-bound and rejects disabled modules')
             for asset in ['/', '/studio.js', '/studio-state.mjs', '/workspaces.css']:
                 with urlopen(base + asset, timeout=15) as response:
                     payload = response.read()

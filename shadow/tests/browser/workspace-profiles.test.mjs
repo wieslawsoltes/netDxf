@@ -51,12 +51,54 @@ test('profile count, duplicate names and failures have explicit boundaries', () 
   assert.throws(()=>store.change({type:'save',name:'Layout'}),/unavailable or full/);
 });
 
+test('saved workspaces retain detached ribbon customizations and palette appearance', () => {
+  const layout = {ribbonCustomization:{version:1,customTabs:[{id:'user:review',name:'Review'}],
+    customPanels:[{id:'user:inspect',tab:'user:review',name:'Inspect',commands:['action:reference-graph']}],
+    floating:[{tab:'Home',panel:'Draw',x:100,y:150}]},
+    palettes:{version:3,panels:{Graph:{open:true,mode:'float',opacity:40,rolloverOpacity:80}},transparencyDisabled:true}};
+  const saved=changeWorkspaceProfiles(null,{type:'save',name:'Focused review',layout},ids);
+  layout.ribbonCustomization.customTabs[0].name='Changed';
+  const restored=workspaceProfiles(JSON.parse(JSON.stringify(saved)),ids).profiles[0].layout;
+  assert.equal(restored.ribbonCustomization.customTabs[0].name,'Review');
+  assert.deepEqual(restored.ribbonCustomization.customPanels[0].commands,['action:reference-graph']);
+  assert.equal(restored.palettes.panels.Graph.opacity,40);
+  assert.equal(restored.palettes.panels.Graph.rolloverOpacity,80);
+  assert.equal(restored.palettes.transparencyDisabled,true);
+});
+
+test('oversized workspace saves and updates retain every previously saved profile', () => {
+  let text = null;
+  const store = new WorkspaceProfiles({paletteIds:ids,storage:{getItem:()=>text,setItem:(_,value)=>{text=value;}}});
+  const layout = count => ({ribbonCustomization:{version:1,
+    customPanels:Array.from({length:24},(_,i)=>({id:`user:panel${i}`,tab:'Home',name:`Panel ${i}`,
+      commands:Array.from({length:count},(_,j)=>`action:${'x'.repeat(160)}${j}`)}))}});
+  let count=0;
+  while(true) {
+    const before=text;
+    try {store.change({type:'save',name:`Layout ${count}`,layout:layout(24)});count++;}
+    catch(error) {
+      assert.match(error.message,/storage limit/);assert.equal(text,before);break;
+    }
+    assert(count<24);
+  }
+  assert.equal(store.read().profiles.length,count);
+  // Fill the remaining capacity with smaller, valid profiles before an update.
+  for(let i=0;i<18;i++) {
+    try {store.change({type:'save',name:`Small ${i}`,layout:layout(1)});}
+    catch(error) {assert.match(error.message,/storage limit/);break;}
+  }
+  const before=text,names=store.read().profiles.map(value=>value.name);
+  assert.throws(()=>store.change({type:'save',replace:true,name:'Layout 0',layout:layout(29)}),/storage limit/);
+  assert.equal(text,before);
+  assert.deepEqual(store.read().profiles.map(value=>value.name),names);
+});
+
 test('preset layouts keep Properties available beside a left Graph palette and exclude drawing settings', () => {
   const [draft,graph]=workspacePresets(ids);
   assert(draft.layout.palettes.panels.Properties.open);
   assert(graph.layout.palettes.panels.Properties.open);assert(graph.layout.palettes.panels.Graph.open);
   assert.equal(graph.layout.palettes.panels.Graph.side,'left');assert.equal(graph.layout.tab,'Graph');
-  assert.deepEqual(Object.keys(graph.layout),['chrome','tab','commandHeight','palettes','quickAccess']);
+  assert.deepEqual(Object.keys(graph.layout),['chrome','tab','commandHeight','palettes','quickAccess','ribbonCustomization']);
 });
 
 test('dependency workspace provides a wide References tab beside source Properties', () => {

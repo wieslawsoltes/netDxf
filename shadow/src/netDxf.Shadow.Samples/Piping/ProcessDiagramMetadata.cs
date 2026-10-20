@@ -22,13 +22,13 @@ internal static class ProcessDiagramMetadata
             });
             insert.Block.Record.Units = DrawingUnits.Millimeters;
             DomainMetadata.Write(insert.Block, new("symbols", "definition", symbol.Id + "@" + symbol.Version, symbol.Name,
-                symbol.Id, symbol.Version, Properties: ImmutableDictionary<string,string>.Empty.Add("units", symbol.Units).Add("standards", string.Join("; ", symbol.Standards)), Ports: symbol.Ports));
+                symbol.Id, symbol.Version, Properties: ImmutableDictionary<string,string>.Empty.Add("units", symbol.Units).Add("standards", string.Join("; ", symbol.Standards)), Ports: symbol.Ports) { Passages = symbol.Passages });
             var properties = insert.Attributes.ToImmutableDictionary(a => a.Tag, a => a.Value, StringComparer.OrdinalIgnoreCase)
                 .SetItem("service", "Water").SetItem("spec", "CS");
             var ports = symbol.Ports.Select(p => p with { NominalSize = p.Kind == "signal" ? null :
                 tag == "T-101" ? p.Id is "vent" or "drain" ? "25" : "50" : tag == "P-101" ? p.Id == "inlet" ? "50" : "40" :
                 tag == "V-104" ? "25" : tag is "V-103" or "NRV-101" ? "40" : "50" }).ToImmutableArray();
-            var data = new DomainRecord("pid", symbol.Category, "pid.sample." + tag, tag, symbol.Id, symbol.Version, properties, ports, []);
+            var data = new DomainRecord("pid", symbol.Category, "pid.sample." + tag, tag, symbol.Id, symbol.Version, properties, ports, []) { Passages = symbol.Passages };
             records.Add((insert, data, ports.Select(p => p with { Position = p.Position + V(insert.Position) }).ToImmutableArray()));
         }
         for (var index = 0; index < pipes.Count; index++)
@@ -40,7 +40,7 @@ internal static class ProcessDiagramMetadata
             if (index == 6) ports = ports.Add(new("flow", "signal", new(318,120), Vec3.UnitY));
             var properties = ImmutableDictionary<string,string>.Empty.Add("route", group).Add("nominalSize", size).Add("service", "Water").Add("spec", "CS").Add("flow", "forward");
             if (index is 0 or 6 or 8 or 11) properties = properties.Add("openPorts", index == 0 ? "start" : "end");
-            var data = new DomainRecord("pid", "pipe", "pid.sample.pipe." + index, group, Properties: properties, Ports: ports, References: []);
+            var data = new DomainRecord("pid", "pipe", "pid.sample.pipe." + index, group, Properties: properties, Ports: ports, References: []) { Passages = [new("start", "end", "forward")] };
             records.Add((pipes[index], data, ports));
         }
         for (var index = 0; index < signals.Count; index++)
@@ -48,7 +48,7 @@ internal static class ProcessDiagramMetadata
             var tag = index < 2 ? "LI-101-SIGNAL" : index == 2 ? "PI-102-SIGNAL" : "FI-103-SIGNAL";
             var ports = Endpoints(signals[index], "signal", null);
             records.Add((signals[index], new("pid", "signal", "pid.sample.signal." + index, tag,
-                Properties: ImmutableDictionary<string,string>.Empty.Add("route",tag), Ports: ports, References: []), ports));
+                Properties: ImmutableDictionary<string,string>.Empty.Add("route",tag), Ports: ports, References: []) { Passages = [new("start", "end")] }, ports));
         }
         // Only authored ports are matched. Crossings and lines within block definitions cannot create edges.
         foreach (var item in records)

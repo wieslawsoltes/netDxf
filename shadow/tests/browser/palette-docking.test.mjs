@@ -223,7 +223,7 @@ test('explicit restore replaces a locked layout, sanitizes and clamps the snapsh
   assert.equal(JSON.stringify(profile), source, 'restore never mutates the caller snapshot');
   assert.equal(dock.state.locked, false); assert.equal(dock.state.active, 'Layers'); assert.equal(active.at(-1), 'Layers');
   assert.equal(dock.isVisible('Properties'), false); assert.equal(dock.isVisible('Graph'), true); assert.equal(dock.isVisible('Layers'), true);
-  assert.deepEqual(result.panels.Graph, { open: true, allowDocking: true, mode: 'float', side: 'right', x: 0, y: 0, width: 900, height: 500 });
+  assert.deepEqual(result.panels.Graph, { opacity: 100, rolloverOpacity: 100, open: true, allowDocking: true, mode: 'float', side: 'right', x: 0, y: 0, width: 900, height: 500 });
   assert(!JSON.stringify(result).includes('discard-this')); assert(!Object.hasOwn(result.panels, 'Unregistered'));
   assert(graph().generation > previousGeneration); assert(cleaned.includes('Graph')); assert(hidden.includes('Graph'));
   assert.equal(document.activeElement, dock.launcher.querySelector('summary'));
@@ -408,4 +408,47 @@ test('restore handles tab focus and late renderer completions after switching ta
   old(() => cleanup++); await Promise.resolve(); assert.equal(cleanup, 1);
   const saved = dock.snapshot(); visibleGroup(dock, 'Properties').tabs.get('Properties').focus();
   dock.restore(saved); assert.equal(document.activeElement, dock.launcher.querySelector('summary'));
+});
+
+test('floating opacity responds to hover and focus while docked panes and recovery override remain opaque', t => {
+  const {dock,graph,stored,rendered}=docking(t);
+  dock.show('Graph',{mode:'float',focus:false});const frame=graph();
+  dock.commit({type:'opacity',id:'Graph',opacity:20,rolloverOpacity:70});
+  const count=rendered.length;
+  assert.equal(frame.element.style.opacity,'0.2');
+  frame.element.emit('pointerenter');assert.equal(frame.element.style.opacity,'0.7');
+  frame.element.emit('focusin');assert.equal(frame.element.style.opacity,'1');
+  frame.element.emit('focusout',{relatedTarget:document.body});assert.equal(frame.element.style.opacity,'0.7');
+  frame.element.emit('pointerleave');assert.equal(frame.element.style.opacity,'0.2');
+  dock.opaque.checked=true;dock.opaque.emit('change');
+  assert.equal(frame.element.style.opacity,'1');assert.equal(stored.at(-1).transparencyDisabled,true);
+  dock.commit({type:'transparency-disabled',value:false});assert.equal(frame.element.style.opacity,'0.2');
+  dock.place('Graph','dock','right');assert.equal(frame.element.style.opacity,'1');
+  assert.equal(dock.state.panels.Graph.opacity,20);assert.equal(rendered.length,count);
+});
+
+test('palette selector preserves the replacement palette appearance preference',t=>{
+  const {dock}=docking(t);
+  dock.commit({type:'opacity',id:'Graph',opacity:20,rolloverOpacity:70});
+  const properties=dock.frames.get('Properties');
+  properties.selector.value='Graph';properties.selector.emit('change');
+  assert.equal(dock.state.panels.Graph.opacity,20);assert.equal(dock.state.panels.Graph.rolloverOpacity,70);
+  const saved=dock.snapshot();dock.restore(saved);
+  assert.equal(dock.state.panels.Graph.opacity,20);assert.equal(dock.state.panels.Properties.opacity,100);
+});
+
+test('an appearance modal owns its anchored palette until close and survives repeated requests',t=>{
+  const {dock}=docking(t);
+  dock.show('Graph',{mode:'auto'});dock.reveal('Graph');
+  const owned={dialog:{open:true},close(){this.dialog.open=false;}};
+  dock.appearance=owned;dock.appearanceId='Graph';
+  assert.equal(dock.hideAuto({implicit:true}),false);
+  dock.outside({target:document.body});
+  assert.equal(dock.autoId,'Graph');
+  dock.editAppearance('Properties');assert.equal(dock.appearance,owned);
+  dock.keepOpen=()=>true;
+  dock.escape({key:'Escape',preventDefault(){throw new Error('The modal must own Escape.');}});
+  assert.equal(dock.autoId,'Graph');
+  owned.close();dock.keepOpen=()=>false;
+  assert.equal(dock.hideAuto({implicit:true}),true);
 });

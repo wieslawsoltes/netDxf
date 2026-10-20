@@ -73,8 +73,8 @@ public static class SymbolAuthoring
         var insert = edit.AddEntity(owner, "netDxf.Entities.Insert", P(("Block", R(block)), ("Position", V(position)), ("Rotation", N(rotation)),
             ("Scale", V(new(scale,scale,scale))), ("Normal", V(Vec3.UnitZ)), ("Layer", layerValue.Value), ("Attributes", new ShadowValue.Sequence(attributes))));
         var working = edit.Build().Apply(snapshot);
-        if (!blockValue.Exists) working = Attach(working, block, new("symbols", "definition", symbol.Id + "@" + symbol.Version, symbol.Name, symbol.Id, symbol.Version, Properties: SymbolNative.DefinitionProperties(symbol), Ports: symbol.Ports)).Patch.Apply(working);
-        working = Attach(working, insert, new(module, symbol.Category, Guid.NewGuid().ToString("N"), tag, symbol.Id, symbol.Version, values.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase), SymbolNative.Ports(symbol.Ports, values), [])).Patch.Apply(working);
+        if (!blockValue.Exists) working = Attach(working, block, new("symbols", "definition", symbol.Id + "@" + symbol.Version, symbol.Name, symbol.Id, symbol.Version, Properties: SymbolNative.DefinitionProperties(symbol), Ports: symbol.Ports) { Passages = symbol.Passages }).Patch.Apply(working);
+        working = Attach(working, insert, new(module, symbol.Category, Guid.NewGuid().ToString("N"), tag, symbol.Id, symbol.Version, values.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase), SymbolNative.Ports(symbol.Ports, values), []) { Passages = symbol.Passages }).Patch.Apply(working);
         cancellationToken.ThrowIfCancellationRequested();
         return new("Place " + symbol.Name, ShadowGraphPatch.Between(snapshot, working), [insert]);
     }
@@ -83,7 +83,9 @@ public static class SymbolAuthoring
         var chunks = DomainMetadata.Chunks(data); var entity = snapshot.Read(target);
         if (!entity.Exists) throw new ArgumentException("Unknown metadata target.");
         var edit = new ShadowGraphEdit(snapshot);
-        var registry = snapshot.Document["ApplicationRegistries"].Items.FirstOrDefault(a => a["Name"].Text == DomainMetadata.ApplicationName).Id;
+        var existingRegistry = snapshot.Document["ApplicationRegistries"].Items.FirstOrDefault(a => a["Name"].Text.Equals(DomainMetadata.ApplicationName, StringComparison.OrdinalIgnoreCase));
+        var registry = existingRegistry.Id;
+        var registryName = registry is null ? DomainMetadata.ApplicationName : existingRegistry["Name"].Text;
         if (registry is null)
         {
             registry = edit.Create("netDxf.Tables.ApplicationRegistry", ShadowObjectKind.Table, P(("Name", S(DomainMetadata.ApplicationName))));
@@ -91,8 +93,16 @@ public static class SymbolAuthoring
         }
         var records = chunks.Select(chunk => R(edit.Create("netDxf.XDataRecord", ShadowObjectKind.Object, P(("Code", new ShadowValue.Atom("netDxf.XDataCode", "String")), ("Value", S(chunk)))))).ToImmutableArray();
         var value = edit.Create("netDxf.XData", ShadowObjectKind.Object, P(("ApplicationRegistry", R(registry.Value)), ("XDataRecord", new ShadowValue.Sequence(records))));
-        var pair = new ShadowValue.Structure(typeof(KeyValuePair<string,XData>).FullName!, P(("Key", S(DomainMetadata.ApplicationName)), ("Value", R(value))).ToImmutableDictionary());
-        var pairs = entity["XData"].Items.Where(p => p["Key"].Text != DomainMetadata.ApplicationName).Select(p => p.Value).Append(pair).ToImmutableArray();
+        // Native XDATA keys use the registered name's exact spelling. Retain
+        // that key and its position between unrelated application payloads.
+        var pair = new ShadowValue.Structure(typeof(KeyValuePair<string,XData>).FullName!, P(("Key", S(registryName)), ("Value", R(value))).ToImmutableDictionary());
+        var replaced = false;
+        var pairs = entity["XData"].Items.Select(p =>
+        {
+            if (!p["Key"].Text.Equals(DomainMetadata.ApplicationName, StringComparison.OrdinalIgnoreCase)) return p.Value;
+            replaced = true; return pair;
+        }).ToImmutableArray();
+        if (!replaced) pairs = pairs.Add(pair);
         if (entity["XData"].Id is { } existingDictionary) edit.ReplaceSequence(existingDictionary, "$items", pairs);
         else
         {

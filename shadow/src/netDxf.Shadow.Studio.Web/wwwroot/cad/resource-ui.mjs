@@ -8,7 +8,7 @@ const button=(label,onclick,disabled=false)=>el('button',{type:'button',text:lab
 const idOf=value=>typeof value==='string'?value:value?.value;
 
 /** Accessible resource dialogs; all writes retain the document/workspace/view receipt opened by the user. */
-export function resourceTools({client,edit,dialog,run,editable}){
+export function resourceTools({client,edit,dialog,run,editable,layerFilters}){
   async function manager(kind,initialId=null,create=false){
     editable();if(client.busy)throw new Error('Finish the current edit before managing resources.');const key=client.key,data=await client.read('resources');if(!data||client.key!==key)return;
     const current=()=>{editable();if(client.key!==key||client.busy)throw new Error('The drawing changed while the resource manager was open. Open the manager again.');};
@@ -20,6 +20,7 @@ export function resourceTools({client,edit,dialog,run,editable}){
     const remove=button('Delete',()=>{requested='delete';document.getElementById('dialog').close('ok');});
     const copy=button('New from selected',()=>load(selected,true));
     const actions=el('div',{class:'resource-actions'},[button('New',()=>load(null,true)),copy,makeCurrent,remove]);
+    if(kind==='layer'&&layerFilters)actions.append(button('Filters and isolation',()=>{requested='filters';document.getElementById('dialog').close('ok');}));
     function choose(){const item=rows.find(r=>r.status.id===list.value);if(item)load(item);}
     function filter(){const chosen=list.value;list.replaceChildren(...rows.filter(r=>`${r.status.name} ${r.description||''}`.toLowerCase().includes(search.value.toLowerCase())).map(r=>el('option',{value:r.status.id,text:`${r.status.current?'✓ ':''}${r.status.name}${r.status.uses?' •':''}`})));if([...list.options].some(o=>o.value===chosen))list.value=chosen;}
     list.addEventListener('change',choose);search.addEventListener('input',filter);
@@ -36,6 +37,7 @@ export function resourceTools({client,edit,dialog,run,editable}){
     const root=el('div',{class:'resource-manager'},[el('aside',{},[search,list,actions,status]),panel]);filter();load(create?null:rows.find(r=>r.status.id===initialId)||rows.find(r=>r.status.current)||rows[0],create);
     const accepted=await dialog(`${label} manager`,[root,el('p',{class:'hint',text:kind==='layer'?'On/off, freeze, lock, plot, color, linetype, lineweight, transparency and new-viewport defaults are source properties. Plot styles and viewport-specific overrides are not implemented.':kind==='textstyle'?'Font names reference document resources or installed fonts. Upload SHX/SHP using the existing Resources command. Vertical writing depends on font support. Fixed height 0 allows per-object height.':'Positive segment lengths draw dashes, negative lengths are gaps, and 0 is a dot. Complex segments use document text/shape styles. LIN loading does not read server paths. Shapes need a numeric DXF shape identifier.'})],'Apply');
     document.getElementById('dialog-submit').disabled=false;if(!accepted)return;current();
+    if(requested==='filters'){await layerFilters();return;}
     if(requested!=='save'){await edit('resource',{resource:{kind,action:requested,id:{value:selected.status.id}}},{expectedKey:key});return;}
     const values=readValues();
     if(kind==='layer')await edit('layer',{layer:{...values,...(!fresh?{id:{value:selected.status.id}}:{})}},{expectedKey:key});

@@ -1,10 +1,12 @@
 import { el, group, tool } from './ui.mjs';
 import { moduleRequest, moduleSession } from './module-contracts.mjs';
+import { domainConnectivityTools } from './domain-connectivity-ui.mjs';
 
-export function moduleTools({client,edit,dialog,report,editable,place,showPalette,changed,viewport}) {
+export function moduleTools({client,edit,dialog,report,editable,place,showPalette,changed,viewport,download,snapshot=()=>null}) {
   if (!document.querySelector('link[data-cad-modules]')) document.head.append(el('link',{rel:'stylesheet',href:new URL('./modules.css',import.meta.url).href,'data-cad-modules':''}));
   let descriptors = [], loaded = '', pending = null, chosen = '', section = 'symbols', epoch = 0, result = null, query = '', offset = 0, dataOffset = 0, analysisTolerance = '.01';
   const applied = new Set();
+  const connectivity = domainConnectivityTools({client,selectEntities,report,download,snapshot});
   const configurationKey = () => JSON.stringify([client.id,client.state?.documentId,client.data?.moduleConfigurationVersion]);
   const button = (text,action,attrs={}) => el('button',{type:'button',text,...attrs,onclick:()=>Promise.resolve().then(action).catch(report)});
   const row = (label,control) => el('label',{class:'form-row'},[el('span',{text:label}),control]);
@@ -39,7 +41,7 @@ export function moduleTools({client,edit,dialog,report,editable,place,showPalett
     const state=descriptors.find(m=>m.descriptor.id===id);
     const commands=state?.descriptor.commands || [];
     return [group('Author',commands.map(c=>tool(`module-command:${id}:${c.id}`,c.name,true,c.requiresSymbol))),
-      group('Discipline',[tool(`module-open:${id}:symbols`,'Symbol library',true,true),tool(`module-open:${id}:data`,'Data manager',true),tool(`module-open:${id}:validation`,'Validate',true),tool('modules','Modules',true)])];
+      group('Discipline',[tool(`module-open:${id}:symbols`,'Symbol library',true,true),tool(`module-open:${id}:data`,'Data manager',true),tool(`module-open:${id}:validation`,'Validate',true),tool(`module-open:${id}:connectivity`,'Connectivity',true),tool('modules','Modules',true)])];
   }
   async function action(name) {
     if(name==='modules'){chosen='';showPalette('Modules');return true;}
@@ -77,6 +79,7 @@ export function moduleTools({client,edit,dialog,report,editable,place,showPalett
     if(position){viewport.camera.x=position.x;viewport.camera.y=position.y;viewport.changed();}
   }
   function render(container) {
+    connectivity.hide();
     const generation=++epoch;
     const current=()=>generation===epoch && container.isConnected;
     container.replaceChildren(el('p',{class:'intro',text:'Optional discipline toolsets. Turning a module off preserves its drawing objects and data.'}));
@@ -88,11 +91,12 @@ export function moduleTools({client,edit,dialog,report,editable,place,showPalett
       return;
     }
     const descriptor=descriptors.find(m=>m.descriptor.id===chosen).descriptor;
-    container.append(el('div',{class:'module-tabs'},[['symbols','Symbols'],['data','Data manager'],['validation','Validation']].map(([mode,title])=>button(title,()=>{section=mode;result=null;changed();},{'aria-pressed':section===mode}))));
+    container.append(el('div',{class:'module-tabs'},[['symbols','Symbols'],['data','Data manager'],['validation','Validation'],['connectivity','Connectivity']].map(([mode,title])=>button(title,()=>{section=mode;result=null;changed();},{'aria-pressed':section===mode}))));
     const output=el('div',{'aria-live':'polite'}); const key=client.key,id=chosen,mode=section;
     const cacheKey=JSON.stringify([configurationKey(),client.state?.workspaceId,client.state?.viewVersion,client.state?.layout,client.state?.revision]);
     let requestGeneration=0;
     const valid=request=>current()&&client.key===key&&id===chosen&&mode===section&&(request===undefined||request===requestGeneration);
+    if(section==='connectivity'){container.append(output);connectivity.render(output,id);return;}
     if(section==='symbols'){
       const search=el('input',{value:query,placeholder:'Search symbols, tags or standards','aria-label':'Search symbol library',maxlength:256});
       const run=async(start=0)=>{const request=++requestGeneration;query=search.value;offset=start;output.replaceChildren(el('p',{text:'Searching…'}));try{const data=await client.read('modules/symbols',{body:{module:id,query,offset:start,limit:30}});if(valid(request)&&data){result={key:cacheKey,id,mode,data,query,offset:start};showSymbols(data,start);}}catch(error){if(valid(request))throw error;}};
@@ -127,5 +131,5 @@ export function moduleTools({client,edit,dialog,report,editable,place,showPalett
       if(result?.key===cacheKey&&result.id===id&&result.mode===mode&&result.tolerance===analysisTolerance)showAnalysis(result.data);
     }
   }
-  return {sync,ribbon,action,render,open,launch,catalog:()=>descriptors};
+  return {sync,ribbon,action,render,open,launch,hide:()=>connectivity.hide(),catalog:()=>descriptors};
 }
