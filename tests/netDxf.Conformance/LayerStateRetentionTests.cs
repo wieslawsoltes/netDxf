@@ -1,6 +1,6 @@
 // Copyright (c) netDxf contributors. Licensed under the MIT License.
-// Retains PR #224's original assertions under distinct helper/result/fixture names
-// so its different corpus can coexist with the subsequent populated-state suite.
+// Retains PR #224's corpus under distinct helper/result/fixture names, with
+// persisted restore masks now covered as supported, identity-preserving data.
 using System.Globalization;
 using netDxf;
 using netDxf.Entities;
@@ -22,8 +22,9 @@ internal static partial class Program
             Run($"layer-state-retention/references/{version}/{binary}", () => Ls224References(version, binary));
             Run($"layer-state-retention/owners/{version}/{binary}", () => Ls224Owners(version, binary));
             Run($"layer-state-retention/edits/{version}/{binary}", () => Ls224Edits(version, binary));
+            Run($"layer-state-retention/restore-mask/{version}/{binary}", () => Ls224RestoreMask(version, binary));
+            Run($"layer-state-retention/unsupported-source/{version}/{binary}", () => Ls224Unsupported(version, binary));
         }
-        Run("layer-state-retention/unsupported-source", Ls224Unsupported);
         Run("layer-state-retention/duplicate-identities", Ls224Duplicates);
         Run("layer-state-retention/retention-count-boundary", Ls224CountBoundary);
     }
@@ -143,21 +144,52 @@ internal static partial class Program
         clone.Name = "Independent"; var target = Ls224Seed(version, 0); target.Layers.StateManager.Add(clone);
         Check(!ReferenceEquals(clone, state) && ReferenceEquals(clone.Owner, target.Layers.StateManager), "Clone aliases source owner");
     }
-    private static void Ls224Unsupported()
+    private static void Ls224RestoreMask(DxfVersion version, bool binary)
     {
-        byte[] seed = LsiSave(Ls224Seed(DxfVersion.AutoCad2018, 1), false); var ids = LsiIds(seed);
+        byte[] seed = LsiSave(Ls224Seed(version, 1), binary); var ids = LsiIds(seed);
+        using var stream = new MemoryStream(seed); var raw = DxfRawDocument.Load(stream);
+        var record = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "XRECORD");
+        string handle = LsiHandle(record);
+        // Each signed Int32 bit, including the formerly unsupported 2048, is
+        // persisted metadata. Zero, combined and all-bit values catch masking.
+        var masks = Enumerable.Range(0, 32).Select(bit => unchecked(1 << bit))
+            .Concat(new[] { 0, 2047, int.MaxValue, -1, unchecked((int)0xA5A55A5A) });
+        foreach (int mask in masks)
+        {
+            var changed = raw.WithRecord(record, record.Tags.Select(t => t.Code == 91 ? new DxfTag(91, mask) : t));
+            using var output = new MemoryStream(); changed.Save(output, binary);
+            byte[] bytes = output.ToArray(); var expected = Ls224Packets(bytes);
+            for (int generation = 0; generation < 3; generation++)
+            {
+                var loaded = LsiLoad(bytes); LsiRegistered(loaded, ids);
+                var state = loaded.Layers.StateManager["STATE_0"];
+                Equal(mask, (int)state.RestoreMask, "Stored restore-mask bits changed");
+                Equal(mask, (int)((LayerState)state.Clone()).RestoreMask, "Cloning changed restore-mask bits");
+                Check(state.Handle == handle && ReferenceEquals(loaded.GetObjectByHandle(handle), state),
+                    "Supported restore mask lost the original state identity");
+                bytes = LsiSave(loaded, generation % 2 == 0 ? !binary : binary);
+                Equal(ids, LsiIds(bytes), "Supported restore mask lost dictionary identities");
+                Ls224Compare(expected, bytes);
+            }
+        }
+    }
+    private static void Ls224Unsupported(DxfVersion version, bool binary)
+    {
+        byte[] seed = LsiSave(Ls224Seed(version, 1), binary); var ids = LsiIds(seed);
         for (int mode = 0; mode < 4; mode++)
         {
             using var stream = new MemoryStream(seed); var raw = DxfRawDocument.Load(stream);
             var record = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "XRECORD");
             var tags = record.Tags.ToList();
             if (mode == 0) tags.Add(new DxfTag(90, 123));
-            else if (mode == 1) tags[tags.FindIndex(t => t.Code == 91)] = new DxfTag(91, 2048);
+            // A mask value is supported; a duplicate packet field is still lossy.
+            else if (mode == 1) tags.Insert(tags.FindIndex(t => t.Code == 91), new DxfTag(91, 2048));
             else if (mode == 2) tags[tags.FindIndex(t => t.Code == 280)] = new DxfTag(280, (short)2);
             else tags.Insert(tags.FindIndex(t => t.Code == 100), new DxfTag(90, 999));
-            raw = raw.WithRecord(record, tags); using var output = new MemoryStream(); raw.Save(output, false);
+            raw = raw.WithRecord(record, tags); using var output = new MemoryStream(); raw.Save(output, binary);
             var loaded = LsiLoad(output.ToArray());
-            Check(LsiIds(LsiSave(loaded, false)) != ids, "Unsupported/lossy payload incorrectly advertised as retained");
+            Check(LsiIds(LsiSave(loaded, !binary)) != ids,
+                $"Unsupported/lossy payload mode {mode} incorrectly advertised as retained");
         }
     }
     private static void Ls224CountBoundary()
