@@ -255,8 +255,15 @@ def verify(base, mount, browser, passed):
         # Let the debounced render and image decode complete before recording evidence.
         # Correctness is asserted independently by the native state and render checks.
         page.wait_for_timeout(1000)
-        expect(page.locator('#history .error')).to_have_count(0)
-        check('CAD user workflow has no reported operation errors')
+        # Only the transform fixture's individually verified negative-input row is
+        # acknowledged. Keep its error class and reject other errors or duplicates.
+        reported = page.locator('#history .error').evaluate_all(
+            "rows=>rows.map(row=>({text:row.textContent,expected:row.dataset.testExpectedError}))")
+        acknowledged = [item for item in reported
+                        if item.get('expected') == 'scale-reference-negative'
+                        and item['text'] == 'Specify a positive length or factor of at least 1e-9.']
+        assert len(acknowledged) <= 1 and len(reported) == len(acknowledged), reported
+        check('CAD user workflow has no unexpected reported operation errors')
         page.screenshot(path=str(OUTPUT / f'{tag}-cad.png'))
         page.set_viewport_size({'width': 900, 'height': 680})
         check('compact layout does not overflow horizontally', page.evaluate('document.documentElement.scrollWidth <= innerWidth'))

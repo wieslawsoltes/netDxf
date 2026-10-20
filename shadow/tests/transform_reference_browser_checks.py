@@ -107,7 +107,14 @@ def verify_transform_reference(page, output, state, command, wait_state, idle, c
         select(line.dxf.handle)
         before = state()['state']
         command('SCALE 10,20 R', False)
+        errors = page.locator('#history .error')
+        error_count = errors.count()
         answer('-1', 'reference length')
+        expect(errors).to_have_count(error_count + 1)
+        expected_error = errors.nth(error_count)
+        expect(expected_error).to_have_text('Specify a positive length or factor of at least 1e-9.')
+        expected_error.evaluate("row=>row.dataset.testExpectedError='scale-reference-negative'")
+        check('negative SCALE reference reports exactly one expected validation error')
         check('invalid negative reference length does not publish geometry or history',
               state()['state']['revision'] == before['revision'] and state()['state']['undoCount'] == before['undoCount'])
         answer('10,20', 'second reference length point')
