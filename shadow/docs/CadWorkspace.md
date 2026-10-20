@@ -123,6 +123,35 @@ regeneration, all grip/modify variants and full plot/page-setup
 workflows are not implemented by this UI. Existing imported content retains
 the shadow renderer's documented capability/diagnostic boundaries.
 
+## Selection cycling
+
+**Selection cycling** is available from the View ribbon, command search and the
+**CYCLE** status button. When enabled, an overlap marker appears over multiple
+hit objects; click to open a compact list and hover or use arrow keys to preview
+each candidate. Enter chooses it, Escape cancels. Shift+Space in the viewport
+temporarily enables cycling; repeated clicks cycle candidates before Enter.
+The toggle persists as a UI preference. Browser-reserved Ctrl+W is not rebound.
+The overlap list and temporary shortcut follow Autodesk's
+[selection cycling workflow](https://help.autodesk.com/cloudhelp/2025/ENU/AutoCAD-DidYouKnow/files/GUID-D6B80776-EB76-4B70-BAC3-1E3778B910DA.htm).
+
+Candidates use native hit testing in reverse paint order and are deduplicated
+by selectable source root. Nested block geometry identifies its actual hit
+occurrence while selecting the owning INSERT; projected model objects select
+their paper-space viewport root. The chooser preserves additive/removal
+selection and active modification-command behavior, including BREAK's picked
+point. It stays out of point acquisition, crossing-only STRETCH, grips, graph
+picking, modal dialogs and retained snapshots.
+
+Preview highlights do not change source selection or history. Text, image and
+clipped occurrences use explicitly approximate bounds. Queries are identity-
+and layout-bound, cancellation-aware and limited to 64 returned roots, 8,192
+spatial candidates, 250,000 geometry vertices, 1,024 preview vertices and a
+128 KiB response. Zoom in if the aperture exceeds its work budget.
+
+`selection-cycling.mjs` supplies the DOM-free query lifecycle and bounded
+response model; `selection-cycling-ui.mjs` supplies the chooser. Native and WASM
+use the same `POST /api/cad/{id}/selection-candidates` contract.
+
 ## Reusable boundaries
 
 - `netDxf.Shadow.Drafting`: immutable command/query/grip/layer contracts and
@@ -162,6 +191,9 @@ The existing native verification, conformance, package/runtime and qualification
 gates remain active.
 
 ## Block and hatch authoring
+
+Layer-state editing and portable saved settings are documented in
+[Saved layer states and LAS transfer](LayerStates.md).
 
 The Blocks palette and Insert ribbon now expose **Create block**, **Redefine**
 and **Rename**. The Home ribbon exposes **Hatch**, **Edit hatch** and a
