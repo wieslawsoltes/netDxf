@@ -24,6 +24,22 @@ restore each palette's visibility, docking side, mode and size; reset returns to
 one Properties palette on the right. Old single-palette preferences migrate.
 Drawing files and undo history are unaffected by layout changes.
 
+Dragging a palette now shows left/right docking targets and a shaded preview.
+Release over a target to dock; hold Ctrl to keep the palette floating. Escape or
+pointer cancellation restores the previous layout. Menu docking remains available
+to keyboard and touch users, and the layout lock also prevents drag docking.
+
+**UI workspaces** in the document bar, View or Manage ribbon opens saved layouts.
+The Drafting and Graph analysis presets provide starting arrangements. Save the
+current palette positions, ribbon display/tab and command-line visibility under
+a name, then apply, update, rename or delete it later. Up to 24 layouts are stored
+locally in the browser. `WORKSPACE` and `WSSAVE` open the same manager. This follows
+the task-oriented display arrangement described in Autodesk's
+[workspace documentation](https://help.autodesk.com/cloudhelp/2020/ENU/AutoCAD-Core/files/GUID-52902E88-41B8-4890-A2FF-E47332CBD0D8.htm).
+Drawing branches remain under **Immutable workspaces**. UI layouts exclude
+drawings, drafting aids, discipline enablement and agent credentials/settings.
+Storage failures are reported instead of claiming a layout was saved.
+
 The ribbon display menu offers **Full ribbon**, **Panel buttons**, **Panel
 titles** and **Tabs only**. The adjacent arrow cycles these modes; double-click
 a tab toggles the full/tabs modes. Tabs-only mode opens a temporary ribbon when
@@ -57,3 +73,15 @@ space allocation, independent palettes, locking and ribbon display restoration.
 The shared native/WASM browser fixture exercises simultaneous Graph/Properties,
 opposite docks, floating movement/resizing, auto-hide, reopening, reset and all
 four ribbon display modes.
+
+Block editing opens a contextual **Block Editor** ribbon tab. Definition save and
+discard controls remain available when using other ordinary tabs. Discipline tabs
+are disabled during block editing, and leaving the editor restores the previously
+active enabled tab. In Panel titles mode, clicking a hovered panel enters its tools;
+Escape returns focus to its launcher.
+
+`workspace-profiles.mjs` supplies bounded preference normalization, presets,
+explicit updates and injected storage. `workspace-profile-ui.mjs` uses host
+capture/restore callbacks; `PaletteDock.restore()` cancels gestures and old content
+lifetimes before restoring a sanitized, viewport-clamped layout. These components
+are shared by native and standalone WASM Studio.

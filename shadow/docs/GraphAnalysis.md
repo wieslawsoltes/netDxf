@@ -64,3 +64,42 @@ The executable checks topology counts, multi-edge/self-loop cut analysis, articu
 `TopologyGraph.Visualize(GraphVisualizationOptions)` is a reusable library API in `netDxf.Shadow.Graph`. Its immutable pages include global feature annotations and exact source occurrence links, support cancellation, and cache the topology's component/cut index through a weak reference. `graph-visualization.mjs` is renderer-independent: normalization, bounded projection merging, styles, legend, screen-space hit testing and SVG export are shared by the Studio UI. `graph-ui.mjs` binds those helpers to host callbacks; native and WASM use the same modules and query route.
 
 The shared real-browser graph fixture exercises actual projection and SVG/JSON export, endpoint picking, path source selection, cycle/forest highlights and option invalidation on both native and WASM hosts. Native HTTP checks exercise graph keys, missing/wrong identity, independent paging and budget rejection. No provider credentials or paid model calls are required.
+
+## Source object references
+
+**Graph → Object references**, the **References** palette, or `REFGRAPH` opens a
+directed source-object graph. This complements geometric topology: a line's Layer
+reference, an INSERT's block definition and collection membership are object
+relationships rather than pipes or sampled curves. Start from the document root,
+entered object IDs, selected drawing roots or a discovered layer/block/object.
+Choose outgoing dependencies or incoming references. Arrows always point from
+the owning source property to its target, including during incoming exploration.
+Property paths use JSON Pointer escaping and retain collection indices, so parallel
+references are individually inspectable.
+
+`ReferenceGraphIndex` in `netDxf.Shadow.Graph` builds an immutable, cancellable
+reference index. `Explore(ReferenceGraphOptions)` performs bounded breadth-first
+exploration, retains cycles, self references and explicit missing targets, and
+reports node, edge and depth limits independently. Defaults are depth 2, 100 nodes
+and 500 edges; supported maxima are depth 16, 1,000 nodes and 4,000 edges. The index
+refuses more than 100,000 objects or 2,000,000 captured values by default, and
+bounds queued plus retained path text to 16 Mi characters (8,192 per path). These
+index limits fail explicitly; exploration limits return a clearly partial result.
+
+The read-only MCP `graph_reference_graph` tool and existing Studio graph-query
+route share the implementation. Arguments are `roots` (up to 200 object IDs,
+default document root), `direction` (`outgoing`/`incoming`), `depth`,
+`maximumNodes`, `maximumEdges`, independent `nodeOffset`/`nodeLimit` and
+`edgeOffset`/`edgeLimit`, plus optional `referenceKey`. Each continuation must retain
+the roots, direction, budgets and key. The key binds the exact captured snapshot,
+document, workspace and view. Paging adapts to the serialized host response budget.
+Node/edge totals describe the bounded exploration; they are not full-document
+counts. Source reads and diagram navigation do not create history entries.
+
+The reusable `reference-graph-model.mjs` and `reference-graph-ui.mjs` provide the
+same explorer in native and WASM Studio. The diagram limits itself to 120 nodes
+and 400 references; lists and JSON use the loaded exploration. SVG explicitly
+describes its displayed subset. Selection is an explicit action available only
+for exact active drawing roots present in the current bounded scene listing.
+Nested definition objects and resources remain inspectable without pretending
+they are directly selectable drawing occurrences.
