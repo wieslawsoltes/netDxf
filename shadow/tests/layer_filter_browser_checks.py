@@ -89,6 +89,13 @@ def verify_layer_filters(page, output, state, command, wait_state, idle, check):
               box['y'] + box['height'] <= 845 and
               page.locator('.layer-manager').evaluate('node => node.scrollWidth <= node.clientWidth + 1'))
         page.screenshot(path=str(output / 'layer-filters-compact.png'))
+        compact_receipt = receipt()
+        page.get_by_role('checkbox', name='Include layer QA_RenamedPipes', exact=True).check()
+        page.get_by_role('combobox', name='Layer isolation mode', exact=True).select_option('lock')
+        expect(page.get_by_role('button', name='Isolate checked layers', exact=True)).to_be_enabled()
+        check('mobile scrolling reaches layer checkboxes and isolation controls without editing source',
+              receipt() == compact_receipt)
+        page.screenshot(path=str(output / 'layer-filters-compact-controls.png'))
         close_manager()
         page.set_viewport_size(original_viewport)
 
