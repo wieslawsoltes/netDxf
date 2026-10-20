@@ -105,6 +105,8 @@ public static class StudioCadHttp
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadChangeHatchPattern(request, token))));
         routes.MapPost("/{id}/select", (string id, StudioDocumentHub hub, HttpRequest http, CadSelectionRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadSelect(request, token))));
+        routes.MapPost("/{id}/selection-candidates", (string id, StudioDocumentHub hub, HttpRequest http, CadSelectionCandidatesRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadSelectionCandidates(request, token))));
         routes.MapPost("/{id}/snap", (string id, StudioDocumentHub hub, HttpRequest http, CadSnapRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadSnap(request, token))));
         routes.MapPost("/{id}/block/create", (string id, StudioDocumentHub hub, HttpRequest http, CadBlockCreateRequest request, CancellationToken token) =>
@@ -122,6 +124,14 @@ public static class StudioCadHttp
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadLayerIsolation(request, token))));
         routes.MapPost("/{id}/layer-state", (string id, StudioDocumentHub hub, HttpRequest http, CadLayerStateRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadLayerState(request, token))));
+        routes.MapGet("/{id}/layer-state/details", (string id, StudioDocumentHub hub, HttpRequest http) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadLayerStateDetails(http.Query["id"].ToString()))));
+        routes.MapGet("/{id}/layer-state/export", (string id, StudioDocumentHub hub, HttpRequest http, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadLayerStateExport(http.Query["id"].ToString(), token))));
+        routes.MapPost("/{id}/layer-state/preview", (string id, StudioDocumentHub hub, HttpRequest http, CadLayerStatePreviewRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadLayerStatePreview(request, token))));
+        routes.MapPost("/{id}/layer-state/import", (string id, StudioDocumentHub hub, HttpRequest http, CadLayerStateImportRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadLayerStateImport(request, token))));
         routes.MapPost("/{id}/layer", (string id, StudioDocumentHub hub, HttpRequest http, CadLayerRequest request) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadLayer(request))));
         routes.MapPost("/{id}/assign-layer", (string id, StudioDocumentHub hub, HttpRequest http, CadAssignLayerRequest request) =>

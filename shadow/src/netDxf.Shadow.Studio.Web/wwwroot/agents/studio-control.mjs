@@ -3,20 +3,20 @@ import { graphOperations } from '../cad/graph-contracts.mjs';
 const actionNames = new Set([
   'properties','layers','blocks','explorer','workspaces','diagnostics','agents','modules','health','edit-previews','workflows','block-edit','block-save','block-close','block-insert','block-library-import','block-library-export', 'layer-manager', 'layer-filters', 'layer-isolate', 'layer-unisolate', 'layer-states', 'attributes', 'attribute-sync', 'attribute-definitions', 'attribute-create', 'linetypes', 'text-styles',
   'new','demo','open','save','save-as','font','undo','redo','fit','regen','zoom-in','zoom-out','pan','palette','dock','clean',
-  'settings','layer-new','assign-layer','snapshot','snapshots','fork','annotation','linetype','graph','graph-analysis','export-png','export-svg',
+  'settings','selection-cycling','layer-new','assign-layer','snapshot','snapshots','fork','annotation','linetype','graph','graph-analysis','export-png','export-svg',
   'ribbon-customize','ribbon-minimize','ribbon-cycle','ribbon-display','palette-picker','palette-lock','palette-reset','ui-workspaces','reference-graph','graph-load','graph-fit','graph-clear','command-line','command-history',
   'legacy','reset-ui','help','block-create','block-redefine','block-rename','hatch-create','hatch-edit',
   'command-search','quick-access-customize','reference-query:explore','reference-query:components','reference-query:path','reference-query:impact'
 ]);
-const readRoutes = new Set(['state', 'graph', 'hatch/pattern', 'resources', 'attributes', 'attribute-definitions', 'modules', 'edit-previews', 'workflow/status', 'workflow/export', 'block-libraries']);
-const readPostRoutes = new Set(['graph/query','modules/symbols','modules/analyze','modules/connectivity','health','references/capture','references/validate','insert-preview']);
+const readRoutes = new Set(['state', 'graph', 'hatch/pattern', 'resources', 'layer-state/details', 'layer-state/export', 'attributes', 'attribute-definitions', 'modules', 'edit-previews', 'workflow/status', 'workflow/export', 'block-libraries']);
+const readPostRoutes = new Set(['graph/query','modules/symbols','modules/analyze','modules/connectivity','health','references/capture','references/validate','insert-preview','selection-candidates','layer-state/preview']);
 const editRoutes = new Set([
   'command', 'insert', 'block/define', 'block/rename', 'hatch/create', 'hatch/pattern', 'select', 'block/create', 'block/begin',
-  'block/finish', 'grip', 'layer', 'layer-isolation', 'layer-state', 'attributes', 'attribute-definitions', 'assign-layer', 'property', 'history/undo', 'history/redo', 'layout', 'retain', 'fork',
+  'block/finish', 'grip', 'layer', 'layer-isolation', 'layer-state', 'layer-state/import', 'attributes', 'attribute-definitions', 'assign-layer', 'property', 'history/undo', 'history/redo', 'layout', 'retain', 'fork',
   'workspace', 'merge/preview', 'merge/apply', 'annotation-view', 'linetype-view','resource',
   'modules/toggle','modules/command','edit-preview','edit-preview/apply','edit-preview/discard','health/select','workflow/start','workflow/stop','workflow/replay','workflow/roundtrip'
 ]);
-const keys = ['grid', 'snap', 'ortho', 'polar', 'osnap', 'dynamic', 'tracking'];
+const keys = ['grid', 'snap', 'ortho', 'polar', 'osnap', 'dynamic', 'tracking', 'selectionCycling'];
 function finite(value, name, min = -1e12, max = 1e12) {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max)
     throw new Error(`${name} must be finite and between ${min} and ${max}.`);
@@ -39,7 +39,7 @@ export const studioUiActions = Object.freeze([
   { name: 'viewport.fit', description: 'Fit the current drawing bounds.' },
   { name: 'palette.show', description: 'Show Properties, Layers, Blocks, Explorer, Workspaces, Graph, References, Modules, Health, Edit previews, Workflows, or Diagnostics.', arguments: { name: 'Properties' } },
   { name: 'ribbon.show', description: 'Select a ribbon tab.', arguments: { name: 'Home' } },
-  { name: 'settings.set', description: 'Set grid, snap, ortho, polar, osnap, dynamic, tracking, gridStep, snapModes, polarAngle or polarTolerance.' },
+  { name: 'settings.set', description: 'Set grid, snap, ortho, polar, osnap, dynamic, tracking, selectionCycling, gridStep, snapModes, polarAngle or polarTolerance.' },
   { name: 'document.activate', description: 'Activate an open drawing.', arguments: { id: 'document ID' } },
   { name: 'document.create', description: 'Create a new drawing or the sample drawing.', arguments: { demo: false } },
   { name: 'layout.set', description: 'Select a model or paper layout.', arguments: { name: 'Model' } },
@@ -189,6 +189,7 @@ export function installStudioControl(host) {
         }
         if (args.ortho === true) settings.polar = false;
         else if (args.polar === true) settings.ortho = false;
+        if (args.selectionCycling !== undefined) viewport.cancelSelectionCycle?.();
         Object.assign(viewport.settings, settings); host.persist(); host.modes(); viewport.invalidate(); break;
       }
       case 'document.activate':
@@ -216,6 +217,10 @@ export function installStudioControl(host) {
         if(readPostRoutes.has(args.path))return client.read(args.path,{body:{...object(args.body||{}),revision:client.state.revision}});
         if (!readRoutes.has(args.path)) throw new Error('Unsupported CAD read route. Discover the available routes first.');
         const query = new URLSearchParams({ revision: client.state.revision });
+        if(['layer-state/details','layer-state/export'].includes(args.path)){
+          if(typeof args.id!=='string'||!args.id||args.id.length>256)throw new Error('Choose a bounded saved layer-state identity.');
+          query.set('id',args.id);
+        }
         if(args.path==='attribute-definitions'&&args.block!==undefined){if(typeof args.block!=='string'||!args.block||args.block.length>1024)throw new Error('Choose a bounded block identity.');query.set('block',args.block);}
         if(args.path==='attribute-definitions'&&args.currentSpace!==undefined){if(typeof args.currentSpace!=='boolean')throw new Error('Current space must be a boolean.');query.set('currentSpace',String(args.currentSpace));}
         return client.read(`${args.path}?${query}`);

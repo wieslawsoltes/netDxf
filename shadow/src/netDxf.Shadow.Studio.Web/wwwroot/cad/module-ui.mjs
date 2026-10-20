@@ -36,12 +36,12 @@ export function moduleTools({client,edit,dialog,report,editable,place,showPalett
     try {localStorage.setItem('netdxf-cad-modules-v1',JSON.stringify({...preference(),[id]:value}));}catch{}
     loaded='';result=null;await sync();
   }
-  function open(id,mode='symbols') { chosen=id;section=mode;result=null;offset=0;dataOffset=0;showPalette('Modules'); }
+  function open(id,mode='symbols') { if(mode==='structure')connectivity.setOperation('structure');chosen=id;section=mode==='structure'?'connectivity':mode;result=null;offset=0;dataOffset=0;showPalette('Modules'); }
   function ribbon(id) {
     const state=descriptors.find(m=>m.descriptor.id===id);
     const commands=state?.descriptor.commands || [];
     return [group('Author',commands.map(c=>tool(`module-command:${id}:${c.id}`,c.name,true,c.requiresSymbol))),
-      group('Discipline',[tool(`module-open:${id}:symbols`,'Symbol library',true,true),tool(`module-open:${id}:data`,'Data manager',true),tool(`module-open:${id}:validation`,'Validate',true),tool(`module-open:${id}:connectivity`,'Connectivity',true),tool('modules','Modules',true)])];
+      group('Discipline',[tool(`module-open:${id}:symbols`,'Symbol library',true,true),tool(`module-open:${id}:data`,'Data manager',true),tool(`module-open:${id}:validation`,'Validate',true),tool(`module-open:${id}:connectivity`,'Connectivity',true),tool(`module-open:${id}:structure`,'Network structure',true),tool('modules','Modules',true)])];
   }
   async function action(name) {
     if(name==='modules'){chosen='';showPalette('Modules');return true;}
