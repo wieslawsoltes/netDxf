@@ -1,0 +1,41 @@
+/* Compact, bounded command access; dialogs overlay the drawing without moving it. */
+.quick-access.command-quick-access { width:244px; max-width:42vw; min-width:88px; flex:0 1 244px; gap:1px; overflow:hidden; }
+.quick-access.command-quick-access > button { display:flex; width:27px; min-width:27px; height:26px; flex:0 0 27px; align-items:center; justify-content:center; padding:3px; }
+.quick-access.command-quick-access > button:disabled { opacity:.4; }
+.command-access-dialog { width:min(660px,calc(100vw - 24px)); max-width:calc(100vw - 24px); max-height:calc(100dvh - 32px); box-sizing:border-box; padding:0; color:#e4ebf3; background:#242d37; border:1px solid #708397; border-radius:6px; box-shadow:0 16px 60px #0009; overflow:hidden; }
+.command-access-dialog[open] { display:flex; flex-direction:column; }
+.command-access-dialog::backdrop { background:#0005; }
+.command-access-dialog > header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 12px; }
+.command-access-dialog h2 { font-size:16px; margin:0; }
+.command-access-dialog h3 { font-size:12px; margin:0 0 8px; color:#bfd3e7; }
+.command-access-dialog button { min-height:32px; border:1px solid #526273; color:inherit; background:#303e4c; border-radius:3px; cursor:pointer; }
+.command-access-dialog button:hover:not(:disabled) { background:#3b5266; }
+.command-access-dialog button:disabled { opacity:.48; cursor:not-allowed; }
+.command-access-dialog button:focus-visible,.command-access-dialog input:focus-visible { outline:2px solid #8eceff; outline-offset:-2px; }
+.command-access-dialog > header button { width:34px; font-size:20px; }
+.command-access-tabs { display:flex; gap:6px; padding:0 12px 8px; }
+.command-access-tabs button { padding:4px 12px; }
+.command-access-tabs [aria-pressed="true"] { background:#245678; border-color:#7faece; }
+.command-access-dialog > input { box-sizing:border-box; margin:0 12px; padding:9px 10px; min-height:38px; min-width:0; border:1px solid #71869c; border-radius:4px; color:inherit; background:#17222d; font-size:14px; }
+.command-access-status { min-height:16px; margin:8px 12px; font-size:12px; color:#bfd3e7; }
+.command-access-results { overflow:auto; min-height:60px; flex:1 1 auto; overscroll-behavior:contain; padding:0 12px 8px; }
+.command-access-result { display:grid; grid-template-columns:minmax(0,1fr) 36px; gap:3px 6px; margin-bottom:6px; }
+.command-access-dialog .command-access-run { text-align:left; padding:7px 9px; overflow-wrap:anywhere; min-width:0; }
+.command-access-run strong,.command-access-run small { display:block; }
+.command-access-run small { margin-top:3px; color:#bad0e3; font-size:11px; }
+.command-access-reason { grid-column:1/-1; color:#c4ab8a; padding:0 9px; font-size:11px; }
+.command-access-reason:empty,.command-access-pin-row small:empty { display:none; }
+.command-access-pins { flex:0 1 auto; max-height:34dvh; overflow:auto; padding:0 12px 10px; margin-bottom:8px; border-bottom:1px solid #526273; }
+.command-access-pins[hidden] { display:none; }
+.command-access-pin-row { display:grid; grid-template-columns:minmax(0,1fr) repeat(3,32px); gap:5px; margin-bottom:5px; }
+.command-access-pin-row small { grid-column:1/-1; color:#c4ab8a; }
+.command-access-dialog > footer { padding:8px 12px; border-top:1px solid #526273; display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:11px; color:#bfd3e7; }
+.command-access-dialog > footer button { padding:4px 8px; }
+@media(max-width:700px) {
+  .quick-access.command-quick-access > button:nth-child(n) { display:flex; }
+  .quick-access.command-quick-access { flex-basis:140px; max-width:36vw; }
+  .command-access-dialog { width:calc(100vw - 16px); max-width:calc(100vw - 16px); max-height:calc(100dvh - 16px); }
+  .command-access-dialog button { min-height:38px; }
+  .command-access-dialog > footer > span { max-width:45%; }
+  .command-access-pins { max-height:29dvh; }
+}
