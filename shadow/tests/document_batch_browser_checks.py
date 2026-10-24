@@ -33,9 +33,24 @@ def verify_document_batches(page, output, state, command, wait_state, idle, chec
 
     execute('command.cancel')
     execute('ui.action', {'name': 'command-line-show'})
-    for index in range(2):
+    # The full geometry suite may already occupy all eight document slots.
+    # Reuse its drawings and reserve one slot for the delayed import below.
+    # This fixture runs only after their save and round-trip assertions.
+    existing = snapshot()['documents']
+    if len(existing) >= 8:
+        spare = next((document for document in existing if not document['dirty']), existing[-1])
+        execute('document.activate', {'id': spare['id']})
+        if spare['dirty']:
+            wait_batch(execute('ui.action', {'name': 'save'}))
+        execute('ui.action', {'name': 'file-tabs-show'})
+        page.locator(f'[data-document-tab="{spare["id"]}"] .close').click()
+        wait_for_ui(page, """id => !shadowStudioAgentUi.snapshot().documents.some(document => document.id === id)""",
+                    arg=spare['id'])
+        idle()
+    while len(snapshot()['documents']) < 2:
         execute('document.create')
-        command(f'POINT {41 + index},23')
+        command('POINT 41,23')
+    execute('document.activate', {'id': snapshot()['documents'][-1]['id']})
     before = snapshot()
     original = before['documentId']
     targets = [document['id'] for document in before['documents']]
