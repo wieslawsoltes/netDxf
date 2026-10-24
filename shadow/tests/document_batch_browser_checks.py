@@ -193,6 +193,7 @@ def verify_document_batches(page, output, state, command, wait_state, idle, chec
     finally:
         page.evaluate('() => { globalThis.__documentBatchProbe?.restore(); delete globalThis.__documentBatchProbe; }')
         page.remove_listener('download', downloaded)
+    verify_saved_drawing_close(page, check)
 
 
 def verify_command_completion_receipt(page, check):
@@ -281,3 +282,80 @@ def verify_command_completion_receipt(page, check):
           globalThis.__commandCompletionProbe.activation.status !== 'running'""")
         execute('document.activate', {'id': original})
         page.evaluate('() => { delete globalThis.__commandCompletionProbe; }')
+
+
+def verify_saved_drawing_close(page, check):
+    """Close a saved drawing while Save's first document refresh is still held."""
+    def execute(name, arguments):
+        return page.evaluate('([name, args]) => shadowStudioAgentUi.execute(name, args)', [name, arguments])
+
+    def wait_operation(receipt):
+        if not receipt.get('pending'):
+            return
+        operation = wait_for_ui(page, """id => {
+          const value = shadowStudioAgentUi.snapshot().ui.pending.find(item => item.id === id);
+          return value && value.status !== 'running' ? value : null;
+        }""", arg=receipt['operationId'])
+        assert operation['status'] == 'completed', operation.get('error', operation)
+
+    execute('ui.action', {'name': 'file-tabs-show'})
+    wait_operation(execute('command', {'text': 'POINT 97,43'}))
+    before = page.evaluate('() => shadowStudioAgentUi.snapshot()')
+    original = before['documentId']
+    assert len(before['documents']) == 1 and before['document']['dirty']
+    page.evaluate("""id => {
+      const fetch = globalThis.fetch, history = document.getElementById('history');
+      const existing = new Set(history.children);
+      const probe = { saved: false, documentsHeld: false, documentReads: 0, release: null, closes: [] };
+      globalThis.__savedDrawingCloseProbe = probe;
+      probe.restore = () => { probe.release?.(); globalThis.fetch = fetch; };
+      probe.errors = () => [...history.children].filter(node => !existing.has(node) && node.classList.contains('error'))
+        .map(node => node.textContent);
+      globalThis.fetch = async (...args) => {
+        const input = args[0], options = args[1] || {};
+        const url = new URL(typeof input === 'string' ? input : input.url, location.href);
+        const method = (options.method || input.method || 'GET').toUpperCase();
+        if (method === 'POST' && url.pathname === `/api/cad/${encodeURIComponent(id)}/save` && !url.search) {
+          const response = await fetch(...args);
+          probe.saved = response.ok;
+          return response;
+        }
+        if (method === 'POST' && url.pathname === `/api/cad/${encodeURIComponent(id)}/close` && !url.search)
+          probe.closes.push(id);
+        if (method === 'GET' && url.pathname === '/api/cad/documents' && !url.search && probe.saved) {
+          probe.documentReads++;
+          if (!probe.documentsHeld) {
+            probe.documentsHeld = true;
+            await new Promise(resolve => { probe.release = resolve; });
+          }
+        }
+        return fetch(...args);
+      };
+    }""", original)
+    save_receipt = None
+    try:
+        with page.expect_download():
+            save_receipt = execute('ui.action', {'name': 'save'})
+        wait_for_ui(page, '() => !!globalThis.__savedDrawingCloseProbe.release')
+        assert page.evaluate('() => shadowStudioAgentUi.snapshot().document.dirty'), 'The test must close from a stale dirty tab.'
+        page.locator(f'[data-document-tab="{original}"] .close').click()
+        after = wait_for_ui(page, """id => {
+          const value = shadowStudioAgentUi.snapshot();
+          if (document.getElementById('dialog').open) return { dialog: true };
+          return value.documentId !== id && value.state && !value.busy &&
+            !value.documents.some(document => document.id === id) ? value : null;
+        }""", arg=original)
+        reads = page.evaluate('() => globalThis.__savedDrawingCloseProbe.documentReads')
+        closes = page.evaluate('() => globalThis.__savedDrawingCloseProbe.closes')
+    finally:
+        page.evaluate('() => globalThis.__savedDrawingCloseProbe?.restore()')
+        if page.locator('#dialog').is_visible():
+            page.locator('#dialog footer button[value="cancel"]').click()
+        if save_receipt:
+            wait_operation(save_receipt)
+        errors = page.evaluate('() => globalThis.__savedDrawingCloseProbe.errors()')
+        page.evaluate('() => { delete globalThis.__savedDrawingCloseProbe; }')
+    check('closing a just-saved drawing refreshes stale dirty state without a false discard prompt',
+          not after.get('dialog') and reads >= 2 and closes == [original] and
+          len(after['documents']) == 1 and after['state']['entities'] == 0 and after['state']['revision'] == 0 and
+          not after['document']['dirty'] and not errors)

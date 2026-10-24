@@ -463,10 +463,12 @@ function requireDocumentOwner(owner){if(documentBatch&&owner!==documentBatchOwne
 async function activate(id,owner) { requireDocumentOwner(owner);if(id===client.id && client.state) return; cancel(false); snapshot=null;viewport.snapshot=null;viewId='';await client.activate(id);await documentTabs(); }
 async function newDocument(demo=false,owner) { requireDocumentOwner(owner);const created=await client.create(`Drawing${documents.length+1}.dxf`,demo);await activate(created.id,owner);log(demo?'Sample drawing opened.':'New drawing opened.'); }
 async function closeDocument(doc,owner) {
-  requireDocumentOwner(owner);if(doc.id!==client.id) await activate(doc.id,owner);
+  requireDocumentOwner(owner);client.beginInteraction();if(doc.id!==client.id) await activate(doc.id,owner);
+  await documentTabs();requireDocumentOwner(owner);
   doc=documents.find(entry=>entry.id===doc.id)||doc;
   let discard=false;
   if(doc.dirty) { const answer=await dialog('Unsaved drawing',[el('p',{text:`Discard changes to “${doc.name}”? Save DXF first to keep your edits. This also discards isolated branches.`})],'Discard'); if(!answer)return false;discard=true; }
+  requireDocumentOwner(owner);if(client.id!==doc.id)throw new Error('The active drawing changed. Repeat Close for the intended drawing.');
   await client.mutate('close',{discard}); const all=await client.documents(); cancel(false);
   if(all.length) await activate(all[0].id,owner); else await newDocument(false,owner);
   return true;
