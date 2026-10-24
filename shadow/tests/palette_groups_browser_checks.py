@@ -1,5 +1,6 @@
 """Shared native/WASM palette grouping checks through real menus, keys and pointers."""
 from playwright.sync_api import expect
+from browser_ui import wait_for_ui
 from workspace_layout_browser_checks import drawing_identity, settled
 
 
@@ -299,7 +300,7 @@ def verify_palette_window_behavior(page, output, check):
     graph.get_by_role('button', name='Float Graph palette', exact=True).click()
     settled(page)
     initial = rect()
-    page.wait_for_function("document.querySelector('[data-palette=Graph] .pd-content')?.firstElementChild")
+    wait_for_ui(page, "() => !!document.querySelector('[data-palette=Graph] .pd-content')?.firstElementChild")
     content.evaluate("node => { node.dataset.retained = 'roll-body'; node.firstElementChild.dataset.retained = 'roll-control'; }")
     graph.locator('.pd-pin').click()
     away()

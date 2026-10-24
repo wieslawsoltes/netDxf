@@ -1,6 +1,7 @@
 """Standalone ATTDEF placement and inclusion in a block, shared by both browser hosts."""
 import ezdxf
 from playwright.sync_api import expect
+from browser_ui import wait_for_ui
 
 
 def verify_layout_attributes(page, output, state, command, wait_state, idle, check):
@@ -8,7 +9,7 @@ def verify_layout_attributes(page, output, state, command, wait_state, idle, che
     drawing = ezdxf.new('R2018'); drawing.modelspace().add_line((0, 0), (40, 0)); drawing.saveas(seed)
     if page.locator('#documents .document-tab').count() >= 8:
         page.locator('#documents .document-tab .close').first.click()
-        page.wait_for_function("document.querySelectorAll('#documents .document-tab').length < 8 || document.querySelector('#dialog').open")
+        wait_for_ui(page, "() => document.querySelectorAll('#documents .document-tab').length < 8 || document.querySelector('#dialog').open")
         if page.locator('#dialog').is_visible():
             expect(page.locator('#dialog-title')).to_have_text('Unsaved drawing')
             page.locator('#dialog-submit').click()
