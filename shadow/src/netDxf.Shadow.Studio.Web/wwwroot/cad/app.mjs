@@ -157,12 +157,12 @@ async function complete() {
   if(completed.definitionRequest){
     completed.processing=true;
     try{const definition=structuredClone(completed.definitionRequest);definition.changes.add[0].position=structuredClone(completed.command.points[0]);
-      await edit('attribute-definitions',{definition},{expectedKey:completed.expectedKey});log(`ATTDEF completed — revision ${client.state.revision}.`,'success');}
+      const receipt=await edit('attribute-definitions',{definition},{expectedKey:completed.expectedKey});log(`ATTDEF completed — revision ${receipt.state.revision}.`,'success');}
     finally{if(session===completed)setSession(null);}return;
   }
   if(completed.moduleRequest){
     try{const request=structuredClone(completed.moduleRequest);request.command.points=structuredClone(completed.command.points);
-      await edit('modules/command',request,{expectedKey:completed.expectedKey});log(`${completed.name} completed — revision ${client.state.revision}.`,'success');}
+      const receipt=await edit('modules/command',request,{expectedKey:completed.expectedKey});log(`${completed.name} completed — revision ${receipt.state.revision}.`,'success');}
     finally{if(session===completed)setSession(null);}return;
   }
   if(completed.spec.measure) {
@@ -172,7 +172,7 @@ async function complete() {
     setSession(null); return;
   }
   let command=structuredClone(completed.command);const key=completed.expectedKey||client.key;
-  let placed=false;completed.processing=true;
+  let placed=false,receipt;completed.processing=true;
   const current=()=>{if(session!==completed||client.key!==key||client.busy)throw new Error('The drawing or insertion changed. Repeat INSERT.');};
   try {
     current();
@@ -193,12 +193,12 @@ async function complete() {
           if(attributes===null)return;
         }
       }
-      current();await edit('insert',{insert:{command,attributes}},{expectedKey:key});
+      current();receipt=await edit('insert',{insert:{command,attributes}},{expectedKey:key});
     } else {
       const authored=authoringRequest(command,client.data);
-      await edit(authored?.path||'command',authored?.body||{command},{expectedKey:key});
+      receipt=await edit(authored?.path||'command',authored?.body||{command},{expectedKey:key});
     }
-    log(`${completed.name} completed — revision ${client.state.revision}.`,'success');placed=true;
+    log(`${completed.name} completed — revision ${receipt.state.revision}.`,'success');placed=true;
   } finally {
     completed.processing=false;
     if(session===completed)setSession(placed&&completed.insertOptions?.repeat?createInsertSession(completed.insertOptions,currentLayer):null);

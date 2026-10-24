@@ -31,6 +31,23 @@ def verify_document_batches(page, output, state, command, wait_state, idle, chec
           catch (error) { return error.message; }
         }""", [name, arguments])
 
+    def retained_branches(ids):
+        return page.evaluate("""async ids => Object.fromEntries(await Promise.all(ids.map(async id => {
+          const response = await fetch(`/api/cad/${encodeURIComponent(id)}/state`, { cache: 'no-store' });
+          if (!response.ok) throw new Error(`Could not read retained branches for ${id}.`);
+          return [id, (await response.json()).state.branches];
+        })))""", ids)
+
+    def confirm_dirty_documents(docs):
+        for document in docs:
+            if not document['dirty']:
+                continue
+            wait_for_ui(page, """id => document.getElementById('dialog').open &&
+              shadowStudioAgentUi.snapshot().documentId === id""", arg=document['id'])
+            expect(page.locator('#dialog-title')).to_have_text('Unsaved drawing')
+            expect(page.locator('#dialog-body')).to_contain_text(document['name'])
+            page.locator('#dialog-submit').click()
+
     execute('command.cancel')
     execute('ui.action', {'name': 'command-line-show'})
     # The full geometry suite may already occupy all eight document slots.
@@ -43,7 +60,11 @@ def verify_document_batches(page, output, state, command, wait_state, idle, chec
         if spare['dirty']:
             wait_batch(execute('ui.action', {'name': 'save'}))
         execute('ui.action', {'name': 'file-tabs-show'})
+        # A saved drawing with retained branches still requires explicit
+        # discard. Only this disposable end-of-suite document is closed.
+        spare = next(document for document in snapshot()['documents'] if document['id'] == spare['id'])
         page.locator(f'[data-document-tab="{spare["id"]}"] .close').click()
+        confirm_dirty_documents([spare])
         wait_for_ui(page, """id => !shadowStudioAgentUi.snapshot().documents.some(document => document.id === id)""",
                     arg=spare['id'])
         idle()
@@ -51,10 +72,12 @@ def verify_document_batches(page, output, state, command, wait_state, idle, chec
         execute('document.create')
         command('POINT 41,23')
     execute('document.activate', {'id': snapshot()['documents'][-1]['id']})
+    verify_command_completion_receipt(page, check)
     before = snapshot()
     original = before['documentId']
     targets = [document['id'] for document in before['documents']]
     assert len(targets) >= 2 and original != targets[0]
+    branches_before = retained_branches(targets)
     downloads = []
 
     def downloaded(download):
@@ -105,10 +128,11 @@ def verify_document_batches(page, output, state, command, wait_state, idle, chec
         wait_batch(receipt)
         saved_ids = page.evaluate('() => globalThis.__documentBatchProbe.saves')
         after = snapshot()
-        check('Save All saves each intended document exactly once and restores the original active drawing',
+        check('Save All saves each intended drawing exactly once, preserves retained branches and restores the original drawing',
               saved_ids == targets and after['documentId'] == original and
               [document['id'] for document in after['documents']] == targets and
-              all(not document['dirty'] for document in after['documents']))
+              retained_branches(targets) == branches_before and
+              all(document['dirty'] == bool(branches_before[document['id']]) for document in after['documents']))
         check('Save All creates a downloadable file for every open drawing', len(downloads) == len(targets))
 
         # Make the first target dirty so cancellation cannot be confused with
@@ -148,7 +172,7 @@ def verify_document_batches(page, output, state, command, wait_state, idle, chec
         check('a prior Open completing during Close All confirmation cannot steal its active target',
               after_import['documentId'] == targets[0] and page.locator('#dialog').is_visible() and
               page.evaluate('() => globalThis.__documentBatchProbe.closes.length') == 0)
-        page.locator('#dialog-submit').click()
+        confirm_dirty_documents([document for document in after_import['documents'] if document['id'] in targets])
         wait_batch(receipt)
         after = snapshot()
         closed_ids = page.evaluate('() => globalThis.__documentBatchProbe.closes')
@@ -156,10 +180,9 @@ def verify_document_batches(page, output, state, command, wait_state, idle, chec
               closed_ids == targets and [document['id'] for document in after['documents']] == [imported_id] and
               after['documentId'] == imported_id and not after['busy'])
 
+        remaining = after['documents']
         receipt = execute('ui.action', {'name': 'close-all'})
-        if page.locator('#dialog').is_visible():
-            expect(page.locator('#dialog-title')).to_have_text('Unsaved drawing')
-            page.locator('#dialog-submit').click()
+        confirm_dirty_documents(remaining)
         wait_batch(receipt)
         after = snapshot()
         closed_ids = page.evaluate('() => globalThis.__documentBatchProbe.closes')
@@ -170,3 +193,91 @@ def verify_document_batches(page, output, state, command, wait_state, idle, chec
     finally:
         page.evaluate('() => { globalThis.__documentBatchProbe?.restore(); delete globalThis.__documentBatchProbe; }')
         page.remove_listener('download', downloaded)
+
+
+def verify_command_completion_receipt(page, check):
+    """Finish a real POINT while a second drawing's activation has no state yet."""
+    def snapshot():
+        return page.evaluate('() => shadowStudioAgentUi.snapshot()')
+
+    def execute(name, arguments):
+        return page.evaluate('([name, args]) => shadowStudioAgentUi.execute(name, args)', [name, arguments])
+
+    before = snapshot()
+    original = before['documentId']
+    other = next(document['id'] for document in before['documents'] if document['id'] != original)
+    execute('document.activate', {'id': other})
+    other_before = snapshot()['state']
+    execute('document.activate', {'id': original})
+    page.evaluate("""([source, destination]) => {
+      const fetch = globalThis.fetch, history = document.getElementById('history');
+      const existing = new Set(history.children);
+      const probe = { receiptRevision: null, releaseDocuments: null, releaseState: null,
+        activation: null, documentsHeld: false, stateHeld: false };
+      globalThis.__commandCompletionProbe = probe;
+      probe.restore = () => { probe.releaseDocuments?.(); probe.releaseState?.(); globalThis.fetch = fetch; };
+      probe.messages = () => [...history.children].filter(node => !existing.has(node))
+        .map(node => ({ text: node.textContent, error: node.classList.contains('error'), success: node.classList.contains('success') }));
+      globalThis.fetch = async (...args) => {
+        const input = args[0], options = args[1] || {};
+        const url = new URL(typeof input === 'string' ? input : input.url, location.href);
+        const method = (options.method || input.method || 'GET').toUpperCase();
+        if (method === 'POST' && url.pathname === `/api/cad/${encodeURIComponent(source)}/command` && !url.search) {
+          const response = await fetch(...args);
+          if (response.ok) probe.receiptRevision = (await response.clone().json()).state.revision;
+          return response;
+        }
+        if (method === 'GET' && url.pathname === '/api/cad/documents' && !url.search &&
+            probe.receiptRevision !== null && !probe.documentsHeld) {
+          probe.documentsHeld = true;
+          await new Promise(resolve => { probe.releaseDocuments = resolve; });
+        }
+        if (method === 'GET' && url.pathname === `/api/cad/${encodeURIComponent(destination)}/state` && !url.search &&
+            probe.documentsHeld && !probe.stateHeld) {
+          probe.stateHeld = true;
+          await new Promise(resolve => { probe.releaseState = resolve; });
+        }
+        return fetch(...args);
+      };
+    }""", [original, other])
+    try:
+        receipt = execute('command', {'text': 'POINT 83,37'})
+        assert receipt.get('pending'), 'The completed command must wait for its document refresh.'
+        wait_for_ui(page, '() => !!globalThis.__commandCompletionProbe.releaseDocuments')
+        page.evaluate("""id => {
+          const probe = globalThis.__commandCompletionProbe;
+          probe.activation = { status: 'running' };
+          shadowStudioAgentUi.execute('document.activate', { id }).then(
+            () => { probe.activation.status = 'completed'; },
+            error => { probe.activation = { status: 'error', error: error.message }; });
+        }""", other)
+        wait_for_ui(page, """id => !!globalThis.__commandCompletionProbe.releaseState &&
+          shadowStudioAgentUi.snapshot().documentId === id && shadowStudioAgentUi.snapshot().state === null""", arg=other)
+        page.evaluate('() => globalThis.__commandCompletionProbe.releaseDocuments()')
+        operation = wait_for_ui(page, """id => {
+          const operation = shadowStudioAgentUi.snapshot().ui.pending.find(value => value.id === id);
+          return operation && operation.status !== 'running' ? operation : null;
+        }""", arg=receipt['operationId'])
+        assert operation['status'] == 'completed', operation.get('error', operation)
+        revision = page.evaluate('() => globalThis.__commandCompletionProbe.receiptRevision')
+        messages = page.evaluate('() => globalThis.__commandCompletionProbe.messages()')
+        logged_without_current_state = snapshot()['state'] is None and any(
+            message['success'] and message['text'] == f'POINT completed — revision {revision}.' for message in messages)
+        page.evaluate('() => globalThis.__commandCompletionProbe.releaseState()')
+        activation = wait_for_ui(page, """() => {
+          const value = globalThis.__commandCompletionProbe.activation;
+          return value.status !== 'running' ? value : null;
+        }""")
+        assert activation['status'] == 'completed', activation.get('error', activation)
+        other_after = snapshot()['state']
+        execute('document.activate', {'id': original})
+        check('command completion logs its own mutation receipt while another drawing activates without changing that drawing',
+              logged_without_current_state and revision == before['state']['revision'] + 1 and
+              snapshot()['state']['revision'] == revision and other_after == other_before and
+              not any(message['error'] for message in messages))
+    finally:
+        page.evaluate('() => globalThis.__commandCompletionProbe?.restore()')
+        wait_for_ui(page, """() => !globalThis.__commandCompletionProbe.activation ||
+          globalThis.__commandCompletionProbe.activation.status !== 'running'""")
+        execute('document.activate', {'id': original})
+        page.evaluate('() => { delete globalThis.__commandCompletionProbe; }')
