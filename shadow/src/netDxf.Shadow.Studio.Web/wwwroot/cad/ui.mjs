@@ -1,4 +1,5 @@
 import { commands } from './core.mjs';
+import { splitTool } from './ribbon-split.mjs';
 export const $ = id => document.getElementById(id);
 export function el(tag, attributes = {}, children = []) {
   const node = document.createElement(tag);
@@ -31,17 +32,41 @@ const paths = {
   undo:'M9 4L3 9l6 5M3 9h10a7 7 0 0 1 0 14', redo:'M15 4l6 5l-6 5M21 9H11a7 7 0 0 0 0 14',
   fit:'M3 9V3h6M15 3h6v6M21 15v6h-6M9 21H3v-6M8 8h8v8H8z', pan:'M12 2v20M2 12h20M8 6l4-4l4 4M8 18l4 4l4-4',
   layers:'M12 2L23 8L12 14L1 8zM1 12l11 6l11-6M1 16l11 6l11-6', properties:'M3 3h18v18H3zM10 3v18M3 9h18M3 15h18',
+  'layer-manager':'M9 3L17 7L9 11L1 7zM1 11l8 4l8-4M1 15l8 4l8-4M19 5h4M19 10h4M19 15h4M19 20h4',
+  'layer-filters':'M2 3h20l-7 9v8l-6-3v-5zM4 7h16',
+  'layer-isolate':'M9 18h6M10 22h4M9 16v-2a6 6 0 1 1 6 0v2M12 1v2M2 9H0M24 9h-2',
+  'layer-unisolate':'M12 7a5 5 0 1 1 0 10a5 5 0 1 1 0-10M12 1v3M12 20v3M1 12h3M20 12h3M4 4l2 2M18 18l2 2M4 20l2-2M18 6l2-2',
+  'layer-states':'M2 6h8l3 3h9v12H2zM2 6V3h8l3 3M6 13h12M6 17h9',
+  'assign-layer':'M8 2l7 4l-7 4l-7-4zM1 10l7 4l7-4M17 12v10M13 18l4 4l4-4',
+  'layer-new':'M9 2l8 4l-8 4l-8-4zM1 10l8 4l8-4M1 14l8 4M18 13v10M13 18h10',
   blocks:'M3 3h8v8H3zM13 13h8v8h-8zM13 3h8v8h-8zM3 13h8v8H3z', graph:'M4 4L20 8L12 20L4 4M1 1h6v6H1zM17 5h6v6h-6zM9 17h6v6H9z',
   settings:'M12 4a8 8 0 1 1 0 16a8 8 0 1 1 0-16M12 9a3 3 0 1 1 0 6a3 3 0 1 1 0-6M12 1v3M12 20v3M1 12h3M20 12h3',
   output:'M5 2h14v6M5 16H2V8h20v8h-3M5 13h14v9H5z', workspaces:'M5 2v20M5 7h10a5 5 0 0 1 5 5v10M2 2h6v5H2zM17 17h6v5h-6z',
   diagnostics:'M3 21h18M6 18V9M12 18V3M18 18v-6', font:'M3 21L10 2h3l8 19M6 14h12', snapshot:'M2 6h5l2-3h6l2 3h5v15H2zM17 13a5 5 0 1 1-10 0a5 5 0 1 1 10 0'
 };
+const iconAliases = {
+  'block-create':'BLOCK','block-redefine':'BLOCK','block-rename':'BLOCK','block-edit':'BLOCK','block-insert':'INSERT','block-save':'save','block-close':'blocks',
+  'block-library-import':'open','block-library-export':'save','hatch-create':'HATCH','hatch-edit':'HATCHEDIT',
+  'attributes':'properties','attribute-definitions':'properties','attribute-create':'TEXT','attribute-sync':'COPY','text-styles':'font',
+  'layer-manager':'layers','layer-filters':'layers','layer-isolate':'layers','layer-unisolate':'layers','layer-states':'layers','layer-new':'layers','assign-layer':'layers',
+  'linetypes':'PLINE','linetype':'PLINE','explorer':'properties','palette-picker':'properties','ui-workspaces':'workspaces','palette-lock':'properties','palette-reset':'properties',
+  'command-line':'MTEXT','command-history':'MTEXT','command-search':'fit','ribbon-customize':'properties','quick-access-customize':'properties',
+  'annotation':'DIMALIGNED','export-svg':'output','export-png':'snapshot','save-as':'save','snapshots':'snapshot','health':'diagnostics','edit-previews':'properties','workflows':'graph'
+};
+function iconTone(name) {
+  if (/^(LINE|PLINE|CIRCLE|ARC|RECTANG|ELLIPSE|POLYGON|SPLINE|POINT|fit|pan)$/.test(name)) return 'geometry';
+  if (/^(MOVE|COPY|STRETCH|BREAK|BREAKATPOINT|ERASE|ROTATE|MIRROR|SCALE|TRIM|EXTEND|OFFSET|FILLET|CHAMFER|ARRAY|JOIN|EXPLODE)$/.test(name)) return 'modify';
+  if (/^(TEXT|MTEXT|DIM|font|attribute|annotation|text-styles)/.test(name)) return 'annotation';
+  if (/^(BLOCK|INSERT|block|layer|HATCH|hatch)/.test(name)) return 'resource';
+  return 'utility';
+}
 export function icon(name) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('viewBox','0 0 24 24'); svg.setAttribute('class','icon'); svg.setAttribute('aria-hidden','true');
-  const p = document.createElementNS(svg.namespaceURI,'path'); p.setAttribute('d',paths[name] || paths[{'block-create':'BLOCK','block-redefine':'BLOCK','block-rename':'BLOCK','hatch-create':'HATCH','hatch-edit':'HATCHEDIT'}[name]] || paths.settings); svg.append(p); return svg;
+  svg.setAttribute('data-icon',name); svg.setAttribute('data-tone',iconTone(name));
+  const p = document.createElementNS(svg.namespaceURI,'path'); p.setAttribute('d',paths[name] || paths[iconAliases[name]] || paths.settings); svg.append(p); return svg;
 }
 export function tool(name, label, action = false, large = false) {
-  return el('button', { class:`tool${large ? ' large' : ''}`, [action ? 'data-action' : 'data-command']:name,
+  return el('button', { type:'button',class:`tool${large ? ' large' : ''}`,'aria-label':label, [action ? 'data-action' : 'data-command']:name,
     title:action ? label : `${name}${commands[name]?.aliases[0] ? ` (${commands[name].aliases[0]})` : ''} — ${label}` }, [icon(name), el('span', {text:label})]);
 }
 export const tabs = ['Home','Insert','Annotate','Graph','View','Manage','Output'];
@@ -58,18 +83,35 @@ export const group = (name, tools) => el('section', {class:'ribbon-group','data-
   el('div',{class:'ribbon-tools'},tools),el('div',{class:'ribbon-group-title',text:name})]);
 const c = (name, large = false) => tool(name, commands[name].label, false, large);
 const a = (name,label,large = false) => {const node=tool(name,label,true,large);if(name.startsWith('graph-'))node.querySelector('svg').replaceWith(icon('graph'));return node;};
+const compact = node => { node.classList.add('ribbon-icon-tool'); return node; };
+const split = (name, alternatives, label) => splitTool(compact(c(name)),alternatives.map(name=>c(name)),label);
+function nativePanel(name, tools, { density = '', launcher } = {}) {
+  const node = group(name, tools); if (density) node.classList.add(`ribbon-${density}`);
+  if (launcher) {
+    const target = tools.find(control => control.getAttribute?.('data-action') === launcher);
+    if (target) {
+      const button = el('button', {type:'button',class:'ribbon-dialog-launcher',title:target.title || target.getAttribute('title'),
+        'aria-label':`Open ${target.getAttribute('aria-label')}`,
+        onclick:event=>{event.stopPropagation();if(!target.disabled)target.click();}}, [el('span',{'aria-hidden':'true',text:'↘'})]);
+      node.querySelector('.ribbon-group-title').append(button);
+    }
+  }
+  return node;
+}
 export function ribbon(tab, data, layer, changeLayer) {
   const layerSelect = el('select', {id:'current-layer','aria-label':'Current layer',onchange:e => changeLayer(e.target.value)},
     (data?.layers || []).map(l => el('option',{value:l.name,text:l.name})));
   layerSelect.value = layer;
-  const layerTools = group('Layers',[
+  const layerTools = nativePanel('Layers',[
     el('label',{class:'ribbon-field'},[icon('layers'),layerSelect]),
-    a('layer-manager','Layer manager'),a('layer-filters','Filters and isolation'),a('layer-isolate','Isolate layers'),a('layer-unisolate','Restore layers'),a('layer-states','Layer states'),a('layers','Layers palette'),a('assign-layer','Match current layer'),a('layer-new','New layer')]);
+    ...[a('layer-manager','Layer manager'),a('layer-filters','Filters and isolation'),a('layer-isolate','Isolate layers'),a('layer-unisolate','Restore layers'),a('layer-states','Layer states'),a('layers','Layers palette'),a('assign-layer','Match current layer'),a('layer-new','New layer')].map(compact)],{density:'layers',launcher:'layer-manager'});
   const content = {
-    Home: [group('Draw',[c('LINE',true),c('PLINE',true),c('CIRCLE',true),c('ARC'),c('RECTANG'),c('ELLIPSE'),c('POLYGON'),c('SPLINE'),c('POINT')]),
-      group('Modify',[c('MOVE'),c('COPY'),c('STRETCH'),c('BREAK'),c('BREAKATPOINT'),c('ERASE'),c('ROTATE'),c('MIRROR'),c('SCALE'),c('TRIM'),c('EXTEND'),c('OFFSET'),c('FILLET'),c('CHAMFER'),c('ARRAY'),c('JOIN'),c('EXPLODE')]),
-      group('Annotation',[c('MTEXT',true),c('DIMALIGNED',true),c('TEXT'),c('DIMLINEAR'),c('DIST')]),layerTools,
-      group('Block',[a('block-insert','Insert block',true),a('block-create','Create block'),a('attributes','Edit attributes'),a('attribute-definitions','Manage attributes'),a('attribute-create','Define attribute'),a('attribute-sync','Synchronize attributes'),a('block-redefine','Redefine')]),group('Hatch',[a('hatch-create','Hatch',true),c('HATCHPOLY'),a('hatch-edit','Edit hatch')]), group('Properties',[a('properties','Properties',true),a('linetypes','Linetypes')])],
+    Home: [nativePanel('Draw',[c('LINE',true),c('PLINE',true),c('CIRCLE',true),split('ARC',['ELLIPSE','SPLINE'],'Curves'),split('RECTANG',['POLYGON'],'Shapes'),compact(c('POINT'))],{density:'draw'}),
+      nativePanel('Modify',[c('MOVE'),c('COPY'),c('STRETCH'),c('ROTATE'),c('MIRROR'),c('SCALE'),...['BREAK','BREAKATPOINT','ERASE','TRIM','EXTEND','OFFSET','FILLET','CHAMFER','ARRAY','JOIN','EXPLODE'].map(name=>compact(c(name)))],{density:'modify'}),
+      nativePanel('Annotation',[c('MTEXT',true),c('DIMALIGNED',true),...['TEXT','DIMLINEAR','DIST'].map(name=>compact(c(name)))],{density:'annotation'}),layerTools,
+      nativePanel('Block',[a('block-insert','Insert block',true),...[a('block-create','Create block'),a('attributes','Edit attributes'),a('attribute-definitions','Manage attributes'),a('attribute-create','Define attribute'),a('attribute-sync','Synchronize attributes'),a('block-redefine','Redefine')].map(compact)],{density:'block',launcher:'attributes'}),
+      nativePanel('Hatch',[a('hatch-create','Hatch',true),compact(c('HATCHPOLY')),compact(a('hatch-edit','Edit hatch'))],{density:'hatch'}),
+      nativePanel('Properties',[a('properties','Properties',true),compact(a('linetypes','Linetypes'))],{density:'properties',launcher:'properties'})],
     Insert: [group('Blocks',[a('block-insert','Insert block',true),a('blocks','Blocks palette',true),a('block-library-import','Import library'),a('block-library-export','Export library'),a('block-create','Create block'),a('attributes','Edit attributes'),a('attribute-definitions','Manage attributes'),a('attribute-create','Define attribute'),a('attribute-sync','Synchronize attributes'),a('block-redefine','Redefine'),a('block-rename','Rename'),a('block-edit','Edit definition')]),group('Reference resources',[a('open','Open DXF / DWG',true),a('font','Load SHX / SHP',true)]),group('Documents',[a('new','New drawing'),a('demo','New sample drawing'),a('save','Save DXF')])],
     Annotate: [group('Text',[c('MTEXT',true),c('TEXT',true),a('text-styles','Text styles'),a('font','SHX / SHP resources')]),group('Dimensions',[c('DIMALIGNED',true),c('DIMLINEAR',true)]),group('Measure',[c('DIST',true),c('AREA',true)]),group('Annotation context',[a('annotation','Model annotation scale',true)])],
     Graph: [group('Topology',[a('graph-load','Visualize topology',true),a('graph-analysis','Graph workspace'),a('graph-query:summary','Summary'),a('graph-query:nodes','Nodes'),a('graph-query:edges','Edges'),a('graph-query:components','Components')]),

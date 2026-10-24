@@ -102,6 +102,39 @@ export function paletteDropSide(point, bounds, zoneSize = 40) {
   return null;
 }
 
+/** Resolve an edge, tab group or stacked-group destination from measured local rectangles.
+ * The dragged palette is already floating, so these targets describe the live dock
+ * beneath it. No DOM hit testing is needed and the floating window cannot obscure them.
+ */
+export function paletteDropTarget(layout, id, point, bounds, groups = []) {
+  if (layout.locked || !Object.hasOwn(layout.panels, id) || layout.panels[id].allowDocking === false ||
+      ![point.x, point.y, bounds.width, bounds.height].every(Number.isFinite) || bounds.width <= 0 || bounds.height <= 0 ||
+      point.x < 0 || point.y < 0 || point.x > bounds.width || point.y > bounds.height) return null;
+  const side = paletteDropSide(point, bounds);
+  if (side) return { type: 'side', side };
+  if (bounds.width < 700) return null;
+  for (const candidate of groups) {
+    const target = layout.panels[candidate.target];
+    if (candidate.target === id || !target?.open || target.mode !== 'dock' || !target.allowDocking ||
+        !sides.has(candidate.side) || target.side !== candidate.side ||
+        ![candidate.x, candidate.y, candidate.width, candidate.height].every(Number.isFinite) || candidate.width <= 0 || candidate.height <= 0) continue;
+    const left = Math.max(0, candidate.x), top = Math.max(0, candidate.y);
+    const right = Math.min(bounds.width, candidate.x + candidate.width), bottom = Math.min(bounds.height, candidate.y + candidate.height);
+    if (point.x < left || point.x > right || point.y < top || point.y > bottom || right <= left || bottom <= top) continue;
+    const rect = { x: left, y: top, width: right - left, height: bottom - top };
+    const tabTop = Number.isFinite(candidate.tabTop) ? Math.max(top, candidate.tabTop) : bottom;
+    const tabStrip = point.y >= tabTop && tabTop < bottom;
+    const band = Math.min(40, rect.height * .22);
+    const position = !tabStrip && point.y < top + band ? 'before' : !tabStrip && point.y > tabTop - band ? 'after' : null;
+    if (position) {
+      rect.height /= 2; if (position === 'after') rect.y += rect.height;
+      return { type: 'stack', side: candidate.side, target: candidate.target, position, rect };
+    }
+    return { type: 'group', side: candidate.side, target: candidate.target, rect };
+  }
+  return null;
+}
+
 /** Preview the destination column, or its compact anchored overlay, without changing layout state. */
 export function paletteDropPreview(layout, id, side, bounds, railWidth = 28) {
   if (!sides.has(side) || !Object.hasOwn(layout.panels, id) || layout.locked || layout.panels[id].allowDocking === false) return null;
@@ -180,6 +213,16 @@ export function changePaletteLayout(layout, action, bounds = { width: 1024, heig
     const destination = paletteGroupFor(result, action.target).group;
     destination.tabs.push(id); destination.active = id;
     panels[id] = { ...panel, open: true, mode: 'dock', side: found.side };
+    result.active = id; result.hidden = false;
+  } else if (action.type === 'stack') {
+    const target = panels[action.target], found = paletteGroupFor(result, action.target);
+    if (!target?.open || !found || action.target === id || panel.allowDocking === false || target.allowDocking === false ||
+        !['before', 'after'].includes(action.position)) throw new Error('Choose a visible docked palette and a position above or below it.');
+    remove(id);
+    const destination = paletteGroupFor(result, action.target), weight = Math.max(.01, destination.group.weight / 2);
+    destination.group.weight = weight;
+    result.groups[destination.side].splice(destination.index + (action.position === 'after' ? 1 : 0), 0, { tabs: [id], active: id, weight });
+    panels[id] = { ...panel, open: true, mode: 'dock', side: destination.side };
     result.active = id; result.hidden = false;
   } else if (action.type === 'detach') {
     const found = paletteGroupFor(result, id);

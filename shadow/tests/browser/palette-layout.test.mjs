@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { changePaletteLayout, paletteDockWidths, paletteDropSide, paletteDropPreview, paletteLayout, paletteRect, resizePaletteRect, paletteGroups, paletteGroupFor, paletteStackHeights } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/palette-layout.mjs';
+import { changePaletteLayout, paletteDockWidths, paletteDropSide, paletteDropPreview, paletteDropTarget, paletteLayout, paletteRect, resizePaletteRect, paletteGroups, paletteGroupFor, paletteStackHeights } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/palette-layout.mjs';
 import { workspacePresets, workspaceProfileLayout } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/workspace-profiles.mjs';
 
 const ids = ['Properties', 'Graph', 'Layers'], bounds = { width: 1280, height: 600 };
@@ -217,4 +217,40 @@ test('layout lock protects group membership, ordering, weights and docking permi
     assert.equal(update(value, action), value);
   value = update(value, { type: 'show', id: 'Properties' });
   assert.equal(paletteGroups(value, 'right')[0].active, 'Properties'); assert.equal(value.locked, true);
+});
+
+test('palette drop targets distinguish center grouping, vertical stacking, tabs, and outside edges', () => {
+  const layout = update(paletteLayout(null, ids), { type: 'place', id: 'Graph', mode: 'float' });
+  const groups = [{ target: 'Properties', side: 'right', x: 970, y: 0, width: 310, height: 600, tabTop: 575 }];
+  const target = point => paletteDropTarget(layout, 'Graph', point, bounds, groups);
+  assert.deepEqual(target({ x: 1100, y: 250 }), { type: 'group', side: 'right', target: 'Properties', rect: { x: 970, y: 0, width: 310, height: 600 } });
+  assert.deepEqual(target({ x: 1100, y: 10 }), { type: 'stack', side: 'right', target: 'Properties', position: 'before', rect: { x: 970, y: 0, width: 310, height: 300 } });
+  assert.deepEqual(target({ x: 1100, y: 550 }), { type: 'stack', side: 'right', target: 'Properties', position: 'after', rect: { x: 970, y: 300, width: 310, height: 300 } });
+  assert.equal(target({ x: 1100, y: 588 }).type, 'group', 'a bottom tab strip remains a grouping target');
+  assert.deepEqual(target({ x: 1275, y: 588 }), { type: 'side', side: 'right' });
+  assert.equal(target({ x: 960, y: 300 }), null);
+  assert.equal(target({ x: 1100, y: 601 }), null);
+  assert.equal(paletteDropTarget({ ...layout, locked: true }, 'Graph', { x: 1100, y: 300 }, bounds, groups), null);
+  assert.equal(paletteDropTarget(layout, 'Missing', { x: 1100, y: 300 }, bounds, groups), null);
+  assert.equal(paletteDropTarget(layout, 'Graph', { x: 1100, y: 300 }, bounds, [{ ...groups[0], target: 'Graph' }]), null);
+  assert.equal(paletteDropTarget(layout, 'Graph', { x: 1100, y: 300 }, bounds, [{ ...groups[0], width: NaN }]), null);
+  assert.equal(paletteDropTarget(layout, 'Graph', { x: 1100, y: 300 }, { width: 880, height: 600 }, groups), null, 'another dock cannot become a target');
+});
+
+test('stack drops insert at an exact group boundary and split only the destination weight', () => {
+  let layout = update(paletteLayout(null, ids), { type: 'show', id: 'Layers' });
+  layout = update(layout, { type: 'place', id: 'Graph', mode: 'float' });
+  layout.groups.right.find(group => group.tabs[0] === 'Properties').weight = 6;
+  layout.groups.right.find(group => group.tabs[0] === 'Layers').weight = 2;
+  const before = JSON.stringify(layout);
+  const above = update(layout, { type: 'stack', id: 'Graph', target: 'Properties', position: 'before' });
+  assert.deepEqual(paletteGroups(above, 'right').map(group => [group.tabs, group.weight]), [[['Graph'], 3], [['Properties'], 3], [['Layers'], 2]]);
+  assert.equal(above.active, 'Graph'); assert.equal(above.panels.Graph.mode, 'dock');
+  assert.equal(JSON.stringify(layout), before, 'the operation is immutable');
+  const below = update(above, { type: 'stack', id: 'Graph', target: 'Layers', position: 'after' });
+  assert.deepEqual(paletteGroups(below, 'right').map(group => group.tabs), [['Properties'], ['Layers'], ['Graph']]);
+  assert.equal(JSON.stringify(paletteLayout(below, ids)), JSON.stringify(below), 'stack order survives persistence');
+  assert.equal(update({ ...below, locked: true }, { type: 'stack', id: 'Graph', target: 'Properties', position: 'before' }).locked, true);
+  assert.throws(() => update(below, { type: 'stack', id: 'Graph', target: 'Graph', position: 'before' }), /visible docked/);
+  assert.throws(() => update(below, { type: 'stack', id: 'Graph', target: 'Properties', position: 'middle' }), /above or below/);
 });

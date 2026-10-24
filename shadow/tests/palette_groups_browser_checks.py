@@ -6,6 +6,7 @@ from workspace_layout_browser_checks import drawing_identity, settled
 def verify_palette_groups(page, output, state, command, wait_state, idle, check):
     """Preserve the current drawing and finish with the default palette arrangement."""
     baseline = drawing_identity(state())
+    verify_palette_drag_docking(page, output, check)
     page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette-reset'})")
     page.evaluate("shadowStudioAgentUi.execute('palette.show', {name:'Graph'})")
     graph = page.locator('[data-palette="Graph"]')
@@ -165,3 +166,98 @@ def verify_palette_groups(page, output, state, command, wait_state, idle, check)
     idle()
     check('grouping, sizing, docking permissions and profiles preserve the drawing and undo history',
           drawing_identity(state()) == baseline)
+
+
+def verify_palette_drag_docking(page, output, check):
+    """Use real pointer capture, reparenting and tab focus on both Studio hosts."""
+    page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette-reset'})")
+    page.evaluate("shadowStudioAgentUi.execute('palette.show', {name:'Graph'})")
+    settled(page)
+    graph = page.locator('[data-palette="Graph"]')
+    properties = page.locator('[data-palette="Properties"]')
+    preview = page.locator('.pd-drop-preview')
+
+    def stored():
+        return page.evaluate("JSON.parse(localStorage.getItem('netdxf-cad-palettes-v2'))")
+
+    def destination():
+        return page.locator('.pd-group').filter(has=properties).bounding_box()
+
+    def drag(x, y, source=None):
+        source = source if source is not None else graph.get_by_role('button', name='Move Graph palette', exact=True)
+        box = source.bounding_box()
+        page.mouse.move(box['x'] + box['width'] / 2, box['y'] + box['height'] / 2)
+        page.mouse.down()
+        page.mouse.move(x, y, steps=8)
+        settled(page)
+
+    graph.get_by_role('button', name='Float Graph palette', exact=True).click()
+    settled(page)
+    box = destination()
+    drag(box['x'] + box['width'] / 2, box['y'] + box['height'] / 2)
+    expect(preview).to_contain_text('group Graph with Properties')
+    page.screenshot(path=str(output / 'palette-group-drop-preview.png'))
+    page.mouse.up()
+    settled(page)
+    check('pointer center drop forms a tab group',
+          any(group['tabs'] == ['Properties', 'Graph'] for group in stored()['groups']['right']))
+    properties_tab = page.get_by_role('tab', name='Show Properties in palette group', exact=True)
+    graph_tab = page.get_by_role('tab', name='Show Graph in palette group', exact=True)
+    properties_tab.click()
+    expect(properties).to_be_visible()
+    expect(properties_tab).to_be_focused()
+    graph_tab.click()
+    expect(graph).to_be_visible()
+    expect(graph_tab).to_be_focused()
+    check('pointer tab clicks select and focus their content after drag grouping')
+
+    workspace = page.locator('#workspace').bounding_box()
+    drag(workspace['x'] + workspace['width'] * .45, workspace['y'] + 170, graph_tab)
+    page.mouse.up()
+    settled(page)
+    expect(graph.get_by_role('combobox', name='Palette shown in Graph', exact=True)).to_be_focused()
+    check('dragging a group tab detaches a floating palette and restores focus', stored()['panels']['Graph']['mode'] == 'float')
+    before = stored()
+    box = destination()
+    drag(box['x'] + box['width'] / 2, box['y'] + box['height'] / 2)
+    expect(preview).to_contain_text('group Graph with Properties')
+    page.keyboard.press('Escape')
+    page.mouse.up()
+    settled(page)
+    check('Escape cancels a grouping preview without changing saved layout', stored() == before)
+    page.keyboard.down('Control')
+    try:
+        drag(box['x'] + box['width'] / 2, box['y'] + box['height'] / 2)
+        expect(preview).to_be_hidden()
+        page.mouse.up()
+    finally:
+        page.keyboard.up('Control')
+    check('Control bypass prevents tab grouping', stored()['panels']['Graph']['mode'] == 'float')
+
+    for position, expected in [('above', ['Graph', 'Properties']), ('below', ['Properties', 'Graph'])]:
+        box = destination()
+        drag(box['x'] + box['width'] / 2, box['y'] + (12 if position == 'above' else box['height'] - 12))
+        expect(preview).to_contain_text(f'{position} Properties')
+        page.mouse.up()
+        settled(page)
+        value = stored()
+        order = [group['tabs'][0] for group in value['groups']['right'] if any(value['panels'][tab]['open'] for tab in group['tabs'])]
+        check(f'pointer {position} drop inserts an ordered palette stack', order == expected)
+        if position == 'above':
+            graph.get_by_role('button', name='Float Graph palette', exact=True).click()
+            settled(page)
+    graph.locator('.pd-title').click(button='right')
+    expect(graph.get_by_role('button', name='Dock left: Graph', exact=True)).to_be_focused()
+    page.keyboard.press('End')
+    page.keyboard.press('Home')
+    page.keyboard.press('Escape')
+    expect(graph.locator('.pd-menu')).not_to_have_attribute('open', '')
+    check('palette title context menu supports keyboard navigation and dismissal')
+    grip = graph.get_by_role('button', name='Move Graph palette', exact=True)
+    grip.dblclick()
+    settled(page)
+    check('grip double-click floats a docked palette despite pointer capture', stored()['panels']['Graph']['mode'] == 'float')
+    grip.dblclick()
+    settled(page)
+    check('grip double-click returns a floating palette to its remembered side', stored()['panels']['Graph']['mode'] == 'dock')
+    page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette-reset'})")

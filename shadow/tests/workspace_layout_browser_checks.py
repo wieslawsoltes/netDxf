@@ -58,8 +58,13 @@ def verify_edge_docking(page, output, check):
     def drag_to(side):
         grip = graph.get_by_role('button', name='Move Graph palette', exact=True).bounding_box()
         bounds = workspace.bounding_box()
-        page.mouse.move(grip['x'] + grip['width'] / 2, grip['y'] + grip['height'] / 2)
+        start_x, start_y = grip['x'] + grip['width'] / 2, grip['y'] + grip['height'] / 2
+        page.mouse.move(start_x, start_y)
         page.mouse.down()
+        # A previously edge-aligned floating grip can already occupy the final
+        # drop coordinate after a compact resize. Cross the real drag threshold
+        # before returning there, rather than accidentally issuing a click.
+        page.mouse.move(start_x + (40 if start_x < bounds['x'] + bounds['width'] / 2 else -40), start_y, steps=2)
         page.mouse.move(bounds['x'] + (12 if side == 'left' else bounds['width'] - 12),
                         bounds['y'] + min(180, bounds['height'] / 2), steps=8)
 

@@ -91,7 +91,7 @@ class DockElement extends Element {
     return event;
   }
 }
-function docking(t, { width = 1280, height = 600, chatWidth = 0 } = {}) {
+function docking(t, { width = 1280, height = 600, chatWidth = 0, drawingArea = false } = {}) {
   const cleanups = []; installDom({ after: callback => cleanups.push(callback) });
   const globals = ['getComputedStyle', 'ResizeObserver', 'requestAnimationFrame', 'cancelAnimationFrame'].map(key => [key, globalThis[key]]);
   let dock;
@@ -102,7 +102,10 @@ function docking(t, { width = 1280, height = 600, chatWidth = 0 } = {}) {
     }
   });
   const body = new DockElement('main'); body.attached = true; const workspace = new DockElement('div'), viewport = new DockElement('div');
-  workspace.rect = { left: 100, top: 50, width, height }; viewport.className = 'viewport'; workspace.append(viewport); body.append(workspace);
+  workspace.rect = { left: 100, top: 50, width, height }; viewport.className = 'viewport';
+  const center = drawingArea ? new DockElement('section') : viewport;
+  if (drawingArea) { center.className = 'drawing-area'; center.append(viewport); }
+  workspace.append(center); body.append(workspace);
   if (chatWidth) { const chat = new DockElement('aside'); chat.rect = { width: chatWidth }; workspace.append(chat); }
   const events = new DockElement('document');
   Object.assign(document, { body, activeElement: body, createElement: tag => new DockElement(tag), createTextNode: text => String(text),
@@ -122,8 +125,17 @@ function docking(t, { width = 1280, height = 600, chatWidth = 0 } = {}) {
     graph().move.emit('pointerdown', { clientX: x, clientY: y });
   }
   const point = (x, y = 150, extra = {}) => ({ clientX: x + 100, clientY: y + 50, ...extra });
-  return { dock, workspace, viewport, events, graph, start, point, stored, active, hidden, cleaned, rendered };
+  return { dock, workspace, viewport, center, events, graph, start, point, stored, active, hidden, cleaned, rendered };
 }
+
+test('docks surround the complete drawing column and exclude a separate agent pane from their bounds', t => {
+  const { dock, workspace, center, viewport } = docking(t, { drawingArea: true, chatWidth: 350 });
+  assert.equal(dock.center, center); assert.equal(dock.viewport, viewport); assert.equal(viewport.parentNode, center);
+  assert.equal(center.parentNode, workspace); assert.equal(dock.leftDock.parentNode, workspace); assert.equal(dock.rightDock.parentNode, workspace);
+  assert(workspace.children.indexOf(dock.leftDock) < workspace.children.indexOf(center));
+  assert(workspace.children.indexOf(dock.rightDock) > workspace.children.indexOf(center));
+  assert.deepEqual(dock.bounds(), { width: 930, height: 600 });
+});
 
 test('dragging displays a prospective column then docks on either side only on release', t => {
   const value = docking(t), { dock, workspace, start, point } = value;
@@ -138,6 +150,103 @@ test('dragging displays a prospective column then docks on either side only on r
     assert.equal(dock.dropPreview.hidden, true); assert.equal(workspace.capture, null);
     assert.deepEqual(value.stored.at(-1), dock.snapshot()); assert.equal(dock.gesture, null);
   }
+});
+
+test('center drops form tab groups and top/bottom drops insert stacked groups only on release', t => {
+  const { dock, workspace, start, point } = docking(t);
+  const target = () => { dock.groups.get('right:Properties').element.rect = { left: 1070, top: 50, width: 310, height: 600 }; };
+  start(); target(); workspace.emit('pointermove', point(1100, 250));
+  assert.equal(dock.dropPreview.dataset.kind, 'group'); assert.match(dock.dropPreview.textContent, /group Graph with Properties/);
+  assert.equal(dock.state.panels.Graph.mode, 'float');
+  workspace.emit('pointerup', point(1100, 250));
+  assert.deepEqual(dock.state.groups.right[0].tabs, ['Properties', 'Graph']); assert.equal(dock.state.groups.right[0].active, 'Graph');
+  for (const [y, order] of [[10, ['Graph', 'Properties']], [590, ['Properties', 'Graph']]]) {
+    dock.reset(); start(); target(); workspace.emit('pointermove', point(1100, y));
+    assert.equal(dock.dropPreview.dataset.kind, 'stack');
+    workspace.emit('pointerup', point(1100, y));
+    assert.deepEqual(dock.state.groups.right.filter(group => group.tabs.some(id => dock.state.panels[id].open)).map(group => group.tabs[0]), order);
+  }
+});
+
+test('tab drags detach inactive palettes, restore focus to their new frame, and cancel without losing group membership', t => {
+  const { dock, workspace, point, events } = docking(t);
+  dock.groupWith('Graph', 'Properties'); dock.show('Properties');
+  const group = dock.groups.get('right:Properties'); group.element.rect = { left: 1070, top: 50, width: 310, height: 600 };
+  const tab = group.tabs.get('Graph'); tab.focus();
+  tab.emit('pointerdown', point(1100, 590)); workspace.emit('pointerup', point(1100, 590));
+  assert.equal(dock.state.groups.right[0].active, 'Graph'); assert.equal(document.activeElement, tab);
+  tab.emit('pointerdown', point(1100, 590)); const before = dock.snapshot();
+  workspace.emit('pointermove', point(600, 300)); assert.equal(dock.state.panels.Graph.mode, 'float');
+  events.emit('keydown', { key: 'Escape' }); assert.deepEqual(dock.snapshot(), before);
+  tab.emit('pointerdown', point(1100, 590)); workspace.emit('pointerup', point(600, 300));
+  assert.equal(dock.state.panels.Graph.mode, 'float'); assert.equal(document.activeElement, dock.frames.get('Graph').selector);
+  assert.deepEqual(dock.state.groups.right.find(item => item.tabs.includes('Properties')).tabs, ['Properties']);
+});
+
+test('group-drop cancellation restores the original layout and Ctrl bypass leaves a floating palette', t => {
+  const { dock, workspace, start, point, events } = docking(t);
+  start(); dock.groups.get('right:Properties').element.rect = { left: 1070, top: 50, width: 310, height: 600 };
+  const before = dock.snapshot(); workspace.emit('pointermove', point(1100, 250));
+  events.emit('keydown', { key: 'Escape' }); assert.deepEqual(dock.snapshot(), before);
+  start(); workspace.emit('pointermove', point(1100, 250));
+  workspace.emit('pointerup', point(1100, 250, { ctrlKey: true }));
+  assert.equal(dock.state.panels.Graph.mode, 'float'); assert.equal(dock.dropZones.hidden, true);
+});
+
+test('palette title context menus are bounded and keyboard navigation skips disabled controls', t => {
+  const { dock } = docking(t), oldWidth = globalThis.innerWidth, oldHeight = globalThis.innerHeight;
+  globalThis.innerWidth = 1280; globalThis.innerHeight = 800;
+  t.after(() => { if (oldWidth === undefined) delete globalThis.innerWidth; else globalThis.innerWidth = oldWidth;
+    if (oldHeight === undefined) delete globalThis.innerHeight; else globalThis.innerHeight = oldHeight; });
+  const frame = dock.frames.get('Properties'); frame.menu.lastElementChild.scrollHeight = 400;
+  frame.header.emit('contextmenu', { clientX: 1250, clientY: 770 });
+  assert.equal(frame.menu.open, true); assert.equal(frame.menu.lastElementChild.style.left, '1092px');
+  assert.equal(frame.menu.lastElementChild.style.top, '392px'); assert.equal(document.activeElement, frame.placementButtons[0]);
+  frame.menu.emit('keydown', { key: 'End' });
+  assert.equal(document.activeElement, frame.menu.querySelectorAll('button').filter(button => !button.disabled).at(-1));
+  frame.menu.emit('keydown', { key: 'Home' }); assert.equal(document.activeElement, frame.placementButtons[0]);
+  frame.element.emit('keydown', { key: 'Escape' }); assert.equal(frame.menu.open, false);
+  assert.equal(document.activeElement, frame.menu.querySelector('summary'));
+});
+
+test('a palette launcher in the status bar opens above its trigger and keeps that trigger clickable', t => {
+  const { dock } = docking(t), oldWidth = globalThis.innerWidth, oldHeight = globalThis.innerHeight;
+  globalThis.innerWidth = 1280; globalThis.innerHeight = 800;
+  t.after(() => { if (oldWidth === undefined) delete globalThis.innerWidth; else globalThis.innerWidth = oldWidth;
+    if (oldHeight === undefined) delete globalThis.innerHeight; else globalThis.innerHeight = oldHeight; });
+  dock.launcher.querySelector('summary').rect = { left: 1000, top: 770, right: 1028, bottom: 795, width: 28, height: 25 };
+  const popup = dock.launcher.lastElementChild; popup.scrollHeight = 400;
+  dock.positionMenu(dock.launcher);
+  assert.equal(popup.style.top, '366px'); assert.equal(popup.style.maxHeight, '758px');
+  assert(parseFloat(popup.style.top) + popup.scrollHeight < 770);
+  popup.scrollHeight = 1200; dock.positionMenu(dock.launcher);
+  assert.equal(popup.style.top, '8px'); assert.equal(popup.style.maxHeight, '758px');
+  dock.launcher.querySelector('summary').rect = { left: 1000, top: 20, right: 1028, bottom: 45, width: 28, height: 25 };
+  dock.positionMenu(dock.launcher);
+  assert.equal(popup.style.top, '49px'); assert.equal(popup.style.maxHeight, '743px');
+});
+
+test('float affordance and title double-click toggle docking without losing the remembered side or bypassing the lock', t => {
+  const { dock } = docking(t), frame = dock.frames.get('Properties');
+  frame.float.emit('click'); assert.equal(dock.state.panels.Properties.mode, 'float');
+  assert.equal(frame.float.getAttribute('aria-label'), 'Dock Properties palette');
+  frame.header.emit('dblclick', { target: frame.move });
+  assert.equal(dock.state.panels.Properties.mode, 'dock'); assert.equal(dock.state.panels.Properties.side, 'right');
+  dock.setLocked(true); frame.header.emit('dblclick', { target: frame.move });
+  assert.equal(dock.state.panels.Properties.mode, 'dock'); assert.equal(frame.float.disabled, true);
+  frame.close.emit('click'); assert.equal(dock.state.panels.Properties.open, false);
+});
+
+test('stationary captured grip clicks recognize double-click without treating a drag or tab as one', t => {
+  const { dock, workspace } = docking(t), frame = dock.frames.get('Properties');
+  for (let index = 0; index < 2; index++) { frame.move.emit('pointerdown'); workspace.emit('pointerup'); }
+  assert.equal(dock.state.panels.Properties.mode, 'float');
+  for (let index = 0; index < 2; index++) { frame.move.emit('pointerdown'); workspace.emit('pointerup'); }
+  assert.equal(dock.state.panels.Properties.mode, 'dock');
+  frame.move.emit('pointerdown'); workspace.emit('pointerup');
+  frame.move.emit('pointerdown'); workspace.emit('pointermove', { clientX: 600, clientY: 300 }); workspace.emit('pointercancel');
+  frame.move.emit('pointerdown'); workspace.emit('pointerup');
+  assert.equal(dock.state.panels.Properties.mode, 'dock', 'a cancelled drag breaks the click sequence');
 });
 
 test('release coordinates and Ctrl bypass determine the final drop, without a last pointermove', t => {
