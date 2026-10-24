@@ -3,9 +3,15 @@ import { WorkspaceProfiles, workspacePresets } from './workspace-profiles.mjs';
 import { parseWorkspace, exportWorkspace, describeWorkspace, workspaceTransferLimit } from './workspace-transfer.mjs';
 
 /** Host-independent UI layout manager. Drawing workspaces remain a separate feature. */
-export function workspaceProfileTools({ paletteIds, storage, capture, restore, dialog, report, download }) {
+export function workspaceProfileTools({ paletteIds, storage, capture, restore, dialog, report, download, onApplied = () => {}, onChanged = () => {} }) {
   const store = new WorkspaceProfiles({ paletteIds, storage });
-  return async function show() {
+  const list = () => [...workspacePresets(paletteIds).map(entry => ({ ...entry, preset: true })), ...store.read().profiles];
+  const apply = identity => {
+    const current = list().find(entry => typeof identity === 'string' ? entry.name === identity : entry.name === identity?.name && !!entry.preset === !!identity.preset);
+    if (!current) throw new Error('The UI workspace no longer exists.');
+    restore(current.layout); onApplied(current.name, !!current.preset); return current.layout;
+  };
+  const show = async function show() {
     let alive = true, generation = 0, imported = null;
     const saved = store.read(), presets = workspacePresets(paletteIds);
     const choices = [...presets.map(entry => ({ ...entry, preset: true })), ...saved.profiles];
@@ -58,11 +64,11 @@ export function workspaceProfileTools({ paletteIds, storage, capture, restore, d
       el('label', { class: 'property-row' }, [el('span', { text: 'Restore layout' }), select]),
       el('label', { class: 'property-row' }, [el('span', { text: 'Name' }), name]),
       el('div', { class: 'toolbar' }, [
-        button('Apply layout', () => { const current = chosen(); if (current) { restore(current.layout); status.textContent = `${current.name} applied.`; } }),
-        button('Save current as', () => { store.change({ type: 'save', name: name.value, layout: capture() }); const target = name.value.trim(); refresh(target); status.textContent = `${target} saved.`; }),
+        button('Apply layout', () => { const current = chosen(); if (current) { apply(current); status.textContent = `${current.name} applied.`; } }),
+        button('Save current as', () => { store.change({ type: 'save', name: name.value, layout: capture() }); const target = name.value.trim(); refresh(target); onApplied(target, false); status.textContent = `${target} saved.`; }),
         button('Update saved workspace', () => { const current = chosen(); if (!current || current.preset) return; store.change({ type: 'save', name: current.name, replace: true, layout: capture() }); refresh(current.name); status.textContent = `${current.name} updated.`; }),
-        button('Rename workspace', () => { const current = chosen(); if (!current || current.preset) return; store.change({ type: 'rename', name: current.name, next: name.value }); refresh(name.value.trim()); status.textContent = 'Workspace renamed.'; }),
-        button('Delete workspace', () => { const current = chosen(); if (!current || current.preset) return; store.change({ type: 'delete', name: current.name }); refresh(); status.textContent = `${current.name} deleted.`; })
+        button('Rename workspace', () => { const current = chosen(); if (!current || current.preset) return; store.change({ type: 'rename', name: current.name, next: name.value }); onChanged({type:'rename',name:current.name,next:name.value.trim()});refresh(name.value.trim()); status.textContent = 'Workspace renamed.'; }),
+        button('Delete workspace', () => { const current = chosen(); if (!current || current.preset) return; store.change({ type: 'delete', name: current.name });onChanged({type:'delete',name:current.name});refresh(); status.textContent = `${current.name} deleted.`; })
       ]),
       status,
       el('details', {}, [
@@ -84,4 +90,5 @@ export function workspaceProfileTools({ paletteIds, storage, capture, restore, d
     try { await dialog('UI workspaces', content, 'Close'); }
     finally { alive = false; generation++; }
   };
+  return Object.assign(show, { list, apply });
 }

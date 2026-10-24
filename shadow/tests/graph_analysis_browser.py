@@ -16,6 +16,7 @@ from transform_reference_browser_checks import verify_transform_reference
 from domain_isolation_browser_checks import verify_domain_isolation
 from domain_schedule_browser_checks import verify_domain_schedule
 from ribbon_keyboard_browser_checks import verify_ribbon_keyboard
+from desktop_shell_browser_checks import verify_desktop_shell
 
 
 def verify_graph_analysis(page, output, state, command, wait_state, idle, check):
@@ -126,6 +127,7 @@ def verify_graph_analysis(page, output, state, command, wait_state, idle, check)
     verify_domain_isolation(page, output, state, command, wait_state, idle, check)
     verify_domain_schedule(page, output, state, command, wait_state, idle, check)
     verify_ribbon_keyboard(page, output, state, command, wait_state, idle, check)
+    verify_desktop_shell(page, output, state, command, wait_state, idle, check)
 
 
 def verify_large_graph_projection(page, output, state, command, wait_state, idle, check):

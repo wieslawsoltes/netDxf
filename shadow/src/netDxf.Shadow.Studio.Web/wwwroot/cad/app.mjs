@@ -12,6 +12,7 @@ import { authoringDialog, isAuthoringAction } from './authoring-ui.mjs';
 import { RibbonLayout, chromePreferences, ribbonModes, reconcileRibbonContext } from './ribbon-layout.mjs';
 import { bindRovingToolbar } from './ribbon-keyboard.mjs';
 import { PaletteDock } from './palette-docking.mjs';
+import { StudioShell, shellIcon } from './workspace-shell.mjs';
 import { workspaceProfileTools } from './workspace-profile-ui.mjs';
 import { workspaceProfileLayout } from './workspace-profiles.mjs';
 import { layerStateTools } from './layer-state-ui.mjs';
@@ -51,6 +52,7 @@ let session = null, tab = 'Home', palette = 'Properties', currentLayer = '0', la
 let documents = [], viewId = '', stateKey = '', activeIdentity = '', snapshot = null, lastInput = [], historyIndex = 0, toastTimer;
 let agentWorkspace = null;
 let commandAccess = null;
+let studioShell = null;
 let ribbonContext = {};
 const renderGraph = graphPalette({client, viewport, report, snapshot:()=>snapshot,
   beginPick:()=>cancel(false), download:(name,text,type)=>download(new Blob([text],{type}),name),
@@ -89,15 +91,16 @@ const docking=new PaletteDock({workspace:$('workspace'),legacyPalette:$('palette
   palettes:paletteNames.map(id=>({id,title:id})),legacySettings:settings,render:renderPaletteContent,
   onActiveChange:id=>{palette=id;},onLayoutChange:()=>viewport.resize(),keepOpen:id=>id==='Graph'&&!!viewport.graphPick,onHide:id=>{analysisPalettes[id]?.destroy();if(id==='Modules')moduleUi.hide?.();if(id==='Graph')renderGraph.hide();if(id==='References')renderReferences.hide();},report});
 const uiWorkspaces=workspaceProfileTools({paletteIds:paletteNames,storage:profileStorage,dialog,report,
+  onApplied:(name,preset)=>studioShell?.setWorkspace(name,preset),onChanged:change=>studioShell?.workspaceChanged(change),
   download:(name,text,type)=>download(new Blob([text],{type}),name),
-  capture:()=>({chrome,tab,commandHeight:parseFloat(document.documentElement.style.getPropertyValue('--command-height'))||90,palettes:docking.snapshot(),quickAccess:commandAccess?.snapshot(),ribbonCustomization:ribbonCustomization.snapshot()}),
+  capture:()=>({chrome,tab,commandHeight:parseFloat(document.documentElement.style.getPropertyValue('--command-height'))||90,palettes:docking.snapshot(),quickAccess:commandAccess?.snapshot(),ribbonCustomization:ribbonCustomization.snapshot(),shell:studioShell?.snapshot()}),
   restore:value=>{
     const layout=workspaceProfileLayout(value,paletteNames);
     ribbonCustomization.restore(layout.ribbonCustomization,{notify:false,strict:false});
     ribbonLayout.hide();chrome=layout.chrome;
     document.documentElement.style.setProperty('--command-height',`${Math.min(innerHeight*.55,layout.commandHeight)}px`);
     tab=ribbonEntries().some(entry=>entry.key===layout.tab&&!entry.disabled)?layout.tab:'Home';
-    docking.restore(layout.palettes);commandAccess?.restore(layout.quickAccess);applyChrome();drawRibbonTabs();drawRibbon();persist();viewport.resize();
+    docking.restore(layout.palettes);commandAccess?.restore(layout.quickAccess);studioShell?.restore(layout.shell);applyChrome();drawRibbonTabs();drawRibbon();persist();viewport.resize();
   }});
 if(Number.isFinite(settings.commandHeight))document.documentElement.style.setProperty('--command-height',`${Math.max(32,Math.min(innerHeight*.55,settings.commandHeight))}px`);
 applyChrome();
@@ -286,6 +289,7 @@ function applyChrome() {
   $('command-history-toggle').setAttribute('aria-expanded',String(chrome.commandHistoryVisible));
   $('command-history-toggle').textContent=chrome.commandHistoryVisible?'⌄':'⌃';
   ribbonLayout.close();ribbonLayout.schedule();
+  studioShell?.commandDock.fit();
 }
 function ensureCommandLine() { if(!chrome.commandLineVisible){chrome.commandLineVisible=true;applyChrome();persist();} }
 
@@ -395,10 +399,16 @@ function renderPaletteContent(palette,content) {
 }
 async function documentTabs() {
   const receipt=client.id; const result=await client.documents(); if(receipt!==client.id) return; documents=result;
-  $('documents').replaceChildren(...documents.map(doc=>el('div',{class:`document-tab${doc.id===client.id?' active':''}`},[
-    button(`${doc.dirty?'● ':''}${doc.name}`,()=>activate(doc.id),{class:'name',role:'tab','aria-selected':doc.id===client.id}),
-    button('×',()=>closeDocument(doc),{class:'close',title:`Close ${doc.name}`})])));
+  const focused=$('documents').contains(document.activeElement)?{id:document.activeElement.closest('[data-document-tab]')?.dataset.documentTab,
+    control:document.activeElement.classList.contains('close')?'.close':'.name'}:null;
+  $('documents').replaceChildren(...documents.map(doc=>{
+    const close=button('',()=>closeDocument(doc),{class:'close',title:`Close ${doc.name}`,'aria-label':`Close ${doc.name}`});close.append(shellIcon('close'));
+    return el('div',{class:`document-tab${doc.id===client.id?' active':''}`,'data-document-tab':doc.id},[
+      button(`${doc.dirty?'● ':''}${doc.name}`,()=>activate(doc.id),{class:'name',role:'tab',title:`${doc.name}${doc.dirty?' — unsaved changes':''}`,'aria-label':doc.name,'aria-selected':doc.id===client.id,tabindex:doc.id===client.id?0:-1}),close]);
+  }));
   const doc=documents.find(d=>d.id===client.id); $('title').textContent=`${doc?.name||'Drawing'}${doc?.dirty?' *':''} — netDxf Shadow Studio`;
+  studioShell?.refreshLayout();
+  if(focused){const restored=[...$('documents').querySelectorAll('[data-document-tab]')].find(node=>node.dataset.documentTab===focused.id);restored?.querySelector(focused.control).focus({preventScroll:true});}
 }
 async function activate(id) { if(id===client.id && client.state) return; cancel(false); snapshot=null;viewport.snapshot=null;viewId='';await client.activate(id);await documentTabs(); }
 async function newDocument(demo=false) { const created=await client.create(`Drawing${documents.length+1}.dxf`,demo);await activate(created.id);log(demo?'Sample drawing opened.':'New drawing opened.'); }
@@ -475,7 +485,7 @@ async function action(name) {
     case 'command-search':commandAccess.search();return;
     case 'quick-access-customize':commandAccess.customize();return;
     case 'ribbon-customize':return ribbonEditor.customize();
-    case 'clean':ribbonLayout.hide();$('studio').classList.toggle('clean');return;
+    case 'clean':ribbonLayout.hide();studioShell?.closePopup();$('studio').classList.toggle('clean');return;
     case 'ribbon-minimize':chrome.ribbonMode=chrome.ribbonMode==='tabs'?'full':'tabs';applyChrome();persist();return;
     case 'ribbon-cycle':chrome.ribbonMode=ribbonModes[(ribbonModes.indexOf(chrome.ribbonMode)+1)%ribbonModes.length];applyChrome();persist();return;
     case 'ribbon-display':return workspaceMenu($('ribbon-display'),ribbonModes.map(mode=>[ribbonModeLabels[mode],()=>{chrome.ribbonMode=mode;applyChrome();persist();},mode===chrome.ribbonMode]));
@@ -510,12 +520,13 @@ async function action(name) {
     case 'graph':if(viewport.graph)renderGraph.clearOverlay();else{showPalette('Graph');await renderGraph.loadTopology();}return;
     case 'export-png':return exportImage('skia');case 'export-svg':return exportImage('svg');
     case 'legacy':window.open('diagnostics.html','_blank','noopener');return;
-    case 'reset-ui':viewport.cancelSelectionCycle();for(const [key,value] of Object.entries({grid:true,snap:false,ortho:false,polar:false,osnap:true,dynamic:true,tracking:false,selectionCycling:false,polarAngle:15,polarTolerance:5,gridStep:10,snapModes:23}))viewport.settings[key]=value;$('studio').className='';docking.reset();chrome=chromePreferences();applyChrome();document.documentElement.style.removeProperty('--command-height');persist();modes();viewport.changed();return;
+    case 'reset-ui':viewport.cancelSelectionCycle();for(const [key,value] of Object.entries({grid:true,snap:false,ortho:false,polar:false,osnap:true,dynamic:true,tracking:false,selectionCycling:false,polarAngle:15,polarTolerance:5,gridStep:10,snapModes:23}))viewport.settings[key]=value;$('studio').className='';docking.reset();studioShell?.reset();chrome=chromePreferences();applyChrome();document.documentElement.style.removeProperty('--command-height');persist();modes();viewport.changed();return;
     case 'help':await dialog('Shadow CAD command reference',[el('p',{class:'hint',text:'Native netDxf editing on immutable shadow transactions. Enter ends point chains; C closes; U removes the last draft point; Escape cancels. Coordinates: X,Y; @dx,dy; @distance<angle. A bare distance follows the cursor. All edits are undoable.'}),el('table',{class:'help-table'},Object.entries(commands).map(([name,s])=>el('tr',{},[el('td',{text:`${name} (${s.aliases.join(', ')})`}),el('td',{text:s.label})]))),el('p',{class:'hint',text:'STRETCH: draw one XY crossing window (drag or two corners), Enter, then base and second point or Displacement. Shift removes objects; C replaces the crossing window. BREAK: pick one object as the first break point, use F to replace it, or @ for a gap-free split. BREAKATPOINT asks for one interior point after selecting the object. Supported curves are listed in the drafting guide; unsupported geometry is refused atomically. TRIM/EXTEND: select target LINE first, then a LINE/CIRCLE boundary, Enter, then pick an endpoint. FILLET/CHAMFER: two intersecting XY lines. EXPLODE: 2D polylines and ordinary unattributed INSERTs, one level at a time. Array inserts, attached data, disabled exploding, and unrepresentable affine geometry are refused. SPLINE: cubic control points. These commands preserve native source geometry and refuse unsupported combinations. BLOCK creates shared definitions; BLOCKREDEFINE replaces one from selected sources; BLOCKRENAME retains references. HATCH/HATCHEDIT accept built-in name, scale, angle and island style. HATCHPOLY makes a solid polygon. Hatch settings import bounded custom PAT files. DWG import uses signature detection; SAVEAS offers host-declared DWG profiles with strict conversion checks. 3D solids, general curve trimming, AutoLISP and CTB/STB plotting are not implemented.'}),el('p',{class:'hint',text:'Ctrl+N/O/S: new/open/save · Ctrl+Z/Y: undo/redo · Ctrl+1: palettes · Ctrl+0: clean screen · Ctrl+9: command line · F2: history · F3: object snap · F7: grid · F8: ortho · F9: grid snap · F10: polar · F11: tracking · F12: dynamic input. CYCLE toggles overlap selection; Shift+Space in the viewport opens its chooser temporarily. Middle drag pans; wheel zooms about the pointer; right click opens command actions. Two-finger touch pans/zooms.'})],'Close');return;
     default:throw new Error(`Unknown workspace action: ${name}`);
   }
 }
 function modes() {
+  if(studioShell){studioShell.renderModes();return;}
   $('drafting-modes').replaceChildren(...[['snap','SNAP','F9'],['grid','GRID','F7'],['ortho','ORTHO','F8'],['polar','POLAR','F10'],['osnap','OSNAP','F3'],['tracking','OTRACK','F11'],['dynamic','DYN','F12'],['selectionCycling','CYCLE','Shift+Space']].map(([key,label,shortcut])=>button(label,()=>toggle(key),{'aria-pressed':viewport.settings[key],title:`${label} (${shortcut})`})));
 }
 function toggle(key) {viewport.settings[key]=!viewport.settings[key];if(key==='selectionCycling')viewport.cancelSelectionCycle();if(key==='ortho'&&viewport.settings.ortho)viewport.settings.polar=false;if(key==='polar'&&viewport.settings.polar)viewport.settings.ortho=false;persist();modes();viewport.invalidate();}
@@ -560,6 +571,16 @@ function commandState(){return {hasDocument:!!client.state,busy:!!client.busy,re
     modules:client.data?.modules||[]};}
 function executeCatalogCommand(entry){return entry.kind==='command'?start(entry.target):entry.kind==='input'?submit(entry.target):action(entry.target);}
 commandAccess=createCommandAccess({toolbar:$('quick-access'),catalog:commandCatalog,state:commandState,execute:executeCatalogCommand,report});
+studioShell=new StudioShell({storage:profileStorage,report,execute:action,catalog:commandCatalog,state:()=>({...commandState(),documentId:client.id}),
+  documents:()=>documents,activate,closeDocument,profiles:uiWorkspaces,settings:()=>viewport.settings,toggle,
+  persistDrafting:()=>{persist();viewport.snapHit=null;viewport.invalidate();},
+  currentLayout:()=>({name:client.state?.layout,names:client.state?.layouts||[],disabled:!!client.data?.blockEditor}),
+  changeLayout:async name=>{if(client.data?.blockEditor)throw new Error('Close the block editor before changing layouts.');cancel(false);setSnapshot(null);await edit('layout',{name});},
+  resize:()=>viewport.resize()});
+// Keep the palette layout menu in the status strip instead of covering the drawing.
+docking.launcher.querySelector('summary').replaceChildren(shellIcon('window'));
+docking.launcher.querySelector('summary').title='Palette layout settings';
+$('status-customize').before(docking.launcher);
 drawRibbonTabs();
 $('ribbon-tabs').setAttribute('aria-orientation','horizontal');
 $('ribbon-tabs').addEventListener('keydown',event=>{
@@ -572,7 +593,6 @@ $('ribbon-tabs').addEventListener('keydown',event=>{
   event.preventDefault();event.stopPropagation();selectRibbon(entries[next].key,true);
 });
 $('ribbon-tabs').addEventListener('dblclick',event=>{if(event.target.closest('[role=tab]'))run(()=>action('ribbon-minimize'));});
-$('file-menu').addEventListener('click',()=>workspaceMenu($('file-menu'),[['new','New drawing'],['demo','New sample drawing'],['open','Open DXF / DWG…'],['save','Save DXF'],['save-as','Save drawing as…'],['export-png','Export PNG'],['export-svg','Export SVG'],['legacy','Advanced diagnostics']].map(([name,label])=>[label,()=>action(name)])));
 document.addEventListener('click',e=>{const command=e.target.closest('[data-command]'),target=e.target.closest('[data-action]');if(command)run(()=>start(command.dataset.command));else if(target)run(()=>action(target.dataset.action));if(!menuAnchor?.contains(e.target))hideContextMenu();});
 $('command-form').addEventListener('submit',e=>{e.preventDefault();const text=$('command-input').value;$('command-input').value='';run(()=>submit(text));});
 $('command-input').addEventListener('input',()=>{
@@ -618,15 +638,28 @@ document.addEventListener('keydown',e=>{
 document.addEventListener('keyup',e=>{if(e.key===' ')viewport.space=false;});window.addEventListener('blur',()=>{viewport.space=false;});
 function commandSplitter(){
   const node=$('command-splitter');
-  const resize=value=>document.documentElement.style.setProperty('--command-height',`${Math.max(32,Math.min(innerHeight*.55,value))}px`);
+  const resize=value=>{
+    const maximum=Math.max(32,Math.min(600,innerHeight*.55,$('drawing-area').clientHeight-110));
+    const height=Math.max(32,Math.min(maximum,value));
+    document.documentElement.style.setProperty('--command-height',`${height}px`);
+    node.setAttribute('aria-valuemax',String(Math.round(maximum)));node.setAttribute('aria-valuenow',String(Math.round(height)));
+  };
   node.addEventListener('pointerdown',event=>{
+    if(event.button!==0||event.isPrimary===false)return;
     event.preventDefault();node.setPointerCapture(event.pointerId);
     const y=event.clientY,height=$('command-line').getBoundingClientRect().height;
-    const move=current=>resize(height+y-current.clientY);
-    const end=()=>{node.removeEventListener('pointermove',move);node.removeEventListener('pointerup',end);node.removeEventListener('pointercancel',end);persist();};
+    const move=current=>{if(current.pointerId===event.pointerId)resize(height+y-current.clientY);};
+    const end=current=>{
+      if(current.pointerId!==undefined&&current.pointerId!==event.pointerId)return;
+      const cancel=current.type==='pointercancel'||current.key==='Escape';if(cancel)resize(height);
+      node.removeEventListener('pointermove',move);node.removeEventListener('pointerup',end);node.removeEventListener('pointercancel',end);document.removeEventListener('keydown',escape,true);
+      if(node.hasPointerCapture(event.pointerId))node.releasePointerCapture(event.pointerId);persist();
+    };
+    const escape=current=>{if(current.key==='Escape'){current.preventDefault();current.stopPropagation();end(current);}};
     node.addEventListener('pointermove',move);node.addEventListener('pointerup',end);node.addEventListener('pointercancel',end);
+    document.addEventListener('keydown',escape,true);
   });
-  node.addEventListener('keydown',event=>{const step=event.key==='ArrowDown'?-20:event.key==='ArrowUp'?20:0;if(!step)return;event.preventDefault();resize($('command-line').getBoundingClientRect().height+step);persist();});
+  node.addEventListener('keydown',event=>{const increment=event.shiftKey?1:20,step=event.key==='ArrowDown'?-increment:event.key==='ArrowUp'?increment:0;if(!step)return;event.preventDefault();event.stopPropagation();resize($('command-line').getBoundingClientRect().height+step);persist();});
 }
 commandSplitter();
 client.addEventListener('reset',()=>{viewport.clearFrame();viewport.graph=null;$('loading').hidden=false;viewport.invalidate();});
@@ -640,10 +673,13 @@ client.addEventListener('state',()=>{
   const nextView=`${client.id}:${s.documentId}:${s.workspaceId}:${s.layout}`;
   if(nextView!==viewId){const saved=views.get(nextView);viewId=nextView;viewport.camera=saved||fit(s.bounds,viewport.size);}
   currentLayer=client.data.currentLayer||layers.get(client.id)||currentLayer;if(!client.data.layers.some(l=>l.name===currentLayer))currentLayer='0';layers.set(client.id,currentLayer);
+  const focusedLayout=$('layouts').contains(document.activeElement)?document.activeElement.textContent:null;
   $('layouts').replaceChildren(...s.layouts.map(name=>button(name,async()=>{cancel(false);setSnapshot(null);await edit('layout',{name});},{role:'tab','aria-selected':name===s.layout})));
   $('revision').textContent=`r${s.revision}`;
   if(snapshot===null){$('view-notice').hidden=!client.data.blockEditor;$('view-notice').textContent=client.data.blockEditor?`Block Editor: ${client.data.blockEditor.name} — BSAVE to commit, BCLOSE to discard`:'';}
   if(client.data.blockEditor)$('layouts').querySelectorAll('button').forEach(b=>b.disabled=true);$('selection-count').textContent=`${client.data.selectedEntities.length} selected · ${client.data.itemCount} visible`;
+  studioShell?.refreshLayout();
+  if(focusedLayout)[...$('layouts').querySelectorAll('[role=tab]')].find(node=>node.textContent===focusedLayout)?.focus({preventScroll:true});
   if(stateKey!==viewKey(s)){stateKey=viewKey(s);drawRibbon();renderPalette();viewport.setData();}
   $('loading').hidden=true;updatePrompt();updateTools();
 });
@@ -652,7 +688,7 @@ window.addEventListener('beforeunload',e=>{if(documents.some(d=>d.dirty)){e.prev
 bindViewportPageLifetime(viewport);
 async function pollDocuments() {
   try {
-    if(!document.hidden&&!client.busy&&!session&&!viewport.inputActive&&!document.querySelector('dialog[open]')&&!docking.containsFocus()&&!ribbonLayout.containsFocus())
+    if(!document.hidden&&!client.busy&&!session&&!viewport.inputActive&&!document.querySelector('dialog[open]')&&!docking.containsFocus()&&!ribbonLayout.containsFocus()&&!studioShell?.containsFocus())
       await run(async()=>{await client.refresh();await documentTabs();});
   } finally { setTimeout(pollDocuments,2500); }
 }

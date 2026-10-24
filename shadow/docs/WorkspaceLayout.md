@@ -1,5 +1,66 @@
 # Studio palette and ribbon workspace
 
+## Desktop CAD shell
+
+The shared native and WebAssembly frontend uses a compact application/Quick Access
+strip, workspace switcher, tabbed ribbon and drawing-file tabs above the drawing.
+The drawing column owns its viewport, resizable command window and Model/paper
+layout tabs. Docked palettes extend beside that complete column to the application
+status bar. The command window no longer reduces the height of Properties or an
+opposite dock. Agent chat remains an independent adjacent workspace.
+
+The Home ribbon uses three-row command grids, large primary drawing/annotation
+tools, a full-width current-layer selector, semantic SVG icon colors and functional
+panel launchers. All seven Home panels fit at 1280 CSS pixels. Curves and Shapes
+split buttons retain their real command controls in keyboard-accessible menus;
+collapsed ribbon panels expose the alternatives directly. All existing command
+identities, contextual tabs, customization, floating panels and display modes are
+shared with the same command dispatcher.
+
+The application menu provides registered file commands, command search and open
+drawings. The drawing-list button reaches tabs that overflow the file strip;
+right-click a drawing tab for Activate, Save and Close. Drawing and layout tabs
+support Left/Right and Home/End. Asynchronous activation and background document
+refresh preserve the focused tab or Close control. Model/paper layouts have a
+separate list beside their tabs, and the status bar identifies the current space.
+
+**Workspace switching** is available beside Quick Access and on the status bar.
+Choose a preset or saved layout, manage/save layouts, or reset the current layout.
+Preset and saved identities are distinct, even when names match. Renaming a current
+saved layout updates the switcher; deleting it leaves the current arrangement
+detached until another workspace is applied or saved. UI profiles now include
+status visibility/text labels and command-window position in addition to the
+existing ribbon and palette state. Existing profiles receive safe defaults.
+
+## Command window and status bar
+
+Drag the command-row grip to float the existing command editor. Double-click the
+grip or use its dock/float button to change mode. A floating window can be moved
+with the grip, resized at its lower-right corner, or adjusted with arrow keys
+(Shift uses one-pixel steps). Drop near the drawing column's bottom edge to dock;
+hold Ctrl to keep floating. The preview indicates the destination, and Escape
+cancels movement or resizing. The input, selection, history and handlers retain
+their identities while moving between hosts. Restored geometry is fitted to the
+available workspace. Ctrl+9 and F2 retain their command-window/history functions.
+
+The status strip uses compact SVG indicators for the existing drafting aids.
+**Customize status bar** shows/hides individual indicators and coordinates, enables
+text labels, or restores defaults. Hidden indicators retain their keyboard
+shortcuts and do not disable the corresponding drafting aid. Right-click a drafting
+indicator (or press Down while focused) for its settings; Object Snap exposes the
+individual running snap modes. Menus choose space above or below the trigger and
+remain inside the viewport, including compact screens.
+
+`workspace-shell-model.mjs` normalizes only bounded presentation preferences.
+`StudioShell` binds the shell to the existing command catalog and profile manager;
+`CommandLineDock` moves the original form without cloning command state. The shared
+`desktop_shell_browser_checks.py` fixture runs in the native and static-only WASM
+suites. It covers drawing-column geometry, command focus/buffer retention, pointer
+and keyboard docking, profile identity, status controls, asynchronous tabs and
+320–1600-pixel responsive layouts while checking drawing/history preservation.
+
+## Palette placement
+
 Properties is an independent palette. Use **Palettes** in the document bar, the
 palette selector, View ribbon or a CAD command to open a tool. Multiple palettes
 can remain open: inspect a graph beside object properties, or keep Layers on the
@@ -14,6 +75,14 @@ away and leave keyboard focus to retract an anchored palette. Escape retracts
 it immediately. Floating windows support drag/resize, while dock columns have
 keyboard and pointer splitters. Drag near an edge to dock. Move/resize grips
 also accept arrow keys, with Shift for one-pixel steps.
+
+Drag over another docked group's center or tab strip to join it as a tab; drag
+over its upper/lower region to insert a stack above/below it. Live drop previews
+identify the destination. Tabs can be dragged out to float or into another group.
+Ctrl suppresses drop targets, and Escape restores the pre-drag arrangement.
+The title grip also accepts double-click to dock/float. Right-click a palette title
+or tab for the same layout options, with keyboard menu navigation. Palette chrome
+uses SVG controls rather than font-dependent docking glyphs.
 
 The Palettes launcher exposes **Lock palette layout** and **Reset palette
 layout**. Locking prevents movement, resizing and docking while permitting

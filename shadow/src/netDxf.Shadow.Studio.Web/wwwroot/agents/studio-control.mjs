@@ -99,7 +99,7 @@ export function installStudioControl(host) {
     controls.clear();
     const modal = activeModal();
     const nodes = [...(modal || root).querySelectorAll(modal ? 'button, input, select, textarea' :
-      '#studio button, #studio input, #studio select, #studio textarea, #dialog button, #dialog input, #dialog select, #dialog textarea, .command-access-dialog button, .command-access-dialog input, .command-access-dialog select')]
+      '#studio button, #studio input, #studio select, #studio textarea, #dialog button, #dialog input, #dialog select, #dialog textarea, .command-access-dialog button, .command-access-dialog input, .command-access-dialog select, .shell-popup button')]
       .filter(node => actionable(node, modal));
     const legacyDialog = root.getElementById('dialog');
     const labelledBy = modal?.getAttribute('aria-labelledby')?.split(/\s+/).map(id => root.getElementById(id)).filter(publicNode)

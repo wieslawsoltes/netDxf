@@ -2,6 +2,7 @@ import { ribbonPreferences } from './ribbon-customization.mjs';
 import { chromePreferences } from './ribbon-layout.mjs';
 import { paletteLayout } from './palette-layout.mjs';
 import { quickAccessPreferences } from './command-catalog.mjs';
+import { shellPreferences } from './workspace-shell-model.mjs';
 
 export const workspaceProfileKey = 'netdxf-cad-workspaces-v1';
 export const workspaceProfileLimit = 24;
@@ -18,7 +19,8 @@ export function workspaceProfileLayout(value, paletteIds) {
     commandHeight: Number.isFinite(source.commandHeight) ? Math.max(32, Math.min(600, source.commandHeight)) : 90,
     palettes: paletteLayout(source.palettes, paletteIds),
     quickAccess: quickAccessPreferences(source.quickAccess),
-    ribbonCustomization: ribbonPreferences(source.ribbonCustomization)
+    ribbonCustomization: ribbonPreferences(source.ribbonCustomization),
+    shell: shellPreferences(source.shell)
   };
 }
 

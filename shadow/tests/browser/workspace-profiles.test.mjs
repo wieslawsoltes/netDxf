@@ -5,6 +5,18 @@ import { workspaceProfileTools } from '../../src/netDxf.Shadow.Studio.Web/wwwroo
 import { installDom, byText, byLabel } from './ui-fixture.mjs';
 
 const ids = ['Properties', 'Graph', 'Layers'];
+test('direct workspace switching resolves preset and saved identities separately',()=>{
+  let text=null;
+  const storage={getItem:()=>text,setItem:(_,value)=>{text=value;}};
+  const store=new WorkspaceProfiles({paletteIds:ids,storage});
+  store.change({type:'save',name:'Drafting',layout:{tab:'Graph',shell:{version:1,commandWindow:{mode:'float'}}}});
+  const applied=[];
+  const profiles=workspaceProfileTools({paletteIds:ids,storage,capture:()=>({}),restore:layout=>applied.push(layout),onApplied:(name,preset)=>applied.push({name,preset})});
+  profiles.apply({name:'Drafting',preset:false});
+  assert.equal(applied[0].tab,'Graph');assert.equal(applied[0].shell.commandWindow.mode,'float');assert.deepEqual(applied[1],{name:'Drafting',preset:false});
+  profiles.apply({name:'Drafting',preset:true});assert.equal(applied[2].tab,'Home');assert.equal(applied[2].shell.commandWindow.mode,'dock');
+  assert.throws(()=>profiles.apply({name:'Missing',preset:false}),/no longer exists/);
+});
 test('workspace persistence retains only UI layout fields, clamps size and tolerates malformed storage', () => {
   const value = workspaceProfileLayout({ tab:'Graph', commandHeight:99999, chrome:{ribbonMode:'titles',commandLineVisible:false},
     documentId:'private', agent:{secret:'never-copy'}, palettes:{version:2,active:'Graph',panels:{Graph:{open:true,mode:'float',secret:'never-copy'},Unknown:{open:true}}} }, ids);
@@ -98,7 +110,7 @@ test('preset layouts keep Properties available beside a left Graph palette and e
   assert(draft.layout.palettes.panels.Properties.open);
   assert(graph.layout.palettes.panels.Properties.open);assert(graph.layout.palettes.panels.Graph.open);
   assert.equal(graph.layout.palettes.panels.Graph.side,'left');assert.equal(graph.layout.tab,'Graph');
-  assert.deepEqual(Object.keys(graph.layout),['chrome','tab','commandHeight','palettes','quickAccess','ribbonCustomization']);
+  assert.deepEqual(Object.keys(graph.layout),['chrome','tab','commandHeight','palettes','quickAccess','ribbonCustomization','shell']);
 });
 
 test('dependency workspace provides a wide References tab beside source Properties', () => {
