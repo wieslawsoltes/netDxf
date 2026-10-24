@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { changePaletteLayout, paletteDockWidths, paletteDropSide, paletteDropPreview, paletteDropTarget, paletteLayout, paletteRect, resizePaletteRect, paletteGroups, paletteGroupFor, paletteStackHeights } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/palette-layout.mjs';
+import { changePaletteLayout, paletteAvailable, paletteDockWidths, paletteDropSide, paletteDropPreview, paletteDropTarget, paletteLayout, paletteRect, resizePaletteRect, resizePaletteFromEdge, paletteGroups, paletteGroupFor, paletteStackHeights } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/palette-layout.mjs';
 import { workspacePresets, workspaceProfileLayout } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/workspace-profiles.mjs';
 
 const ids = ['Properties', 'Graph', 'Layers'], bounds = { width: 1280, height: 600 };
@@ -63,12 +63,52 @@ test('toggle hides all windows without forgetting their modes and reopens the ac
   value = update(value, { type: 'toggle' }); assert(value.panels.Graph.open); assert.equal(value.hidden, false);
 });
 
+test('hide and show preserve manually touched palette visibility without revealing unrelated windows', () => {
+  let value = update(paletteLayout(null, ids), { type: 'show', id: 'Graph' });
+  value = update(value, { type: 'group', id: 'Graph', target: 'Properties' });
+  const placement = structuredClone(value.groups);
+  value = update(value, { type: 'hide-all' });
+  assert(value.hidden); assert.equal(paletteGroups(value, 'right').length, 0);
+  value = update(value, { type: 'show', id: 'Graph' });
+  assert(value.hidden); assert.deepEqual(value.hiddenRevealed, ['Graph']);
+  assert.equal(paletteAvailable(value, 'Properties'), false); assert.equal(paletteAvailable(value, 'Graph'), true);
+  assert.deepEqual(paletteGroups(value, 'right')[0].tabs, ['Graph']);
+  value = update(value, { type: 'close', id: 'Graph' });
+  value = update(value, { type: 'place', id: 'Layers', mode: 'float' });
+  assert(value.hidden); assert.deepEqual(value.hiddenRevealed, ['Layers']);
+  value = paletteLayout(JSON.parse(JSON.stringify(value)), ids);
+  value = update(value, { type: 'show-all' });
+  assert.equal(value.hidden, false); assert.deepEqual(value.hiddenRevealed, []);
+  assert.equal(paletteAvailable(value, 'Properties'), true); assert.equal(paletteAvailable(value, 'Graph'), false);
+  assert.equal(paletteAvailable(value, 'Layers'), true); assert.equal(value.panels.Layers.mode, 'float');
+  assert.deepEqual(value.groups.right[0].tabs, placement.right[0].tabs);
+});
+
+test('hide/show is idempotent, toggle restores its hide phase, and suppression exceptions are bounded safe preferences', () => {
+  let value = update(paletteLayout(null, ids), { type: 'hide-all' });
+  value = update(value, { type: 'show', id: 'Graph' });
+  value = update(value, { type: 'show', id: 'Graph' });
+  assert.deepEqual(value.hiddenRevealed, ['Graph']);
+  value = update(value, { type: 'toggle' });
+  assert.equal(value.hidden, false); assert(paletteAvailable(value, 'Properties') && paletteAvailable(value, 'Graph'));
+  value = update(value, { type: 'hide-all' }); value = update(value, { type: 'hide-all' });
+  value.hiddenRevealed = ['Graph', 'Graph', 'Layers', '__proto__', 'unregistered', { token: 'discard' }];
+  value = paletteLayout(value, ids);
+  assert.deepEqual(value.hiddenRevealed, ['Graph']);
+  assert.deepEqual(paletteLayout({ ...value, hidden: false }, ids).hiddenRevealed, []);
+  value = update(value, { type: 'close', id: 'Graph' }); value = update(value, { type: 'close', id: 'Properties' });
+  value = update(value, { type: 'show-all' }); value = update(value, { type: 'show-all' });
+  assert(ids.every(id => !value.panels[id].open), 'Show All does not reopen palettes explicitly closed while hidden');
+});
+
 test('restored floating frames stay inside desktop, narrow, rotated and temporarily zero-sized workspaces', () => {
   for (const size of [{ width: 390, height: 844 }, { width: 1200, height: 290 }, { width: 0, height: 0 }, { width: 110, height: 95 }]) {
     const rect = paletteRect({ x: 3000, y: 3000, width: 1400, height: 1300 }, size);
     assert(rect.width > 0 && rect.height > 0); assert(rect.x >= 0 && rect.y >= 0);
     assert(rect.x + rect.width <= Math.max(1, size.width)); assert(rect.y + rect.height <= Math.max(1, size.height));
   }
+  assert.deepEqual(paletteRect({}, { width: 100, height: 80 }), { x: 0, y: 0, width: 100, height: 80 });
+  assert.deepEqual(paletteRect({ width: NaN, height: Infinity }, { width: 0, height: 0 }), { x: 0, y: 0, width: 1, height: 1 });
 });
 
 test('floating resizing holds the top-left corner while bounding the right and bottom handles', () => {
@@ -76,6 +116,47 @@ test('floating resizing holds the top-left corner while bounding the right and b
   assert.deepEqual(resizePaletteRect(initial, 9000, 9000, { width: 800, height: 600 }), { x: 100, y: 80, width: 700, height: 520 });
   assert.deepEqual(resizePaletteRect(initial, -9000, -9000, { width: 800, height: 600 }), { x: 100, y: 80, width: 220, height: 160 });
   assert.deepEqual(resizePaletteRect(initial, 1, 1, { width: 0, height: 0 }), { x: 0, y: 0, width: 1, height: 1 });
+});
+
+test('all floating resize edges preserve their opposite anchors and clamp both minimum size and workspace bounds', () => {
+  const rect = { x: 100, y: 80, width: 300, height: 260 }, size = { width: 800, height: 600 };
+  assert.deepEqual(resizePaletteFromEdge(rect, -90, -70, size, 'nw'), { x: 10, y: 10, width: 390, height: 330 });
+  assert.deepEqual(resizePaletteFromEdge(rect, 900, 900, size, 'nw'), { x: 180, y: 180, width: 220, height: 160 });
+  assert.deepEqual(resizePaletteFromEdge(rect, 900, -900, size, 'ne'), { x: 100, y: 0, width: 700, height: 340 });
+  assert.deepEqual(resizePaletteFromEdge(rect, -900, 900, size, 'sw'), { x: 0, y: 80, width: 400, height: 520 });
+  for (const edge of ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']) {
+    const result = resizePaletteFromEdge(rect, 9000, -9000, size, edge);
+    assert(result.x >= 0 && result.y >= 0 && result.width >= 220 && result.height >= 160);
+    assert(result.x + result.width <= size.width && result.y + result.height <= size.height);
+    if (edge.includes('w')) assert.equal(result.x + result.width, 400);
+    if (edge.includes('n')) assert.equal(result.y + result.height, 340);
+    assert.deepEqual(resizePaletteFromEdge(rect, NaN, Infinity, size, edge), rect);
+  }
+  assert.deepEqual(resizePaletteFromEdge(rect, 30, 40, { width: 120, height: 90 }, 'nw'), { x: 0, y: 0, width: 120, height: 90 });
+  assert.throws(() => resizePaletteFromEdge(rect, 0, 0, size, 'center'), /supported/);
+});
+
+test('floating auto-hide is an independent persisted preference rather than an anchored side', () => {
+  let layout = update(paletteLayout(null, ids), { type: 'place', id: 'Graph', mode: 'float', side: 'left' });
+  const rect = { ...layout.panels.Graph };
+  layout = update(layout, { type: 'auto-hide', id: 'Graph', value: true });
+  assert.deepEqual(layout.panels.Graph, { ...rect, autoHide: true });
+  assert.equal(paletteLayout(JSON.parse(JSON.stringify(layout)), ids).panels.Graph.autoHide, true);
+  layout = update(layout, { type: 'allow-docking', id: 'Graph', value: false });
+  layout = update(layout, { type: 'auto-hide', id: 'Graph', value: false });
+  assert.equal(layout.panels.Graph.autoHide, false, 'floating roll-up does not require docking permission');
+  assert.throws(() => update(layout, { type: 'auto-hide', id: 'Properties', value: true }), /Floating auto-hide/);
+  layout.panels.Graph.autoHide = 'true'; assert.equal(paletteLayout(layout, ids).panels.Graph.autoHide, false);
+});
+
+test('temporary unlocking permits one layout operation without clearing the persistent lock', () => {
+  const layout = update(paletteLayout(null, ids), { type: 'lock', value: true });
+  const action = { type: 'place', id: 'Graph', mode: 'float' };
+  assert.equal(update(layout, action), layout);
+  const changed = changePaletteLayout(layout, action, bounds, { temporaryUnlock: true });
+  assert.equal(changed.locked, true); assert.equal(changed.panels.Graph.mode, 'float');
+  assert.equal(update(changed, { type: 'rect', id: 'Graph', rect: { x: 100 } }), changed);
+  assert.equal(layout.panels.Graph.mode, 'dock');
 });
 
 test('two dock columns share a bounded budget and narrow workspaces switch to edge overlays', () => {

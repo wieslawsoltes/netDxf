@@ -6,7 +6,8 @@ import { graphOperations } from './graph-contracts.mjs';
 const groups = {
   File: [
     ['new','New drawing','NEW QNEW','Ctrl+N'],['open','Open DXF / DWG','OPEN','Ctrl+O'],
-    ['save','Save DXF','QSAVE','Ctrl+S'],['save-as','Save drawing as','SAVE SAVEAS'],
+    ['save','Save DXF','QSAVE','Ctrl+S'],['save-as','Save drawing as','SAVE SAVEAS'],['save-all','Save all drawings','SAVEALL'],
+    ['close-all','Close all drawings','CLOSEALL'],['close-others','Close other drawings','CLOSEALLOTHER'],
     ['demo','New sample drawing'],['export-png','Export PNG'],['export-svg','Export SVG']
   ],
   History: [['undo','Undo','U UNDO','Ctrl+Z'],['redo','Redo','REDO','Ctrl+Y']],
@@ -39,22 +40,30 @@ const groups = {
     ['ribbon-customize','Customize ribbon','CUI'],['command-search','Search commands','','Ctrl+K'],['quick-access-customize','Customize Quick Access'],
     ['ui-workspaces','UI workspaces','WORKSPACE WSSAVE'],['workspaces','Immutable drawing workspaces'],
     ['fork','Fork drawing workspace'],['snapshot','Retain snapshot','SNAPSHOT'],['snapshots','Snapshot views'],
-    ['palette-picker','Open drawing palette'],['palette','Show or hide palettes','','Ctrl+1'],['dock','Change palette docking side'],
+    ['palette-picker','Open drawing palette'],['palette','Show or hide palettes','','Ctrl+Shift+H'],['properties-toggle','Show or hide Properties','','Ctrl+1'],['dock','Change palette docking side'],
+    ['palettes-hide','Hide all palettes','HIDEPALETTES'],['palettes-show','Show palettes','SHOWPALETTES'],
     ['palette-lock','Lock or unlock palette layout'],['palette-reset','Reset palette layout'],
-    ['clean','Clean screen','','Ctrl+0'],['ribbon-display','Ribbon display options'],['ribbon-cycle','Cycle ribbon display'],
+    ['clean','Clean screen','','Ctrl+0'],['clean-on','Enable clean screen','CLEANSCREENON'],['clean-off','Exit clean screen','CLEANSCREENOFF'],
+    ['ribbon-show','Show ribbon','RIBBON'],['ribbon-hide','Close ribbon','RIBBONCLOSE'],
+    ['file-tabs','Show or hide drawing tabs'],['file-tabs-show','Show drawing tabs','FILETAB'],['file-tabs-hide','Hide drawing tabs','FILETABCLOSE'],
+    ['layout-tabs','Show or hide layout tabs'],['menu-bar','Show or hide menu bar'],['interface-lock','Lock user interface'],
+    ['ribbon-display','Ribbon display options'],['ribbon-cycle','Cycle ribbon display'],
     ['ribbon-minimize','Minimize or expand ribbon'],['command-line','Show or hide command line','','Ctrl+9'],
-    ['command-history','Show or hide command history','','F2'],['reset-ui','Reset interface']
+    ['command-line-show','Show command line','COMMANDLINE'],['command-line-hide','Hide command line','COMMANDLINEHIDE'],
+    ['command-text-window','Command history window','TEXTSCR','Ctrl+F2'],['command-history','Show or hide command history','','F2'],['reset-ui','Reset interface']
   ],
   Settings: [['settings','Drafting settings','OPTIONS OSNAP'],['selection-cycling','Selection cycling','','Shift+Space'],['modules','Discipline modules'],['agents','Shadow Agent'],['help','Command help','HELP','F1']]
 };
-const writeActions = new Set(['layer-isolate','layer-unisolate','save','save-as','font','undo','redo','layer-new','assign-layer','block-insert','block-create',
+const writeActions = new Set(['layer-isolate','layer-unisolate','save','save-as','save-all','font','undo','redo','layer-new','assign-layer','block-insert','block-create',
   'block-redefine','block-rename','block-edit','block-save','block-close','block-library-import','block-library-export',
   'attributes','attribute-definitions','attribute-create','attribute-sync','hatch-create','hatch-edit','snapshot','fork','annotation','linetype']);
 const selectionActions = new Set(['layer-isolate','assign-layer','block-create','block-redefine','hatch-create','hatch-edit','attributes']);
 const blockActions = new Set(['block-insert','block-edit','block-rename','block-redefine','block-library-export']);
 const globalActions = new Set(['new','open','demo','agents','help','settings','selection-cycling','legacy','palette','palette-picker','dock',
   'palette-lock','palette-reset','ui-workspaces','clean','ribbon-display','ribbon-cycle','ribbon-minimize','command-line','command-history','reset-ui',
-  'command-search','quick-access-customize','ribbon-customize']);
+  'command-search','quick-access-customize','ribbon-customize','properties-toggle','palettes-hide','palettes-show',
+  'clean-on','clean-off','ribbon-show','ribbon-hide','file-tabs','file-tabs-show','file-tabs-hide','layout-tabs','menu-bar','interface-lock',
+  'command-line-show','command-line-hide','command-text-window']);
 const actionAliases = (value = '') => value.split(' ').filter(Boolean);
 const moduleId = value => typeof value === 'string' && /^[a-zA-Z][a-zA-Z0-9_.-]{0,63}$/.test(value);
 const text = (value, maximum = 160) => typeof value === 'string' ? value.slice(0, maximum) : '';
@@ -63,7 +72,7 @@ const baseActions = Object.entries(groups).flatMap(([category, entries]) => entr
   requiresDocument:!globalActions.has(target),requiresWrite:writeActions.has(target),requiresSelection:selectionActions.has(target),
   requiresIdle:['new','open','demo','font'].includes(target),
   requiresBlocks:blockActions.has(target),requiresBlockEditor:['block-save','block-close'].includes(target),
-  excludesBlockEditor:['block-edit','layer-isolate','layer-unisolate'].includes(target)
+    excludesBlockEditor:['block-edit','layer-isolate','layer-unisolate','save-all'].includes(target)
 })));
 const categories = name => /^(TEXT|MTEXT|DIM)/.test(name) ? 'Annotate' :
   /^(BLOCK|INSERT)/.test(name) ? 'Blocks' : name.startsWith('HATCH') ? 'Hatch' :
@@ -80,6 +89,8 @@ export function buildCommandCatalog({ modules = [] } = {}) {
     ...baseActions,
     ...Object.entries(graphOperations).map(([operation,label]) => ({id:`action:graph-query:${operation}`,kind:'action',
       target:`graph-query:${operation}`,label,aliases:[],category:'Graph',location:'Graph · Topology analysis',shortcut:'',requiresDocument:true})),
+    ...Object.entries({LOCKUI:'Lock interface categories',MENUBAR:'Menu bar visibility',FILETABSTATE:'Drawing tab visibility',LAYOUTTAB:'Model and paper tab visibility',QATLOCATION:'Quick Access location',WSAUTOSAVE:'Save workspace changes on switch'}).map(([target,label])=>({id:`input:${target}`,kind:'input',target,label,
+      aliases:[target],category:'Workspace',location:'Workspace · Presentation',shortcut:'',requiresIdleCommand:true})),
     ...['ATTREQ','ATTDIA'].map(target => ({id:`input:${target}`,kind:'input',target,
       label:target==='ATTREQ'?'Insertion attribute prompts':'Insertion attribute dialog',
       aliases:[target],category:'Blocks',location:'Insert · Attribute settings',shortcut:'',requiresIdleCommand:true}))

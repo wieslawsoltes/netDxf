@@ -1,6 +1,7 @@
 import { Element, all, installDom } from './ui-fixture.mjs';
 
 const matches = (node, selector) => {
+  if(selector.includes(','))return selector.split(',').some(value=>matches(node,value.trim()));
   if (selector.includes(' ')) { const parts = selector.split(/\s+/), last = parts.pop(); return matches(node, last) && !!node.parentNode?.closest(parts.join(' ')); }
   const enabled = !selector.includes(':not(:disabled)') || !node.disabled; selector = selector.replace(':not(:disabled)', '');
   const tag = selector.match(/^[a-zA-Z]+/), cls = selector.match(/\.([\w-]+)/), id = selector.match(/#([\w-]+)/);

@@ -1,15 +1,27 @@
 import { el } from './ui.mjs';
-import { WorkspaceProfiles, workspacePresets } from './workspace-profiles.mjs';
+import { WorkspaceProfiles, findWorkspaceProfile, workspaceProfileLayout, workspacePresets } from './workspace-profiles.mjs';
 import { parseWorkspace, exportWorkspace, describeWorkspace, workspaceTransferLimit } from './workspace-transfer.mjs';
 
 /** Host-independent UI layout manager. Drawing workspaces remain a separate feature. */
-export function workspaceProfileTools({ paletteIds, storage, capture, restore, dialog, report, download, onApplied = () => {}, onChanged = () => {} }) {
+export function workspaceProfileTools({ paletteIds, storage, capture, restore, dialog, report, download,
+  current = () => null, autoSave = () => false, onApplied = () => {}, onChanged = () => {} }) {
   const store = new WorkspaceProfiles({ paletteIds, storage });
   const list = () => [...workspacePresets(paletteIds).map(entry => ({ ...entry, preset: true })), ...store.read().profiles];
-  const apply = identity => {
-    const current = list().find(entry => typeof identity === 'string' ? entry.name === identity : entry.name === identity?.name && !!entry.preset === !!identity.preset);
-    if (!current) throw new Error('The UI workspace no longer exists.');
-    restore(current.layout); onApplied(current.name, !!current.preset); return current.layout;
+  const apply = (identity, { reset = false } = {}) => {
+    const choices = list(), destination = findWorkspaceProfile(choices, identity);
+    if (!destination) throw new Error('The UI workspace no longer exists.');
+    const outgoing = findWorkspaceProfile(choices, current());
+    if (!reset && autoSave()) {
+      // Reselecting the current workspace must not replace unsaved live changes with its older snapshot.
+      if (outgoing === destination) return workspaceProfileLayout(capture(), paletteIds);
+      if (outgoing && !outgoing.preset) {
+        try { store.change({ type: 'save', name: outgoing.name, replace: true, layout: capture() }); }
+        catch (error) {
+          throw new Error(`Could not automatically save workspace “${outgoing.name}”. ${error.message} Free browser storage or turn off automatic workspace saving before switching.`, { cause: error });
+        }
+      }
+    }
+    restore(destination.layout); onApplied(destination.name, !!destination.preset); return destination.layout;
   };
   const show = async function show() {
     let alive = true, generation = 0, imported = null;
@@ -34,7 +46,8 @@ export function workspaceProfileTools({ paletteIds, storage, capture, restore, d
     const refresh = target => {
       choices.splice(0, choices.length, ...presets.map(entry => ({ ...entry, preset: true })), ...store.read().profiles);
       select.replaceChildren(...choices.map((entry, index) => el('option', { value: String(index), text: `${entry.name}${entry.preset ? ' (preset)' : ''}` })));
-      select.value = String(Math.max(0, choices.findIndex(entry => !entry.preset && entry.name === target)));
+      const identity = typeof target === 'string' ? { name: target, preset: false } : target;
+      select.value = String(Math.max(0, choices.indexOf(findWorkspaceProfile(choices, identity))));
       changed();
     };
     const changed = () => {
@@ -64,7 +77,7 @@ export function workspaceProfileTools({ paletteIds, storage, capture, restore, d
       el('label', { class: 'property-row' }, [el('span', { text: 'Restore layout' }), select]),
       el('label', { class: 'property-row' }, [el('span', { text: 'Name' }), name]),
       el('div', { class: 'toolbar' }, [
-        button('Apply layout', () => { const current = chosen(); if (current) { apply(current); status.textContent = `${current.name} applied.`; } }),
+        button('Apply layout', () => { const current = chosen(); if (current) { apply(current); refresh(current); status.textContent = `${current.name} applied.`; } }),
         button('Save current as', () => { store.change({ type: 'save', name: name.value, layout: capture() }); const target = name.value.trim(); refresh(target); onApplied(target, false); status.textContent = `${target} saved.`; }),
         button('Update saved workspace', () => { const current = chosen(); if (!current || current.preset) return; store.change({ type: 'save', name: current.name, replace: true, layout: capture() }); refresh(current.name); status.textContent = `${current.name} updated.`; }),
         button('Rename workspace', () => { const current = chosen(); if (!current || current.preset) return; store.change({ type: 'rename', name: current.name, next: name.value }); onChanged({type:'rename',name:current.name,next:name.value.trim()});refresh(name.value.trim()); status.textContent = 'Workspace renamed.'; }),
@@ -84,9 +97,11 @@ export function workspaceProfileTools({ paletteIds, storage, capture, restore, d
         el('label', { class: 'property-row' }, [replace, el('span', { text: 'Replace a saved workspace with the same name' })]),
         importButton
       ]),
+      el('p', { class: 'hint', text: 'Workspace changes require Update saved workspace unless automatic saving is enabled in the workspace menu (WSAUTOSAVE). Automatic saving updates an existing saved workspace when you switch; presets are never overwritten.' }),
       el('p', { class: 'hint', text: 'Saved UI layouts do not change drawings, discipline enablement, drafting aids or agent settings. Use Immutable workspaces for drawing branches.' })
     ];
-    select.value = '0'; select.addEventListener('change', changed); changed();
+    select.value = String(Math.max(0, choices.indexOf(findWorkspaceProfile(choices, current()))));
+    select.addEventListener('change', changed); changed();
     try { await dialog('UI workspaces', content, 'Close'); }
     finally { alive = false; generation++; }
   };

@@ -28,7 +28,7 @@ export function splitMenuPosition(anchor, size, viewport) {
 
 /** One delegated lifetime per ribbon, including panels moved into floating windows. */
 export class RibbonSplitMenus {
-  constructor({ onChoose = () => {}, changed = () => {} } = {}) {
+  constructor({ onChoose = () => {}, changed = () => {}, keytipsActive = () => false } = {}) {
     this.groups = new Set(); this.popup = null; this.onChoose = onChoose; this.changed = changed;
     this.click = event => {
       const toggle = event.target.closest?.('[data-ribbon-split-toggle]');
@@ -42,7 +42,7 @@ export class RibbonSplitMenus {
       }
     };
     this.keydown = event => {
-      if (event.defaultPrevented || event.isComposing || event.ctrlKey || event.metaKey || nativeRibbonInput(event.target)) return;
+      if (event.defaultPrevented || keytipsActive() || event.isComposing || event.ctrlKey || event.metaKey || nativeRibbonInput(event.target)) return;
       if (event.key === 'Escape' && this.popup) { event.preventDefault(); event.stopPropagation(); this.close(true); return; }
       const toggle = event.target.closest?.('[data-ribbon-split-toggle]');
       if (toggle && this.owns(toggle) && ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.shiftKey && !event.altKey) {

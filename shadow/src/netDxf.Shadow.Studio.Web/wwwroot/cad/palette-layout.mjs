@@ -1,7 +1,7 @@
 /** Bounded, credential-free palette workspace preferences. */
 import { paletteAppearance } from './palette-appearance.mjs';
 export const paletteStorageKey = 'netdxf-cad-palettes-v2';
-const number = (value, fallback, low, high) => Number.isFinite(value) ? Math.max(low, Math.min(high, value)) : fallback;
+const number = (value, fallback, low, high) => Math.max(low, Math.min(high, Number.isFinite(value) ? value : fallback));
 const sides = new Set(['left', 'right']), modes = new Set(['dock', 'float', 'auto']);
 
 export function paletteLayout(saved, ids, legacy = {}) {
@@ -16,13 +16,17 @@ export function paletteLayout(saved, ids, legacy = {}) {
       ...paletteAppearance(source),
       open: valid ? source.open === true : index === 0,
       allowDocking: source.allowDocking !== false,
+      autoHide: source.autoHide === true,
       mode: source.allowDocking === false ? 'float' : modes.has(source.mode) ? source.mode : 'dock', side: sides.has(source.side) ? source.side : legacy.left === true ? 'left' : 'right',
       x: number(source.x, 32 + index * 22, 0, 32000), y: number(source.y, 24 + index * 18, 0, 32000),
       width: number(source.width, number(legacy.width, 310, 220, 640), 180, 1600), height: number(source.height, 440, 120, 1600)
     };
   });
+  const hidden = valid ? saved.hidden === true : legacy.hidden === true;
+  const hiddenRevealed = valid && hidden && Array.isArray(saved?.hiddenRevealed)
+    ? [...new Set(saved.hiddenRevealed.slice(0, 32).filter(id => typeof id === 'string' && Object.hasOwn(panels, id) && panels[id].open))] : [];
   return { version: 3, active: valid && ids.includes(saved.active) ? saved.active : ids[0],
-    hidden: valid ? saved.hidden === true : legacy.hidden === true, locked: valid && saved.locked === true,
+    hidden, hiddenRevealed, locked: valid && saved.locked === true,
     transparencyDisabled: valid && saved.transparencyDisabled === true, panels,
     groups: normalizeGroups(valid && saved.version === 3 ? saved.groups : null, panels) };
 }
@@ -45,11 +49,16 @@ function normalizeGroups(saved, panels) {
   return groups;
 }
 
+/** Hidden palettes remain open in preferences; explicit reopening exempts only that palette. */
+export function paletteAvailable(layout, id) {
+  return !!layout.panels[id]?.open && (!layout.hidden || layout.hiddenRevealed?.includes(id) === true);
+}
+
 /** Visible ordered groups retain closed tab membership for predictable reopen/restore. */
 export function paletteGroups(layout, side) {
-  if (layout.hidden || !sides.has(side)) return [];
+  if (!sides.has(side)) return [];
   return (layout.groups?.[side] || []).flatMap(group => {
-    const tabs = group.tabs.filter(id => layout.panels[id]?.open);
+    const tabs = group.tabs.filter(id => paletteAvailable(layout, id));
     return tabs.length ? [{ ...group, key: group.tabs[0], tabs, active: tabs.includes(group.active) ? group.active : tabs[0] }] : [];
   });
 }
@@ -85,11 +94,21 @@ export function paletteRect(rect, bounds) {
 }
 
 export function resizePaletteRect(rect, dx, dy, bounds) {
+  return resizePaletteFromEdge(rect, dx, dy, bounds, 'se');
+}
+
+/** Resize around the opposite edge, preserving it even at the readable minimum. */
+export function resizePaletteFromEdge(rect, dx, dy, bounds, edge = 'se') {
+  if (!['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'].includes(edge)) throw new Error('Choose a supported palette resize edge.');
   bounds = { width: Math.max(1, number(bounds.width, 1024, 0, 32000)), height: Math.max(1, number(bounds.height, 768, 0, 32000)) };
   const current = paletteRect(rect, bounds);
-  return { ...current,
-    width: number(current.width + dx, current.width, Math.min(220, bounds.width - current.x), bounds.width - current.x),
-    height: number(current.height + dy, current.height, Math.min(160, bounds.height - current.y), bounds.height - current.y) };
+  let left = current.x, right = current.x + current.width, top = current.y, bottom = current.y + current.height;
+  const minimumWidth = Math.min(220, bounds.width), minimumHeight = Math.min(160, bounds.height);
+  if (edge.includes('w')) left = number(left + dx, left, 0, right - minimumWidth);
+  if (edge.includes('e')) right = number(right + dx, right, left + minimumWidth, bounds.width);
+  if (edge.includes('n')) top = number(top + dy, top, 0, bottom - minimumHeight);
+  if (edge.includes('s')) bottom = number(bottom + dy, bottom, top + minimumHeight, bounds.height);
+  return { x: left, y: top, width: right - left, height: bottom - top };
 }
 
 /** Side drop zones use workspace-local pointer coordinates and never extend into another dock such as chat. */
@@ -115,7 +134,7 @@ export function paletteDropTarget(layout, id, point, bounds, groups = []) {
   if (bounds.width < 700) return null;
   for (const candidate of groups) {
     const target = layout.panels[candidate.target];
-    if (candidate.target === id || !target?.open || target.mode !== 'dock' || !target.allowDocking ||
+    if (candidate.target === id || !paletteAvailable(layout, candidate.target) || target.mode !== 'dock' || !target.allowDocking ||
         !sides.has(candidate.side) || target.side !== candidate.side ||
         ![candidate.x, candidate.y, candidate.width, candidate.height].every(Number.isFinite) || candidate.width <= 0 || candidate.height <= 0) continue;
     const left = Math.max(0, candidate.x), top = Math.max(0, candidate.y);
@@ -140,7 +159,7 @@ export function paletteDropPreview(layout, id, side, bounds, railWidth = 28) {
   if (!sides.has(side) || !Object.hasOwn(layout.panels, id) || layout.locked || layout.panels[id].allowDocking === false) return null;
   railWidth = number(railWidth, 28, 0, Math.min(64, Math.max(0, bounds.width / 2)));
   const panel = layout.panels[id], compact = bounds.width < 700;
-  const panels = Object.entries(layout.panels).filter(([key, value]) => key !== id && value.open && !layout.hidden).map(([, value]) => value);
+  const panels = Object.entries(layout.panels).filter(([key]) => key !== id && paletteAvailable(layout, key)).map(([, value]) => value);
   panels.push({ ...panel, mode: 'dock', side });
   const rail = edge => panels.some(value => value.side === edge && (value.mode === 'auto' || compact && value.mode === 'dock')) ? railWidth : 0;
   const width = edge => Math.max(0, ...panels.filter(value => value.mode === 'dock' && value.side === edge).map(value => value.width));
@@ -162,7 +181,7 @@ export function paletteDockWidths(left, right, availableWidth, railWidth = 0) {
   return { left: Math.floor(budget * left / total), right: Math.floor(budget * right / total), overlay: false };
 }
 
-export function changePaletteLayout(layout, action, bounds = { width: 1024, height: 768 }) {
+export function changePaletteLayout(layout, action, bounds = { width: 1024, height: 768 }, { temporaryUnlock = false } = {}) {
   const panels = { ...layout.panels }, id = action.id || layout.active, panel = Object.hasOwn(panels, id) ? panels[id] : null;
   const result = { ...layout, panels, groups: {
     left: layout.groups.left.map(group => ({ ...group, tabs: [...group.tabs] })),
@@ -172,12 +191,16 @@ export function changePaletteLayout(layout, action, bounds = { width: 1024, heig
     for (const side of sides) result.groups[side] = result.groups[side].map(group => ({ ...group, tabs: group.tabs.filter(tab => tab !== target) })).filter(group => group.tabs.length);
   };
   const activate = target => { const found = paletteGroupFor(result, target); if (found) found.group.active = target; };
+  const reveal = target => { if (result.hidden) result.hiddenRevealed = [...new Set([...(result.hiddenRevealed || []), target])]; };
   if (action.type === 'lock') { result.locked = action.value === undefined ? !layout.locked : action.value === true; return result; }
   if (action.type === 'transparency-disabled') { result.transparencyDisabled = action.value === true; return result; }
-  if (action.type === 'toggle') {
-    const anyOpen = Object.values(panels).some(value => value.open);
-    result.hidden = anyOpen ? !layout.hidden : false;
-    if (!result.hidden && !anyOpen && panel) panels[id] = { ...panel, open: true };
+  if (['toggle', 'hide-all', 'show-all'].includes(action.type)) {
+    const available = Object.keys(panels).some(key => paletteAvailable(layout, key));
+    result.hidden = action.type === 'hide-all' || action.type === 'toggle' && !layout.hidden && available;
+    result.hiddenRevealed = [];
+    // The toggle shortcut still opens the active palette when every palette was
+    // individually closed. Explicit Show All only restores the previous set.
+    if (action.type === 'toggle' && !available && !layout.hidden && panel) panels[id] = { ...panel, open: true };
     return result;
   }
   if (!panel) throw new Error('Unknown drawing palette.');
@@ -189,15 +212,18 @@ export function changePaletteLayout(layout, action, bounds = { width: 1024, heig
     if (typeof action.disabled === 'boolean') result.transparencyDisabled = action.disabled;
     return result;
   }
-  if (action.type === 'show') { panels[id] = { ...panel, open: true }; result.active = id; result.hidden = false; activate(id); return finish(); }
-  if (action.type === 'close') { panels[id] = { ...panel, open: false }; return finish(); }
+  if (action.type === 'show') { panels[id] = { ...panel, open: true }; result.active = id; reveal(id); activate(id); return finish(); }
+  if (action.type === 'close') { panels[id] = { ...panel, open: false }; result.hiddenRevealed = (result.hiddenRevealed || []).filter(key => key !== id); return finish(); }
   if (action.type === 'activate') { result.active = id; activate(id); return finish(); }
-  if (layout.locked) return layout;
-  if (action.type === 'place') {
+  if (layout.locked && !temporaryUnlock) return layout;
+  if (action.type === 'auto-hide') {
+    if (panel.mode !== 'float') throw new Error('Floating auto-hide is available only for floating palettes.');
+    panels[id] = { ...panel, autoHide: action.value === undefined ? !panel.autoHide : action.value === true };
+  } else if (action.type === 'place') {
     if (action.mode !== undefined && !modes.has(action.mode) || action.side !== undefined && !sides.has(action.side)) throw new Error('Choose a supported palette position.');
     if (panel.allowDocking === false && (action.mode || panel.mode) !== 'float') return layout;
     panels[id] = { ...panel, open: true, mode: action.mode || panel.mode, side: action.side || panel.side };
-    result.active = id; result.hidden = false;
+    result.active = id; reveal(id);
     if (panels[id].mode !== panel.mode || panels[id].side !== panel.side) remove(id);
     activate(id);
   } else if (action.type === 'allow-docking') {
@@ -213,7 +239,7 @@ export function changePaletteLayout(layout, action, bounds = { width: 1024, heig
     const destination = paletteGroupFor(result, action.target).group;
     destination.tabs.push(id); destination.active = id;
     panels[id] = { ...panel, open: true, mode: 'dock', side: found.side };
-    result.active = id; result.hidden = false;
+    result.active = id; reveal(id);
   } else if (action.type === 'stack') {
     const target = panels[action.target], found = paletteGroupFor(result, action.target);
     if (!target?.open || !found || action.target === id || panel.allowDocking === false || target.allowDocking === false ||
@@ -223,7 +249,7 @@ export function changePaletteLayout(layout, action, bounds = { width: 1024, heig
     destination.group.weight = weight;
     result.groups[destination.side].splice(destination.index + (action.position === 'after' ? 1 : 0), 0, { tabs: [id], active: id, weight });
     panels[id] = { ...panel, open: true, mode: 'dock', side: destination.side };
-    result.active = id; result.hidden = false;
+    result.active = id; reveal(id);
   } else if (action.type === 'detach') {
     const found = paletteGroupFor(result, id);
     if (!found || found.group.tabs.length < 2) return layout;
@@ -236,7 +262,7 @@ export function changePaletteLayout(layout, action, bounds = { width: 1024, heig
     const items = action.type === 'move-group' ? result.groups[found.side] : found.group.tabs;
     const index = action.type === 'move-group' ? found.index : items.indexOf(id);
     let next = index + delta;
-    while (next >= 0 && next < items.length && (action.type === 'move-group' ? !items[next].tabs.some(tab => panels[tab].open) : !panels[items[next]].open)) next += delta;
+    while (next >= 0 && next < items.length && (action.type === 'move-group' ? !items[next].tabs.some(tab => paletteAvailable(result, tab)) : !paletteAvailable(result, items[next]))) next += delta;
     if (next < 0 || next >= items.length) return layout;
     [items[index], items[next]] = [items[next], items[index]];
   } else if (action.type === 'resize-groups') {

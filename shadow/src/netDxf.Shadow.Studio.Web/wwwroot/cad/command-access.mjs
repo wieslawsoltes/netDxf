@@ -5,7 +5,7 @@ import { bindRovingToolbar } from './ribbon-keyboard.mjs';
 
 let nextInstance = 0;
 const button = (label, callback, children = []) => el('button', {type:'button','aria-label':label,title:label,
-  onclick:event=>{event.preventDefault();event.stopPropagation();callback();}}, children.length?children:[label]);
+  onclick:event=>{event.preventDefault();event.stopPropagation();callback(event.currentTarget,event);}}, children.length?children:[label]);
 
 /** Reusable local command discovery. The host alone owns command execution and native transactions. */
 export function createCommandAccess({ toolbar, catalog, state, execute, report = () => {}, storage, host = document.body, loadStyles = true }) {
@@ -13,7 +13,7 @@ export function createCommandAccess({ toolbar, catalog, state, execute, report =
     throw new Error('Command Access requires a toolbar, catalog, state, and execution callback.');
   const prefix=`command-access-${++nextInstance}`;
   let preferences, available=[], signature='', toolbarSignature='', resultSignature='', mode='search', origin=null, disposed=false;
-  let controls=[], rows=[], executing=false, focusAfterRender=null;
+  let controls=[], rows=[], executing=false, focusAfterRender=null, menus=null;
   try { storage = storage===undefined?globalThis.localStorage:storage; } catch { storage=null; }
   try { const value=storage?.getItem(quickAccessKey);preferences=quickAccessPreferences(value && value.length<=16384?JSON.parse(value):null); }
   catch { preferences=quickAccessPreferences(null); }
@@ -110,13 +110,17 @@ export function createCommandAccess({ toolbar, catalog, state, execute, report =
         control.setAttribute('data-command-id',id);controls.push({id,button:control});return control;
       });
       if (preferences.pinned.length>capacity) {
-        const overflow=button('More Quick Access commands',()=>open('customize'),['»']);
+        const overflow=button('More Quick Access commands',anchor=>menus?.overflow?menus.overflow(anchor):open('customize'),['»']);
         overflow.setAttribute('data-access-control','overflow');nodes.push(overflow);
       }
       const searchButton=button('Search commands (Ctrl+K)',()=>open('search'),['⌕']);
       searchButton.setAttribute('data-access-control','search');searchButton.setAttribute('aria-keyshortcuts','Control+K Meta+K');
-      const customizeButton=button('Customize Quick Access',()=>open('customize'),['▾']);
+      const customizeButton=button('Customize Quick Access',anchor=>menus?.customize?menus.customize(anchor):open('customize'),['▾']);
       customizeButton.setAttribute('data-access-control','customize');nodes.push(searchButton,customizeButton);
+      for(const node of nodes.filter(node=>['overflow','customize'].includes(node.dataset.accessControl))){
+        node.setAttribute('aria-haspopup','menu');
+        node.addEventListener('keydown',event=>{if(event.key==='ArrowDown'&&!event.ctrlKey&&!event.metaKey&&!event.altKey){event.preventDefault();event.stopPropagation();node.click();}});
+      }
       toolbar.replaceChildren(...nodes);
       const replacement=(id,kind)=>controls.find(value=>value.id===id)?.button ||
         (kind?nodes.find(node=>node.getAttribute('data-access-control')===kind):null) || searchButton;
@@ -219,6 +223,9 @@ export function createCommandAccess({ toolbar, catalog, state, execute, report =
   refresh();
   return {
     search:query=>open('search',query),customize:()=>open('customize'),refresh,
+    setMenus:value=>{menus=value;},
+    pin:id=>change({type:'pin',id}),unpin:id=>change({type:'remove',id}),isPinned:id=>preferences.pinned.includes(id),
+    execute:id=>activate(id),overflow:()=>preferences.pinned.slice(quickAccessCapacity(toolbar.clientWidth||244)),
     snapshot:()=>quickAccessPreferences(preferences),
     restore:value=>{
       preferences=quickAccessPreferences(value);refresh(true);

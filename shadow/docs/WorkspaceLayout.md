@@ -19,7 +19,7 @@ shared with the same command dispatcher.
 
 The application menu provides registered file commands, command search and open
 drawings. The drawing-list button reaches tabs that overflow the file strip;
-right-click a drawing tab for Activate, Save and Close. Drawing and layout tabs
+right-click a drawing tab for Activate, Save, Save All, Close, Close Others and Close All. Drawing and layout tabs
 support Left/Right and Home/End. Asynchronous activation and background document
 refresh preserve the focused tab or Close control. Model/paper layouts have a
 separate list beside their tabs, and the status bar identifies the current space.
@@ -36,12 +36,12 @@ existing ribbon and palette state. Existing profiles receive safe defaults.
 
 Drag the command-row grip to float the existing command editor. Double-click the
 grip or use its dock/float button to change mode. A floating window can be moved
-with the grip, resized at its lower-right corner, or adjusted with arrow keys
-(Shift uses one-pixel steps). Drop near the drawing column's bottom edge to dock;
+with the grip, resized from any edge or corner, or adjusted with arrow keys
+(Shift uses one-pixel steps). Drop near the drawing column's top or bottom edge to dock;
 hold Ctrl to keep floating. The preview indicates the destination, and Escape
 cancels movement or resizing. The input, selection, history and handlers retain
 their identities while moving between hosts. Restored geometry is fitted to the
-available workspace. Ctrl+9 and F2 retain their command-window/history functions.
+available workspace. Ctrl+9 and F2 retain their command-window/history functions. Ctrl+F2 opens the full-size, selectable command-history window. Its Focus command line action restores a hidden editor before focusing it.
 
 The status strip uses compact SVG indicators for the existing drafting aids.
 **Customize status bar** shows/hides individual indicators and coordinates, enables
@@ -86,7 +86,7 @@ uses SVG controls rather than font-dependent docking glyphs.
 
 The Palettes launcher exposes **Lock palette layout** and **Reset palette
 layout**. Locking prevents movement, resizing and docking while permitting
-close/reopen. Ctrl+1 toggles palettes; Ctrl+0 hides drawing chrome temporarily.
+close/reopen. Ctrl+1 toggles Properties only; Ctrl+Shift+H hides/restores palettes, the command window, ribbon and drawing tabs. Ctrl+0 hides drawing chrome temporarily. Ctrl temporarily overrides position locks.
 Small workspaces automatically present docked palettes as anchored overlays.
 Window rectangles are clamped to the available workspace. Local preferences
 restore each palette's visibility, docking side, mode and size; reset returns to
@@ -101,7 +101,7 @@ groups independently of the column width. Splitter moves can be cancelled and
 the layout lock prevents regrouping and resizing.
 
 **Allow Docking** is a per-palette preference. Turning it off keeps that palette
-floating and disables edge docking and auto-hide anchoring until re-enabled.
+floating and disables edge docking and anchoring until re-enabled. Floating auto-hide remains independently available.
 Existing layouts and saved workspaces migrate to the group model; narrow screens
 retain edge overlays while preserving the desktop arrangement. The interaction
 follows Autodesk's [docking permissions and pane resizing](https://help.autodesk.com/cloudhelp/2023/ENU/AutoCAD-Core/files/GUID-6EF21814-B9FB-4F2A-897E-852B25679D17.htm).
@@ -144,7 +144,7 @@ Enter executes the selected result and Escape returns focus. Opening and
 filtering search does not cancel the drawing command or change selection.
 
 **Customize Quick Access** pins, removes and reorders up to 16 command IDs.
-Overflow keeps controls reachable on narrow screens. Choices persist locally and
+The arrow menu toggles common commands; More commands opens the full editor. Right-click a ribbon command to pin/unpin it directly, or a Quick Access command to remove it. Overflow executes the actual hidden commands, and the menu moves the retained toolbar above or below the ribbon. Choices persist locally and
 are included in saved UI workspaces; reset restores New, Open, Save, Undo and Redo.
 This follows Autodesk's [Quick Access customization](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-5F9B5220-1D63-4791-96C6-97E50621320C.htm).
 The reusable `command-catalog.mjs` owns discovery, availability and bounded
@@ -265,3 +265,137 @@ after a selection change.
 `ribbon-keyboard.mjs` provides reusable visibility filtering, spatial navigation
 and binding lifecycle. Quick Access, full/collapsed/floating ribbon panels and
 workspace menus share it across native and browser hosts.
+
+
+## Whole-ribbon docking and expanded panels
+
+The ribbon move grip supports top docking, left/right vertical docking and a
+floating host with horizontal/vertical orientation. Drag shows a destination
+preview; Ctrl suppresses docking and Escape, pointer cancellation or window blur
+restores the pre-drag state. Double-click toggles floating and the previous dock.
+The side dock width and both floating orientation sizes persist. On narrow screens,
+a stored side dock becomes a bounded floating host, retaining its desktop preference.
+
+Right-click a tab, panel title, command or ribbon background for context-specific
+Show Tabs/Show Panels, move, hide, float, return, docking and customization actions.
+Tabs and panels can also be reordered by dragging within their ribbon. Floating
+panels retain the original controls across tab switches, support orientation changes
+and can be returned by dropping over the ribbon. Home Modify and Block expose
+secondary commands through slide-outs. A pushpin keeps an expanded panel open;
+workspace save/transfer retains its pin. Responsive collapsed panels expose the
+complete command set directly.
+
+Bare Alt opens scoped key tips for the application menu, Quick Access and ribbon
+tabs. Selecting a tab displays command key tips, including native inputs, split
+menus, collapsed panels and slide-outs. Escape steps back and restores focus;
+mouse input dismisses the overlay. IME composition, text editing, Ctrl/Meta/AltGr
+combinations and drafting function keys keep their existing handlers. F10 remains
+Polar Tracking. The optional menu bar supports Left/Right navigation, Down to open,
+Left/Right to switch open menus and Escape to return to its menu heading.
+
+Behavioral reference: Autodesk's [ribbon tabs, floating panels and pinned slide-outs](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-D20EF1D7-4135-48A7-B68E-65BF3BFF3D70.htm).
+
+## Window behavior and interface locks
+
+Floating palette **Auto-hide** rolls its content into the title bar. Pointer hover,
+keyboard focus or the expand control reveals the same live content. Escape rolls it
+up and returns focus to the title control. This differs from left/right anchoring,
+which attaches a palette to an edge and overlays the drawing when opened. All eight
+floating resize edges preserve the opposing edge, enforce readable minima, and
+restore exact geometry on cancellation. No palette renderer is recreated merely
+because its floating content rolls up.
+
+The command-window context menu provides Dock top/bottom, Anchor top/bottom,
+Float, Allow Docking and independent inactive/active opacity. Docking reserves space;
+anchoring follows the drawing edge without reserving space. The top dock places the
+splitter below the window and reverses its growth direction. All gestures preserve
+the original input, buffer, selection and focus. Losing pointer capture or window
+focus cancels resizing. Opacity applies only when floating or anchored.
+
+The status-bar lock controls `LOCKUI`. Right-click it to choose categories. Values
+combine as a bit mask; `15` locks all categories and `0` unlocks them.
+
+| Bit | Category | Owners |
+| --- | --- | --- |
+| 1 | Docked toolbars and panels | Ribbon host and docked ribbon panels |
+| 2 | Docked or anchored windows | Palettes and command window |
+| 4 | Floating toolbars and panels | Floating ribbon host and ribbon panels |
+| 8 | Floating windows | Floating palettes and command window |
+
+Holding Ctrl temporarily allows movement or resizing. The persisted lock mask stays
+unchanged; releasing Ctrl ends the override. Opening, closing and using controls
+remain possible. The pre-existing palette-only layout lock is an independent,
+additional preference. Position changes do not enter the drawing undo stack.
+
+Hide/Show Palettes records visibility instead of closing every palette. Reopening
+one palette reveals only that palette while the remaining set stays hidden. A
+subsequent manual close remains closed after Show Palettes. The command window,
+ribbon and drawing-tab strip similarly restore their prior states unless explicitly
+changed during the hidden period. The bounded palette exception list survives
+workspace normalization and reload.
+
+References: [dockable window behavior](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-6EF21814-B9FB-4F2A-897E-852B25679D17.htm),
+[LOCKUI](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-19C5EEB0-D2DD-4726-89A7-3D346B513715.htm),
+[HIDEPALETTES](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-0C234107-7EBC-44EE-876A-6A4C0CC17DFE.htm), and
+[SHOWPALETTES](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-EEE9EDD3-3A4D-494B-8CA2-F2A86F36D541.htm).
+
+## Workspace policy and recovery commands
+
+Workspace saving is manual by default. `WSAUTOSAVE 1`, or Automatically save
+workspace changes in the switcher, saves an existing outgoing named workspace
+before switching. Built-in presets, detached layouts and deleted profiles are never
+overwritten. Names are matched case-insensitively while retaining stored casing;
+preset identity remains distinct from an identically named saved profile. Storage
+failure aborts the switch and retains the active layout. Explicit Reset bypasses
+autosave. The global autosave policy survives applying presets or saved workspaces.
+This follows the current [WSAUTOSAVE definition](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-8E8D0109-CA57-4E24-A9E2-B588B0BC19CB.htm).
+
+The live ribbon tab persists independently of named workspace saves. Startup waits
+for discipline entries before resolving a saved discipline tab. Imported UI state
+contains bounded declarative presentation data and registered command IDs only.
+
+| Command or variable | Effect |
+| --- | --- |
+| `RIBBON`, `RIBBONCLOSE` | Show/hide the ribbon, retaining its docking and display mode |
+| `COMMANDLINE`, `COMMANDLINEHIDE` | Show/hide the existing command editor |
+| `TEXTSCR` or Ctrl+F2 | Open the command-history text window |
+| `FILETAB`, `FILETABCLOSE` | Show/hide the drawing-tab strip |
+| `FILETABSTATE 0/1` | Set drawing-tab visibility |
+| `LAYOUTTAB 0/1` | Set Model/paper tab visibility |
+| `MENUBAR 0/1` | Set optional menu-bar visibility |
+| `QATLOCATION 0/1` | Move Quick Access above/below the ribbon |
+| `LOCKUI 0..15` | Set position/size lock categories |
+| `WSAUTOSAVE 0/1` | Disable/enable outgoing named-workspace autosave |
+| `HIDEPALETTES`, `SHOWPALETTES` | Suppress/restore palettes, command window, ribbon and drawing tabs |
+| `CLEANSCREENON`, `CLEANSCREENOFF` | Enter/exit temporary clean-screen presentation |
+| `SAVEALL` | Download each open drawing through its existing DXF save operation |
+| `CLOSEALL`, `CLOSEALLOTHER` | Close drawings sequentially with existing unsaved-change confirmation |
+
+Save/Close All holds a document-ownership token for the entire sequence. Public
+activation, creation and edits cannot redirect it between asynchronous requests;
+document/layout controls and background polling are suspended. Cancel stops the
+sequence. Save All and Close Others restore the originating drawing when it remains
+open, and Close All leaves an editable blank drawing. Browser download permissions
+still govern saving multiple files.
+
+## Implementation and qualification map
+
+| Component | Responsibility | Regression coverage |
+| --- | --- | --- |
+| `ribbon-host-model.mjs`, `ribbon-host.mjs` | Bounded placement, orientation, docking, focus-preserving host moves | `ribbon-host.test.mjs`, `ribbon_workspace_browser_checks.py` |
+| `ribbon-context.mjs`, `ribbon-keytips.mjs`, `ribbon-slideout.mjs` | Context customization, scoped key tips, expanded/pinned secondary tools | `ribbon-keytips.test.mjs`, ribbon keyboard/workspace browser checks |
+| `palette-layout.mjs`, `palette-docking.mjs` | Groups, all-edge resize, roll-up, anchoring, visibility exceptions, locks | Model/controller tests and shared palette browser checks |
+| `desktop-chrome.mjs`, `workspace-shell.mjs` | QAT placement/menus, optional menu bar, lock/status controls, history window | `desktop_parity_browser_checks.py` |
+| `workspace-shell-model.mjs`, `command-line-docking.mjs` | Validated shell state, retained command editor, dock/anchor geometry and opacity | `workspace-shell.test.mjs`, desktop shell/parity browser checks |
+| `workspace-profiles.mjs`, `workspace-profile-ui.mjs` | Typed workspace identity, explicit saving, autosave-before-switch | Model tests and `workspace_autosave_browser_checks.py` |
+| `app.mjs` document batch owner | Serial Save/Close All and protected active document | `document_batch_browser_checks.py` at the end of disposable native/WASM sessions |
+
+All shared browser fixtures run against the native host and the static-only
+WebAssembly host. The same catalog, immutable drawing engine and frontend assets
+serve both. Regression checks assert drawing identity, revision, selection and undo
+history preservation for presentation-only actions, as well as CSP-safe operation.
+
+This is browser-local ribbon and docking behavior for Studio's supported commands.
+Operating-system windows, second-monitor native docking, CUIx/DIESEL/AutoLISP
+customization, and AutoCAD-only command contexts are not implemented by these
+modules. Browser-reserved shortcuts have visible menu or command alternatives.

@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { PaletteDock, handlePaletteEscape } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/palette-docking.mjs';
+import { raiseWorkspaceWindow, releaseWorkspaceWindow } from '../../src/netDxf.Shadow.Studio.Web/wwwroot/cad/workspace-foreground.mjs';
 import { Element, all, installDom } from './ui-fixture.mjs';
 
 function manager(keepOpen) {
@@ -62,7 +63,7 @@ test('delayed pointer or focus leave checks current pick state instead of the sc
 // and renderer lifetimes. Browser tests separately verify actual CSS and hit testing.
 class DockElement extends Element {
   constructor(tag) {
-    super(tag); this.style = { removeProperty(name) { delete this[name]; } }; this.capture = null;
+    super(tag); this.style = { removeProperty(name) { delete this[name]; delete this[name.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())]; } }; this.capture = null;
     this.classList = {
       contains: name => (this.className || '').split(' ').includes(name),
       add: (...names) => { for (const name of names) this.classList.toggle(name, true); },
@@ -135,6 +136,56 @@ test('docks surround the complete drawing column and exclude a separate agent pa
   assert(workspace.children.indexOf(dock.leftDock) < workspace.children.indexOf(center));
   assert(workspace.children.indexOf(dock.rightDock) > workspace.children.indexOf(center));
   assert.deepEqual(dock.bounds(), { width: 930, height: 600 });
+});
+
+test('opening or focusing a compact palette raises it above a floating ribbon and allows ribbon reactivation', t => {
+  const { dock, graph } = docking(t, { width: 390, height: 700 });
+  const ribbon = new DockElement('section'); ribbon.style.zIndex = '38';
+  t.after(() => releaseWorkspaceWindow(ribbon));
+  raiseWorkspaceWindow(ribbon); dock.show('Graph');
+  assert.equal(dock.overlay.style.zIndex, '42'); assert.equal(ribbon.style.zIndex, '38');
+  raiseWorkspaceWindow(ribbon);
+  assert.equal(ribbon.style.zIndex, '42'); assert.equal(dock.overlay.style.zIndex, undefined);
+  graph().element.emit('focusin', { target: graph().selector });
+  assert.equal(dock.overlay.style.zIndex, '42'); assert.equal(ribbon.style.zIndex, '38');
+  dock.hideAll(); assert.equal(dock.overlay.style.zIndex, undefined);
+  raiseWorkspaceWindow(ribbon); dock.restore(null); assert.equal(ribbon.style.zIndex, '42', 'background palette cleanup does not change ribbon foreground');
+});
+
+test('hide/show sessions preserve manual reopening and closing, including anchored tabs and saved restore', t => {
+  const { dock, graph } = docking(t);
+  dock.show('Graph', { mode: 'float' });
+  dock.show('Layers', { mode: 'auto', side: 'left' });
+  dock.setLocked(true); dock.hideAll();
+  assert.equal(dock.allHidden, true); assert.equal(dock.state.hidden, true);
+  assert.equal(dock.leftRail.hidden, true); assert.equal(dock.rightDock.hidden, true);
+  assert.equal(document.activeElement, dock.launcher.querySelector('summary'));
+  dock.show('Graph');
+  assert.equal(dock.allHidden, false); assert.equal(dock.state.hidden, true);
+  assert.equal(dock.isVisible('Graph'), true); assert.equal(dock.isVisible('Properties'), false);
+  assert.equal(dock.frames.get('Layers').edge.hidden, true);
+  dock.close('Graph'); dock.show('Layers');
+  assert.equal(dock.isVisible('Layers'), true); assert.equal(dock.frames.get('Layers').edge.hidden, false);
+  assert.equal(graph().element.isConnected, false); assert.equal(dock.rightDock.hidden, true);
+  const saved = dock.snapshot(); dock.restore(saved);
+  assert.deepEqual(dock.snapshot(), saved); assert.equal(dock.allHidden, false);
+  assert.equal(dock.frames.get('Layers').edge.hidden, false); assert.equal(dock.rightDock.hidden, true);
+  dock.toggle();
+  assert.equal(dock.state.hidden, false); assert.deepEqual(dock.state.hiddenRevealed, []);
+  assert.equal(dock.isVisible('Properties'), true); assert.equal(dock.state.panels.Graph.open, false);
+  assert.equal(dock.frames.get('Layers').edge.hidden, false); assert.equal(dock.state.locked, true);
+});
+
+test('hide/show cancels an in-progress layout gesture and toggles a fully closed layout predictably', t => {
+  const { dock, workspace, start, point } = docking(t);
+  start(); const initial = dock.snapshot(); workspace.emit('pointermove', point(650));
+  dock.hideAll(); assert.equal(dock.gesture, null); assert.equal(workspace.capture, null);
+  assert.deepEqual(dock.state.panels.Graph, initial.panels.Graph);
+  dock.hideAll(); assert.equal(dock.allHidden, true);
+  dock.showAll(); assert.equal(dock.isVisible('Graph'), true); assert.equal(dock.isVisible('Properties'), true);
+  for (const id of dock.ids) dock.close(id);
+  assert.equal(dock.allHidden, true); dock.showAll(); assert.equal(dock.allHidden, true);
+  dock.toggle(); assert.equal(dock.allHidden, false); assert.equal(dock.state.panels[dock.state.active].open, true);
 });
 
 test('dragging displays a prospective column then docks on either side only on release', t => {
@@ -332,7 +383,7 @@ test('explicit restore replaces a locked layout, sanitizes and clamps the snapsh
   assert.equal(JSON.stringify(profile), source, 'restore never mutates the caller snapshot');
   assert.equal(dock.state.locked, false); assert.equal(dock.state.active, 'Layers'); assert.equal(active.at(-1), 'Layers');
   assert.equal(dock.isVisible('Properties'), false); assert.equal(dock.isVisible('Graph'), true); assert.equal(dock.isVisible('Layers'), true);
-  assert.deepEqual(result.panels.Graph, { opacity: 100, rolloverOpacity: 100, open: true, allowDocking: true, mode: 'float', side: 'right', x: 0, y: 0, width: 900, height: 500 });
+  assert.deepEqual(result.panels.Graph, { opacity: 100, rolloverOpacity: 100, open: true, allowDocking: true, autoHide: false, mode: 'float', side: 'right', x: 0, y: 0, width: 900, height: 500 });
   assert(!JSON.stringify(result).includes('discard-this')); assert(!Object.hasOwn(result.panels, 'Unregistered'));
   assert(graph().generation > previousGeneration); assert(cleaned.includes('Graph')); assert(hidden.includes('Graph'));
   assert.equal(document.activeElement, dock.launcher.querySelector('summary'));
@@ -472,7 +523,7 @@ test('Allow Docking off floats an active tab and disables grouping, anchoring an
   dock.groupWith('Graph', 'Properties'); const frame = dock.frames.get('Graph');
   dock.setAllowDocking('Graph', false);
   assert.equal(dock.state.panels.Graph.mode, 'float'); assert.equal(dock.state.panels.Graph.allowDocking, false);
-  assert(dock.isVisible('Properties') && dock.isVisible('Graph')); assert.equal(frame.pin.disabled, true);
+  assert(dock.isVisible('Properties') && dock.isVisible('Graph')); assert.equal(frame.pin.disabled, false, 'floating auto-hide remains available without docking permission');
   assert.equal(frame.allowDocking.getAttribute('aria-checked'), 'false'); assert.equal(frame.groupButton.disabled, true);
   assert(frame.placementButtons.filter(button => button.dataset.docking === 'true').every(button => button.disabled));
   assert.equal(frame.placementButtons.find(button => button.dataset.docking === 'false').disabled, false);
@@ -560,4 +611,104 @@ test('an appearance modal owns its anchored palette until close and survives rep
   assert.equal(dock.autoId,'Graph');
   owned.close();dock.keepOpen=()=>false;
   assert.equal(dock.hideAuto({implicit:true}),true);
+});
+
+test('floating auto-hide retains its renderer, full rectangle and content while rolling up and revealing', t => {
+  const { dock, graph, rendered, hidden } = docking(t);
+  dock.show('Graph', { mode: 'float', focus: false }); const frame = graph(); frame.header.rect = { height: 27 };
+  const body = frame.content, before = dock.snapshot().panels.Graph, generation = frame.generation, renderCount = rendered.length;
+  dock.setFloatingAutoHide('Graph', true); assert.equal(frame.content.hidden, false);
+  dock.hideFloating('Graph'); assert.equal(frame.content.hidden, true); assert.equal(frame.element.style.height, '27px');
+  assert.equal(frame.content, body); assert.equal(frame.generation, generation); assert.equal(rendered.length, renderCount); assert(!hidden.includes('Graph'));
+  assert.deepEqual(dock.snapshot().panels.Graph, { ...before, autoHide: true });
+  frame.element.emit('pointerenter', { pointerType: 'mouse' }); assert.equal(frame.content.hidden, false);
+  assert.equal(frame.element.style.height, `${before.height}px`);
+  dock.setFloatingAutoHide('Graph', false); assert.equal(frame.content.hidden, false); assert.equal(frame.roll.hidden, true);
+});
+
+test('floating roll-up respects keyboard focus, active picking and appearance while Escape returns to the header', t => {
+  const { dock, graph } = docking(t);
+  dock.show('Graph', { mode: 'float', focus: false }); dock.setFloatingAutoHide('Graph', true); const frame = graph();
+  frame.selector.focus(); assert.equal(dock.hideFloating('Graph', { implicit: true }), false);
+  document.body.focus(); dock.keepOpen = id => id === 'Graph'; assert.equal(dock.hideFloating('Graph', { implicit: true }), false);
+  dock.keepOpen = () => false; dock.appearance = { dialog: { open: true }, close() { this.dialog.open = false; } }; dock.appearanceId = 'Graph';
+  assert.equal(dock.hideFloating('Graph', { implicit: true }), false); dock.appearance.close();
+  assert.equal(dock.hideFloating('Graph', { implicit: true }), true);
+  frame.element.emit('focusin', { target: frame.selector }); assert.equal(frame.content.hidden, false);
+  frame.element.emit('keydown', { key: 'Escape' }); assert.equal(frame.content.hidden, true); assert.equal(document.activeElement, frame.roll);
+  frame.roll.emit('click'); assert.equal(frame.content.hidden, false);
+});
+
+test('moving a rolled floating title retains expanded height and cancellation restores its expansion state', t => {
+  const { dock, workspace, graph, point } = docking(t);
+  dock.show('Graph', { mode: 'float', focus: false }); dock.setFloatingAutoHide('Graph', true); dock.hideFloating('Graph');
+  const frame = graph(), before = dock.snapshot(); frame.element.rect = { left: 200, top: 100, width: 310, height: 27 };
+  frame.move.emit('pointerdown', { clientX: 210, clientY: 112 }); workspace.emit('pointermove', { clientX: 280, clientY: 150 });
+  assert.equal(dock.state.panels.Graph.height, before.panels.Graph.height);
+  workspace.emit('pointercancel'); assert.deepEqual(dock.snapshot(), before); assert.equal(frame.content.hidden, true);
+  const restored = dock.snapshot(); dock.restore(restored); assert.equal(frame.content.hidden, true); assert.equal(dock.state.panels.Graph.autoHide, true);
+  dock.show('Graph'); assert.equal(frame.content.hidden, false, 'explicit Show reveals a restored rolling palette');
+});
+
+test('floating auto-hide remains independent of anchoring and is usable with Allow Docking disabled', t => {
+  const { dock, graph } = docking(t);
+  dock.show('Graph', { mode: 'float', focus: false }); dock.setAllowDocking('Graph', false);
+  const frame = graph(); assert.equal(frame.pin.disabled, false); assert.equal(frame.autoHide.disabled, false);
+  frame.pin.emit('click'); assert.equal(dock.state.panels.Graph.autoHide, true); assert.equal(dock.state.panels.Graph.mode, 'float');
+  dock.setAllowDocking('Graph', true); dock.place('Graph', 'auto', 'left');
+  assert.equal(frame.autoHide.disabled, true); assert.equal(frame.roll.hidden, true); assert.equal(dock.isVisible('Graph'), false);
+  dock.reveal('Graph'); assert.equal(frame.content.hidden, false); assert.equal(frame.roll.hidden, true);
+});
+
+test('floating edge and corner resizing retains opposite edges, handles final release coordinates and cancels exactly', t => {
+  const { dock, workspace, graph } = docking(t);
+  dock.show('Graph', { mode: 'float' }); dock.commit({ type: 'rect', id: 'Graph', rect: { x: 200, y: 140, width: 320, height: 300 } });
+  const handle = direction => graph().resizeEdges.find(node => node.getAttribute('data-resize-edge') === direction);
+  assert.equal(graph().resizeEdges.length, 8);
+  handle('nw').emit('pointerdown', { clientX: 300, clientY: 190 });
+  workspace.emit('pointerup', { clientX: 280, clientY: 170 });
+  assert.deepEqual(Object.fromEntries(['x', 'y', 'width', 'height'].map(key => [key, dock.state.panels.Graph[key]])), { x: 180, y: 120, width: 340, height: 320 });
+  handle('n').emit('keydown', { key: 'ArrowUp', shiftKey: true }); assert.equal(dock.state.panels.Graph.y, 119); assert.equal(dock.state.panels.Graph.height, 321);
+  const before = dock.snapshot(); handle('w').emit('pointerdown'); workspace.emit('pointermove', { clientX: 470, clientY: 180 }); workspace.emit('pointercancel');
+  assert.deepEqual(dock.snapshot(), before);
+});
+
+test('LOCKUI window bits distinguish docked and floating palettes without overwriting the legacy lock', t => {
+  const { dock, graph, events, stored } = docking(t);
+  dock.show('Graph', { mode: 'float' }); const properties = dock.frames.get('Properties');
+  dock.setLockMask(2); assert.equal(properties.move.disabled, true); assert.equal(graph().move.disabled, false); assert.equal(dock.state.locked, false);
+  dock.setLockMask(8); assert.equal(properties.move.disabled, false); assert.equal(graph().move.disabled, true);
+  assert.equal(dock.rightDock.splitter.getAttribute('aria-disabled'), 'false');
+  dock.setLocked(true); events.emit('keydown', { key: 'Control', ctrlKey: true });
+  assert.equal(properties.move.disabled, false); assert.equal(graph().move.disabled, false); assert.equal(dock.state.locked, true);
+  const x = dock.state.panels.Graph.x; graph().move.emit('keydown', { key: 'ArrowRight', ctrlKey: true });
+  assert.equal(dock.state.panels.Graph.x, x + 20); assert.equal(stored.at(-1).locked, true);
+  events.emit('keyup', { key: 'Control' }); assert.equal(properties.move.disabled, true); assert.equal(graph().move.disabled, true);
+  dock.setLocked(false); dock.setLockMask(0); assert.equal(graph().move.disabled, false);
+});
+
+test('Ctrl temporarily unlocks pointer dragging and release relocks without changing persisted lock state', t => {
+  const { dock, workspace, graph, events, point, stored } = docking(t);
+  dock.show('Graph', { mode: 'float' }); graph().element.rect = { left: 400, top: 150, width: 310, height: 350 };
+  dock.setLocked(true); const before = dock.snapshot();
+  events.emit('keydown', { key: 'Control', ctrlKey: true });
+  graph().move.emit('pointerdown', { clientX: 420, clientY: 180, ctrlKey: true }); workspace.emit('pointermove', point(520, 230, { ctrlKey: true }));
+  assert.notEqual(dock.state.panels.Graph.x, before.panels.Graph.x); assert.equal(dock.state.locked, true);
+  events.emit('keyup', { key: 'Control' }); assert.equal(dock.gesture, null); assert.equal(graph().move.disabled, true);
+  assert.equal(stored.at(-1).locked, true); assert.equal(workspace.capture, null);
+  const after = dock.snapshot(); graph().move.emit('pointerdown'); assert.equal(dock.gesture, null); assert.deepEqual(dock.snapshot(), after);
+});
+
+test('a permitted docked drag completes across LOCKUI categories then respects its new floating lock', t => {
+  const { dock, workspace, graph, point } = docking(t);
+  dock.show('Graph', { mode: 'dock', focus: false }); graph().element.rect = { left: 900, top: 100, width: 310, height: 350 };
+  dock.setLockMask(8); graph().move.emit('pointerdown', { clientX: 910, clientY: 112 });
+  workspace.emit('pointermove', point(500, 200)); const first = dock.state.panels.Graph.x;
+  workspace.emit('pointermove', point(600, 240)); assert(dock.state.panels.Graph.x > first);
+  workspace.emit('pointerup', point(650, 260)); assert.equal(dock.state.panels.Graph.mode, 'float');
+  assert.equal(graph().move.disabled, true); assert.equal(dock.state.locked, false);
+  dock.setLockMask(0); dock.place('Graph', 'dock', 'right'); dock.setLockMask(8);
+  const x = dock.state.panels.Graph.x; graph().move.emit('keydown', { key: 'ArrowRight' });
+  assert.equal(dock.state.panels.Graph.x, x + 20); assert.equal(dock.state.panels.Graph.mode, 'float');
+  assert.equal(graph().move.disabled, true); assert.equal(dock.state.locked, false);
 });

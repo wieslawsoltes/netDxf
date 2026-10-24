@@ -1,5 +1,12 @@
 /** Presentation preferences are independent of drawing state and drafting aids. */
 export const shellStorageKey = 'netdxf-cad-shell-v1';
+export const interfaceLocks = Object.freeze([
+  { bit:1, label:'Docked toolbars and ribbon panels' },
+  { bit:2, label:'Docked and anchored windows' },
+  { bit:4, label:'Floating toolbars and ribbon panels' },
+  { bit:8, label:'Floating windows' }
+]);
+export const interfaceLockMask = value => Number.isInteger(value) && value >= 0 && value <= 15 ? value : 0;
 export const draftingIndicators = [
   { key:'snap', label:'SNAP', name:'Snap mode', shortcut:'F9' },
   { key:'grid', label:'GRID', name:'Drawing grid', shortcut:'F7' },
@@ -16,9 +23,24 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
 export function commandWindowPreferences(value) {
   const source = record(value) ? value : {};
-  return { mode:source.mode === 'float' ? 'float' : 'dock',
+  return { mode:source.allowDocking === false ? 'float' : ['float','anchor'].includes(source.mode) ? source.mode : 'dock',
+    dock:source.dock === 'top' ? 'top' : 'bottom', allowDocking:source.allowDocking !== false,
+    inactiveOpacity:clamp(finite(source.inactiveOpacity, 1), .2, 1), activeOpacity:clamp(finite(source.activeOpacity, 1), .2, 1),
     x:clamp(finite(source.x, 80), 0, 20000), y:clamp(finite(source.y, 220), 0, 20000),
     width:clamp(finite(source.width, 640), 280, 2400), height:clamp(finite(source.height, 150), 68, 900) };
+}
+
+/** Resize from any edge without moving the opposite edge when a minimum is reached. */
+export function resizeCommandWindow(value, dx, dy, bounds, edge='se') {
+  const rect=commandWindowRect(value,bounds), right=rect.x+rect.width, bottom=rect.y+rect.height;
+  const maxWidth=Math.max(1,(bounds?.width || 640)-8),maxHeight=Math.max(1,(bounds?.height || 480)-8);
+  const minWidth=Math.min(280,maxWidth),minHeight=Math.min(68,maxHeight);
+  let {x,y,width,height}=rect;
+  if(edge.includes('w')){x=clamp(rect.x+dx,4,right-minWidth);width=right-x;}
+  if(edge.includes('e'))width=clamp(rect.width+dx,minWidth,Math.max(minWidth,maxWidth+4-x));
+  if(edge.includes('n')){y=clamp(rect.y+dy,4,bottom-minHeight);height=bottom-y;}
+  if(edge.includes('s'))height=clamp(rect.height+dy,minHeight,Math.max(minHeight,maxHeight+4-y));
+  return {x,y,width,height};
 }
 
 /** Fit to the actual host; even a restored window from a larger monitor stays reachable. */
@@ -37,6 +59,10 @@ export function shellPreferences(value) {
   return { version:1,
     indicators:Array.isArray(source.indicators) ? [...new Set(source.indicators.filter(id => ids.has(id)))] : [...ids],
     statusLabels:source.statusLabels === true, coordinates:source.coordinates !== false,
+    quickAccessBelow:source.quickAccessBelow === true, menuBarVisible:source.menuBarVisible === true,
+    fileTabsVisible:source.fileTabsVisible !== false, layoutTabsVisible:source.layoutTabsVisible !== false, ribbonVisible:source.ribbonVisible !== false,
+    lockUi:interfaceLockMask(source.lockUi),
+    workspaceAutoSave:source.workspaceAutoSave === true,
     workspaceName:typeof source.workspaceName === 'string' && source.workspaceName.trim() && !/[\u0000-\u001f\u007f]/u.test(source.workspaceName)
       ? source.workspaceName.trim().slice(0, 80) : 'Drafting',
     workspacePreset:source.workspacePreset !== false,

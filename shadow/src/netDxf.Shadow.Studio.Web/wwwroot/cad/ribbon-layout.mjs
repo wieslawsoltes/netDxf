@@ -2,6 +2,10 @@ import { RibbonFloatingPanels } from './ribbon-floating.mjs';
 import { protectedRibbonPanel } from './ribbon-customization.mjs';
 import { bindRovingToolbar, nativeRibbonInput, visibleRibbonControl } from './ribbon-keyboard.mjs';
 import { RibbonSplitMenus } from './ribbon-split.mjs';
+import { RibbonHost } from './ribbon-host.mjs';
+import { RibbonContextMenu } from './ribbon-context.mjs';
+import { RibbonKeytips } from './ribbon-keytips.mjs';
+import { RibbonSlideouts } from './ribbon-slideout.mjs';
 
 let panelSerial=0;
 
@@ -46,18 +50,23 @@ export function reconcileRibbonContext(currentTab, context = {}, entries = []) {
 export class RibbonLayout {
   constructor(panel, { customization, report = () => {} } = {}) {
     this.panel = panel; this.groups = []; this.popup = null; this.frame = 0; this.mode='full';
+    this.customization=customization;this.report=report;this.lockMask=0;
     this.keyboard=bindRovingToolbar(panel,{items:()=>this.panelButtons(),onEscape:()=>{this.hide();document.querySelector('#ribbon-tabs [aria-selected=true]')?.focus({preventScroll:true});}});
-    this.splitMenus=new RibbonSplitMenus({onChoose:()=>this.hide(),changed:()=>this.keyboard?.refresh()});
+    this.splitMenus=new RibbonSplitMenus({onChoose:()=>this.hide(),changed:()=>this.keyboard?.refresh(),keytipsActive:()=>this.keytips?.active});
     this.sourceGroups = []; this.context = {};
     this.floating = customization ? new RibbonFloatingPanels({ panel, customization, report,
       changed: () => this.set(this.sourceGroups, this.context) }) : null;
+    this.host=customization?new RibbonHost({panel,customization,report,changed:()=>this.schedule()}):null;
+    this.contextMenu=this.host?.element?new RibbonContextMenu(this):null;
+    this.keytips=this.host?.element?new RibbonKeytips(this):null;
+    this.slideouts=this.host?.element?new RibbonSlideouts(this):null;
     this.observer = new ResizeObserver(()=>this.schedule()); this.observer.observe(panel);
     this.outside = event => {
-      if(this.splitMenus.contains(event.target))return;
+      if(this.splitMenus.contains(event.target)||this.slideouts?.contains(event.target))return;
       if(this.popup && !this.popup.tools.contains(event.target) && !this.popup.button.contains(event.target))this.close();
       if(this.panel.classList.contains('ribbon-peek')&&!this.panel.contains(event.target)&&!event.target.closest('.ribbon-bar,.ribbon-flyout'))this.hide();
     };
-    this.escape = event => { if(event.key==='Escape'&&!event.defaultPrevented&&!event.isComposing&&!nativeRibbonInput(event.target)&&(this.popup||this.panel.classList.contains('ribbon-peek'))){event.preventDefault();event.stopPropagation();if(this.popup)this.close(true);else {this.hide();document.querySelector('#ribbon-tabs [aria-selected=true]')?.focus();}} };
+    this.escape = event => { if(event.key==='Escape'&&!this.keytips?.active&&!event.defaultPrevented&&!event.isComposing&&!nativeRibbonInput(event.target)&&(this.popup||this.panel.classList.contains('ribbon-peek'))){event.preventDefault();event.stopPropagation();if(this.popup)this.close(true);else {this.hide();document.querySelector('#ribbon-tabs [aria-selected=true]')?.focus();}} };
     document.addEventListener('pointerdown',this.outside); document.addEventListener('keydown',this.escape,true);
     this.focusOutside=event=>{if(this.popup&&!this.popup.tools.contains(event.target)&&event.target!==this.popup.button&&!this.splitMenus.contains(event.target))this.close();};
     document.addEventListener('focusin',this.focusOutside);
@@ -67,9 +76,11 @@ export class RibbonLayout {
   }
   set(groups, context = {}) {
     const splitFocused=this.splitMenus?.contains(document.activeElement);
-    this.splitMenus?.close();this.close(); this.sourceGroups=groups;this.context=context;
+    this.splitMenus?.close();this.slideouts?.closeAll();this.close(); this.sourceGroups=groups;this.context=context;
     this.groups=this.floating?this.floating.reconcile(groups,context):groups;
+    this.host?.sync();
     this.panel.replaceChildren(...this.groups);
+    this.slideouts?.set([...groups,...[...this.floating?.frames.values()||[]].map(frame=>frame.group)],context);
     this.splitMenus?.set([...groups,...[...this.floating?.frames.values()||[]].map(frame=>frame.group)]);
     if(this.floating?.focusLost||splitFocused)document.querySelector('#ribbon-tabs [aria-selected=true]')?.focus({preventScroll:true});
     groups.forEach(group=>{
@@ -83,7 +94,7 @@ export class RibbonLayout {
       group.querySelector('.ribbon-launcher').addEventListener('pointerenter',event=>{if(this.mode==='titles'&&event.pointerType==='mouse'&&this.popup?.group!==group)this.open(group,false);});
       group.querySelector('.ribbon-launcher').addEventListener('keydown',event=>{
         if(event.defaultPrevented||event.isComposing||event.ctrlKey||event.metaKey)return;
-        if(event.altKey&&!event.shiftKey&&event.key.toLowerCase()==='f'&&canFloat){event.preventDefault();event.stopPropagation();this.floatPanel(group);return;}
+        if(event.altKey&&!event.shiftKey&&event.key.toLowerCase()==='f'&&canFloat){event.preventDefault();event.stopPropagation();this.floatPanel(group,event);return;}
         if(event.altKey||event.shiftKey)return;
         if(event.key!=='ArrowDown')return;event.preventDefault();event.stopPropagation();this.open(group,true);
       });
@@ -91,7 +102,7 @@ export class RibbonLayout {
         const title=group.querySelector('.ribbon-group-title');
         const float=document.createElement('button');float.type='button';float.className='ribbon-tear-button';float.textContent='↗';
         float.setAttribute('aria-label',`Float ${group.dataset.panel} panel`);float.title=`Float ${group.dataset.panel} panel`;
-        float.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();this.floatPanel(group);});
+        float.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();this.floatPanel(group,event);});
         title?.append(float);
         title?.addEventListener('pointerdown',event=>{
           if(event.target.closest('button'))return;this.close();
@@ -99,16 +110,18 @@ export class RibbonLayout {
         });
       }
     });
-    this.keyboard?.refresh();
+    this.keyboard?.refresh();this.keytips?.render();
     this.schedule();
   }
   panelButtons(){return [...this.panel.querySelectorAll('button')].filter(button=>{
     const group=button.closest('.ribbon-group');if(!group)return false;
     return group.classList.contains('collapsed')?button.classList.contains('ribbon-launcher'):!button.classList.contains('ribbon-launcher');
   });}
-  containsFocus(){return this.panel.contains(document.activeElement)||!!this.popup?.tools.contains(document.activeElement)||!!this.splitMenus?.contains(document.activeElement)||!!this.floating?.containsFocus();}
-  floatPanel(group){this.close();this.floating?.floatPanel(group,this.context.tab);}
-  setMode(mode) {this.close();this.hide();this.mode=ribbonModes.includes(mode)?mode:'full';this.panel.dataset.mode=this.mode;this.schedule();}
+  containsFocus(){return this.panel.contains(document.activeElement)||!!this.popup?.tools.contains(document.activeElement)||!!this.splitMenus?.contains(document.activeElement)||!!this.slideouts?.contains(document.activeElement)||!!this.floating?.containsFocus();}
+  setLockMask(value){this.lockMask=Number(value)&15;this.host?.setLockMask(this.lockMask);this.floating?.setLockMask?.(this.lockMask);}
+  setCommandAccess(api){this.commandAccess=api;}
+  floatPanel(group,event){this.close();this.floating?.floatPanel(group,this.context.tab,event);}
+  setMode(mode) {this.slideouts?.closeAll();this.close();this.hide();this.mode=ribbonModes.includes(mode)?mode:'full';this.panel.dataset.mode=this.mode;this.schedule();}
   reveal(focus=false) {
     if(this.mode==='tabs'){
       const bounds=document.querySelector('.ribbon-bar').getBoundingClientRect();
@@ -116,19 +129,22 @@ export class RibbonLayout {
     }
     if(focus)requestAnimationFrame(()=>{this.layout();this.keyboard?.focus();});
   }
-  hide() {this.splitMenus?.close();this.panel.classList.remove('ribbon-peek');this.panel.style.removeProperty('top');this.close();}
+  hide() {this.splitMenus?.close();if(this.mode==='tabs')this.slideouts?.closeAll();else this.slideouts?.closeUnpinned();this.panel.classList.remove('ribbon-peek');this.panel.style.removeProperty('top');this.close();}
+  suspend(){this.keytips?.close();this.contextMenu?.close();this.slideouts?.closeAll();this.hide();}
   schedule() { if(!this.frame)this.frame=requestAnimationFrame(()=>{this.frame=0;this.layout();}); }
   layout() {
     if(!this.panel.clientWidth)return;
     const focused=document.activeElement,focusGroup=this.panel.contains(focused)?focused.closest('.ribbon-group'):null;
-    this.close(); this.groups.forEach(group=>group.classList.remove('collapsed'));
+    this.close(); this.groups.forEach(group=>group.classList.remove('collapsed','ribbon-wrap'));
     if(this.mode==='buttons'||this.mode==='titles')this.groups.forEach(group=>group.classList.add('collapsed'));
     else {
       const widths=this.groups.map(group=>group.getBoundingClientRect().width);
-      const collapsed=collapsedPanels(widths,this.panel.clientWidth-8);
+      const collapsed=this.host?.element?.dataset.axis==='vertical'?widths.map(()=>false):collapsedPanels(widths,this.panel.clientWidth-8);
       this.groups.forEach((group,index)=>group.classList.toggle('collapsed',collapsed[index]));
+      if(this.host?.element?.dataset.axis==='vertical')this.groups.forEach(group=>{const tools=group.querySelector('.ribbon-tools');if(tools&&tools.scrollWidth>tools.clientWidth+2)group.classList.add('ribbon-wrap');});
     }
     this.keyboard?.refresh();
+    this.slideouts?.refresh();
     if(focusGroup&&!visibleRibbonControl(focused)){
       const target=focusGroup.classList.contains('collapsed')?focusGroup.querySelector('.ribbon-launcher'):
         [...focusGroup.querySelectorAll('.ribbon-tools button,.ribbon-tools select,.ribbon-tools input')].find(visibleRibbonControl);
@@ -147,6 +163,7 @@ export class RibbonLayout {
     const tools=group.querySelector('.ribbon-tools'),button=group.querySelector('.ribbon-launcher');
     if(!tools)return;
     const marker=document.createComment('ribbon-panel');tools.before(marker);document.body.append(tools);
+    this.slideouts?.expose(group,tools,true);
     tools.classList.add('ribbon-flyout');tools.setAttribute('role','toolbar');tools.setAttribute('aria-label',`${group.dataset.panel} commands`);
     this.splitMenus?.expose(tools,true);
     const bounds=button.getBoundingClientRect();
@@ -157,7 +174,7 @@ export class RibbonLayout {
     this.onChoose=event=>{if(event.target.closest('button[data-command],button[data-action]'))this.hide();};tools.addEventListener('click',this.onChoose);
     if(this.floating&&!protectedRibbonPanel(this.context.tab,group.dataset.ribbonPanel||group.dataset.panel)){
       const float=document.createElement('button');float.type='button';float.textContent=`Float ${group.dataset.panel} panel`;float.className='ribbon-flyout-float';
-      float.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();this.floatPanel(group);});
+      float.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();this.floatPanel(group,event);});
       tools.append(float);this.popup.floatButton=float;
     }
     this.keyboard?.refresh();
@@ -167,11 +184,12 @@ export class RibbonLayout {
   close(focus=false) {
     const popup=this.popup;if(!popup)return;this.popup=null;
     popup.keyboard?.dispose();
+    this.slideouts?.expose(popup.group,null,false);
     this.splitMenus?.expose(popup.tools,false);
     popup.floatButton?.remove();
     popup.tools.removeEventListener('click',this.onChoose);popup.tools.classList.remove('ribbon-flyout');
     popup.tools.style.removeProperty('left');popup.tools.style.removeProperty('top');popup.marker.replaceWith(popup.tools);
     popup.button.setAttribute('aria-expanded','false');this.keyboard?.refresh();if(focus)popup.button.focus({preventScroll:true});
   }
-  dispose() {this.hide();this.splitMenus?.dispose();this.keyboard?.dispose();this.floating?.dispose();this.observer.disconnect();cancelAnimationFrame(this.frame);document.removeEventListener('pointerdown',this.outside);document.removeEventListener('keydown',this.escape,true);document.removeEventListener('focusin',this.focusOutside);window.removeEventListener('resize',this.resize);this.panel.removeEventListener('click',this.choose);}
+  dispose() {this.hide();this.slideouts?.dispose();this.keytips?.dispose();this.contextMenu?.dispose();this.splitMenus?.dispose();this.keyboard?.dispose();this.floating?.dispose();this.host?.dispose();this.observer.disconnect();cancelAnimationFrame(this.frame);document.removeEventListener('pointerdown',this.outside);document.removeEventListener('keydown',this.escape,true);document.removeEventListener('focusin',this.focusOutside);window.removeEventListener('resize',this.resize);this.panel.removeEventListener('click',this.choose);}
 }

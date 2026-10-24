@@ -7,6 +7,7 @@ def verify_palette_groups(page, output, state, command, wait_state, idle, check)
     """Preserve the current drawing and finish with the default palette arrangement."""
     baseline = drawing_identity(state())
     verify_palette_drag_docking(page, output, check)
+    verify_palette_window_behavior(page, output, check)
     page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette-reset'})")
     page.evaluate("shadowStudioAgentUi.execute('palette.show', {name:'Graph'})")
     graph = page.locator('[data-palette="Graph"]')
@@ -171,6 +172,7 @@ def verify_palette_groups(page, output, state, command, wait_state, idle, check)
 def verify_palette_drag_docking(page, output, check):
     """Use real pointer capture, reparenting and tab focus on both Studio hosts."""
     page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette-reset'})")
+
     page.evaluate("shadowStudioAgentUi.execute('palette.show', {name:'Graph'})")
     settled(page)
     graph = page.locator('[data-palette="Graph"]')
@@ -260,4 +262,172 @@ def verify_palette_drag_docking(page, output, check):
     grip.dblclick()
     settled(page)
     check('grip double-click returns a floating palette to its remembered side', stored()['panels']['Graph']['mode'] == 'dock')
+    page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette-reset'})")
+
+
+def verify_palette_window_behavior(page, output, check):
+    """Exercise floating roll-up, every-edge resize, lock override and hide/show state."""
+    page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette-reset'})")
+    page.evaluate("shadowStudioAgentUi.execute('palette.show', {name:'Graph'})")
+    graph = page.locator('[data-palette="Graph"]')
+    properties = page.locator('[data-palette="Properties"]')
+    content = graph.locator('.pd-content')
+    grip = graph.get_by_role('button', name='Move Graph palette', exact=True)
+
+    def stored():
+        return page.evaluate("JSON.parse(localStorage.getItem('netdxf-cad-palettes-v2'))")
+
+    def rect():
+        panel = stored()['panels']['Graph']
+        return {key: panel[key] for key in ('x', 'y', 'width', 'height')}
+
+    def away():
+        page.locator('#viewport').focus()
+        page.mouse.move(4, 4)
+
+    def menu():
+        graph.get_by_label('Graph palette layout', exact=True).click()
+        return graph.locator('.pd-menu-body')
+
+    def begin_drag(control, dx, dy):
+        box = control.bounding_box()
+        x, y = box['x'] + box['width'] / 2, box['y'] + box['height'] / 2
+        page.mouse.move(x, y)
+        page.mouse.down()
+        page.mouse.move(x + dx, y + dy, steps=5)
+
+    graph.get_by_role('button', name='Float Graph palette', exact=True).click()
+    settled(page)
+    initial = rect()
+    page.wait_for_function("document.querySelector('[data-palette=Graph] .pd-content')?.firstElementChild")
+    content.evaluate("node => { node.dataset.retained = 'roll-body'; node.firstElementChild.dataset.retained = 'roll-control'; }")
+    graph.locator('.pd-pin').click()
+    away()
+    expect(content).to_be_hidden()
+    check('floating auto-hide rolls up in place and preserves saved full dimensions',
+          stored()['panels']['Graph']['autoHide'] and stored()['panels']['Graph']['mode'] == 'float'
+          and rect() == initial and graph.bounding_box()['height'] < 45)
+    page.screenshot(path=str(output / 'palette-floating-rollup.png'))
+    graph.locator('.pd-title').hover()
+    expect(content).to_be_visible()
+    check('hover expands the same floating palette body and controls',
+          content.get_attribute('data-retained') == 'roll-body'
+          and content.locator(':scope > *').first.get_attribute('data-retained') == 'roll-control')
+    selector = graph.get_by_role('combobox', name='Palette shown in Graph', exact=True)
+    selector.focus()
+    page.mouse.move(4, 4)
+    page.wait_for_timeout(400)
+    expect(content).to_be_visible()
+    check('keyboard focus prevents floating auto-hide while controls are in use')
+    page.keyboard.press('Escape')
+    expect(content).to_be_hidden()
+    expand = graph.get_by_role('button', name='Expand Graph palette', exact=True)
+    expect(expand).to_be_focused()
+    page.keyboard.press('Enter')
+    expect(content).to_be_visible()
+    check('Escape rolls up to an accessible title control and Enter expands it')
+
+    menu().get_by_role('menuitemcheckbox', name='Allow docking: Graph', exact=True).click()
+    expect(graph.locator('.pd-pin')).to_be_enabled()
+    graph.locator('.pd-pin').click()
+    check('floating auto-hide remains independent from Allow Docking and anchoring',
+          not stored()['panels']['Graph']['allowDocking']
+          and not stored()['panels']['Graph']['autoHide']
+          and stored()['panels']['Graph']['mode'] == 'float')
+    menu().get_by_role('menuitemcheckbox', name='Allow docking: Graph', exact=True).click()
+
+    for edge, dx, dy in [('n', 0, 18), ('w', 20, 0)]:
+        before = rect()
+        begin_drag(graph.locator(f'[data-resize-edge="{edge}"]'), dx, dy)
+        page.mouse.up()
+        settled(page)
+        after = rect()
+        check(f'floating {edge} edge resizes around its opposite anchor',
+              abs(after['x'] - before['x'] - dx) < 1
+              and abs(after['y'] - before['y'] - dy) < 1
+              and abs(after['x'] + after['width'] - before['x'] - before['width']) < 1
+              and abs(after['y'] + after['height'] - before['y'] - before['height']) < 1)
+    before = stored()
+    corner = graph.locator('[data-resize-edge="nw"]')
+    corner.focus()
+    begin_drag(corner, -24, -24)
+    page.keyboard.press('Escape')
+    page.mouse.up()
+    expect(corner).to_be_focused()
+    check('Escape cancels a corner resize and restores exact palette layout', stored() == before)
+
+    page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette-lock'})")
+    expect(grip).to_be_disabled()
+    page.keyboard.down('Control')
+    try:
+        expect(grip).to_be_enabled()
+        before = rect()
+        grip.focus()
+        page.keyboard.press('ArrowRight')
+        check('Ctrl temporarily unlocks keyboard movement without clearing saved lock',
+              stored()['locked'] and abs(rect()['x'] - before['x'] - 20) < 1)
+        west = graph.locator('[data-resize-edge="w"]')
+        west.focus()
+        before = rect()
+        page.keyboard.press('ArrowLeft')
+        check('Ctrl temporarily unlocks keyboard edge resize with fixed opposite edge',
+              stored()['locked'] and abs(rect()['x'] - before['x'] + 20) < 1
+              and abs(rect()['width'] - before['width'] - 20) < 1)
+        before = rect()
+        begin_drag(grip, 46, 23)
+        page.keyboard.up('Control')
+        page.mouse.up()
+        expect(grip).to_be_disabled()
+        check('releasing Ctrl completes pointer movement and immediately restores layout lock',
+              stored()['locked'] and rect()['x'] > before['x'] + 30
+              and stored()['panels']['Graph']['mode'] == 'float')
+    finally:
+        page.keyboard.up('Control')
+        page.mouse.up()
+    page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette-lock'})")
+
+    def lockui(value):
+        command_input = page.locator('#command-input')
+        command_input.fill(f'LOCKUI {value}')
+        command_input.press('Enter')
+        settled(page)
+
+    try:
+        lockui(2)
+        expect(properties.get_by_role('button', name='Move Properties palette', exact=True)).to_be_disabled()
+        expect(grip).to_be_enabled()
+        check('LOCKUI 2 locks docked palettes while leaving floating palettes movable', not stored()['locked'])
+        lockui(8)
+        expect(properties.get_by_role('button', name='Move Properties palette', exact=True)).to_be_enabled()
+        expect(grip).to_be_disabled()
+        expect(page.get_by_role('separator', name='Resize right docked palettes', exact=True)).to_have_attribute('aria-disabled', 'false')
+        check('LOCKUI 8 locks floating palettes while leaving docked palettes resizable', not stored()['locked'])
+        page.keyboard.down('Control')
+        expect(grip).to_be_enabled()
+        before = rect()
+        grip.focus()
+        page.keyboard.press('ArrowLeft')
+        page.keyboard.up('Control')
+        expect(grip).to_be_disabled()
+        check('Ctrl temporarily overrides the shell LOCKUI mask without setting a legacy palette lock',
+              abs(rect()['x'] - before['x'] + 20) < 1 and not stored()['locked'])
+    finally:
+        page.keyboard.up('Control')
+        lockui(0)
+    expect(grip).to_be_enabled()
+
+    page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette'})")
+    expect(graph).to_have_count(0)
+    expect(properties).to_have_count(0)
+    page.evaluate("shadowStudioAgentUi.execute('palette.show', {name:'Graph'})")
+    expect(graph).to_be_visible()
+    expect(properties).to_have_count(0)
+    check('manual palette reopening during Hide Palettes reveals only the requested palette',
+          stored()['hidden'] and stored()['hiddenRevealed'] == ['Graph'])
+    graph.get_by_role('button', name='Close Graph palette', exact=True).click()
+    page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette'})")
+    expect(properties).to_be_visible()
+    expect(graph).to_have_count(0)
+    check('Show Palettes restores prior windows while respecting a manual close during hiding',
+          not stored()['hidden'] and not stored()['panels']['Graph']['open'])
     page.evaluate("shadowStudioAgentUi.execute('ui.action', {name:'palette-reset'})")

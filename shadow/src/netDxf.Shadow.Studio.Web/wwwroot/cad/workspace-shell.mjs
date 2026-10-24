@@ -2,10 +2,11 @@ import { el, icon } from './ui.mjs';
 import { bindRovingToolbar } from './ribbon-keyboard.mjs';
 import { commandAvailability } from './command-catalog.mjs';
 import { CommandLineDock } from './command-line-docking.mjs';
+import { DesktopChrome } from './desktop-chrome.mjs';
 import { adjacentTab, draftingIndicators, shellPreferences, shellStorageKey } from './workspace-shell-model.mjs';
 
 const paths={
-  menu:'M4 6h16M4 12h16M4 18h16',chevron:'M8 10l4 4l4-4',close:'M6 6l12 12M6 18L18 6',
+  menu:'M4 6h16M4 12h16M4 18h16',chevron:'M8 10l4 4l4-4',close:'M6 6l12 12M6 18L18 6',lock:'M6 10h12v11H6zM8 10V6a4 4 0 0 1 8 0v4M12 14v3',
   plus:'M12 5v14M5 12h14',minus:'M5 12h14',search:'M16 16l5 5M18 10a8 8 0 1 1-16 0a8 8 0 1 1 16 0',
   window:'M3 4h18v16H3zM3 9h18M8 9v11',workspace:'M3 4h18v16H3zM3 8h18M8 8v12M16 8v12',
   clean:'M3 9V3h6M15 3h6v6M21 15v6h-6M9 21H3v-6',
@@ -32,8 +33,8 @@ const workspaceLabel=name=>name==='Drafting'?'Drafting & Annotation':name;
 /** Desktop shell binds to existing host commands; it never owns a drawing or editor transaction. */
 export class StudioShell {
   constructor({ storage, report=()=>{}, execute, catalog, state, documents, activate, closeDocument,
-    profiles, settings, toggle, persistDrafting, currentLayout, changeLayout, resize=()=>{} }) {
-    Object.assign(this,{storage,report,execute,catalog,state,documents,activate,closeDocument,profiles,settings,toggle,persistDrafting,currentLayout,changeLayout});
+    profiles, settings, toggle, persistDrafting, currentLayout, changeLayout, quickAccess, lockChanged, preferenceChanged, suspendTransient=()=>{}, resize=()=>{} }) {
+    Object.assign(this,{storage,report,execute,catalog,state,documents,activate,closeDocument,profiles,settings,toggle,persistDrafting,currentLayout,changeLayout,preferenceChanged,suspendTransient});
     let saved;try{const text=storage?.getItem(shellStorageKey);if(text&&text.length<16384)saved=JSON.parse(text);}catch{/* Optional local preferences. */}
     this.preferences=shellPreferences(saved);this.popup=null;this.cleanups=[];
     this.commandDock=new CommandLineDock({element:document.getElementById('command-line'),splitter:document.getElementById('command-splitter'),
@@ -61,13 +62,14 @@ export class StudioShell {
       const node=event.target.closest('[data-document-tab]');if(!node)return;event.preventDefault();
       const doc=this.documents().find(value=>value.id===node.dataset.documentTab);if(doc)this.documentMenu(node.querySelector('.name'),doc);
     });
+    this.chrome=new DesktopChrome({shell:this,quickAccess,lockChanged,icons:shellIcon});
     this.renderModes();this.refreshWorkspace();this.refreshLayout();
   }
   run(callback) {return Promise.resolve().then(callback).catch(this.report);}
   snapshot() {return shellPreferences({...this.preferences,commandWindow:this.commandDock.snapshot()});}
-  restore(value) {this.closePopup();this.preferences=shellPreferences(value);this.commandDock.restore(this.preferences.commandWindow);this.renderModes();this.refreshWorkspace();this.persist();}
+  restore(value,{preservePolicy=true}={}) {this.closePopup();const policy=this.preferences.workspaceAutoSave;this.preferences=shellPreferences(value);if(preservePolicy)this.preferences.workspaceAutoSave=policy;this.commandDock.restore(this.preferences.commandWindow);this.chrome?.apply();this.renderModes();this.refreshWorkspace();this.persist();}
   persist() {try{this.storage?.setItem(shellStorageKey,JSON.stringify(this.snapshot()));}catch{/* Preferences can still work without storage. */}}
-  reset() {this.restore(null);}
+  reset() {this.restore(null,{preservePolicy:false});}
   containsFocus() {return !!this.popup?.node.contains(document.activeElement);}
   setWorkspace(name,preset=true) {this.preferences.workspaceName=name;this.preferences.workspacePreset=preset;this.preferences.workspaceDetached=false;this.refreshWorkspace();this.persist();}
   workspaceChanged(change) {
@@ -151,7 +153,10 @@ export class StudioShell {
     this.openPopup(anchor,`${doc.name} drawing actions`,[el('h3',{text:doc.name}),
       this.item('Activate drawing',()=>this.activate(doc.id),{glyph:'layout'}),
       this.item('Save drawing',async()=>{await this.activate(doc.id);await this.execute('save');},{glyph:'save'}),
-      this.item('Close drawing',()=>this.closeDocument(doc),{glyph:'close'})]);
+      this.actionItem('save-all','Save all drawings',{glyph:'save'}),el('hr'),
+      this.item('Close drawing',()=>this.closeDocument(doc),{glyph:'close'}),
+      this.item('Close other drawings',async()=>{await this.activate(doc.id);return this.execute('close-others');}),
+      this.actionItem('close-all','Close all drawings')]);
   }
   layoutsMenu(anchor) {
     const current=this.currentLayout();
@@ -165,7 +170,8 @@ export class StudioShell {
       checked:entry===current,role:'menuitemradio',detail:entry.preset?'Preset':'Saved workspace'})),el('hr'),
       this.item('Save current as…',()=>this.execute('ui-workspaces'),{glyph:'save'}),
       this.item('Manage UI workspaces…',()=>this.execute('ui-workspaces'),{glyph:'workspace'}),
-      this.item(current?'Reset current workspace':'Reset to Drafting & Annotation',()=>this.profiles.apply(current||{name:'Drafting',preset:true}),{glyph:'undo'})]);
+      this.item('Automatically save workspace changes',()=>{this.preferences.workspaceAutoSave=!this.preferences.workspaceAutoSave;this.persist();},{checked:this.preferences.workspaceAutoSave,detail:'Save the current named workspace when switching'}),
+      this.item(current?'Reset current workspace':'Reset to Drafting & Annotation',()=>this.profiles.apply(current||{name:'Drafting',preset:true},{reset:true}),{glyph:'undo'})]);
   }
   renderModes() {
     const root=document.getElementById('drafting-modes'),focused=document.activeElement?.closest('[data-mode-key]')?.dataset.modeKey;
@@ -200,5 +206,5 @@ export class StudioShell {
       el('hr'),checkbox('Show text labels',this.preferences.statusLabels,value=>update('statusLabels',value)),
       this.item('Restore status defaults',()=>{const defaults=shellPreferences();this.preferences={...this.preferences,indicators:defaults.indicators,coordinates:true,statusLabels:false};this.renderModes();this.persist();})]);
   }
-  dispose() {this.closePopup();this.commandDock.dispose();for(const cleanup of this.cleanups)cleanup();this.cleanups=[];}
+  dispose() {this.closePopup();this.chrome.dispose();this.commandDock.dispose();for(const cleanup of this.cleanups)cleanup();this.cleanups=[];}
 }

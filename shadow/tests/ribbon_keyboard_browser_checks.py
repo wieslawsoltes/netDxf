@@ -256,6 +256,8 @@ def verify_ribbon_keyboard(page, output, state, command, wait_state, idle, check
         grip = floating.get_by_role('button', name='Move floating Keyboard commands panel', exact=True)
         expect(grip).to_be_focused()
         page.keyboard.press('Tab')
+        expect(floating.get_by_role('button', name='Toggle Keyboard commands panel orientation', exact=True)).to_be_focused()
+        page.keyboard.press('Tab')
         expect(floating.get_by_role('button', name='Return Keyboard commands panel to ribbon', exact=True)).to_be_focused()
         page.keyboard.press('Tab')
         expect(floating.locator('[data-ribbon-command-id="command:LINE"]')).to_be_focused()

@@ -10,6 +10,16 @@ export const workspaceProfileStorageLimit = 512000;
 const record = value => value && typeof value === 'object' && !Array.isArray(value);
 const nameOf = value => typeof value === 'string' ? value.trim().slice(0, 80) : '';
 
+/** Resolve a workspace without conflating a built-in preset and an equally named saved layout. */
+export function findWorkspaceProfile(entries, identity) {
+  if (record(identity) && identity.detached) return undefined;
+  const name = typeof identity === 'string' ? identity : identity?.name;
+  if (typeof name !== 'string' || !name.trim()) return undefined;
+  const key = name.trim().toLocaleLowerCase('en-US');
+  return entries.find(entry => entry.name.toLocaleLowerCase('en-US') === key &&
+    (typeof identity === 'string' || !!entry.preset === !!identity?.preset));
+}
+
 /** UI state only: never copies drawing identities, agent settings or arbitrary storage. */
 export function workspaceProfileLayout(value, paletteIds) {
   const source = record(value) ? value : {};

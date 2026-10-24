@@ -120,3 +120,21 @@ test('contextual save/discard panels cannot be hidden in floating windows and di
   layout.dispose(); assert.equal(body.querySelectorAll('.ribbon-floating').length, 0);
   assert.equal(events.handlers.get('pointermove').length, 0);
 });
+test('LOCKUI blocks the matching panel movement class and Ctrl permits an explicit move',t=>{
+  const {layout,node,frame,store,events}=fixture(t);layout.setLockMask(1);layout.floatPanel(node);assert.equal(frame(),undefined);
+  layout.floatPanel(node,{ctrlKey:true});assert(frame());layout.setLockMask(4);const before=store.snapshot();
+  frame().grip.emit('pointerdown');events.emit('pointermove',{clientX:500,clientY:500});events.emit('pointerup',{clientX:500,clientY:500});assert.deepEqual(store.snapshot(),before);
+  frame().back.emit('click');assert(frame());frame().back.emit('click',{ctrlKey:true});assert.equal(frame(),undefined);
+});
+test('floating orientation persists across source redraw and drop restores the original panel location',t=>{
+  const {layout,node,frame,store,draw,events,panel}=fixture(t);layout.floatPanel(node);
+  frame().orientation.emit('click');assert.equal(store.snapshot().floating[0].orientation,'vertical');draw();assert.equal(frame().element.dataset.orientation,'vertical');
+  frame().grip.emit('pointerdown',{clientX:400,clientY:250});events.emit('pointermove',{clientX:100,clientY:80});assert.equal(frame().element.dataset.returnTarget,'true');
+  events.emit('pointerup',{clientX:100,clientY:80});assert.equal(frame(),undefined);assert.equal(node.parentNode,panel);assert.equal(store.snapshot().floating.length,0);
+});
+test('releasing Ctrl ends a temporary floating-panel lock override before pointer release',t=>{
+  const {layout,node,frame,events,store}=fixture(t);layout.floatPanel(node);layout.setLockMask(4);
+  frame().grip.emit('pointerdown',{ctrlKey:true});events.emit('pointermove',{clientX:350,clientY:350,ctrlKey:true});
+  events.emit('keyup',{key:'Control'});const released=store.snapshot();assert.equal(layout.floating.gesture,null);
+  events.emit('pointermove',{clientX:450,clientY:450});events.emit('pointerup',{clientX:450,clientY:450});assert.deepEqual(store.snapshot(),released);
+});
