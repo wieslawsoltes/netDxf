@@ -14,12 +14,13 @@ const nameOf = value => {
 export function workspaceTransfer(entry, paletteIds) {
   if (!record(entry) || !record(entry.layout)) throw new Error('A workspace requires a name and UI layout.');
   const layout = entry.layout;
-  for (const key of ['chrome', 'palettes', 'quickAccess', 'ribbonCustomization'])
+  for (const key of ['chrome', 'palettes', 'quickAccess', 'ribbonCustomization', 'shell'])
     if (layout[key] !== undefined && !record(layout[key])) throw new Error(`Workspace ${key} must be an object.`);
   if (layout.palettes !== undefined && ![1, 2, 3].includes(layout.palettes.version))
     throw new Error('Unsupported palette layout version.');
   for (const key of ['quickAccess', 'ribbonCustomization'])
     if (layout[key] !== undefined && layout[key].version !== 1) throw new Error(`Unsupported ${key} version.`);
+  if (layout.shell !== undefined && layout.shell.version !== 1) throw new Error('Unsupported shell version.');
   const normalized = workspaceProfileLayout(layout, paletteIds);
   if (bytes(JSON.stringify(normalized.ribbonCustomization)) > ribbonLimits.bytes)
     throw new Error('Workspace ribbon customization exceeds 128 KiB.');

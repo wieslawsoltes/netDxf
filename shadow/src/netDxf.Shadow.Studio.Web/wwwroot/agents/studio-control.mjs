@@ -6,7 +6,10 @@ const actionNames = new Set([
   'settings','selection-cycling','layer-new','assign-layer','snapshot','snapshots','fork','annotation','linetype','graph','graph-analysis','export-png','export-svg',
   'ribbon-customize','ribbon-minimize','ribbon-cycle','ribbon-display','palette-picker','palette-lock','palette-reset','ui-workspaces','reference-graph','graph-load','graph-fit','graph-clear','command-line','command-history',
   'legacy','reset-ui','help','block-create','block-redefine','block-rename','hatch-create','hatch-edit',
-  'command-search','quick-access-customize','reference-query:explore','reference-query:components','reference-query:path','reference-query:impact'
+  'command-search','quick-access-customize','reference-query:explore','reference-query:components','reference-query:path','reference-query:impact',
+  'properties-toggle','palettes-hide','palettes-show','clean-on','clean-off','ribbon-show','ribbon-hide',
+  'file-tabs','file-tabs-show','file-tabs-hide','layout-tabs','menu-bar','interface-lock','command-line-show','command-line-hide','command-text-window',
+  'save-all','close-all','close-others'
 ]);
 const readRoutes = new Set(['state', 'graph', 'hatch/pattern', 'resources', 'layer-state/details', 'layer-state/export', 'attributes', 'attribute-definitions', 'modules', 'edit-previews', 'workflow/status', 'workflow/export', 'block-libraries']);
 const readPostRoutes = new Set(['graph/query','modules/symbols','modules/analyze','modules/schedule','modules/connectivity','health','references/capture','references/validate','insert-preview','selection-candidates','layer-state/preview']);
@@ -99,7 +102,7 @@ export function installStudioControl(host) {
     controls.clear();
     const modal = activeModal();
     const nodes = [...(modal || root).querySelectorAll(modal ? 'button, input, select, textarea' :
-      '#studio button, #studio input, #studio select, #studio textarea, #dialog button, #dialog input, #dialog select, #dialog textarea, .command-access-dialog button, .command-access-dialog input, .command-access-dialog select')]
+      '#studio button, #studio input, #studio select, #studio textarea, #dialog button, #dialog input, #dialog select, #dialog textarea, .command-access-dialog button, .command-access-dialog input, .command-access-dialog select, .shell-popup button, .shell-popup input, .ribbon-context-menu button, .ribbon-flyout button, .ribbon-flyout input, .ribbon-flyout select')]
       .filter(node => actionable(node, modal));
     const legacyDialog = root.getElementById('dialog');
     const labelledBy = modal?.getAttribute('aria-labelledby')?.split(/\s+/).map(id => root.getElementById(id)).filter(publicNode)

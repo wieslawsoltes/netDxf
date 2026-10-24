@@ -5,6 +5,120 @@ import { workspaceProfileTools } from '../../src/netDxf.Shadow.Studio.Web/wwwroo
 import { installDom, byText, byLabel } from './ui-fixture.mjs';
 
 const ids = ['Properties', 'Graph', 'Layers'];
+test('direct workspace switching resolves preset and saved identities separately',()=>{
+  let text=null;
+  const storage={getItem:()=>text,setItem:(_,value)=>{text=value;}};
+  const store=new WorkspaceProfiles({paletteIds:ids,storage});
+  store.change({type:'save',name:'Drafting',layout:{tab:'Graph',shell:{version:1,commandWindow:{mode:'float'}}}});
+  const applied=[];
+  const profiles=workspaceProfileTools({paletteIds:ids,storage,capture:()=>({}),restore:layout=>applied.push(layout),onApplied:(name,preset)=>applied.push({name,preset})});
+  profiles.apply({name:'Drafting',preset:false});
+  assert.equal(applied[0].tab,'Graph');assert.equal(applied[0].shell.commandWindow.mode,'float');assert.deepEqual(applied[1],{name:'Drafting',preset:false});
+  profiles.apply({name:'Drafting',preset:true});assert.equal(applied[2].tab,'Home');assert.equal(applied[2].shell.commandWindow.mode,'dock');
+  assert.throws(()=>profiles.apply({name:'Missing',preset:false}),/no longer exists/);
+});
+
+test('workspace autosave is off by default and applying a current workspace restores its saved layout', () => {
+  let text = null;
+  const storage = {getItem:()=>text,setItem:(_,value)=>{text=value;}};
+  const store = new WorkspaceProfiles({paletteIds:ids,storage});
+  store.change({type:'save',name:'Review',layout:{tab:'Graph'}});
+  const before = text, applied = [];
+  const profiles = workspaceProfileTools({paletteIds:ids,storage,current:()=>({name:'review',preset:false}),
+    capture:()=>({tab:'View'}),restore:layout=>applied.push(layout)});
+  profiles.apply({name:'REVIEW',preset:false});
+  assert.equal(applied[0].tab,'Graph');
+  assert.equal(text,before);
+});
+
+test('autosave preserves outgoing live layout before restoring a different workspace and keeps canonical names', () => {
+  let text = null, active = {name:'review',preset:false}, live = {tab:'View',commandHeight:220,
+    palettes:{version:3,panels:{Graph:{open:true,mode:'float',autoHide:true,x:140,y:180}}}};
+  const events = [];
+  const storage = {getItem:()=>text,setItem:(_,value)=>{text=value;events.push('save');}};
+  const store = new WorkspaceProfiles({paletteIds:ids,storage});
+  store.change({type:'save',name:'Review',layout:{tab:'Home'}});
+  store.change({type:'save',name:'Analysis',layout:{tab:'Graph'}});
+  events.length = 0;
+  const profiles = workspaceProfileTools({paletteIds:ids,storage,current:()=>active,autoSave:()=>true,
+    capture:()=>live,restore:layout=>{events.push('restore');live=layout;},
+    onApplied:(name,preset)=>{events.push('applied');active={name,preset};}});
+  profiles.apply({name:'ANALYSIS',preset:false});
+  assert.deepEqual(events,['save','restore','applied']);
+  assert.deepEqual(active,{name:'Analysis',preset:false});
+  const saved = store.read().profiles;
+  assert.deepEqual(saved.map(entry=>entry.name),['Review','Analysis']);
+  assert.equal(saved[0].layout.tab,'View');assert.equal(saved[0].layout.commandHeight,220);
+  assert.equal(saved[0].layout.palettes.panels.Graph.autoHide,true);
+  assert.equal(saved[1].layout.tab,'Graph');assert.equal(live.tab,'Graph');
+  profiles.apply({name:'Review',preset:false});
+  assert.equal(live.tab,'View');assert.equal(live.palettes.panels.Graph.x,140);
+});
+
+test('autosave distinguishes a saved workspace from an equally named immutable preset', () => {
+  let text = null, active = {name:'Drafting',preset:true}, live = {tab:'View'}, writes = 0;
+  const storage = {getItem:()=>text,setItem:(_,value)=>{text=value;writes++;}};
+  const store = new WorkspaceProfiles({paletteIds:ids,storage});
+  store.change({type:'save',name:'Drafting',layout:{tab:'Graph'}});
+  const profiles = workspaceProfileTools({paletteIds:ids,storage,current:()=>active,autoSave:()=>true,
+    capture:()=>live,restore:layout=>{live=layout;},onApplied:(name,preset)=>{active={name,preset};}});
+  profiles.apply({name:'drafting',preset:false});
+  assert.equal(writes,1);assert.equal(live.tab,'Graph');
+  live={tab:'Manage'};
+  profiles.apply({name:'DRAFTING',preset:true});
+  assert.equal(writes,2);assert.equal(live.tab,'Home');
+  assert.equal(store.read().profiles[0].layout.tab,'Manage');
+  assert.equal(workspacePresets(ids)[0].layout.tab,'Home');
+});
+
+test('autosave reselect preserves live changes while explicit reset bypasses autosave', () => {
+  let text = null, writes = 0, live = {tab:'View'};
+  const applied = [];
+  const storage = {getItem:()=>text,setItem:(_,value)=>{text=value;writes++;}};
+  const store = new WorkspaceProfiles({paletteIds:ids,storage});
+  store.change({type:'save',name:'Review',layout:{tab:'Graph'}});
+  const profiles = workspaceProfileTools({paletteIds:ids,storage,current:()=>({name:'review',preset:false}),autoSave:()=>true,
+    capture:()=>live,restore:layout=>{live=layout;},onApplied:(...args)=>applied.push(args)});
+  const result = profiles.apply({name:'REVIEW',preset:false});
+  assert.equal(result.tab,'View');assert.equal(live.tab,'View');assert.equal(writes,1);assert.equal(applied.length,0);
+  profiles.apply({name:'Review',preset:false},{reset:true});
+  assert.equal(live.tab,'Graph');assert.equal(writes,1);assert.deepEqual(applied,[['Review',false]]);
+});
+
+test('autosave skips detached or removed current profiles and validates the destination before saving', () => {
+  let text = null, writes = 0, active = {name:'Review',preset:false,detached:true};
+  const storage = {getItem:()=>text,setItem:(_,value)=>{text=value;writes++;}};
+  const store = new WorkspaceProfiles({paletteIds:ids,storage});
+  store.change({type:'save',name:'Review',layout:{tab:'Graph'}});
+  const applied = [];
+  const profiles = workspaceProfileTools({paletteIds:ids,storage,current:()=>active,autoSave:()=>true,
+    capture:()=>({tab:'View'}),restore:layout=>applied.push(layout)});
+  profiles.apply({name:'Drafting',preset:true});
+  assert.equal(writes,1);assert.equal(store.read().profiles[0].layout.tab,'Graph');
+  active={name:'Deleted profile',preset:false};
+  profiles.apply({name:'Graph analysis',preset:true});
+  assert.equal(writes,1);assert.equal(store.read().profiles.length,1);
+  active={name:'Review',preset:false};
+  assert.throws(()=>profiles.apply({name:'Missing',preset:false}),/no longer exists/);
+  assert.equal(writes,1);assert.equal(applied.length,2);
+});
+
+test('autosave storage failure aborts switching and leaves the active layout and profile identity intact', () => {
+  let text = null, fail = false;
+  const storage = {getItem:()=>text,setItem:(_,value)=>{if(fail)throw new Error('quota');text=value;}};
+  const store = new WorkspaceProfiles({paletteIds:ids,storage});
+  store.change({type:'save',name:'Review',layout:{tab:'Graph'}});
+  const before = text, events = [];
+  const profiles = workspaceProfileTools({paletteIds:ids,storage,current:()=>({name:'Review',preset:false}),autoSave:()=>true,
+    capture:()=>({tab:'View'}),restore:()=>events.push('restore'),onApplied:()=>events.push('applied')});
+  fail=true;
+  assert.throws(()=>profiles.apply({name:'Drafting',preset:true}),error=>{
+    assert.match(error.message,/automatically save workspace “Review”/);
+    assert.match(error.message,/unavailable or full/);assert.match(error.message,/turn off automatic workspace saving/);
+    return true;
+  });
+  assert.equal(text,before);assert.deepEqual(events,[]);
+});
 test('workspace persistence retains only UI layout fields, clamps size and tolerates malformed storage', () => {
   const value = workspaceProfileLayout({ tab:'Graph', commandHeight:99999, chrome:{ribbonMode:'titles',commandLineVisible:false},
     documentId:'private', agent:{secret:'never-copy'}, palettes:{version:2,active:'Graph',panels:{Graph:{open:true,mode:'float',secret:'never-copy'},Unknown:{open:true}}} }, ids);
@@ -98,7 +212,7 @@ test('preset layouts keep Properties available beside a left Graph palette and e
   assert(draft.layout.palettes.panels.Properties.open);
   assert(graph.layout.palettes.panels.Properties.open);assert(graph.layout.palettes.panels.Graph.open);
   assert.equal(graph.layout.palettes.panels.Graph.side,'left');assert.equal(graph.layout.tab,'Graph');
-  assert.deepEqual(Object.keys(graph.layout),['chrome','tab','commandHeight','palettes','quickAccess','ribbonCustomization']);
+  assert.deepEqual(Object.keys(graph.layout),['chrome','tab','commandHeight','palettes','quickAccess','ribbonCustomization','shell']);
 });
 
 test('dependency workspace provides a wide References tab beside source Properties', () => {
@@ -136,4 +250,22 @@ test('UI manager applies presets and manages current layouts without touching dr
   assert.equal(JSON.parse(stored).profiles[0].name,'Review renamed');
   await byText(root,'Delete workspace').click();assert.equal(JSON.parse(stored).profiles.length,0);
   assert(byText(root,'Delete workspace').disabled);assert.deepEqual(errors,[]);
+});
+
+test('UI manager selects the current typed profile and exports its updated snapshot after an autosave switch', async t => {
+  const root = installDom(t), exported = [];
+  let text = null, active = {name:'drafting',preset:false};
+  const storage = {getItem:()=>text,setItem:(_,value)=>{text=value;}};
+  const store = new WorkspaceProfiles({paletteIds:ids,storage});
+  store.change({type:'save',name:'Drafting',layout:{tab:'Home'}});
+  const show = workspaceProfileTools({paletteIds:ids,storage,current:()=>active,autoSave:()=>true,
+    capture:()=>({tab:'View'}),restore:()=>{},onApplied:(name,preset)=>{active={name,preset};},
+    download:(name,content)=>exported.push(JSON.parse(content)),dialog:async(title,content)=>root.replaceChildren(...content)});
+  await show();
+  const choice = byLabel(root,'UI workspace');
+  assert.equal(choice.value,'2');
+  choice.value='1';await choice.dispatch('change');await byText(root,'Apply layout').click();
+  assert.deepEqual(active,{name:'Graph analysis',preset:true});
+  choice.value='2';await choice.dispatch('change');await byText(root,'Export selected workspace').click();
+  assert.equal(exported[0].name,'Drafting');assert.equal(exported[0].layout.tab,'View');
 });

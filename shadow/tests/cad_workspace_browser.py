@@ -23,6 +23,7 @@ from cad_authoring_browser import verify_authoring
 from cad_exchange_browser import verify_exchange
 from cad_modify_browser import verify_modify
 from graph_analysis_browser import verify_graph_analysis
+from document_batch_browser_checks import verify_document_batches
 from cad_layer_states_browser import verify_layer_states
 from cad_layer_state_transfer_browser import verify_layer_state_transfer
 from cad_attributes_browser import verify_attributes
@@ -352,6 +353,7 @@ def verify(url: str, executable: str | None = None):
             verify_insert_attributes(page, OUTPUT, state, command, wait_state, idle, check)
             verify_block_library(page, OUTPUT, state, command, wait_state, idle, check)
             verify_layout_attributes(page, OUTPUT, state, command, wait_state, idle, check)
+            verify_document_batches(page, OUTPUT, state, command, wait_state, idle, check)
             check('no uncaught JavaScript errors or CSP violations', not errors and not violations)
         except Exception:
             failure = traceback.format_exc()

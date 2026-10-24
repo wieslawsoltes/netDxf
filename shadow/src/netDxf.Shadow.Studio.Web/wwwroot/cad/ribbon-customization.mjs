@@ -1,3 +1,4 @@
+import { ribbonHostPreferences } from './ribbon-host-model.mjs';
 /** Declarative workspace preferences. No command text, macros or executable content is accepted. */
 export const ribbonCustomizationKey = 'netdxf-cad-ribbon-v1';
 export const ribbonLimits = Object.freeze({ tabs: 80, panels: 256, customTabs: 8, customPanels: 24, commands: 32, floating: 16, bytes: 131072 });
@@ -15,6 +16,7 @@ export function ribbonPreferences(value) {
   const source = object(value) && value.version === 1 ? value : {};
   return {
     version: 1,
+    host: ribbonHostPreferences(source.host),
     tabs: unique(bounded(source.tabs, ribbonLimits.tabs).filter(value => object(value) && key(value.id))
       .map(value => ({ id: value.id, visible: ['Home', 'Block Editor'].includes(value.id) || value.visible !== false })), value => value.id),
     panels: unique(bounded(source.panels, ribbonLimits.panels).filter(value => object(value) && key(value.tab) && key(value.id))
@@ -25,7 +27,9 @@ export function ribbonPreferences(value) {
       .map(value => ({ id: value.id, tab: value.tab, name: name(value.name), commands: [...new Set(bounded(value.commands, 256).filter(commandKey))].slice(0, ribbonLimits.commands) })), value => value.id),
     floating: unique(bounded(source.floating, ribbonLimits.floating).filter(value => object(value) && key(value.tab) && key(value.panel) && !protectedRibbonPanel(value.tab, value.panel))
       .map(value => ({ tab: value.tab, panel: value.panel, x: Number.isFinite(value.x) ? Math.max(0, Math.min(100000, value.x)) : 24,
-        y: Number.isFinite(value.y) ? Math.max(0, Math.min(100000, value.y)) : 160 })), value => ribbonPanelKey(value.tab, value.panel))
+        y: Number.isFinite(value.y) ? Math.max(0, Math.min(100000, value.y)) : 160, orientation: value.orientation === 'vertical' ? 'vertical' : 'horizontal' })), value => ribbonPanelKey(value.tab, value.panel)),
+    expanded: unique(bounded(source.expanded,64).filter(value=>object(value)&&key(value.tab)&&key(value.panel))
+      .map(value=>({tab:value.tab,panel:value.panel})),value=>ribbonPanelKey(value.tab,value.panel))
   };
 }
 
@@ -51,21 +55,30 @@ export function floatingRibbonPosition(value, size, viewport) {
     y: Math.max(4, Math.min(Number.isFinite(value.y) ? value.y : 160, viewport.height - Math.min(size.height, viewport.height - 8) - 4)) };
 }
 const move = (items, index, offset) => { if (![-1, 1].includes(offset) || index < 0 || index + offset < 0 || index + offset >= items.length) return; [items[index], items[index + offset]] = [items[index + offset], items[index]]; };
+const reorder = (items,index,beforeId) => { if(index<0||items[index].id===beforeId)return; const [item]=items.splice(index,1),before=items.findIndex(value=>value.id===beforeId);items.splice(before<0?items.length:before,0,item); };
 export function changeRibbonPreferences(preferences, action, { entries = [], panels = [], catalog = [] } = {}) {
   const value = ribbonPreferences(preferences);
   if (action.type === 'reset') return ribbonPreferences(null);
-  if (action.type === 'tab-visible' || action.type === 'tab-move') {
+  if (action.type === 'host') { value.host=ribbonHostPreferences(action.value); }
+  else if (action.type === 'panel-expanded') {
+    if(!key(action.tab)||!key(action.panel))throw new Error('Choose a ribbon panel.');
+    value.expanded=value.expanded.filter(panel=>panel.tab!==action.tab||panel.panel!==action.panel);
+    if(action.expanded){if(value.expanded.length>=64)throw new Error('Keep at most 64 expanded panels.');value.expanded.push({tab:action.tab,panel:action.panel});}
+  }
+  else if (action.type === 'tab-visible' || action.type === 'tab-move' || action.type === 'tab-reorder') {
     const dormant = value.tabs.filter(tab => !entries.some(entry => entry.key === tab.id) && !value.customTabs.some(entry => entry.id === tab.id));
     value.tabs = [...customizedRibbonTabs(value, entries, { includeHidden: true }).map(entry => ({ id: entry.key, visible: entry.visible })), ...dormant];
     const index = value.tabs.findIndex(tab => tab.id === action.id);
     if (index < 0) throw new Error('Choose an available ribbon tab.');
     if (action.type === 'tab-visible') value.tabs[index].visible = ['Home', 'Block Editor'].includes(action.id) || action.visible !== false;
+    else if(action.type==='tab-reorder')reorder(value.tabs,index,action.beforeId);
     else move(value.tabs, index, action.offset);
-  } else if (action.type === 'panel-visible' || action.type === 'panel-move') {
+  } else if (action.type === 'panel-visible' || action.type === 'panel-move' || action.type === 'panel-reorder') {
     const ordered = customizedRibbonPanels(value, action.tab, panels, { includeHidden: true }).map(panel => ({ tab: action.tab, id: panel.id, visible: panel.visible }));
     const index = ordered.findIndex(panel => panel.id === action.id);
     if (index < 0) throw new Error('Choose an available ribbon panel.');
     if (action.type === 'panel-visible') ordered[index].visible = protectedRibbonPanel(action.tab, action.id) || action.visible !== false;
+    else if(action.type==='panel-reorder')reorder(ordered,index,action.beforeId);
     else move(ordered, index, action.offset);
     const dormant = value.panels.filter(panel => panel.tab === action.tab && !ordered.some(entry => entry.id === panel.id));
     value.panels = [...value.panels.filter(panel => panel.tab !== action.tab), ...ordered, ...dormant];
@@ -91,18 +104,21 @@ export function changeRibbonPreferences(preferences, action, { entries = [], pan
       value.tabs = value.tabs.filter(tab => tab.id !== action.id);
       value.panels = value.panels.filter(panel => panel.tab !== action.id);
       value.floating = value.floating.filter(panel => panel.tab !== action.id);
+      value.expanded = value.expanded.filter(panel => panel.tab !== action.id);
     } else {
       value.customPanels = value.customPanels.filter(panel => panel.id !== action.id);
       value.panels = value.panels.filter(panel => panel.id !== action.id);
       value.floating = value.floating.filter(panel => panel.panel !== action.id);
+      value.expanded = value.expanded.filter(panel => panel.panel !== action.id);
     }
-  } else if (action.type === 'float' || action.type === 'return') {
+  } else if (action.type === 'float' || action.type === 'return' || action.type === 'float-orientation') {
     if (!key(action.tab) || !key(action.panel) || protectedRibbonPanel(action.tab, action.panel)) throw new Error('This contextual panel must remain on its ribbon.');
     const index = value.floating.findIndex(panel => panel.tab === action.tab && panel.panel === action.panel);
     if (action.type === 'return') { if (index >= 0) value.floating.splice(index, 1); }
+    else if(action.type==='float-orientation') { if(index<0)throw new Error('Float the panel before changing its orientation.');value.floating[index].orientation=action.orientation; }
     else {
       if (index < 0 && value.floating.length >= ribbonLimits.floating) throw new Error('Keep at most 16 floating ribbon panels.');
-      const next = { tab: action.tab, panel: action.panel, x: action.x, y: action.y };
+      const next = { tab: action.tab, panel: action.panel, x: action.x, y: action.y, orientation: action.orientation || value.floating[index]?.orientation || 'horizontal' };
       if (index >= 0) value.floating[index] = next; else value.floating.push(next);
     }
   } else throw new Error('Unknown ribbon customization action.');

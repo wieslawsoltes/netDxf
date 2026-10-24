@@ -2,12 +2,23 @@ import { ribbonPreferences } from './ribbon-customization.mjs';
 import { chromePreferences } from './ribbon-layout.mjs';
 import { paletteLayout } from './palette-layout.mjs';
 import { quickAccessPreferences } from './command-catalog.mjs';
+import { shellPreferences } from './workspace-shell-model.mjs';
 
 export const workspaceProfileKey = 'netdxf-cad-workspaces-v1';
 export const workspaceProfileLimit = 24;
 export const workspaceProfileStorageLimit = 512000;
 const record = value => value && typeof value === 'object' && !Array.isArray(value);
 const nameOf = value => typeof value === 'string' ? value.trim().slice(0, 80) : '';
+
+/** Resolve a workspace without conflating a built-in preset and an equally named saved layout. */
+export function findWorkspaceProfile(entries, identity) {
+  if (record(identity) && identity.detached) return undefined;
+  const name = typeof identity === 'string' ? identity : identity?.name;
+  if (typeof name !== 'string' || !name.trim()) return undefined;
+  const key = name.trim().toLocaleLowerCase('en-US');
+  return entries.find(entry => entry.name.toLocaleLowerCase('en-US') === key &&
+    (typeof identity === 'string' || !!entry.preset === !!identity?.preset));
+}
 
 /** UI state only: never copies drawing identities, agent settings or arbitrary storage. */
 export function workspaceProfileLayout(value, paletteIds) {
@@ -18,7 +29,8 @@ export function workspaceProfileLayout(value, paletteIds) {
     commandHeight: Number.isFinite(source.commandHeight) ? Math.max(32, Math.min(600, source.commandHeight)) : 90,
     palettes: paletteLayout(source.palettes, paletteIds),
     quickAccess: quickAccessPreferences(source.quickAccess),
-    ribbonCustomization: ribbonPreferences(source.ribbonCustomization)
+    ribbonCustomization: ribbonPreferences(source.ribbonCustomization),
+    shell: shellPreferences(source.shell)
   };
 }
 

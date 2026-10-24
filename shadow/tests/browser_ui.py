@@ -28,9 +28,16 @@ def ribbon_item(page, selector: str, tab: str, panel: str):
     page.evaluate('() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))')
     target = page.locator(selector + ':visible').first
     if not target.is_visible():
-        launcher = page.locator(f'#ribbon [data-panel="{panel}"] .ribbon-launcher')
-        expect(launcher).to_be_visible()
-        launcher.click()
+        group = page.locator(f'#ribbon [data-panel="{panel}"]')
+        launcher = group.locator('.ribbon-launcher')
+        if launcher.is_visible():
+            launcher.click()
+        else:
+            control = group.locator(selector).first
+            if control.locator('xpath=ancestor::*[contains(@class,"ribbon-slideout-content")]').count():
+                group.locator('[data-ribbon-slideout-toggle]').click()
+            else:
+                control.locator('xpath=ancestor::*[contains(concat(" ",@class," ")," ribbon-split ")]').first.locator('[data-ribbon-split-toggle]').click()
     expect(target).to_be_visible()
     return target
 

@@ -1,0 +1,168 @@
+/* Shared desktop shell for native and WebAssembly hosts. Geometry stays in the
+   drawing column; independent palettes extend to the application status bar. */
+:root { --chrome:#353a42; --panel:#292e36; --edge:#181b21; --text:#e1e5ec; --muted:#aab2bf; --accent:#68baff; }
+#studio { min-width:320px; }
+.titlebar { height:32px; min-height:32px; gap:5px; background:#202328; }
+.app-menu { height:32px; width:44px; flex:none; background:linear-gradient(145deg,#e63d47,#a61b2b); border-right:1px solid #76202a; }
+.titlebar .quick-access.command-quick-access { flex-basis:224px; max-width:27vw; }
+.titlebar .workspace-switch { display:flex; align-items:center; gap:6px; padding:3px 8px; height:26px; flex:none; max-width:240px; border-left:1px solid #454a53; border-right:1px solid #454a53; border-radius:0; color:#c6ced9; }
+#workspace-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:11px; }
+.workspace-switch>.shell-icon { width:16px; height:16px; color:#aebfd3; }
+.titlebar #title { padding:0 15px; min-width:70px; font-size:12px; letter-spacing:0; }
+.title-search { display:flex; align-items:center; gap:8px; height:25px; min-width:150px; flex:none; padding:3px 6px; color:#aab4c1; font-size:11px; background:#292e36; border:1px solid #424852; }
+.title-search .shell-icon { width:15px; height:15px; }
+.title-search kbd { font:9px 'Segoe UI',sans-serif; color:#8391a2; padding-left:6px; }
+.titlebar .local-badge { margin:0 5px; font-size:8px; letter-spacing:.8px; }
+.titlebar .help-button { display:grid; place-items:center; width:24px; height:24px; border:0; margin-right:4px; border-radius:0; }
+.help-button .shell-icon { width:17px; height:17px; }
+.shell-icon { width:18px; height:18px; stroke-width:1.5; pointer-events:none; }
+.document-bar { height:31px; min-height:31px; align-items:stretch; padding:0 5px; background:#20242b; border-top:1px solid #11151a; border-bottom:1px solid #16191f; gap:1px; }
+.document-bar>button { display:flex; align-items:center; justify-content:center; flex:none; gap:5px; font-size:11px; padding:3px 7px; }
+.document-bar>.shell-icon-button { width:27px; padding:3px; }
+#documents { flex:0 1 auto; min-width:0; align-items:stretch; }
+.document-tab { position:relative; margin:2px 0 0; padding:0 2px 0 6px; border:1px solid #181c23; border-bottom:0; background:#2b3038; color:#acb6c5; border-radius:3px 3px 0 0; flex:none; }
+.document-tab.active { background:#3f4855; border-top:2px solid #63b8ee; color:#f1f5fa; }
+.document-tab .name { font-size:11px; padding:4px 7px; max-width:220px; }
+.document-tab .close { display:grid; place-items:center; width:24px; height:25px; padding:4px; }
+.document-tab .close .shell-icon { width:13px; height:13px; }
+.document-tab .close:hover { color:white; background:#a83b49; }
+.drawing-area { display:flex; flex-direction:column; flex:1 1 0; min-width:60px; min-height:0; overflow:hidden; }
+.drawing-area>.viewport { flex:1 1 0; width:100%; min-width:0; min-height:80px; }
+.viewport { background:#20272f; }
+.viewport-heading { top:5px; left:8px; font-size:11px; }
+.viewport-heading button { font-family:Consolas,monospace; }
+.navigation-bar { background:#363e48ed; border-color:#646e7b; border-radius:2px; right:8px; top:145px; padding:2px; gap:1px; }
+.navigation-bar button { display:grid; place-items:center; width:30px; height:32px; padding:5px; }
+.navigation-bar .shell-icon { width:20px; height:20px; color:#cdd6e1; }
+.command-splitter { height:4px; min-height:4px; background:#151a20; border-top:1px solid #4b535f; }
+.command-line { flex:none; background:#282d35; color:#cbd3df; border-color:#10161c; border-width:1px 0 0; min-height:32px; }
+.command-history { padding:4px 12px 4px 22px; font:11px/1.6 Consolas,'Liberation Mono',monospace; scrollbar-color:#606975 #282d35; }
+.command-history .error { color:#ff9fa9; }.command-history .success { color:#9ad3b0; }.command-history .input { color:#a4cced; }
+#command-form { flex:none; min-height:30px; gap:5px; padding:0 5px 0 1px; border-top:1px solid #444c59; background:#343c48; color:#e4e9f1; }
+#command-form button { display:grid; place-items:center; padding:2px; width:23px; height:26px; flex:none; color:#c6d0df; }
+#command-form .shell-icon { width:14px; height:14px; }
+#command-form .command-grip { width:14px; cursor:move; touch-action:none; color:#98a5b7; }
+#command-form .command-close { color:#a8b4c5; font-size:14px; }
+#command-form .command-close:hover { background:#9b3a43; color:#fff; }
+#command-history-toggle { font-size:14px; }
+#command-input { color:#edf3fc; padding:4px 0; font:12px Consolas,'Liberation Mono',monospace; }
+#command-input::placeholder { color:#9eabbc; }
+#prompt { font-size:11px; max-width:50%; }.command-glyph { color:#8bb7dc; font-size:18px; }
+.command-floating { position:absolute; z-index:16; min-width:0; min-height:0; border:1px solid #7c8b9e; box-shadow:0 6px 22px #0008; }
+.command-floating #command-form { padding-right:22px; }
+.command-floating .command-history { padding-bottom:5px; }
+.command-resize { position:absolute; right:0; bottom:0; display:grid; place-items:center; width:20px; height:24px; padding:0; cursor:nwse-resize; touch-action:none; color:#a8bed7; }
+.command-resize .shell-icon { width:16px; height:16px; }
+.command-dock-preview { position:absolute; height:80px; z-index:20; pointer-events:none; display:grid; place-items:center; color:#e8f5ff; font-size:12px; border:2px solid #81c7fa; background:#29679877; }
+#studio.command-history-hidden .command-floating { height:32px!important; }
+#studio.command-history-hidden .command-resize { display:none; }
+.suggestions { z-index:24; bottom:30px; left:22px; max-width:calc(100% - 28px); border-color:#697a90; background:#2c3542; }
+.layout-bar { flex:none; height:27px; min-height:27px; padding:0 3px; background:#242a33; border-top:1px solid #141920; border-bottom:1px solid #11151b; }
+#layout-list { display:grid; place-items:center; padding:3px 5px; flex:none; width:29px; color:#bccadd; }
+#layout-list .shell-icon { width:15px; height:15px; }
+#layouts { align-items:stretch; flex:0 1 auto; min-width:0; }
+#layouts button { padding:3px 13px; font-size:11px; color:#b8c4d5; border:0; border-right:1px solid #141920; border-bottom:2px solid transparent; }
+#layouts button[aria-selected=true] { background:#3c4857; color:#f0f7ff; border-top:0; border-bottom:2px solid #6dbaf0; }
+#selection-count { padding:6px 8px; font-size:10px; color:#9cabbf; overflow:hidden; text-overflow:ellipsis; }
+.statusbar { height:29px; min-height:29px; flex:none; padding:0 4px; background:#252b34; border-top:1px solid #464f5d; gap:2px; }
+.statusbar>button { height:25px; min-width:26px; display:flex; align-items:center; justify-content:center; padding:3px; flex:none; border:1px solid transparent; border-radius:0; }
+.statusbar>button:hover { background:#414e60; border-color:#71869e; }
+.statusbar .shell-icon { width:16px; height:16px; }
+#coordinates { min-width:180px; color:#b5c0d0; font:10px Consolas,'Liberation Mono',monospace; white-space:nowrap; }
+#revision { color:#8f9db1; padding-left:8px; }
+#space-mode { font-size:10px; color:#d5dfed; padding:3px 8px; border-inline:1px solid #45505e; margin-right:2px; }
+#drafting-modes { min-width:28px; flex:0 1 auto; overflow-x:auto; scrollbar-width:none; gap:1px; height:100%; }
+#drafting-modes .drafting-indicator { position:relative; display:flex; align-items:center; justify-content:center; height:25px; min-width:27px; flex:none; padding:3px 5px; gap:4px; border:1px solid transparent; background:#2b323d; color:#adb9ca; }
+#drafting-modes .drafting-indicator[aria-pressed=true] { background:#196593; color:#e9f7ff; border-color:#2e82b6; }
+#drafting-modes .drafting-indicator:hover { border-color:#91bddf; }
+#drafting-modes .drafting-label { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+#drafting-modes.status-labels .drafting-label { position:static; width:auto; height:auto; overflow:visible; clip-path:none; font-size:10px; }
+#command-line-toggle { padding:3px; width:26px; }
+#command-line-toggle[aria-pressed=true] { background:#324b65; }
+#backend { width:82px; flex:none; background:#292f39; border-color:#465160; padding:3px 2px; margin:0 2px; }
+#connection { min-width:33px; font-size:9px; border:0; padding:0 4px; }
+.statusbar>.pd-launcher { position:static; width:26px; margin:0; flex:none; }
+.statusbar>.pd-launcher>summary { display:grid; place-items:center; height:25px; padding:3px; border:1px solid transparent; border-radius:0; background:transparent; }
+.statusbar>.pd-launcher>summary:hover { background:#414e60; border-color:#71869e; }
+.shell-popup { position:fixed; z-index:60; width:max-content; min-width:230px; max-width:calc(100dvw - 8px); max-height:calc(100dvh - 8px); overflow:auto; padding:5px; color:#dce4ef; background:#303843; border:1px solid #687789; box-shadow:0 8px 26px #0009; }
+.shell-popup>h3 { font-size:11px; margin:4px 6px 7px; color:#9cacbf; font-weight:600; }
+.shell-popup hr { border:0; border-top:1px solid #526071; margin:5px 3px; }
+.shell-menu-item { display:flex; align-items:center; gap:8px; width:100%; min-height:28px; text-align:left; padding:4px 6px; border:1px solid transparent; border-radius:0; font-size:12px; }
+.shell-menu-item:hover:not(:disabled),.shell-menu-item:focus-visible { background:#40546c; border-color:#718ca8; }
+.shell-menu-item .icon { width:18px; height:18px; color:#c0d6ef; }
+.shell-menu-check { display:block; width:18px; text-align:center; color:#a3d6fb; flex:none; }
+.shell-menu-text { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.shell-menu-text>small { display:block; color:#98abc2; font-size:10px; margin-top:3px; }
+.shell-menu-item kbd { color:#9eb1c7; font:10px 'Segoe UI',sans-serif; margin-left:20px; }
+.shell-application { width:600px; padding:0; }
+.shell-menu-heading { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; background:#252d38; border-bottom:1px solid #4a586b; }
+.shell-menu-heading>strong { font-size:18px; font-weight:400; }
+.shell-menu-heading>.shell-menu-item { width:auto; font-size:11px; }
+.shell-application-body { display:grid; grid-template-columns:205px minmax(0,1fr); min-height:260px; }
+.shell-application-body>nav { padding:8px 5px; border-right:1px solid #4d5969; background:#2a333f; }
+.shell-application-body>nav .shell-menu-item { min-height:39px; }
+.shell-open-drawings { padding:12px 10px; min-width:0; }
+.shell-open-drawings>h3 { font-size:12px; color:#d1deed; margin:2px 5px 12px; }
+.shell-open-drawings .shell-menu-item { min-height:42px; }
+.shell-application>footer { display:flex; justify-content:flex-end; padding:5px; border-top:1px solid #526071; background:#252d38; }
+.shell-application>footer .shell-menu-item { width:auto; font-size:11px; }
+.shell-popup [aria-checked=true] { color:#ecf7ff; }
+.shell-popup button:focus-visible,.statusbar button:focus-visible,.document-bar button:focus-visible { outline:2px solid #9dd6ff; outline-offset:-2px; }
+@media(max-width:1250px) {
+  .titlebar .local-badge,.title-search kbd { display:none; }.title-search { min-width:0; }.title-search span { display:none; }
+  .titlebar .workspace-switch { max-width:200px; }#coordinates { min-width:150px; }
+}
+@media(max-width:850px) {
+  .titlebar #title { padding:0 5px; }.titlebar .workspace-switch { max-width:160px; font-size:10px; }
+  .document-bar .document-workspaces span { display:none; }#selection-count { display:none; }
+  #coordinates { min-width:110px; max-width:110px; overflow:hidden; }#revision { display:none; }
+}
+@media(max-width:600px) {
+  .titlebar .quick-access.command-quick-access { flex-basis:135px; max-width:35vw; }
+  .titlebar .workspace-switch { max-width:40px; width:40px; padding:3px; gap:3px; }#workspace-name { display:none; }
+  .titlebar #title { font-size:10px; min-width:35px; }.title-search { width:25px; padding:3px; }.titlebar .help-button { display:none; }
+  .document-bar { padding:0 2px; }.document-tab .name { max-width:135px; padding:4px; }
+  .document-bar>button { padding:3px; }.document-bar [data-action=palette-picker] span { display:none; }
+  .document-bar [data-action=palette],.document-bar [data-action=clean] { display:none; }
+  .statusbar { gap:1px; }#coordinates { min-width:0; width:70px; max-width:70px; font-size:9px; }#backend { width:60px; font-size:9px; margin:0; }
+  .statusbar>button { min-width:23px; width:23px; }.statusbar #space-mode { min-width:40px; width:40px; padding:3px; font-size:9px; }
+  #connection { display:none; }.statusbar>.pd-launcher { width:23px; }#drafting-modes { flex:1; }
+  #command-form { gap:3px; }#prompt { max-width:42%; }.command-history { padding-left:8px; font-size:10px; }
+  #layouts button { padding:3px 10px; }.layout-bar { padding:0; }
+  .shell-application-body { grid-template-columns:minmax(135px,43%) minmax(0,1fr); }.shell-menu-item kbd { display:none; }
+  .shell-menu-heading { padding:8px; }.shell-application>footer { flex-wrap:wrap; }.shell-menu-text { white-space:normal; overflow-wrap:anywhere; }
+}
+@media(prefers-reduced-motion:reduce) { .shell-popup,.command-floating { scroll-behavior:auto; } }
+
+/* Desktop chrome is optional and saved independently of drawing transactions. */
+.shell-menubar { display:flex; flex:none; min-width:0; height:24px; gap:1px; overflow-x:auto; scrollbar-width:none; padding:0 5px; background:#252a31; border-bottom:1px solid #14191f; }
+.shell-menubar>button { white-space:nowrap; padding:2px 10px; font-size:11px; flex:none; border-radius:0; }
+.shell-menubar>button:hover,.shell-menubar>button[aria-expanded=true] { background:#40546c; }
+.quick-access-below { display:flex; flex:none; min-width:0; height:29px; padding:1px 6px; border-bottom:1px solid #151a21; background:#303740; }
+.quick-access-below>.quick-access.command-quick-access { width:min(620px,100%); max-width:100%; flex:0 1 620px; }
+#studio.file-tabs-hidden .document-bar,#studio.layout-tabs-hidden .layout-bar,
+#studio.clean .shell-menubar,#studio.clean .quick-access-below { display:none; }
+#interface-lock[aria-pressed=true] { background:#745c27; border-color:#aa8947; }
+.command-floating { opacity:var(--command-idle-opacity,1); }
+.command-floating:is(:hover,:focus-within) { opacity:var(--command-active-opacity,1); }
+.command-floating[data-command-mode=anchor] { border-color:#8fadc9; }
+.command-line[data-command-dock=top]:not(.command-floating) #command-form { order:-1; border-top:0; border-bottom:1px solid #444c59; }
+.command-line[data-command-dock=top] .suggestions { bottom:auto; top:31px; }
+.command-resize-edge { position:absolute; z-index:3; touch-action:none; }
+.command-resize-n,.command-resize-s { left:10px; right:10px; height:6px; cursor:ns-resize; }
+.command-resize-n { top:0; }.command-resize-s { bottom:0; }
+.command-resize-w,.command-resize-e { top:10px; bottom:10px; width:6px; cursor:ew-resize; }
+.command-resize-w { left:0; }.command-resize-e { right:0; }
+.command-resize-nw,.command-resize-ne,.command-resize-sw { width:10px; height:10px; }
+.command-resize-nw { top:0; left:0; cursor:nwse-resize; }.command-resize-ne { top:0; right:0; cursor:nesw-resize; }.command-resize-sw { bottom:0; left:0; cursor:nesw-resize; }
+.command-resize-edge:focus-visible { background:#57a4d8; outline:1px solid #b9e3ff; }
+.command-line[data-layout-locked=true] :is(.command-grip,.command-resize,.command-resize-edge) { cursor:default; }
+.shell-opacity-row { display:grid; grid-template-columns:100px minmax(100px,1fr) 40px; align-items:center; gap:8px; padding:10px 6px; }
+.shell-opacity-row input { padding:0; width:100%; }.shell-opacity-row output { text-align:right; }
+.shell-text-window { width:min(1000px,calc(100vw - 24px)); height:min(700px,calc(100dvh - 24px)); }
+.shell-text-window[open] { display:flex; flex-direction:column; }.shell-text-window>header { flex:none; }
+.shell-text-window>pre { flex:1; min-height:0; margin:0; padding:14px; overflow:auto; white-space:pre-wrap; color:#cbd3df; background:#20272f; font:12px/1.6 Consolas,'Liberation Mono',monospace; }
+.shell-text-window>footer { display:flex; justify-content:space-between; align-items:center; flex:none; font-size:11px; }
+.shell-text-window>footer>.shell-menu-item { width:auto; }
+#studio.command-history-hidden .command-resize-edge { display:none; }
+#studio.ribbon-hidden .ribbon-host,#studio.ribbon-hidden .ribbon-floating { display:none!important; }

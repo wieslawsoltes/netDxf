@@ -15,6 +15,8 @@ from urllib.parse import urlsplit
 import ezdxf
 from cad_modify_browser import verify_modify
 from graph_analysis_browser import verify_graph_analysis
+from document_batch_browser_checks import verify_document_batches
+from workspace_autosave_browser_checks import EXPECTED_WORKSPACE_STORAGE_ERROR
 from cad_layer_states_browser import verify_layer_states
 from cad_layer_state_transfer_browser import verify_layer_state_transfer
 from cad_attributes_browser import verify_attributes
@@ -255,14 +257,15 @@ def verify(base, mount, browser, passed):
         # Let the debounced render and image decode complete before recording evidence.
         # Correctness is asserted independently by the native state and render checks.
         page.wait_for_timeout(1000)
-        # Only the transform fixture's individually verified negative-input row is
-        # acknowledged. Keep its error class and reject other errors or duplicates.
+        # Only the individually verified negative transform and storage-quota rows
+        # are acknowledged. Keep their error classes and reject any duplicates.
         reported = page.locator('#history .error').evaluate_all(
             "rows=>rows.map(row=>({text:row.textContent,expected:row.dataset.testExpectedError}))")
-        acknowledged = [item for item in reported
-                        if item.get('expected') == 'scale-reference-negative'
-                        and item['text'] == 'Specify a positive length or factor of at least 1e-9.']
-        assert len(acknowledged) <= 1 and len(reported) == len(acknowledged), reported
+        expected_errors = {'scale-reference-negative': 'Specify a positive length or factor of at least 1e-9.',
+                           'workspace-autosave-quota': EXPECTED_WORKSPACE_STORAGE_ERROR}
+        acknowledged = [item for item in reported if item.get('expected') in expected_errors
+                        and item['text'] == expected_errors[item['expected']]]
+        assert len({item['expected'] for item in acknowledged}) == len(acknowledged) and len(reported) == len(acknowledged), reported
         check('CAD user workflow has no unexpected reported operation errors')
         page.screenshot(path=str(OUTPUT / f'{tag}-cad.png'))
         page.set_viewport_size({'width': 900, 'height': 680})
@@ -270,6 +273,8 @@ def verify(base, mount, browser, passed):
         page.wait_for_timeout(500)
         page.screenshot(path=str(OUTPUT / f'{tag}-compact.png'))
         check('CAD has no uncaught JavaScript errors', not errors)
+        verify_document_batches(page, OUTPUT, state, command, wait_state, idle, check)
+        check('document batches have no uncaught JavaScript errors', not errors)
         page.close(); page = context.new_page(); page.set_default_timeout(30000)
         page.on('pageerror', lambda error: errors.append(str(error)))
         ready('diagnostics.html')
