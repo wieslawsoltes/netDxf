@@ -14,11 +14,14 @@ Mutable netDxf document <-> serialized adapter <-> immutable shadow snapshots
                   SkiaSharp / SVG / custom backend
 ```
 
+Use the [topic index](docs/README.md) for feature guides and
+[support boundaries](docs/Support.md) before relying on a particular workflow.
+
 ## Install packages
 
 The 32 libraries under `shadow/src` are independently consumable NuGet
 packages; the release catalog contains 33 packages including the DXF library. They share **`4.0.0-preview.1`** with `netDxf.netstandard` and target
-.NET 8. See the [package table and current NuGet badges](../README.md#nuget-packages)
+.NET 8. See the [package catalog and dependency table](../nuget/README.md#choose-a-package)
 and the [release setup](../doc/CI-RELEASE.md).
 
 ```sh
@@ -74,40 +77,12 @@ Studio shares one host-owned `SkiaTextLayoutEngine` between the render compiler 
 
 ## Projects and boundaries
 
-| Library package | Purpose | Direct dependencies |
-| --- | --- | --- |
-| `netDxf.Shadow` | Detached immutable values, object identities, snapshots and graph patches | BCL / framework only |
-| `netDxf.Shadow.NetDxf` | Capture and bidirectional synchronization with native netDxf | Shadow, netDxf |
-| `netDxf.Shadow.Geometry` | Analytic geometry, drawing styles and spatial indexing | Shadow |
-| `netDxf.Shadow.Rendering` | Render scenes, picking, text layout, paper-space composition and SVG | Geometry |
-| `netDxf.Shadow.Graph` | Drawing topology, traversal, connectivity and bounded analysis | Geometry |
-| `netDxf.Shadow.Editor` | Editing, selection, snapping, graph previews and immutable undo/redo | Rendering |
-| `netDxf.Shadow.Dimensions` | Dimension regeneration from immutable snapshots | NetDxf, Geometry |
-| `netDxf.Shadow.Drafting` | Reusable CAD drafting commands, block authoring and resource-editing plans | Editor |
-| `netDxf.Shadow.Health` | Bounded read-only geometry, ownership, resource and reference diagnostics | Shadow, Geometry |
-| `netDxf.Shadow.Workflows` | Versioned operation recording, JSON exchange and isolated deterministic replay contracts | BCL / framework only |
-| `netDxf.Shadow.Modules` | Discoverable CAD module contracts, capability registry and command validation | Drafting |
-| `netDxf.Shadow.Symbols` | Versioned symbol catalogs, native attributes, persistent ports and domain references | NetDxf, Drafting |
-| `netDxf.Shadow.Disciplines` | Shared symbol-module adapter, domain commands and bounded validation reporting | Modules, Symbols |
-| `netDxf.Shadow.Pid` | P&ID equipment and PCE symbols, process-pipe authoring and flow/data validation | Disciplines |
-| `netDxf.Shadow.Piping` | Schematic fittings, pipe routes, nominal sizes and specification continuity | Disciplines |
-| `netDxf.Shadow.Electrical` | Schematic devices, circuit-tagged wires and terminal/data validation | Disciplines |
-| `netDxf.Shadow.Rendering.Shx` | Managed SHX/SHP stroke fonts and shape/text projection | Rendering |
-| `netDxf.Shadow.Rendering.SkiaSharp` | SkiaSharp canvas/PNG output and HarfBuzz typography | Rendering + external SDK/runtime packages |
-| `netDxf.Shadow.Exchange.Dwg` | Explicit diagnostic DWG/DXF exchange using ACadSharp | netDxf + external SDK/runtime packages |
-| `netDxf.Shadow.Mcp` | Official MCP transport, DXF/shadow discovery and transactional drawing/graph tools | NetDxf, Editor, Graph + external SDK/runtime packages |
-| `netDxf.Shadow.Agents` | Official provider SDK adapters, persistent coding harness, workspaces and permissions | Mcp + external SDK/runtime packages |
-| `netDxf.Shadow.Agents.Evaluation` | Frozen drawing tasks, injected agent targets, independent graders and measured tool receipts | Agents |
-| `netDxf.Shadow.Samples` | Reusable DXF gallery and explicitly connected tank-and-pump P&ID factories | Rendering.Shx, Pid, netDxf |
-| `netDxf.Shadow.Studio.Core` | Host-independent CAD workspaces, drawing operations, modules, health, previews and workflows | Samples, Mcp, Exchange.Dwg, Drafting, Dimensions, Rendering.SkiaSharp, Rendering.Shx, Health, Modules, Workflows, Pid, Piping, Electrical |
-| `netDxf.Shadow.Studio.Agents` | Studio agent lifecycle, drawing context, browser tool bridge and companion integration | Agents, Studio.Core |
-| `netDxf.Shadow.Studio.Hosting` | ASP.NET Core HTTP endpoints for CAD workspaces and Studio agents | Studio.Core, Studio.Agents |
-| `netDxf.Shadow.Studio.WebAssembly` | Browser transport, JavaScript interop and in-process Studio runtime | Studio.Core, Studio.Agents + external SDK/runtime packages |
-| `netDxf.Shadow.Agents.Codex` | Codex app-server stdio, managed sign-in, sessions and approval callbacks | BCL / framework only |
-| `netDxf.Shadow.Agents.Acp` | Agent Client Protocol v1 transport and capability-aware sessions | BCL / framework only |
-| `netDxf.Shadow.Agents.Hosting` | Reusable ASP.NET Core companion, local agent bridges and MCP hosting | Agents, Mcp, Agents.Codex, Agents.Acp + external SDK/runtime packages |
-| `netDxf.Shadow.Markdown` | CommonMark/GFM DOM renderer with streaming presentation | BCL / framework only |
-| `netDxf.Shadow.Studio.Web` | Shared CAD ribbon, viewport, module panels and agent chat static assets | Markdown |
+The [package catalog](../nuget/README.md#choose-a-package) is the maintained
+list of library purposes and direct dependencies. The core snapshot model uses
+only the framework; the adapter owns mutable netDxf access, geometry provides
+neutral projections, and rendering supplies presentation contracts. Native
+renderers, DWG exchange and agent providers are optional consumers. Studio Core,
+agent integration and hosting share these libraries across native and browser apps.
 
 Executable samples (`netDxf.Shadow.Studio`, `netDxf.Shadow.Studio.Browser` and
 `netDxf.Shadow.AgentHost`), verification projects and benchmarks are source-only.
@@ -272,9 +247,16 @@ limits, character mapping and format references.
 
 ## Verification and remaining specialized coverage
 
-The existing consolidated build workflow runs Shadow verification on Linux, Windows and macOS. It does not add a third workflow or relax the existing release/conformance gates. The suites retain 18 original tests and the advanced snapshot, merge, source-save, appearance, typography, viewport, SHX and incremental-allocation cases. Complex-linetype verification adds source round trips, placement contracts, resource/style invalidation, bounded expansion, graph/snap isolation, editing and gallery save/reload. `artifacts/advanced-verification.json` records the exact source-bound test names, counts and outcomes for each run rather than relying on a manually maintained total. The same workflow also runs 16 real HTTP/SSE scenarios and 29 browser state/presentation-ordering tests. Seven optional in-memory Chromium DOM scenarios are provided separately; these are not live browser/server end-to-end tests. Appearance checks include native image pixels, fill-aware picking, rational boundaries, all gradient display plans, dash phases, typography bounds, cache invalidation, borrowed-resource lifetime, XML escaping, and the gallery's structural edit/save/reload path. CI uploads generated PNG/SVG/DXF artifacts.
+The [CI/release guide](../doc/CI-RELEASE.md) describes the cross-platform
+verification, HTTP/browser workflows and installed-package checks. Run reports
+record source-bound test names, counts and outcomes; CI retains generated
+PNG/SVG/DXF evidence. Historical totals are not a current coverage inventory.
 
-Capture coverage, editable-source coverage and render fidelity are separate contracts. Full specialized CAD parity remains unfinished: BIGFONT and vertical SHX paragraph layout, custom geometry and ACIS evaluation, complete paragraph/field typography, complete linetype end fitting and global/viewport scaling semantics, exact miter/gradient behavior and certified analytic island predicates, perspective viewport projection, complete viewport visual/layer overrides, complete dimension regeneration, arbitrary affine edit planners and specialized object factories. Metadata remains in the raw shadow graph even when a default consumer cannot interpret it.
+Capture coverage, editable-source coverage and render fidelity are separate
+contracts. The [support guide](docs/Support.md) records current boundaries and
+outstanding work, and the [topic index](docs/README.md) links the detailed APIs.
+Full AutoCAD parity is not established. Metadata remains in the raw shadow graph
+even when a default consumer cannot interpret it.
 
 Studio is local and single-user. It binds loopback, checks Host, requires a custom mutation header and does not enable CORS or arbitrary external resources. It is not a hardened untrusted-file service. Apply input/resource limits and an explicit trust policy before hosting it elsewhere.
 

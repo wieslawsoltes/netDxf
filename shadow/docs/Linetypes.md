@@ -2,7 +2,7 @@
 
 Select **Complex linetypes** in Studio's layout selector for native text, upright reversed lines, explicit SHX stroke text, numeric SHX shapes, a closed polyline and an arc. The existing inspector, selection, movement, history, retained views, branch workspaces, Skia and SVG backends remain the same. The synthetic SHX instructions are generated in source; no font files are bundled or implicitly loaded.
 
-See [Authored continuity and paper-space scaling](LinetypeContinuityAndScale.md) for per-entity 2D-polyline phase boundaries, unified PSLTSCALE compensation and the distinct-scale work limit.
+See [Authored continuity and paper-space scaling](LinetypePlacement.md#authored-continuity-and-paper-space-scaling) for per-entity 2D-polyline phase boundaries, unified PSLTSCALE compensation and the distinct-scale work limit.
 
 ## Source preservation is independent of resource availability
 
@@ -81,8 +81,16 @@ node --test shadow/tests/browser/state.test.mjs
 
 ## Fidelity boundaries
 
-This increment is not a claim of complete proprietary CAD appearance. The legacy periodic policy remains available; opt-in endpoint fitting is documented in [LinetypeFitting.md](LinetypeFitting.md). Remaining work includes complete character rotation pivot rules, complete PLINEGEN end fitting, MSLTSCALE/annotation-scale behavior and specialized viewport overrides, or full nonuniform-insert glyph fitting. Upright orientation is supported by detached planning and authored in-memory metadata; this change does not add a distinct upright encoding to the existing DXF writer. Complete BIGFONT/vertical layout and arbitrary nonplanar transport remain specialized provider work. The raw source snapshot retains data that a default consumer cannot interpret.
+Complete proprietary CAD appearance is not established. The legacy periodic
+policy remains available; [placement and scale](LinetypePlacement.md) documents
+opt-in endpoint fitting, definition-space glyph frames, rotation pivots, spatial
+transport and model annotation context. [Paper-space layer overrides](PaperViewports.md#immutable-viewport-layer-overrides)
+are explicit host profiles. These consumer policies do not decode arbitrary
+producer-specific records or certify every insert, text-fitting or viewport rule.
+Upright orientation is supported by detached planning and authored in-memory
+metadata; it has no distinct encoding in the existing DXF writer.
+[BIGFONT](BigFont.md) and [vertical SHX text](Shx.md#vertical-typography) require
+explicit resources and obey the documented typography limits. The raw source
+snapshot retains data that a default consumer cannot interpret.
 
 Reference specifications: Autodesk [LTYPE DXF group codes](https://help.autodesk.com/cloudhelp/2018/ENU/AutoCAD-DXF/files/GUID-F57A316C-94A2-416C-8280-191E34B182AC.htm), [text in custom linetypes](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Customization/files/GUID-FEDCE7EB-4919-43AE-A54E-F3A293DD60CA.htm), and [shapes in custom linetypes](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Customization/files/GUID-AF0613E6-5C8B-47F0-800C-8B2524BF2015.htm). The existing netDxf reader/writer's degree-valued rotation representation is preserved; this increment does not change the source angle codec.
-
-For endpoint fitting and the Studio Pattern ends control, see [LinetypeFitting.md](LinetypeFitting.md).

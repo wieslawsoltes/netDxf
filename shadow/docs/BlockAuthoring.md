@@ -447,4 +447,4 @@ inconsistent ownership and exceeded budgets are refused. Native embedded MTEXT
 currently rejects nonuniform scaling, shear and reflection; a reference requiring
 one of those transformations rejects the entire proposal before source changes.
 Definition-attribute authoring, annotation contexts and complete dynamic/parametric
-block parity remain open in the [parity audit](ParityAudit.md).
+block parity remain open in the [parity audit](Support.md).

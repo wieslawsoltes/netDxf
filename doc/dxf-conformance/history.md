@@ -30,3 +30,7 @@ of the relevant commit with its recorded dependencies and inputs. The generator
 at `8ee6418` expects the historical ledger and its local evidence files. Recreating
 that report does not qualify the current branch. Current execution and package
 evidence comes from the [verification workflow](verification.md).
+
+The standalone [fifth mixed-module qualification report](https://github.com/wieslawsoltes/netDxf/blob/2080d937a1caf8fb8f49cee6b04f88f12f17a0be/doc/FifthMixedModulesQualification.md)
+is also archived. Its executable conformance cases and independent verifier remain
+in the current tree; the dated receipt is not a current test result.
