@@ -77,7 +77,7 @@ error path. It checks retained entities only; dedicated legacy sequence readers
 remain unchanged and valid POLYLINE/VERTEX and INSERT/ATTRIB/SEQEND sequences are
 tested across all six typed profiles.
 
-A separate [independent review receipt](receipts/section-manager-independent/receipt.json)
+A separate [independent review receipt](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts/section-manager-independent/receipt.json)
 preserves its frozen 52-case harness and before/after results. The initial manager
 draft passed 46 cases; the six failures covered root-name casing, missing source
 identity and duplicate source identity in both transports. The corrected Debug

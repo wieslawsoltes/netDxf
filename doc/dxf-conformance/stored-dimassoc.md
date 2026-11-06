@@ -104,7 +104,7 @@ same harness produces 24 passes and 48 failures against its frozen earlier
 library, reproducing four defects across six profiles and two output settings:
 opaque owner removal, opaque exposed geometry removal, later-private-subclass
 field interpretation and private-point-class field interpretation. The
-[independent receipt](receipts/dimassoc-independent/receipt.json) pins the two
+[independent receipt](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts/dimassoc-independent/receipt.json) pins the two
 libraries, the source snapshot and both detailed result lists. The captured
 `Program.cs.txt` is historical review source; its `root` variable identifies the
 review workspace's extracted fixture directory.

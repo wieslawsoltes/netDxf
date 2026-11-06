@@ -50,7 +50,7 @@ These are concrete existing writer rules, not inferred DXF restrictions. For exa
 
 The checked-in [qualification receipt](version-compatibility-qualification.json) records 638 passing, unique conformance cases in each of Debug and Release. The matrix includes 396 authored feature/target/transport comparisons, 132 stored-family comparisons, 16 further upgrade cases, 36 explicit-null SUN cases, 12 ordinary PolygonMesh record cases, 12 physical omission checks, 12 preserved MTEXT defined-height controls, 12 opaque-packet exclusion controls, and ten traversal/snapshot/purity checks. Debug and Release results are byte-identical.
 
-The initial `tools/verify_version_compatibility.py` gate independently decodes twelve omission output files per configuration and rejects ten deliberately corrupted physical packets. A separate [independent review](receipts/version-compatibility-independent/README.md) passes 518 cases in each configuration, checks every documented code and exact property path, and preserves its harnesses, result records and actual-writer evidence. Fixture-helper reuse is explicitly identified in that review.
+The initial `tools/verify_version_compatibility.py` gate independently decodes twelve omission output files per configuration and rejects ten deliberately corrupted physical packets. A separate [independent review](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts/version-compatibility-independent/README.md) passes 518 cases in each configuration, checks every documented code and exact property path, and preserves its harnesses, result records and actual-writer evidence. Fixture-helper reuse is explicitly identified in that review.
 
 All five supported library target frameworks build in Release. This isolated qualification predates the PR92 HATCH XML-parameter documentation cleanup and records its exact existing warning breakdown in the receipt; the diagnostic implementation adds no warnings. No native CAD acceptance or exhaustive validity conclusion follows from these results.
 
@@ -60,7 +60,7 @@ PR94 adds `STORED_SOURCE_PROFILE` diagnostics for each registered
 `PolyfaceMeshRecord`, with its actual live source identity and captured physical
 handle. Newly authored meshes have no retained child records and acquire no
 source-profile restriction from this rule. Other writer restrictions still apply.
-The [extension receipt](receipts/polyface-version-compatibility/qualification.json)
+The [extension receipt](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts/polyface-version-compatibility/qualification.json)
 records 24 new cases and all 662 report cases passing in both configurations. These
 compare diagnostics with actual accepted and rejected saves across six targets and
 both transports, including zero-byte rejection and unchanged registrations.

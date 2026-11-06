@@ -10,8 +10,7 @@ on:
       - '**/Directory.Packages.props'
       - '**/global.json'
       - '**/[Nn][Uu][Gg][Ee][Tt].[Cc]onfig'
-      - 'tools/ci/shadow_studio*'
-      - 'tests/shadow_pages/**'
+      - 'tools/ci/shadow_studio_browser.py'
       - '.github/workflows/shadow-studio-pages.yml'
   pull_request:
     branches: [netstandard]
@@ -22,8 +21,7 @@ on:
       - '**/Directory.Packages.props'
       - '**/global.json'
       - '**/[Nn][Uu][Gg][Ee][Tt].[Cc]onfig'
-      - 'tools/ci/shadow_studio*'
-      - 'tests/shadow_pages/**'
+      - 'tools/ci/shadow_studio_browser.py'
       - '.github/workflows/shadow-studio-pages.yml'
   workflow_dispatch:
 

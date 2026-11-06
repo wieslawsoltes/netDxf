@@ -125,6 +125,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Validate release tooling
+        if: matrix.configuration == 'Release'
         run: python -m unittest discover -s tests/ci_pipeline -p 'test_*.py'
       - name: Restore and build all five library targets
         shell: bash

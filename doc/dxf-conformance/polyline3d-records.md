@@ -98,7 +98,7 @@ ezdxf's object projection deduplicates reactor handles during input.
 
 Implementation commit `e424679` passes all 382 cases in net8.0 Debug and Release.
 Both independent runs pass all 90 outputs and all six corruption controls. The
-[qualification receipt](receipts/polyline3d-records/qualification.json) pins the
+[qualification receipt](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts/polyline3d-records/qualification.json) pins the
 source hashes, complete result lists and the unchanged independent reviewer
 probe. That probe reproduces eight ASCII/binary failures before the final fixes:
 parent XData captured an unrelated destination LINE during clone, a header

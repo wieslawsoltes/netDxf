@@ -1,6 +1,6 @@
 # Raw reference traversal and simultaneous handle remapping
 
-> Merged as [PR #72](https://github.com/wieslawsoltes/netDxf/pull/72). Final-head [CI 34863629586](https://github.com/wieslawsoltes/netDxf/actions/runs/34863629586) passed Linux/Windows Debug/Release, actual netstandard2.0 builds, ledger checks and the Linux source audit; the retained Linux Debug report has **16,315 passed / zero failed**. The evidence section below retains the original standalone local experiment, not the later accumulated suite count. See the [merged execution checkpoint](checkpoint-merged-2026-09-14.md) for source hashes and qualification limits.
+> Merged as [PR #72](https://github.com/wieslawsoltes/netDxf/pull/72). Final-head [CI 34863629586](https://github.com/wieslawsoltes/netDxf/actions/runs/34863629586) passed Linux/Windows Debug/Release, actual netstandard2.0 builds, ledger checks and the Linux source audit; the retained Linux Debug report has **16,315 passed / zero failed**. The evidence section below retains the original standalone local experiment, not the later accumulated suite count. See the [merged execution checkpoint](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/checkpoint-merged-2026-09-14.md) for source hashes and qualification limits.
 
 This feature depends on `DxfRawHandleIndex`, not on typed-model handle allocation.
 Both APIs work on one immutable raw snapshot and never rewrite it in place.

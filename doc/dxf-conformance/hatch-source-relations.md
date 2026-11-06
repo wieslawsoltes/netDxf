@@ -7,7 +7,7 @@ paths or hatches are added, removed, cloned or explicitly unlinked. The focused 
 Both independent gates passed all 48 mandatory outputs with zero audit errors
 or repairs. The isolated source and test commit is `f6f2c1a4b6c4d7f2fc70f73e317e888c36138e1c`;
 the detailed records are in
-[`qualification.json`](receipts/hatch-source-relations/qualification.json).
+[`qualification.json`](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts/hatch-source-relations/qualification.json).
 
 Autodesk defines HATCH group `71` as the associativity flag, with `0` for
 non-associative and `1` for associative. Group `91` counts its boundary paths.
@@ -177,7 +177,7 @@ path-alias and loaded-backlink case. Full adjacent-suite qualification belongs
 to the coordinated integration branch; the isolated duplicate run was stopped
 when that integration run began. The source evidence and completed focused
 qualification are recorded in
-[`receipts/hatch-source-relations/source-evidence.json`](receipts/hatch-source-relations/source-evidence.json).
+[`receipts/hatch-source-relations/source-evidence.json`](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts/hatch-source-relations/source-evidence.json).
 
 The bounded claim is stored source-reference closure and the specified lifecycle
 behavior. Native CAD execution, graphical rendering, automatic associative

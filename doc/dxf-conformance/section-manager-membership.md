@@ -76,7 +76,7 @@ uncaught recursive edits, caller-caught recursive edits and changes to the root
 or candidate target during enumeration have separate coverage. The
 [qualification receipt](section-manager-membership-qualification.json) records
 the frozen source, libraries, test results, native input and all new output hashes.
-An additional [independent runtime review](receipts/section-manager-membership-independent/README.md)
+An additional [independent runtime review](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts/section-manager-membership-independent/README.md)
 passes 44 cases and audits 12 output drawings in each configuration. Its unchanged
 harness, results, separate reviewed assembly hashes and exact compressed outputs
 are preserved with the review receipt.
