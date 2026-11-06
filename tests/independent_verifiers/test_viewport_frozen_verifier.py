@@ -45,15 +45,6 @@ class ViewportFrozenVerifierTests(unittest.TestCase):
         self.assertIn("36 drawings", output.getvalue())
         self.assertIn("326 corruption/inventory controls rejected", output.getvalue())
 
-    def test_all_raw_packets_and_corruption_controls(self):
-        for profile in verifier.PROFILES:
-            for transport in ("text", "binary"):
-                for stage in verifier.STAGES:
-                    with self.subTest(profile=profile, transport=transport, stage=stage):
-                        tags = verifier.load_tags(self.directory / f"viewport-frozen-{profile}-{transport}-{stage}.dxf")
-                        verifier.check_tags(tags, profile, stage)
-                        self.assertEqual(9, verifier.controls(tags, profile, stage))
-
     def test_unselected_packet_change(self):
         tags = verifier.load_tags(self.directory / "viewport-frozen-AutoCad2018-text-output.dxf")
         original = verifier.check_tags(tags, "AutoCad2018", "output")
