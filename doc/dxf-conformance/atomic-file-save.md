@@ -1,6 +1,6 @@
 # Explicit atomic file saves
 
-> Merged as [PR #70](https://github.com/wieslawsoltes/netDxf/pull/70). Final-head [CI 34861184112](https://github.com/wieslawsoltes/netDxf/actions/runs/34861184112) passed Linux/Windows Debug/Release, actual netstandard2.0 builds, ledger checks and the Linux source audit; the retained Linux Debug report has **16,075 passed / zero failed**. The evidence section below retains the original standalone local experiment, not the later accumulated suite count. See the [merged execution checkpoint](checkpoint-merged-2026-09-14.md) for source hashes and qualification limits.
+> Merged as [PR #70](https://github.com/wieslawsoltes/netDxf/pull/70). Final-head [CI 34861184112](https://github.com/wieslawsoltes/netDxf/actions/runs/34861184112) passed Linux/Windows Debug/Release, actual netstandard2.0 builds, ledger checks and the Linux source audit; the retained Linux Debug report has **16,075 passed / zero failed**. The evidence section below retains the original standalone local experiment, not the later accumulated suite count. See the [merged execution checkpoint](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/checkpoint-merged-2026-09-14.md) for source hashes and qualification limits.
 
 ## API and contract
 

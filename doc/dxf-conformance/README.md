@@ -25,6 +25,13 @@ feature. Later feature notes and PR receipts retain their own source identities,
 fixtures, execution scope and limitations. Do not promote broad support rows
 using only a larger suite count or a newer commit label.
 
+Historical review output and one-off probe projects are available in
+[Git history](https://github.com/wieslawsoltes/netDxf/tree/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts).
+Paths in old qualification JSON and command transcripts refer to that snapshot;
+use a checkout of that commit to reproduce those historical probes. Only receipt
+groups referenced by the coverage ledger remain in the current source tree.
+New generated results belong in the ignored `artifacts/` directory and CI artifacts.
+
 Feature documents may also record earlier implementations. Read their source
 pins and subsequent PR corrections before treating a historical limitation or
 normalization policy as current. The major-gap report separates the active implementation priorities from its

@@ -88,7 +88,7 @@ Both result lists are byte-identical. Each configuration passes the new
 and six actual-output corruption controls respectively. All output audits
 report zero errors or repairs. The separate independent runtime review passes
 60 cases and audits 12 outputs per configuration against the exact same library
-hashes. The [qualification receipt](receipts/polyline3d-topology/qualification.json)
+hashes. The [qualification receipt](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts/polyline3d-topology/qualification.json)
 pins source hashes, complete results, output manifests, gate logs and the
 reproducible independent probe. These focused results do not include the
 repository's complete test suite or platform CI.

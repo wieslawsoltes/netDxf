@@ -76,7 +76,7 @@ edited field and untouched row/style/map values in the actual parsed output.
 These tests qualify stored packet edits, not native AutoCAD execution, rendered
 formatting, table evaluation, or complete TABLESTYLE/CELLSTYLEMAP editing.
 
-The [source-pinned qualification receipt](receipts/table-style-editing/qualification.json)
+The [source-pinned qualification receipt](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts/table-style-editing/qualification.json)
 records the earlier PR95 scalar-only Debug and Release executions: 154 cases in each configuration,
 including 61 new editing cases; fourteen edited native pairs with 322 corruption
 controls; and the unchanged-style gate's 70 outputs with 118 controls. It includes

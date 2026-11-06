@@ -1,1 +1,0 @@
-Target-version gate: 12 omission and 14 Polyface ASCII/binary outputs; 80 physical-packet corruptions rejected.

@@ -61,7 +61,7 @@ python tools/verify_polyface_grammar.py /path/to/conformance-artifacts
 The [qualification receipt](polyface-grammar-qualification.json) pins the tested
 source and libraries, output hashes and test results. Focused Debug and Release
 runs each pass 471 cases: 345 POLYFACE cases and 126 existing mesh-version
-controls. The separate [independent review](receipts/polyface-independent/review-report.md)
+controls. The separate [independent review](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts/polyface-independent/review-report.md)
 passes 193 grammar/clone cases and 86 context/magnitude cases in each configuration.
 The same frozen probes exposed 143 and 73 failures in their respective completed
 original-code baselines; the supplemental original Debug process abort is also

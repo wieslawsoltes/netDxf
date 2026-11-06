@@ -1,6 +1,6 @@
 # Internal POLYLINE records: evidence and first stored slice
 
-This assessment identifies and reproduces a VERTEX identity loss. It records the original unqualified implementation checkpoint. The completed [ordinary 3D child-record module](polyline3d-records.md) and [focused qualification receipt](receipts/polyline3d-records/qualification.json) now supersede that checkpoint's implementation status; DIMASSOC evaluation remains separate.
+This assessment identifies and reproduces a VERTEX identity loss. It records the original unqualified implementation checkpoint. The completed [ordinary 3D child-record module](polyline3d-records.md) and [focused qualification receipt](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts/polyline3d-records/qualification.json) now supersede that checkpoint's implementation status; DIMASSOC evaluation remains separate.
 
 ## Primary schema
 

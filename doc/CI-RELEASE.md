@@ -86,8 +86,10 @@ the corresponding consolidated checks rather than disable test requirements.
 ## Build and qualification
 
 All five existing targets (`netstandard2.0`, `net471`, `net48`, `net6.0`, `net8.0`)
-compile on Linux and Windows in Debug and Release. The complete DXF conformance
-suite executes on .NET 8 in those four configurations, including every independent
+compile on Linux and Windows in Debug and Release. Python release-tooling tests
+run once per OS, in the Release build job, since they do not depend on the .NET
+configuration. The complete DXF conformance suite executes on .NET 8 in those
+four configurations, including every independent
 reader and audit stage. Its filter remains explicitly empty. Framework compilation
 on Linux does not claim execution there.
 
