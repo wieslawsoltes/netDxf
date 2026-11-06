@@ -18,7 +18,7 @@ class RepositoryHygieneTests(unittest.TestCase):
         )
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
         self.assertIn('two core workflows plus the isolated Pages workflow', result.stdout)
-        self.assertIn('11 negative controls rejected', result.stdout)
+        self.assertIn('12 negative controls rejected', result.stdout)
 
 
 if __name__ == '__main__':

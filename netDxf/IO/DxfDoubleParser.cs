@@ -11,7 +11,7 @@ namespace netDxf.IO
         // Every binary64 midpoint has fewer than 1129 significant decimal digits:
         // it is m*2^e, m < 2^54 and e >= -1075. Retaining 1152 digits therefore
         // reaches every rounding boundary. A nonzero discarded tail only breaks
-        // an exact midpoint tie. See doc/dxf-conformance/portable-double-parsing.md.
+        // an exact midpoint tie. See doc/dxf-conformance/io.md#numeric-values.
         private const int RetainedDigits = 1152;
         private const long ExponentLimit = 10000000000L;
 

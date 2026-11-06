@@ -18,7 +18,7 @@ these are independent stored integers. Common entity proxy graphics total188byte
 `tools/verify_section.py` verifies the entity/settings bodies and related graph
 in complete-file exports and distinguishes native audits from the explicit
 in-memory audit adapter used solely for documented SECTION spelling outputs.
-See `doc/dxf-conformance/section.md` for exact qualified scope.
+See [historical contract](https://github.com/wieslawsoltes/netDxf/blob/8ee6418acea8fb0c91777aeaa68db073317e2421/doc/dxf-conformance/section.md) for exact qualified scope.
 `tools/verify_section_manager.py` separately qualifies the exact native manager
 packet and its registered section target; its schema cases for other profiles
-are explicitly synthetic. See `doc/dxf-conformance/section-manager.md`.
+are explicitly synthetic. See [historical contract](https://github.com/wieslawsoltes/netDxf/blob/8ee6418acea8fb0c91777aeaa68db073317e2421/doc/dxf-conformance/section-manager.md).

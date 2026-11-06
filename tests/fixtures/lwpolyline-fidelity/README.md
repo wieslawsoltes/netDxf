@@ -8,4 +8,4 @@ The generator documents the production recipe. DXF document metadata includes ge
 
 The normal C# suite loads all six sources and emits both transports. `tools/verify_lwpolyline_fidelity.py` checks source hashes, raw field presence and values, independent geometry, and audit results. Signed zero is treated as numeric zero; byte-for-byte DXF formatting is not claimed.
 
-See `doc/dxf-conformance/lwpolyline-fidelity.md` for primary references, effective-width precedence qualification, public API, and version restrictions.
+See [historical contract](https://github.com/wieslawsoltes/netDxf/blob/8ee6418acea8fb0c91777aeaa68db073317e2421/doc/dxf-conformance/lwpolyline-fidelity.md) for primary references, effective-width precedence qualification, public API, and version restrictions.

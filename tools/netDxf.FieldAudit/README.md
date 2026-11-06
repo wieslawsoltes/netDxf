@@ -11,4 +11,4 @@ This is **syntax evidence, not conformance measurement**. A code can be consumed
 
 The built-in self-test covers unrelated nested switches, comments and strings containing code-like text, dynamic code expressions, version gates, dispatch, helper extraction, property visibility and hashes. The pinned Roslyn 4.11 dependency is confined to this development tool; no production library dependency or target framework changes.
 
-The Linux Debug conformance job regenerates and retains the inventory with its exact source archive. The published human-reviewed version matrix is in `doc/dxf-conformance/version-feature-matrix.md`.
+The Linux Debug conformance job regenerates and retains the inventory with its exact source archive. The former human-reviewed version matrix is a [historical snapshot](https://github.com/wieslawsoltes/netDxf/blob/8ee6418acea8fb0c91777aeaa68db073317e2421/doc/dxf-conformance/version-feature-matrix.md), not live coverage of this inventory.
