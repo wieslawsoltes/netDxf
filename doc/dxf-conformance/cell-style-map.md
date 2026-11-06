@@ -121,8 +121,8 @@ and rejects 212 actual output corruptions. Every output is independently opened
 and audited with ezdxf. The qualification receipt records measured final results.
 The separately frozen independent review passed 58 runtime cases and audited
 26 outputs with no errors or repairs. The unchanged
-[review receipt](cell-style-map-review/summary.json) and
-[reproducible harness](../../tools/cell_style_map_review/README.md) are retained.
+[review receipt](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/cell-style-map-review/summary.json) and
+[reproducible harness](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/tools/cell_style_map_review/README.md) are archived in Git history.
 
 Native AutoCAD open/AUDIT/save/reopen remains unexecuted. The later
 [nested formatting API](cell-style-format-editing.md) provides explicit
