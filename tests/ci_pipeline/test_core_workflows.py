@@ -139,7 +139,7 @@ class CoreWorkflowTests(unittest.TestCase):
         self.assertIn('needs: [plan, build]', job(self.release, 'github-release'))
         release_build = job(self.release, 'build')
         self.assertIn('uses: ./.github/workflows/ci-build.yml', release_build)
-        self.assertIn('needs: plan', release_build)
+        self.assertIn('    needs: plan\n', release_build)
         for text in (self.build, self.release, self.pages):
             jobs = dict(re.findall(r'^  ([\w-]+):\n(.*?)(?=^  [\w-]+:\n|\Z)', text.split('jobs:\n', 1)[1], re.M | re.S))
             dependencies = {}
