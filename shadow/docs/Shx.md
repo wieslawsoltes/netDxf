@@ -23,7 +23,8 @@ stroke-aware picking are shared by SkiaSharp and SVG.
 
 ## Supported format and execution contracts
 
-The binary reader supports SHAPES 1.0/1.1 and UNIFONT 1.0. The textual reader accepts
+The binary reader supports SHAPES 1.0/1.1 and UNIFONT 1.0;
+[BIGFONT](BigFont.md) has a separate format and mapping contract. The textual reader accepts
 Autodesk SHP (not GIS shapefiles), wrapped comma/parenthesis lists, comments, decimal
 and leading-zero hexadecimal numbers, signed octant operands and font metadata.
 Symbol names are case-sensitive. Resource aliases are case-insensitive. Duplicate
@@ -119,13 +120,13 @@ Rendered artifacts are `shx-gallery.png` and `shx-gallery.svg` (never font files
 
 ## Remaining specialized work
 
-BIGFONT decoding and packed multibyte character mapping, legacy locale/codepage
-mapping beyond the reserved symbols, vertical paragraph flow, complete paragraph
-bidi/shaping and fields, arbitrary cumulative glyph state, exact TEXT fit/aligned
-semantics, mixed native/SHX runs, exact miter behavior, all complex text/shape
-linetypes and proprietary-renderer certification remain outside this increment.
-The VM's vertical conditional instruction is implemented independently of the
-unimplemented vertical paragraph layout. Unregistered SHX text falls back through
+[BIGFONT decoding and explicit character maps](BigFont.md) and
+[vertical paragraph flow](#vertical-typography) are supported under their separate
+resource contracts. Complete paragraph bidi/shaping and fields, arbitrary
+cumulative glyph state, exact TEXT fit/aligned semantics, mixed native/SHX runs,
+exact miter behavior and proprietary-renderer certification remain specialized
+work. [Complex linetypes](Linetypes.md) document their own placement limits.
+Unregistered SHX text falls back through
 the standard projector with a substitution diagnostic; an unresolved named SHAPE
 reports an error rather than drawing a fabricated shape.
 
@@ -142,3 +143,17 @@ https://help.autodesk.com/view/ACD/2026/ENU/?caas=caas/documentation/CIV3D/2014/
 
 Binary directory layouts were cross-checked against ezdxf's primary implementation
 under MIT terms. See `src/netDxf.Shadow.Rendering.Shx/ThirdPartyNotices.md`.
+
+## Vertical typography
+
+Styles declaring `IsVertical` now select the font's authored vertical programs. Opcode 14 is executed by the existing bounded glyph VM with `vertical: true`; horizontal and vertical glyphs have independent cache keys. This is not a rotation of a horizontal text string. The glyph starts at its authored top-center origin and returns to the column baseline before advancing downwards.
+
+The shared paragraph compositor accepts vertical-flow metrics through an additive overload. Width and obliquing are applied to glyph cross-flow geometry rather than multiplying vertical advance a second time. Inline styles, colors, tracking, stacks, rules, paragraph breaks, indents, spacing and tabs retain the shared bounded composition pipeline. Paragraph flow runs downwards and columns progress leftwards; the supplied rectangle-width limit is interpreted as maximum advance along a vertical column. Attachment names are mapped to flow/cross-flow coordinates. This explicit consumer convention is not certification of every proprietary vertical-MTEXT layout rule.
+
+The provider emits neutral presentation-only stroke groups and regions; both Skia and SVG consume identical geometry, and topology remains unaffected. Entity OCS, rotation, width and oblique axes are applied after local layout. Vertical linetype text uses the same resource provider. Live catalog replacement invalidates resource-dependent projections; pinned font sets preserve prior output.
+
+A selected font must declare vertical support and have supported Unicode/legacy metrics. Missing glyphs produce explicit boxes and diagnostics. Upward or sideways final glyph advances and unbalanced cumulative vector scaling are refused instead of restarting state incorrectly at formatting boundaries. Such unconventional stateful fonts require a specialized provider. BIGFONT mapping is documented in [the companion guide](BigFont.md); this feature does not guess code pages or silently substitute a horizontal font.
+
+Character, measurement-work, glyph-instruction and curve quotas remain enforced. A failed projection does not publish partial geometry. No source filename grants filesystem access and no font files are bundled. The test definitions are original in-memory instruction examples.
+
+Reference: Autodesk Special Codes Reference, https://help.autodesk.com/cloudhelp/2022/ENU/AutoCAD-Customization/files/GUID-06832147-16BE-4A66-A6D0-3ADF98DC8228.htm .
