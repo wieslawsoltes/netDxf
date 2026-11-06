@@ -92,7 +92,7 @@ var loaded = DxfDocument.Load("example.dxf")
 
 Check operation results and the relevant validation contract. Some malformed-input
 paths have different Debug exception and Release failure-return behavior. For
-replacement of an existing file, consult the [atomic-save contract](doc/dxf-conformance/atomic-file-save.md)
+replacement of an existing file, consult the [atomic-save contract](doc/dxf-conformance/io.md#saving-files)
 rather than assuming every save overload is transactional.
 
 ## Support boundaries
@@ -151,13 +151,14 @@ For direct conformance and independent-output execution:
 ```sh
 dotnet run --project tests/netDxf.Conformance -c Release
 python tools/run_independent_verifiers.py artifacts/conformance
-python tools/generate_dxf_coverage.py --check
+python -m unittest discover -s tests/independent_verifiers -p 'test_*.py'
 ```
 
-The source-pinned [coverage ledger](doc/dxf-conformance/coverage.json) and
-[generated comparison](doc/dxf-conformance/version-feature-matrix.md) describe
-their recorded historical snapshot; later PRs retain separate implementation
-and qualification evidence. Test totals and row counts are not completeness percentages.
+The [DXF guides](doc/dxf-conformance/README.md) explain compatibility, IO,
+editing, geometry and FIELD/TABLE behavior. Historical audits and per-feature
+review notes are available through the [history guide](doc/dxf-conformance/history.md).
+Use current CI reports for execution results; historical test totals do not
+measure feature completeness.
 
 ## Repository guide
 
@@ -169,9 +170,8 @@ and qualification evidence. Test totals and row counts are not completeness perc
 | [Coding agents and MCP](shadow/docs/coding-agents.md) | Browser coding workspace, official .NET provider SDKs, ChatGPT sign-in, native project companion and generic DXF/Shadow/Studio tools |
 | [TestDxfDocument](TestDxfDocument) | Sample/test application |
 | [Conformance tests](tests/netDxf.Conformance) | Versioned API and drawing regressions |
-| [Tools](tools) | Independent verifiers, coverage generation and source tooling |
-| [Major-gap report](doc/dxf-conformance/remaining-major-gaps.md) | Prioritized remaining capabilities and acceptance criteria |
-| [Contract index](doc/dxf-conformance/README.md) | Feature-specific behavior, evidence and limits |
+| [Tools](tools) | Independent verifiers and source tooling |
+| [DXF guides](doc/dxf-conformance/README.md) | Compatibility, IO, editing, geometry, FIELD/TABLE and verification |
 | [CI and release](doc/CI-RELEASE.md) | Package qualification, NuGet trusted-publishing setup and release instructions |
 
 ## Contribution and release policy

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import ast
-import json
 from pathlib import Path
 import re
 import subprocess
@@ -19,16 +18,9 @@ WORKFLOWS = {
     '.github/workflows/release.yml',
     '.github/workflows/shadow-studio-pages.yml',
 }
-FRONT_DOORS = {'README.md': 32_768, 'doc/dxf-conformance/README.md': 24_576}
-REPORT = 'doc/dxf-conformance/remaining-major-gaps.md'
-RETIRED = {
-    'doc/dxf-conformance/checkpoint-2026-09-13.md',
-    'doc/dxf-conformance/checkpoint-hatch-2026-09-13.md',
-}
-# PR #58's checkpoint is NOT retired: the pinned ledger and HATCH audit need it.
-REQUIRED_CHECKPOINT = 'doc/dxf-conformance/checkpoint-2026-09-14.md'
-# Maintained entry points use ordinary inline links. Reference-style definitions
-# are also inspected when looking for live retired-file references.
+GUIDES = 'doc/dxf-conformance/'
+ENTRY_POINTS = {'README.md': 32_768, 'doc/CI-RELEASE.md': 32_768}
+# Check ordinary inline links and reference-style definitions.
 INLINE = re.compile(r'!?\[[^\]\n]*\]\(([^)\n]+)\)')
 DEFINITION = re.compile(r'^\s{0,3}\[[^\]\n]+\]:\s*(\S+)', re.MULTILINE)
 
@@ -87,7 +79,6 @@ def check_links(root: Path, document: str, text: str) -> int:
         if target is None:
             continue
         require((root / target).exists(), f'Missing inline link target in {document}: {destination}')
-        require(target not in RETIRED, f'Live retired-checkpoint link in {document}: {destination}')
         count += 1
     return count
 
@@ -107,41 +98,17 @@ def check_pipeline_commands(text: str, choices: set[str]) -> None:
         require(command in choices or command == '--help', f'Unknown documented pipeline command: {command}')
 
 
-def strings(value):
-    if isinstance(value, str):
-        yield value
-    elif isinstance(value, list):
-        for item in value:
-            yield from strings(item)
-    elif isinstance(value, dict):
-        for key, item in value.items():
-            yield from strings(key)
-            yield from strings(item)
-
-
-def check_retired_references(root: Path, paths: list[str]) -> None:
-    names = {Path(path).name for path in RETIRED}
-    problems = []
+def check_guide_references(root: Path, paths: list[str]) -> None:
+    """Check incoming links from the rest of the repository as guides evolve."""
     for path in paths:
         if not path.lower().endswith('.md'):
             continue
         text = (root / path).read_text(encoding='utf-8-sig')
         for destination in destinations(text):
-            url = urlsplit(destination)
-            if url.scheme or url.netloc or Path(unquote(url.path)).name not in names:
-                continue
-            if local_target(root, path, destination) in RETIRED:
-                problems.append(f'{path}: {destination}')
-    # Historical evidence files are deliberately not rewritten. A document needed
-    # by the active source-pinned ledger must stay, not lose its evidence link.
-    ledger = json.loads((root / 'doc/dxf-conformance/coverage.json').read_text(encoding='utf-8-sig'))
-    for value in strings(ledger):
-        url = urlsplit(value)
-        if not url.scheme and not url.netloc and Path(unquote(url.path)).name in names:
-            problems.append('coverage.json: ' + value)
-    require(not problems, 'Retired files still have live references; migrate links to immutable history or retain the file:\n' + '\n'.join(problems))
-    require(REQUIRED_CHECKPOINT in paths and (root / REQUIRED_CHECKPOINT).is_file(),
-            'Source-pinned ledger/HATCH audit checkpoint must remain available')
+            target = local_target(root, path, destination)
+            if target is not None and target.startswith(GUIDES):
+                require((root / target).exists(),
+                        f'Missing guide link target in {path}: {destination}')
 
 
 def self_test() -> int:
@@ -165,12 +132,14 @@ def self_test() -> int:
         count += reject(lambda: check_links(root, 'index.md', '[missing](absent.md)'))
         count += reject(lambda: check_links(root, 'index.md', '[escape](../outside.md)'))
         count += reject(lambda: check_links(root, 'index.md', '[escape](%2e%2e/outside.md)'))
-        require(local_target(root, 'doc/dxf-conformance/README.md', 'checkpoint-2026-09-13.md') in RETIRED,
-                'Relative retired-target resolution')
-        require(local_target(root, 'doc/dxf-conformance/README.md', 'checkpoint-2026-09-14.md') not in RETIRED,
-                'Referenced evidence is not redundant narrative')
-        require(local_target(root, 'README.md', 'https://github.com/example/repo/blob/pinned/checkpoint-2026-09-13.md') is None,
+        require(local_target(root, 'doc/dxf-conformance/README.md', 'io.md') == GUIDES + 'io.md',
+                'Relative guide resolution')
+        require(local_target(root, 'README.md', 'https://github.com/example/repo/blob/pinned/old-guide.md') is None,
                 'Immutable archive URL must remain external')
+        (root / 'caller.md').write_text('[old guide](doc/dxf-conformance/missing.md)', encoding='utf-8')
+        count += reject(lambda: check_guide_references(root, ['caller.md']))
+        (root / 'caller.md').write_text('[archive](https://github.com/example/repo/blob/pinned/missing.md)', encoding='utf-8')
+        check_guide_references(root, ['caller.md'])
     return count
 
 
@@ -180,21 +149,21 @@ def main() -> None:
     paths = [path for path in raw.decode('utf-8').split('\0') if path]
     require(paths and len(paths) == len(set(paths)), 'Missing or duplicate tracked-file inventory')
     workflow_inventory({path for path in paths if path.startswith('.github/workflows/') and path.lower().endswith(('.yml', '.yaml'))})
-    require(not RETIRED.intersection(paths), 'Retired narrative checkpoints are still tracked')
     choices = pipeline_commands((ROOT / 'tools/ci/pipeline.py').read_text(encoding='utf-8'))
     links = 0
-    for path, budget in FRONT_DOORS.items():
+    guides = {path: 8_192 for path in paths if path.startswith(GUIDES) and path.endswith('.md')}
+    require(GUIDES + 'README.md' in guides, 'Missing DXF guide index')
+    documents = {**ENTRY_POINTS, **guides}
+    for path, budget in documents.items():
         content = (ROOT / path).read_bytes()
         size_limit(content, budget, path)
         links += check_links(ROOT, path, content.decode('utf-8-sig'))
         check_pipeline_commands(content.decode('utf-8-sig'), choices)
-    report = (ROOT / REPORT).read_text(encoding='utf-8-sig')
-    require('Full AutoCAD parity' in report and 'not established' in report, 'Missing explicit report qualification boundary')
-    links += check_links(ROOT, REPORT, report)
-    check_pipeline_commands(report, choices)
-    check_retired_references(ROOT, paths)
-    print(f'PASS: two core workflows plus the isolated Pages workflow, three maintained documentation entry points, '
-          f'{links} existing local links, valid pipeline command names, no live retired-checkpoint references; {count} negative controls rejected. '
+    index = (ROOT / GUIDES / 'README.md').read_text(encoding='utf-8-sig')
+    require('Full AutoCAD parity is not established' in index, 'Missing explicit support boundary')
+    check_guide_references(ROOT, paths)
+    print(f'PASS: two core workflows plus the isolated Pages workflow, {len(documents)} maintained documentation pages, '
+          f'{links} existing local links, valid pipeline command names and incoming guide links; {count} negative controls rejected. '
           'Source hygiene only, not additional CAD conformance or native acceptance.')
 
 

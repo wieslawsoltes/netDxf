@@ -14,4 +14,4 @@ changes to attach it to the carrier's model-space block. The independent verifie
 checks the exact packet transplant, not just geometry.
 
 The module contract and exclusions are documented in
-`doc/dxf-conformance/POLYGONMESH_CARDINALITY.md`.
+[historical contract](https://github.com/wieslawsoltes/netDxf/blob/8ee6418acea8fb0c91777aeaa68db073317e2421/doc/dxf-conformance/POLYGONMESH_CARDINALITY.md).
