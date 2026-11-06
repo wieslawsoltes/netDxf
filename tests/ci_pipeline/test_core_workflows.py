@@ -64,7 +64,9 @@ class CoreWorkflowTests(unittest.TestCase):
         triggers = self.build.split('on:\n', 1)[1].split('permissions:', 1)[0]
         self.assertIn('  push:\n    branches: [netstandard]\n', triggers)
         self.assertIn('  pull_request:\n    branches: [netstandard]\n', triggers)
-        self.assertIn('  merge_group:\n    types: [checks_requested]\n    branches: [netstandard]\n', triggers)
+        merge_group = re.search(r'^  merge_group:\n((?:    .*\n)+)', triggers, re.M)
+        self.assertIsNotNone(merge_group)
+        self.assertEqual('    types: [checks_requested]\n    branches: [netstandard]\n', merge_group[1])
         self.assertIn('  workflow_call:', triggers)
         self.assertNotIn('paths:', triggers)
         release_triggers = self.release.split('on:\n', 1)[1].split('permissions:', 1)[0]
@@ -72,6 +74,15 @@ class CoreWorkflowTests(unittest.TestCase):
         self.assertNotIn('merge_group:', release_triggers)
         self.assertIn("  push:\n    tags: ['v[0-9]*']", release_triggers)
         self.assertIn('  release:\n    types: [published]', release_triggers)
+
+    def test_validation_concurrency_and_release_plan_wiring(self):
+        concurrency = self.release.split('concurrency:\n', 1)[1].split('jobs:\n', 1)[0]
+        self.assertEqual("  group: release-${{ github.event.release.tag_name || github.ref }}\n  cancel-in-progress: false\n", concurrency)
+        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' }}", self.build)
+        plan = job(self.release, 'plan')
+        self.assertIn("DRY_RUN: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' || (github.event_name == 'workflow_dispatch' && inputs.dry_run) }}", plan)
+        self.assertIn('EXPECTED_SHA: ${{ github.sha }}', plan)
+        self.assertEqual("needs.plan.outputs.publish == 'true'", gate(job(self.release, 'github-release')))
 
     def test_pages_routes_only_declared_events_and_production_ref(self):
         triggers = self.pages.split('on:\n', 1)[1].split('permissions:', 1)[0]
@@ -124,9 +135,11 @@ class CoreWorkflowTests(unittest.TestCase):
         self.assertIn('needs: build', job(self.build, 'package'))
         for name in ('qualify', 'runtime-evidence'):
             self.assertNotIn('always()', job(self.build, name))
-        self.assertNotIn('continue-on-error:', self.build)
+        self.assertNotRegex(self.build, r'continue-on-error\s*:')
         self.assertIn('needs: [plan, build]', job(self.release, 'github-release'))
-        self.assertIn('uses: ./.github/workflows/ci-build.yml', job(self.release, 'build'))
+        release_build = job(self.release, 'build')
+        self.assertIn('uses: ./.github/workflows/ci-build.yml', release_build)
+        self.assertIn('needs: plan', release_build)
         for text in (self.build, self.release, self.pages):
             jobs = dict(re.findall(r'^  ([\w-]+):\n(.*?)(?=^  [\w-]+:\n|\Z)', text.split('jobs:\n', 1)[1], re.M | re.S))
             dependencies = {}
@@ -172,6 +185,7 @@ class CoreWorkflowTests(unittest.TestCase):
         self.assertIn('default: false', self.release.split('      publish_nuget:', 1)[1].split('permissions:', 1)[0])
 
     def test_credentials_and_pinned_actions_are_scoped(self):
+        self.assertIn('permissions:\n  contents: read\n', self.build)
         self.assertNotIn('secrets.', self.build)
         self.assertNotIn('contents: write', self.build)
         self.assertEqual(1, self.release.count('contents: write'))
