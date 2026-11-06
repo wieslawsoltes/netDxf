@@ -104,18 +104,17 @@ the deterministic native edits and original no-op packets, exact synthetic
 fields including signed zero, explicit physical reference identities, complete
 carrier dependency closure and CLASS/ownership relationships. It rejects 368
 actual output corruptions and independently opens and audits every output with
-ezdxf. The [final qualification receipt](table-geometry-editing-qualification.json)
+ezdxf. The [historical qualification receipt](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/table-geometry-editing-qualification.json)
 records 125 new editing cases and 761 unique cases across nine related suites in
-each of Debug and Release, with all eight output gates passing. Normal net8.0
-library builds report zero errors and the existing 561 CS1591 warnings;
-conformance builds report zero warnings and errors.
+each of Debug and Release, with all eight output gates passing at that reviewed
+commit.
 
 The separately frozen independent review passed 40 cases in each configuration,
 including all eight native packets, and audited 26 outputs per configuration
 with zero errors or repairs. Its unchanged
-[receipt](table-geometry-editing-review/summary.json), detailed results and
-[reproducible harness](../../tools/table_geometry_edit_review/README.md) are
-preserved. The reviewer requested no production changes.
+[receipt](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/table-geometry-editing-review/summary.json), detailed results and
+[reproducible harness](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/tools/table_geometry_edit_review/README.md) are
+archived in Git history. The reviewer requested no production changes.
 
 Native AutoCAD open/AUDIT/save/reopen remains unexecuted. Acceptance by a native
 application, table rendering and regeneration are not inferred from stored

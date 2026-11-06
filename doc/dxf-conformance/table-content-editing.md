@@ -122,14 +122,15 @@ requires all 52 outputs, covering every native packet through both input and
 output transports, before it checks exact requested scalar/header changes,
 unchanged nested data, TABLE and related stored object packets, metadata, CLASS
 records and all 316 selected source-carrier identities. It also corrupts actual
-parsed outputs to demonstrate the oracle rejects changes. The final execution
-[receipt](table-content-editing-qualification.json) records 926 passing cases,
-including all 165 new cases, and nine passing gates in each of Debug and Release.
-The new gate checks 64 native packet appearances, 344 explicit scalar changes,
+parsed outputs to demonstrate the oracle rejects changes. The historical execution
+[receipt](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/table-content-editing-qualification.json) records 926 passing cases,
+including the 165 cases introduced by that change, and nine passing gates in each
+of Debug and Release. That run checked 64 native packet appearances, 344 explicit scalar changes,
 2,528 carrier record appearances and 500 actual corruptions per configuration.
-The [independent review](table-content-editing-review/summary.json) passes 40
+The [independent review](https://github.com/wieslawsoltes/netDxf/blob/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/table-content-editing-review/summary.json) passes 40
 cases in each configuration and audits all 64 emitted DXFs without errors or
-repairs. Its unchanged harness, receipts and exact output archive are retained.
+repairs. Its unchanged harness, receipts and exact output archive are available
+in Git history at the linked commit.
 
 Native source identities are qualified separately from explicitly synthetic
 scalar and style carriers. Ordinary resource writers may normalize optional

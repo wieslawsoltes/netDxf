@@ -26,10 +26,14 @@ fixtures, execution scope and limitations. Do not promote broad support rows
 using only a larger suite count or a newer commit label.
 
 Historical review output and one-off probe projects are available in
-[Git history](https://github.com/wieslawsoltes/netDxf/tree/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance/receipts).
+[Git history](https://github.com/wieslawsoltes/netDxf/tree/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/doc/dxf-conformance),
+including the standalone TABLE/CELLSTYLEMAP
+[review tools](https://github.com/wieslawsoltes/netDxf/tree/1dcbe75182ea5b61e1bf07aca118f2f95a0de806/tools).
 Paths in old qualification JSON and command transcripts refer to that snapshot;
-use a checkout of that commit to reproduce those historical probes. Only receipt
-groups referenced by the coverage ledger remain in the current source tree.
+use a checkout of that commit to reproduce those historical probes. The current
+conformance harness and independent verifier runner remain the maintained test
+entry points. Receipt groups referenced by the coverage ledger remain in the
+current source tree.
 New generated results belong in the ignored `artifacts/` directory and CI artifacts.
 
 Feature documents may also record earlier implementations. Read their source
