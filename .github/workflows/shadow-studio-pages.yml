@@ -169,6 +169,10 @@ jobs:
                           if not entry:
                               expect(page.locator('#studio')).to_have_attribute('data-document', 'demo', timeout=30000)
                               expect(page.locator('#loading')).to_be_hidden(timeout=30000)
+                              expect(page.locator('#ribbon-tabs [data-tab="Home"]')).to_have_attribute('aria-selected', 'true')
+                              expect(page.locator('[data-palette="Graph"]')).to_be_hidden()
+                              drawing = page.evaluate("async () => (await fetch('api/cad/demo/state')).json()")
+                              assert drawing['itemCount'] == 0 and drawing['state']['entities'] == 0
                           assert not errors, errors
                           assert not api_requests, api_requests
                           print('PASS live Pages:', entry or '/', expected, flush=True)

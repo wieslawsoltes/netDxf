@@ -59,7 +59,7 @@ internal sealed partial class BrowserApplication : IDisposable
             return result;
         }
         studio = Create(true);
-        documents = new(studio, Create);
+        documents = new(Create);
         MapRoutes();
     }
     public static async Task<BrowserApplication> CreateAsync(HttpClient client)

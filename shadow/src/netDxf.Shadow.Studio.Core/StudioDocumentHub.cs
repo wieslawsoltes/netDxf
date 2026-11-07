@@ -19,6 +19,14 @@ public sealed partial class StudioDocumentHub : IDisposable
     private readonly Func<bool, Studio> createStudio;
     private bool disposed;
 
+    public StudioDocumentHub() : this(static demo => new Studio(demo)) { }
+    public StudioDocumentHub(Func<bool, Studio> createStudio)
+    {
+        this.createStudio = createStudio ?? throw new ArgumentNullException(nameof(createStudio));
+        // Keep the initial transport ID stable, but leave the diagnostics sample
+        // separate from the user's empty CAD drawing.
+        entries.Add("demo", new("Drawing.dxf", createStudio(false), true));
+    }
     public StudioDocumentHub(Studio legacy) : this(legacy, static demo => new Studio(demo)) { }
     public StudioDocumentHub(Studio legacy, Func<bool, Studio> createStudio)
     {

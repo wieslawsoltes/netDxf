@@ -91,6 +91,11 @@ def verify(url: str, executable: str | None = None):
             assert response and response.ok
             expect(page.locator('#studio')).to_have_attribute('data-document', 'demo')
             expect(page.locator('#loading')).to_be_hidden()
+            expect(page.locator('#ribbon-tabs [data-tab="Home"]')).to_have_attribute('aria-selected', 'true')
+            expect(page.locator('[data-palette="Graph"]')).to_be_hidden()
+            with urllib.request.urlopen(f'{url}/api/cad/demo/state', timeout=10) as r:
+                initial = json.load(r)
+            check('startup drawing is empty', initial['itemCount'] == 0 and initial['state']['entities'] == 0)
             check('native CAD frontend loads under the unchanged host CSP', not errors and not violations)
             page.screenshot(path=str(OUTPUT / 'workspace.png'))
             page.locator('[data-action="new"]').first.click()

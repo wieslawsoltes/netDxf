@@ -1,6 +1,6 @@
 # Tank and pump P&ID sample
 
-`netDxf.Shadow.Samples.ProcessDiagramFactory.Create()` returns a standalone, editable `DxfDocument`. Studio uses it for the default **Tank and pump P&ID.dxf** drawing and adds the existing appearance, paper-space, SHX, dimension, paragraph, linetype and hatch galleries on their own layouts. The factory has no Studio or web-host dependency.
+`netDxf.Shadow.Samples.ProcessDiagramFactory.Create()` returns a standalone, editable `DxfDocument`. Studio offers it through **Insert → New sample drawing** and in advanced diagnostics, with the appearance, paper-space, SHX, dimension, paragraph, linetype and hatch galleries on their own layouts. CAD Studio starts with an empty **Drawing.dxf**. The factory has no Studio or web-host dependency.
 
 The model sheet shows supply through an isolation valve to a conical-roof, flat-bottom storage tank, then suction isolation, a liquid transfer pump, a check valve, discharge isolation and an outgoing process connection. The tank has separate atmospheric vent and valved drain connections. Direction arrows, nominal pipe sizes, equipment tags, a legend and the drawing title block make the intent explicit.
 
