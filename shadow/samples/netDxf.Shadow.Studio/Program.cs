@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls(builder.Configuration["urls"] ?? "http://127.0.0.1:5080");
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 20 * 1024 * 1024);
 builder.Services.AddSingleton<Studio>();
-builder.Services.AddSingleton<StudioDocumentHub>();
+builder.Services.AddSingleton(_ => new StudioDocumentHub());
 builder.WebHost.UseStaticWebAssets();
 var app = builder.Build();
 app.Use(async (context, next) =>

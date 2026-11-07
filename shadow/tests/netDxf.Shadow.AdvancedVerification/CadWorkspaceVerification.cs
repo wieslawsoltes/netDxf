@@ -87,13 +87,19 @@ internal static class CadWorkspaceVerification
         }));
         tests.Add(("cad/document hub isolates source state and bounds lifetimes", () =>
         {
-            using var legacy = new Studio(); using var hub = new StudioDocumentHub(legacy);
+            using var legacy = new Studio(); using var hub = new StudioDocumentHub();
+            var initial = Json(hub.Documents())[0];
+            Require(initial.GetProperty("name").GetString() == "Drawing.dxf" && !initial.GetProperty("dirty").GetBoolean());
+            Require(hub.Use("demo", s => Json(s.CadState()).GetProperty("itemCount").GetInt32()) == 0);
+            Require(Json(legacy.CadState()).GetProperty("itemCount").GetInt32() > 0);
             var first = Json(hub.Create(new("First.dxf"))).GetProperty("id").GetString()!;
             var second = Json(hub.Create(new("Second.dxf"))).GetProperty("id").GetString()!;
             hub.Use(first, s => s.CadCommand(new(s.CadRevision, new("CIRCLE", [new(0, 0)], Value: 4))));
             Require(hub.Use(first, s => Json(s.CadState()).GetProperty("itemCount").GetInt32()) == 1);
             Require(hub.Use(second, s => Json(s.CadState()).GetProperty("itemCount").GetInt32()) == 0);
-            for (var i = 0; i < 5; i++) hub.Create(new("Drawing.dxf")); Reject(() => hub.Create(new("Overflow.dxf")));
+            var sample = Json(hub.Create(new("Sample.dxf", Demo: true))).GetProperty("id").GetString()!;
+            Require(hub.Use(sample, s => Json(s.CadState()).GetProperty("itemCount").GetInt32()) > 0);
+            for (var i = 0; i < 4; i++) hub.Create(new("Drawing.dxf")); Reject(() => hub.Create(new("Overflow.dxf")));
             Reject(() => hub.Use("closed-id", s => s.State())); Reject(() => hub.Create(new("../bad.dxf")));
         }));
         tests.Add(("cad/svg background alpha is retained for a composited drafting grid", () =>

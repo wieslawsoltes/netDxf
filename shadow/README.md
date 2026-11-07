@@ -63,6 +63,8 @@ Open `http://127.0.0.1:5080`. Studio is an ASP.NET local host with a browser int
 
 Studio combines a drawing explorer, property inspector, camera pan/zoom, selection and dragging, structural/property undo/redo, DXF open/save, topology overlays and metrics, retained snapshot views, and runtime SkiaSharp/SVG switching. Enter commits an inspector value. Middle-button or Space-drag pans; the wheel zooms about the pointer; F fits; arrows nudge; Shift snaps dragging/nudging to 10 units.
 
+CAD Studio starts with an empty **Drawing.dxf**. A fresh UI uses the **Home** ribbon tab with the **Graph** palette closed; saved UI workspace choices are restored on later visits. Choose **Insert → New sample drawing** to open the gallery described below. Advanced diagnostics retains its own sample drawing.
+
 Select **Hatch islands** for all nine Normal/Outer/Ignore solid, pattern and gradient combinations; see [HatchIslands.md](docs/HatchIslands.md). Select **Paragraphs** for shared indentation, alignment, tabs and spacing examples; see [Paragraphs.md](docs/Paragraphs.md).
 
 Select **Complex linetypes** for native/SHX text, numeric SHX symbols, relative/absolute/upright orientation, closed paths and curves. Both backends share the same bounded placement plan. Symbols remain pickable for source editing without becoming topology edges or ordinary snap targets. See [Linetypes.md](docs/Linetypes.md) for source preservation, resource providers, work quotas and appearance boundaries.
