@@ -25,5 +25,11 @@ pub struct PaperViewportProjection {
 pub struct PaperSpaceOptions {
     pub include_viewport_borders: bool,
     pub respect_layer_overrides: bool,
+    pub perspective: bool,
+    pub maximum_viewports: usize,
+    pub maximum_items: usize,
+    pub maximum_candidates: usize,
+    pub maximum_clip_points: usize,
+    pub maximum_pattern_scales: usize,
 }
 

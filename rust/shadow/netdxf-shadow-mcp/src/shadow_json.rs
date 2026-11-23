@@ -29,5 +29,41 @@ impl ShadowJson {
             "entityCount": snapshot.entity_ids.len(),
         })
     }
+
+    pub fn describe(value: &Value) -> &'static str {
+        match value {
+            Value::Null => "null",
+            Value::Bool(_) => "boolean",
+            Value::Number(_) => "number",
+            Value::String(_) => "string",
+            Value::Array(_) => "array",
+            Value::Object(_) => "object",
+        }
+    }
+
+    pub fn escape(segment: &str) -> String {
+        segment.replace('~', "~0").replace('/', "~1")
+    }
+
+    pub fn from_input(input: &str) -> Result<Value, String> {
+        serde_json::from_str(input).map_err(|e| e.to_string())
+    }
+
+    pub fn locate<'a>(root: &'a Value, pointer: &str) -> Option<&'a Value> {
+        root.pointer(pointer)
+    }
+
+    pub fn location(x: f64, y: f64, z: f64) -> Location {
+        Location { x, y, z }
+    }
+
+    pub fn replace(root: &mut Value, pointer: &str, replacement: Value) -> bool {
+        if let Some(slot) = root.pointer_mut(pointer) {
+            *slot = replacement;
+            true
+        } else {
+            false
+        }
+    }
 }
 

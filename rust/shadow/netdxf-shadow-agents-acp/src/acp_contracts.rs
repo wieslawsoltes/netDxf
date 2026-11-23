@@ -17,6 +17,12 @@ pub struct AcpConnectionOptions {
     pub client_name: String,
     pub client_version: String,
     pub request_timeout_ms: u64,
+    pub request_timeout: u64,
+    pub permission_timeout: u64,
+    pub cancellation_grace: u64,
+    pub maximum_message_bytes: usize,
+    pub maximum_incoming_requests: usize,
+    pub maximum_pending_requests: usize,
 }
 
 impl Default for AcpConnectionOptions {
@@ -26,6 +32,12 @@ impl Default for AcpConnectionOptions {
             client_name: "netdxf-shadow".into(),
             client_version: "0.1.0".into(),
             request_timeout_ms: 30_000,
+            request_timeout: 30_000,
+            permission_timeout: 60_000,
+            cancellation_grace: 5_000,
+            maximum_message_bytes: 16 * 1024 * 1024,
+            maximum_incoming_requests: 64,
+            maximum_pending_requests: 64,
         }
     }
 }
