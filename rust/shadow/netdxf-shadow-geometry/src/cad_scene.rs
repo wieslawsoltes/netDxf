@@ -78,6 +78,12 @@ pub struct CadText {
 pub struct CadImage {
     pub file_name: String,
     pub corners: Vec<Vec3>,
+    pub clip_polygon: Vec<Vec3>,
+    pub clip_outside: bool,
+    pub brightness: i16,
+    pub contrast: i16,
+    pub fade: i16,
+    pub visible: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

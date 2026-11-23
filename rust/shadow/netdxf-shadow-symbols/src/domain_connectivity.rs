@@ -64,16 +64,29 @@ pub struct DomainNetworkComponent {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DomainConnectivity {
     pub document_id: String,
+    pub module: String,
+    pub layout: String,
+    pub record_count: usize,
+    pub objects_visited: usize,
     pub nodes: Vec<DomainPortNode>,
     pub edges: Vec<DomainConnection>,
     pub components: Vec<DomainNetworkComponent>,
     pub issues: Vec<DomainConnectivityIssue>,
+    pub limitations: Vec<String>,
     pub complete: bool,
     pub declarations_complete: bool,
     pub issues_complete: bool,
 }
 
 impl DomainConnectivity {
+    pub const MAXIMUM_CONNECTION_ID_LENGTH: usize = 256;
+    pub const MAXIMUM_ISOLATION_EXCLUSION_CHARACTERS: usize = 16_384;
+    pub const MAXIMUM_ISOLATION_EXCLUSIONS: usize = 256;
+    pub const MAXIMUM_PORT_ID_LENGTH: usize = 256;
+
+    pub fn port_id(entity: &ObjectId, port_name: &str) -> String {
+        format!("{}:{port_name}", entity.as_str())
+    }
     pub fn build(
         document_id: impl Into<String>,
         mut ports: Vec<DomainPortNode>,
@@ -100,6 +113,9 @@ impl DomainConnectivity {
         }
         Self {
             document_id: document_id.into(),
+            layout: "Model".into(),
+            record_count: ports.len(),
+            objects_visited: ports.len(),
             nodes: ports,
             edges,
             components,
@@ -107,6 +123,7 @@ impl DomainConnectivity {
             complete: true,
             declarations_complete: true,
             issues_complete: true,
+            ..Default::default()
         }
     }
 

@@ -42,12 +42,18 @@ impl Default for ReferenceGraphOptions {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ReferenceGraphNode {
     pub id: String,
+    pub r#type: String,
     pub node_type: String,
     pub kind: String,
     pub name: Option<String>,
+    pub root: bool,
+    pub exists: bool,
+    pub depth: usize,
+    pub incoming: usize,
+    pub outgoing: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -144,9 +150,12 @@ impl ReferenceGraphIndex {
                 id_str.clone(),
                 ReferenceGraphNode {
                     id: id_str.clone(),
+                    r#type: obj.short_type().to_string(),
                     node_type: obj.short_type().to_string(),
                     kind: format!("{:?}", obj.kind),
                     name: None,
+                    exists: true,
+                    ..Default::default()
                 },
             );
             for (prop, val) in &obj.properties {

@@ -10,7 +10,13 @@ use std::collections::BTreeMap;
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainScheduleOptions {
     pub group_by: Option<String>,
+    pub group_value: Option<String>,
+    pub class: Option<String>,
+    pub query: Option<String>,
+    pub sort_by: Option<String>,
+    pub descending: bool,
     pub maximum_records: usize,
+    pub maximum_objects: usize,
     pub maximum_data_characters: usize,
 }
 
@@ -45,14 +51,21 @@ pub struct DomainScheduleIssue {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DomainSchedule {
     pub document_id: String,
+    pub revision: i64,
+    pub module: String,
     pub layout: String,
     pub drawing_units: String,
     pub field: Option<String>,
+    pub options: DomainScheduleOptions,
     pub complete: bool,
+    pub scan_complete: bool,
+    pub records_scanned: usize,
+    pub objects_visited: usize,
     pub invalid_records: usize,
     pub maximum_records: usize,
     pub maximum_data_characters: usize,
     pub limitations: Vec<String>,
+    pub rows: Vec<DomainScheduleRow>,
     pub groups: Vec<DomainScheduleGroup>,
     pub issues: Vec<DomainScheduleIssue>,
 }
@@ -89,13 +102,16 @@ impl DomainSchedule {
             layout: layout.into(),
             drawing_units: "Unitless".into(),
             field: options.group_by.clone(),
+            options: options.clone(),
             complete: true,
+            scan_complete: true,
             invalid_records: 0,
             maximum_records: options.maximum_records,
             maximum_data_characters: options.maximum_data_characters,
             limitations: Vec::new(),
             groups,
             issues: Vec::new(),
+            ..Default::default()
         }
     }
 }

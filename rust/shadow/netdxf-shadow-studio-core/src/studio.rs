@@ -87,7 +87,15 @@ pub struct CadCommandRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadSelectionRequest {
     pub ids: Vec<ObjectId>,
+    pub entities: Vec<ObjectId>,
+    pub entity: Option<ObjectId>,
     pub mode: String,
+    pub first: Option<Vec3>,
+    pub second: Option<Vec3>,
+    pub tolerance: Option<f64>,
+    pub extend: bool,
+    pub remove: bool,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -231,6 +239,12 @@ pub struct CadInsertPreviewRequest {
 pub struct CadInsertPreviewResult {
     pub valid: bool,
     pub entity_count: usize,
+    pub revision: i64,
+    pub anchor: Vec3,
+    pub image_bounds: netdxf_shadow::Bounds2,
+    pub items: usize,
+    pub svg: String,
+    pub diagnostics: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -474,7 +488,13 @@ pub struct CadModuleExecuteRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct StudioRevisionNotice {
     pub document_id: String,
+    pub workspace_id: Option<String>,
+    pub server_id: Option<String>,
     pub revision: i64,
+    pub source_revision: i64,
+    pub view_version: i64,
+    pub change_version: i64,
+    pub reset: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -486,6 +506,12 @@ pub struct PerspectiveViewRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct PerspectiveMoveRequest {
     pub delta: Vec3,
+    pub from_x: f64,
+    pub from_y: f64,
+    pub to_x: f64,
+    pub to_y: f64,
+    pub revision: Option<i64>,
+    pub definition: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -955,6 +981,9 @@ impl Studio {
         CadInsertPreviewResult {
             valid: exists,
             entity_count: usize::from(exists),
+            revision: snap.revision,
+            anchor: request.position,
+            ..Default::default()
         }
     }
 
