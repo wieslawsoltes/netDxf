@@ -31,12 +31,16 @@ mod spline_trim_tests;
 
 // ACIS SAT, table formulas, and fields
 mod acis_sat_tests;
+mod cell_style_and_objects_tests;
 mod standard_field_evaluator_tests;
 mod table_calculation_tests;
+mod value_format_tests;
 
-// ASCII and binary codecs
+// ASCII, binary, raw, and R12 codecs
 mod binary_chunk_tests;
 mod binary_sentinel_tests;
+mod r12_codec_tests;
+mod raw_document_tests;
 mod strict_binary_value_tests;
 mod strict_text_value_tests;
 mod text_hex_tests;

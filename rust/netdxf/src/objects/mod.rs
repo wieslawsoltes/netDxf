@@ -1,7 +1,13 @@
 pub mod dictionary_object;
+pub mod dxf_cell_style_resolver;
+pub mod dxf_data_table;
 pub mod dxf_geo_data;
+pub mod dxf_layer_index;
 pub mod dxf_mleader_style;
+pub mod dxf_opaque_object;
+pub mod dxf_section_settings;
 pub mod dxf_standard_field_evaluator;
+pub mod dxf_stored_dim_assoc;
 pub mod dxf_sun;
 pub mod dxf_table_style;
 pub mod group;
@@ -15,11 +21,17 @@ pub mod underlay_definition;
 pub mod x_record;
 
 pub use dictionary_object::DictionaryObject;
+pub use dxf_cell_style_resolver::{DxfCellStyleFormat, DxfCellStyleResolver};
+pub use dxf_data_table::{DxfDataTable, DxfDataTableCell, DxfDataTableColumn};
 pub use dxf_geo_data::DxfGeoData;
+pub use dxf_layer_index::{DxfLayerFilter, DxfLayerIndex};
 pub use dxf_mleader_style::DxfMLeaderStyle;
+pub use dxf_opaque_object::DxfOpaqueObject;
+pub use dxf_section_settings::{DxfOutputSettings, DxfSectionSettings, DxfStoredSectionManager};
 pub use dxf_standard_field_evaluator::{
     DxfFieldResult, DxfStandardFieldEvaluator, DxfStoredField,
 };
+pub use dxf_stored_dim_assoc::{DimAssocOsnapPointRef, DxfStoredDimAssoc};
 pub use dxf_sun::{DxfStoredSunStudy, DxfSun};
 pub use dxf_table_style::DxfTableStyle;
 pub use group::Group;

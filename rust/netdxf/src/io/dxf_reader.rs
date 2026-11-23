@@ -674,17 +674,18 @@ impl DxfReader {
                         }
                     }
                     if !name.is_empty() {
-                        let mut lt = Linetype {
-                            table: TableObjectData::new(&name, DxfObjectCode::LINETYPE, false)
-                                .unwrap(),
-                            description,
-                            segments,
-                        };
-                        lt.table.is_reserved = name.eq_ignore_ascii_case(Linetype::BY_LAYER_NAME)
-                            || name.eq_ignore_ascii_case(Linetype::BY_BLOCK_NAME)
-                            || name.eq_ignore_ascii_case(Linetype::CONTINUOUS_NAME);
-                        lt.table.object.handle = handle;
-                        doc.linetypes.insert(lt);
+                        if let Ok(table) = TableObjectData::new(&name, DxfObjectCode::LINETYPE, false) {
+                            let mut lt = Linetype {
+                                table,
+                                description,
+                                segments,
+                            };
+                            lt.table.is_reserved = name.eq_ignore_ascii_case(Linetype::BY_LAYER_NAME)
+                                || name.eq_ignore_ascii_case(Linetype::BY_BLOCK_NAME)
+                                || name.eq_ignore_ascii_case(Linetype::CONTINUOUS_NAME);
+                            lt.table.object.handle = handle;
+                            doc.linetypes.insert(lt);
+                        }
                     }
                     continue;
                 }
@@ -744,23 +745,24 @@ impl DxfReader {
                             doc.shape_styles.insert(ss);
                         }
                     } else if !name.is_empty() {
-                        let mut ts = TextStyle {
-                            table: TableObjectData::new(&name, DxfObjectCode::TEXT_STYLE, false)
-                                .unwrap(),
-                            font_file,
-                            big_font,
-                            font_family_name: String::new(),
-                            font_style: FontStyle::REGULAR,
-                            height,
-                            is_backward: (gen_flags & 2) != 0,
-                            is_upside_down: (gen_flags & 4) != 0,
-                            is_vertical: flags.contains(TextStyleFlags::VERTICAL),
-                            oblique_angle,
-                            width_factor,
-                        };
-                        ts.table.is_reserved = name.eq_ignore_ascii_case(TextStyle::DEFAULT_NAME);
-                        ts.table.object.handle = handle;
-                        doc.text_styles.insert(ts);
+                        if let Ok(table) = TableObjectData::new(&name, DxfObjectCode::TEXT_STYLE, false) {
+                            let mut ts = TextStyle {
+                                table,
+                                font_file,
+                                big_font,
+                                font_family_name: String::new(),
+                                font_style: FontStyle::REGULAR,
+                                height,
+                                is_backward: (gen_flags & 2) != 0,
+                                is_upside_down: (gen_flags & 4) != 0,
+                                is_vertical: flags.contains(TextStyleFlags::VERTICAL),
+                                oblique_angle,
+                                width_factor,
+                            };
+                            ts.table.is_reserved = name.eq_ignore_ascii_case(TextStyle::DEFAULT_NAME);
+                            ts.table.object.handle = handle;
+                            doc.text_styles.insert(ts);
+                        }
                     }
                     continue;
                 }
@@ -1146,15 +1148,17 @@ impl DxfReader {
                             }
                         }
                         let gname = handle.clone().unwrap_or_else(|| "*A1".to_string());
-                        let mut grp = Group {
-                            table: TableObjectData::new(&gname, DxfObjectCode::GROUP, false).unwrap(),
-                            description: desc,
-                            is_selectable,
-                            is_unnamed,
-                            entity_handles: handles,
-                        };
-                        grp.table.object.handle = handle;
-                        doc.groups.insert(grp);
+                        if let Ok(table) = TableObjectData::new(&gname, DxfObjectCode::GROUP, false) {
+                            let mut grp = Group {
+                                table,
+                                description: desc,
+                                is_selectable,
+                                is_unnamed,
+                                entity_handles: handles,
+                            };
+                            grp.table.object.handle = handle;
+                            doc.groups.insert(grp);
+                        }
                         continue;
                     }
                     DxfObjectCode::MLINE_STYLE => {
@@ -1197,19 +1201,20 @@ impl DxfReader {
                             elements.push(el);
                         }
                         if !name.is_empty() {
-                            let mut ms = MLineStyle {
-                                table: TableObjectData::new(&name, DxfObjectCode::MLINE_STYLE, false)
-                                    .unwrap(),
-                                flags,
-                                description: desc,
-                                fill_color,
-                                start_angle,
-                                end_angle,
-                                elements,
-                            };
-                            ms.table.is_reserved = name.eq_ignore_ascii_case(MLineStyle::DEFAULT_NAME);
-                            ms.table.object.handle = handle;
-                            doc.mline_styles.insert(ms);
+                            if let Ok(table) = TableObjectData::new(&name, DxfObjectCode::MLINE_STYLE, false) {
+                                let mut ms = MLineStyle {
+                                    table,
+                                    flags,
+                                    description: desc,
+                                    fill_color,
+                                    start_angle,
+                                    end_angle,
+                                    elements,
+                                };
+                                ms.table.is_reserved = name.eq_ignore_ascii_case(MLineStyle::DEFAULT_NAME);
+                                ms.table.object.handle = handle;
+                                doc.mline_styles.insert(ms);
+                            }
                         }
                         continue;
                     }

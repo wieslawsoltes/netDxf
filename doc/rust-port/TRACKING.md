@@ -120,14 +120,17 @@ Mirrors upstream `tests/netDxf.Conformance/*.cs` and `tests/shared/*.cs` using t
 10. **Table formula precision & syntax**: Added Neumaier compensated summation for `SUM`/`AVERAGE` (`SUM(1e16, 1, -1e16) == 1.0`, overflow-safe `AVERAGE(MAX, MAX)`), `$A$1` absolute refs, leading-zero row rejection (`A01`), unary recursion depth budget, and empty-argument rejection (`=SUM()`).
 
 ### Verification Summary
+- `#![forbid(unsafe_code)]` enforced at crate root (`rust/netdxf/src/lib.rs`)
 - `cargo clippy --manifest-path rust/Cargo.toml --all-targets -- -D warnings`: **0 warnings, 0 errors**
-- `cargo test --manifest-path rust/Cargo.toml`: **59 / 59 integration tests passed** (36 in `conformance.rs` + 23 across core/fixture/advanced suites, including `sample ascii.dxf`, `sample binary.dxf`, and all upstream conformance DXF fixtures)
+- `cargo test --manifest-path rust/Cargo.toml`: **65 / 65 integration tests passed** (42 in `conformance.rs` + 23 across core/fixture/advanced suites, including `sample ascii.dxf`, `sample binary.dxf`, and all upstream conformance DXF fixtures)
 - **Bidirectional `.NET` ↔ Rust interop**: Verified C# `netDxf` loads Rust-generated R2018 & R2010 ASCII + Binary DXF files (with Lines, Circles, Arcs, Unicode MText, Polylines, Splines, Blocks/Inserts, TrueColor Layers, XData binary chunks, and ACIS SAT `Solid3D`), and Rust `netdxf` loads C#-generated R2018 ASCII + Binary DXF files with exact fidelity.
 
-### Remaining Unported Upstream Modules (Extensible Roadmap)
-The crate and test layout cleanly mirror upstream `netDxf/` so these remaining specialized subsystems (and their corresponding conformance tests) can be ported incrementally without breaking existing public APIs:
-- `IO/DxfRawDocument` (`Raw*Tests`) — lossless raw tag-level DXF editor
-- `IO/DxfR12Codec` (`R12*Tests`) — legacy AutoCAD R12 DXF codec
-- `Objects/DxfStoredDimAssoc` — associative dimension object graph
-- `Tables/DxfCellStyleResolver` (`CellStyle*Tests`) — table cell style inheritance resolver
-- `Objects/DxfDataTable`, `DxfLayerIndex`, `DxfLayerFilter`, `DxfOutputSettings`, `DxfSectionSettings`
+## Phase 4 — Full Scope Review & Remaining Subsystems Ported (Completed)
+
+Completed a full file-by-file audit against upstream `netDxf/` and ported all remaining previously deferred subsystems and their conformance tests:
+- **Raw Tag-Level DXF & Atomic Save (`io/`)**: `DxfTag`, `DxfRawRecord`, `DxfRawSection`, `DxfRawDocument` (lossless ASCII/Binary tag-level read/edit/write with immutable `with_record`/`without_record`), and `DxfAtomicFile` (crash-safe temp-file + fsync + atomic rename wired into `DxfDocument::save_with_options` and `DxfRawDocument::save`).
+- **AutoCAD R12 Codec (`io/dxf_r12_codec.rs`)**: `DxfR12Codec` (`AC1009` ASCII export and import including legacy `POLYLINE`/`VERTEX`/`SEQEND`, `LINE`, `CIRCLE`, `ARC`, `POINT`, `TEXT`, `3DFACE`, `INSERT`).
+- **Value, Angular & DateTime Formatters (`units/`)**: `DxfValueFormat` (`%lu1..5`, `%pr0..8`, `%ps`, `%ct8`, `%ds`, `%th`, `%zs`), `DxfAngularValueFormat` (`%au0..4` with ties-to-even rounding), `DxfDateTimeFormat` + `CivilDateTime` (Julian calendar & mask tokens).
+- **Remaining Database Objects & Preflight (`objects/` & root)**: `DxfCellStyleResolver` / `DxfCellStyleFormat`, `DxfStoredDimAssoc` / `DimAssocOsnapPointRef`, `DxfDataTable` / `DxfDataTableColumn` / `DxfDataTableCell`, `DxfLayerIndex`, `DxfLayerFilter`, `DxfSectionSettings`, `DxfStoredSectionManager`, `DxfOutputSettings`, `DxfOpaqueObject`, and `DxfVersionCompatibilityReport` (`DxfDocument::check_version_compatibility`).
+- **Hardening**: Enforced `#![forbid(unsafe_code)]` in `lib.rs` and removed all panicking `.unwrap()` calls from `DxfReader` and `Spline::elevate_degree`.
+- **Tests Added (`rust/netdxf/tests/netdxf_conformance/`)**: `raw_document_tests.rs`, `r12_codec_tests.rs`, `value_format_tests.rs`, `cell_style_and_objects_tests.rs`.

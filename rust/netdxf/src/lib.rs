@@ -3,6 +3,8 @@
 //! Preserves the upstream `netDxf` file layout and public API object model while using
 //! idiomatic, 100% safe, `Send + Sync` Rust types.
 
+#![forbid(unsafe_code)]
+
 pub mod aci_color;
 pub mod bezier_curve_cubic;
 pub mod bezier_curve_quadratic;
@@ -16,6 +18,7 @@ pub mod dxf_class;
 pub mod dxf_document;
 pub mod dxf_object;
 pub mod dxf_object_code;
+pub mod dxf_version_compatibility_report;
 pub mod entities;
 pub mod error;
 pub mod gte;
@@ -50,6 +53,9 @@ pub use dxf_class::DxfClass;
 pub use dxf_document::DxfDocument;
 pub use dxf_object::DxfObject;
 pub use dxf_object_code::DxfObjectCode;
+pub use dxf_version_compatibility_report::{
+    DxfVersionCompatibilityIssue, DxfVersionCompatibilityReport,
+};
 pub use error::{DxfError, Result};
 pub use lineweight::Lineweight;
 pub use math_helper::MathHelper;

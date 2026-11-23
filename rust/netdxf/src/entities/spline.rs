@@ -445,7 +445,7 @@ impl Spline {
         new_wts.push(self.weights[p]);
 
         let u0 = self.knots[0];
-        let u1 = *self.knots.last().unwrap();
+        let u1 = *self.knots.last().unwrap_or(&1.0);
         let mut new_knots = vec![u0; p + 2];
         new_knots.resize(2 * (p + 2), u1);
 

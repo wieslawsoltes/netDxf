@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{BufReader, BufWriter, Cursor, Read, Seek, Write};
+use std::io::{BufReader, Cursor, Read, Seek, Write};
 use std::path::Path;
 
 use crate::blocks::Block;
@@ -8,7 +8,7 @@ use crate::dxf_class::DxfClass;
 use crate::dxf_object::DxfObject;
 use crate::dxf_object_code::DxfObjectCode;
 use crate::entities::{DimensionBlock, EntityObject};
-use crate::error::{DxfError, Result};
+use crate::error::Result;
 use crate::header::{DxfVersion, HeaderVariables};
 use crate::io::{DxfReader, DxfWriter};
 use crate::objects::{
@@ -261,6 +261,14 @@ impl DxfDocument {
         self.drawing_variables.handle_seed = format!("{seed:X}");
     }
 
+    /// Evaluates compatibility of this document with `target_version`.
+    pub fn check_version_compatibility(
+        &self,
+        target_version: DxfVersion,
+    ) -> crate::DxfVersionCompatibilityReport {
+        crate::DxfVersionCompatibilityReport::analyze(self, target_version)
+    }
+
     /// Probes the DXF version and binary flag of a file on disk without loading the full document.
     pub fn check_dxf_file_version(path: impl AsRef<Path>) -> Result<(DxfVersion, bool)> {
         let file = File::open(path)?;
@@ -298,15 +306,10 @@ impl DxfDocument {
         self.save_with_options(path, false)
     }
 
-    /// Saves the DXF document to a file path in either ASCII (`is_binary = false`) or Binary (`is_binary = true`) format.
+    /// Atomically saves the DXF document to a file path in either ASCII (`is_binary = false`) or Binary (`is_binary = true`) format.
     pub fn save_with_options(&mut self, path: impl AsRef<Path>, is_binary: bool) -> Result<()> {
-        if !self.drawing_variables.acad_ver.is_supported() {
-            return Err(DxfError::VersionNotSupported {
-                version: self.drawing_variables.acad_ver.to_string(),
-            });
-        }
-        let file = File::create(path)?;
-        self.save_to_writer(BufWriter::with_capacity(64 * 1024, file), is_binary)
+        let bytes = self.save_to_bytes(is_binary)?;
+        crate::io::DxfAtomicFile::write_all(path, &bytes)
     }
 
     /// Builds anonymous `*D<n>` geometry blocks for all dimensions missing one.
