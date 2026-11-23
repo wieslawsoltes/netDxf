@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 """Automated public API parity comparator between C# sources (netDxf or shadow/src) and Rust crates.
 
+Measures:
+  1. Public type parity (direct 1:1 matches, idiomatic Rust mappings, EventArgs N/A, missing).
+  2. Public member/method parity (methods, properties, record parameters, constants) on matched types.
+  3. Non-blank, non-comment code LOC depth (overall and per-project for multi-project trees).
+
 Usage:
     # Core netDxf parity check
     python3 tools/rust_port/compare_api.py --report doc/rust-port/API-PARITY-REPORT.md --fail-on-missing
 
-    # Shadow multi-project inventory & parity report
+    # Shadow multi-project parity & depth report
     python3 tools/rust_port/compare_api.py \
         --cs-root shadow/src \
         --rs-root rust/shadow \
         --report doc/rust-port/SHADOW-API-PARITY-REPORT.md \
-        --title "Automated API Parity Report: C# shadow/src vs Rust"
+        --title "Shadow (shadow/src) Rust Port Scope & API Parity Report"
 """
 
 from __future__ import annotations
@@ -28,9 +33,7 @@ from typing import Dict, List, Optional, Set, Tuple
 # Intentional idiomatic Rust mappings for core netDxf where C# uses .NET-specific patterns
 # (events, typed ObservableCollection subclasses, exceptions, reflection helpers).
 IDIOMATIC_MAPPINGS: Dict[str, str] = {
-    # Exceptions -> DxfError variants
     "DxfVersionNotSupportedException": "DxfError::VersionNotSupported",
-    # Generic / .NET collection wrappers -> TableObjects<T> / IndexMap / Vec
     "ApplicationRegistries": "TableObjects<ApplicationRegistry>",
     "BlockRecords": "TableObjects<Block>",
     "DimensionStyles": "TableObjects<DimensionStyle>",
@@ -58,7 +61,6 @@ IDIOMATIC_MAPPINGS: Dict[str, str] = {
     "XDataDictionary": "IndexMap<String, XData>",
     "DxfObjectReferences": "Handle / Vec<String> references",
     "DxfObjectReference": "Handle / String reference",
-    # C# abstract bases modeled as Rust enums/shared structs
     "BezierCurve": "BezierCurveCubic / BezierCurveQuadratic",
     "EntityObject": "EntityObject (enum) + EntityCommon",
     "AcisEntity": "AcisEntityData + Solid3D/Body/Region",
@@ -86,7 +88,6 @@ IDIOMATIC_MAPPINGS: Dict[str, str] = {
     "ConicSplineExtensions": "Spline / Circle / Arc / Ellipse methods",
     "CurvePolylineConversion": "Polyline2D / Spline / Arc conversion methods",
     "DxfTableAverageAccumulator": "Neumaier compensated mean in DxfTableFormula",
-    # Internal/advanced C# database plumbing folded into DxfDocument/DxfRawDocument
     "DxfDatabaseObject": "DxfObject",
     "DxfObjectDatabase": "DxfDocument",
     "DxfObjectPointer": "Option<String> handle",
@@ -111,6 +112,12 @@ IDIOMATIC_MAPPINGS: Dict[str, str] = {
     "DxfDeclaredOwnership": "DxfObject::owner_handle",
 }
 
+CS_IGNORED_MEMBERS: Set[str] = {
+    "get", "set", "init", "add", "remove", "operator", "implicit", "explicit",
+    "ToString", "Equals", "GetHashCode", "Clone", "Dispose", "DisposeAsync",
+    "CompareTo", "GetEnumerator",
+}
+
 
 def is_event_or_delegate_type(name: str) -> bool:
     return (
@@ -123,6 +130,28 @@ def is_event_or_delegate_type(name: str) -> bool:
 def normalize_name(name: str) -> str:
     """Normalize PascalCase / snake_case identifiers for fuzzy matching."""
     return re.sub(r"[^a-z0-9]", "", name.lower())
+
+
+def count_code_loc(text: str) -> int:
+    """Count non-blank, non-comment, non-preprocessor lines of code."""
+    count = 0
+    in_block_comment = False
+    for raw in text.splitlines():
+        s = raw.strip()
+        if not s:
+            continue
+        if in_block_comment:
+            if "*/" in s:
+                in_block_comment = False
+            continue
+        if s.startswith("/*"):
+            if "*/" not in s:
+                in_block_comment = True
+            continue
+        if s.startswith("//") or s.startswith("#region") or s.startswith("#endregion"):
+            continue
+        count += 1
+    return count
 
 
 def suggest_rust_crate_and_stack(project_name: str) -> Tuple[str, str]:
@@ -159,7 +188,6 @@ class TypeInfo:
 
 CS_NAMESPACE_RE = re.compile(r"^\s*namespace\s+([A-Za-z0-9_\.]+)\s*[;{]", re.MULTILINE)
 
-# Supports classes, structs, enums, interfaces, and C# 9/10 records (record, record class, record struct)
 CS_TYPE_RE = re.compile(
     r"^\s*public\s+(?:(?:static|abstract|sealed|readonly|ref|partial|unsafe|new)\s+)*"
     r"(record\s+struct|record\s+class|record|class|struct|enum|interface)\s+"
@@ -169,7 +197,7 @@ CS_TYPE_RE = re.compile(
 
 CS_MEMBER_RE = re.compile(
     r"^\s*public\s+(?:(?:static|virtual|override|readonly|const|new|abstract|sealed|extern|unsafe|async|required)\s+)*"
-    r"(?:[A-Za-z0-9_<>,\.\[\]\?\s]+?)\s+([A-Za-z_][A-Za-z0-9_]*)\s*(?:\(|=>|\{|;)",
+    r"(?:[A-Za-z0-9_<>,\.\[\]\?\s]+?)\s+([A-Za-z_][A-Za-z0-9_]*)\s*(?:\(|=>|\{|;|=)",
     re.MULTILINE,
 )
 
@@ -193,9 +221,138 @@ RS_FIELD_RE = re.compile(
     re.MULTILINE,
 )
 
+RS_CONST_RE = re.compile(
+    r"^\s*pub\s+const\s+([A-Z_][A-Z0-9_]*)\s*:",
+    re.MULTILINE,
+)
+
+RS_ENUM_VAR_RE = re.compile(
+    r"^\s*([A-Z][A-Za-z0-9_]*)\s*(?:\(|\{|,|=|$)",
+    re.MULTILINE,
+)
+
+
+def extract_brace_body(text: str, start_pos: int) -> str:
+    """Extract the `{ ... }` body starting from the first `{` after `start_pos`."""
+    brace = text.find("{", start_pos)
+    semi = text.find(";", start_pos)
+    if brace == -1 or (semi != -1 and semi < brace):
+        return ""
+    depth = 0
+    in_str = False
+    esc = False
+    for idx in range(brace, len(text)):
+        ch = text[idx]
+        if esc:
+            esc = False
+            continue
+        if ch == "\\":
+            esc = True
+            continue
+        if ch == '"':
+            in_str = not in_str
+        if not in_str:
+            if ch == "{":
+                depth += 1
+            elif ch == "}":
+                depth -= 1
+                if depth == 0:
+                    return text[brace + 1 : idx]
+    return text[brace + 1 :]
+
+
+def extract_record_params(text: str, name_end: int) -> Set[str]:
+    """Extract primary constructor parameter names from a C# `record Foo(Type A, Type B = ...)`."""
+    params: Set[str] = set()
+    # Skip optional generic `<T>`
+    i = name_end
+    while i < len(text) and text[i].isspace():
+        i += 1
+    if i < len(text) and text[i] == "<":
+        end_gen = text.find(">", i)
+        if end_gen != -1:
+            i = end_gen + 1
+            while i < len(text) and text[i].isspace():
+                i += 1
+    if i >= len(text) or text[i] != "(":
+        return params
+    depth = 0
+    end_paren = -1
+    for idx in range(i, len(text)):
+        if text[idx] == "(":
+            depth += 1
+        elif text[idx] == ")":
+            depth -= 1
+            if depth == 0:
+                end_paren = idx
+                break
+    if end_paren == -1:
+        return params
+    param_str = text[i + 1 : end_paren]
+    # Split top-level commas (outside `<>` and `()`)
+    parts: List[str] = []
+    cur: List[str] = []
+    d_angle = 0
+    d_paren = 0
+    for ch in param_str:
+        if ch == "<":
+            d_angle += 1
+        elif ch == ">":
+            d_angle = max(0, d_angle - 1)
+        elif ch == "(":
+            d_paren += 1
+        elif ch == ")":
+            d_paren = max(0, d_paren - 1)
+        elif ch == "," and d_angle == 0 and d_paren == 0:
+            parts.append("".join(cur))
+            cur = []
+            continue
+        cur.append(ch)
+    if cur:
+        parts.append("".join(cur))
+    for p in parts:
+        p = p.split("=", 1)[0].strip()
+        tokens = p.split()
+        if len(tokens) >= 2:
+            pname = re.sub(r"[^A-Za-z0-9_]", "", tokens[-1])
+            if pname and pname[0].isalpha():
+                params.add(pname)
+    return params
+
+
+def extract_cs_type_members(text: str, match: re.Match[str], kind: str, name: str) -> Set[str]:
+    members: Set[str] = set()
+    if kind.startswith("record"):
+        members.update(extract_record_params(text, match.end()))
+    body = extract_brace_body(text, match.end())
+    if not body:
+        return members
+    if kind == "enum":
+        for line in body.splitlines():
+            s = line.strip()
+            if not s or s.startswith("//") or s.startswith("["):
+                continue
+            m = re.match(r"^([A-Za-z_][A-Za-z0-9_]*)", s)
+            if m:
+                members.add(m.group(1))
+    else:
+        for m in CS_MEMBER_RE.findall(body):
+            if m != name and m not in CS_IGNORED_MEMBERS:
+                members.add(m)
+        # Interface members (often omit `public`)
+        if kind == "interface":
+            for m in re.finditer(
+                r"^\s*(?:[A-Za-z0-9_<>,\.\[\]\?\s]+?)\s+([A-Za-z_][A-Za-z0-9_]*)\s*(?:\(|\{|=>)",
+                body,
+                re.MULTILINE,
+            ):
+                ident = m.group(1)
+                if ident != name and ident not in CS_IGNORED_MEMBERS and ident not in ("return", "if", "for"):
+                    members.add(ident)
+    return members
+
 
 def detect_cs_projects(root: Path) -> Dict[Path, str]:
-    """Find all .csproj directories under root (if multi-project)."""
     projects: Dict[Path, str] = {}
     for csproj in sorted(root.rglob("*.csproj")):
         projects[csproj.parent.resolve()] = csproj.stem
@@ -214,9 +371,12 @@ def resolve_project(file_path: Path, root: Path, projects: Dict[Path, str]) -> s
     return root.name
 
 
-def scan_csharp(root: Path, repo_root: Path) -> Tuple[Dict[str, TypeInfo], Dict[str, int]]:
+def scan_csharp(
+    root: Path, repo_root: Path
+) -> Tuple[Dict[str, TypeInfo], Dict[str, int], Dict[str, int]]:
     types: Dict[str, TypeInfo] = {}
     project_file_counts: Dict[str, int] = defaultdict(int)
+    project_loc: Dict[str, int] = defaultdict(int)
     projects = detect_cs_projects(root)
     is_multi_project = len(projects) > 1
 
@@ -231,6 +391,7 @@ def scan_csharp(root: Path, repo_root: Path) -> Tuple[Dict[str, TypeInfo], Dict[
             project = resolve_project(fpath, root, projects)
             project_file_counts[project] += 1
             text = fpath.read_text(encoding="utf-8", errors="ignore")
+            project_loc[project] += count_code_loc(text)
             try:
                 rel_file = str(fpath.resolve().relative_to(repo_root))
             except ValueError:
@@ -239,15 +400,9 @@ def scan_csharp(root: Path, repo_root: Path) -> Tuple[Dict[str, TypeInfo], Dict[
             ns_match = CS_NAMESPACE_RE.search(text)
             ns = ns_match.group(1) if ns_match else fallback_ns
 
-            found_types = CS_TYPE_RE.findall(text)
-            members = {
-                m
-                for m in CS_MEMBER_RE.findall(text)
-                if m not in ("get", "set", "init", "add", "remove", "operator", "implicit", "explicit")
-            }
-            for raw_kind, name in found_types:
-                kind = " ".join(raw_kind.split())
-                # For multi-project trees, key by (project, name) if duplicate names exist across projects
+            for match in CS_TYPE_RE.finditer(text):
+                kind = " ".join(match.group(1).split())
+                name = match.group(2)
                 key = f"{project}::{name}" if is_multi_project else name
                 if key not in types:
                     types[key] = TypeInfo(
@@ -258,53 +413,123 @@ def scan_csharp(root: Path, repo_root: Path) -> Tuple[Dict[str, TypeInfo], Dict[
                     )
                 if rel_file not in types[key].files:
                     types[key].files.append(rel_file)
-                types[key].members.update(members)
+                types[key].members.update(extract_cs_type_members(text, match, kind, name))
 
-    return types, dict(project_file_counts)
+    return types, dict(project_file_counts), dict(project_loc)
 
 
-def scan_rust(root: Optional[Path], repo_root: Path) -> Dict[str, TypeInfo]:
+def detect_rs_crate(file_path: Path, root: Path) -> str:
+    cur = file_path.parent.resolve()
+    root_res = root.resolve()
+    while True:
+        if (cur / "Cargo.toml").exists():
+            return cur.name
+        if cur == root_res or cur.parent == cur:
+            break
+        cur = cur.parent
+    return root.name
+
+
+def scan_rust(
+    root: Optional[Path], repo_root: Path
+) -> Tuple[Dict[str, TypeInfo], Dict[str, int], Dict[str, int]]:
     types: Dict[str, TypeInfo] = {}
+    crate_files: Dict[str, int] = defaultdict(int)
+    crate_loc: Dict[str, int] = defaultdict(int)
     if root is None or not root.exists():
-        return types
+        return types, {}, {}
+
+    # Track members per type across both type definition and `impl Type` blocks
     for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if d not in ("target", ".git")]
+        dirnames[:] = [d for d in dirnames if d not in ("target", ".git", "tests", "examples", "benches")]
         rel_dir = os.path.relpath(dirpath, root)
         mod = "netdxf" if rel_dir == "." else f"netdxf::{rel_dir.replace(os.sep, '::')}"
         for fname in sorted(filenames):
             if not fname.endswith(".rs"):
                 continue
             fpath = Path(dirpath) / fname
+            crate = detect_rs_crate(fpath, root)
+            crate_files[crate] += 1
             text = fpath.read_text(encoding="utf-8", errors="ignore")
+            crate_loc[crate] += count_code_loc(text)
             try:
                 rel_file = str(fpath.resolve().relative_to(repo_root))
             except ValueError:
                 rel_file = str(fpath)
-            found = list(RS_TYPE_RE.findall(text))
-            for bf in RS_BITFLAGS_RE.findall(text):
-                found.append(("bitflags", bf))
-            fns = set(RS_FN_RE.findall(text))
-            fields = set(RS_FIELD_RE.findall(text))
-            for kind, name in found:
+
+            for match in RS_TYPE_RE.finditer(text):
+                kind = match.group(1)
+                name = match.group(2)
                 if name not in types:
-                    types[name] = TypeInfo(name=name, kind=kind, namespace_or_mod=mod)
+                    types[name] = TypeInfo(name=name, kind=kind, namespace_or_mod=mod, project=crate)
                 if rel_file not in types[name].files:
                     types[name].files.append(rel_file)
-                types[name].members.update(fns)
-                types[name].members.update(fields)
-    return types
+                body = extract_brace_body(text, match.end())
+                if kind == "struct":
+                    types[name].members.update(RS_FIELD_RE.findall(body))
+                elif kind == "enum":
+                    types[name].members.update(RS_ENUM_VAR_RE.findall(body))
+                elif kind == "trait":
+                    types[name].members.update(re.findall(r"\bfn\s+([a-z_][a-z0-9_]*)", body))
+                    types[name].members.update(RS_CONST_RE.findall(body))
+
+            for match in RS_BITFLAGS_RE.finditer(text):
+                name = match.group(1)
+                if name not in types:
+                    types[name] = TypeInfo(name=name, kind="bitflags", namespace_or_mod=mod, project=crate)
+                if rel_file not in types[name].files:
+                    types[name].files.append(rel_file)
+                body = extract_brace_body(text, match.end())
+                types[name].members.update(re.findall(r"\bconst\s+([A-Z_][A-Z0-9_]*)\s*=", body))
+
+            # Collect `impl Type { ... }` and `impl Trait for Type { ... }` methods & consts
+            for match in re.finditer(
+                r"^\s*impl(?:<[^>]+>)?\s+(?:[A-Za-z0-9_:<>]+\s+for\s+)?([A-Za-z_][A-Za-z0-9_]*)",
+                text,
+                re.MULTILINE,
+            ):
+                tname = match.group(1)
+                body = extract_brace_body(text, match.end())
+                if not body:
+                    continue
+                if tname not in types:
+                    types[tname] = TypeInfo(name=tname, kind="struct", namespace_or_mod=mod, project=crate)
+                types[tname].members.update(RS_FN_RE.findall(body))
+                types[tname].members.update(RS_CONST_RE.findall(body))
+                # Trait impl methods omit `pub`
+                types[tname].members.update(re.findall(r"^\s*(?:async\s+)?fn\s+([a-z_][a-z0-9_]*)", body, re.MULTILINE))
+
+    return types, dict(crate_files), dict(crate_loc)
+
+
+def compare_members(cs: TypeInfo, rs: TypeInfo) -> Tuple[int, int, List[str]]:
+    """Return (matched_count, total_cs_members, missing_cs_member_names)."""
+    if not cs.members:
+        return (0, 0, [])
+    rs_norm = {normalize_name(m) for m in rs.members}
+    # Also accept `get_<x>` / `set_<x>` / `is_<x>` / `to_<x>` aliases
+    rs_expanded = set(rs_norm)
+    for m in list(rs_norm):
+        for prefix in ("get", "set", "is", "has", "try"):
+            if m.startswith(prefix) and len(m) > len(prefix):
+                rs_expanded.add(m[len(prefix) :])
+    matched = 0
+    missing: List[str] = []
+    for m in sorted(cs.members):
+        nm = normalize_name(m)
+        if nm in rs_expanded or (nm.startswith("is") and nm[2:] in rs_expanded):
+            matched += 1
+        else:
+            missing.append(m)
+    return (matched, len(cs.members), missing)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Compare C# (netDxf or shadow/src) and Rust public APIs."
+        description="Compare C# (netDxf or shadow/src) and Rust public APIs (types, members, and LOC depth)."
     )
     parser.add_argument("--cs-root", default="netDxf", help="Path to C# source root")
-    parser.add_argument(
-        "--rs-root",
-        default="rust/netdxf/src",
-        help="Path to Rust source root (optional if not yet ported)",
-    )
+    parser.add_argument("--rs-root", default="rust/netdxf/src", help="Path to Rust source root")
     parser.add_argument("--report", default=None, help="Optional Markdown report output path")
     parser.add_argument("--json", default=None, help="Optional JSON report output path")
     parser.add_argument("--title", default=None, help="Optional custom Markdown report title")
@@ -318,6 +543,12 @@ def main() -> int:
         "--fail-on-missing",
         action="store_true",
         help="Exit non-zero if any unmapped public C# types are missing in Rust",
+    )
+    parser.add_argument(
+        "--min-member-coverage",
+        type=float,
+        default=None,
+        help="Optional minimum member coverage percentage required for exit code 0",
     )
     args = parser.parse_args()
 
@@ -335,8 +566,8 @@ def main() -> int:
         else cs_root.resolve().name.lower() == "netdxf"
     )
 
-    cs_types, project_file_counts = scan_csharp(cs_root, repo_root)
-    rs_types = scan_rust(rs_root, repo_root)
+    cs_types, project_file_counts, project_cs_loc = scan_csharp(cs_root, repo_root)
+    rs_types, crate_file_counts, crate_rs_loc = scan_rust(rs_root, repo_root)
     is_multi_project = len(project_file_counts) > 1
 
     rs_by_norm: Dict[str, TypeInfo] = {normalize_name(k): v for k, v in rs_types.items()}
@@ -361,42 +592,55 @@ def main() -> int:
         else:
             missing.append(info)
 
+    # Member-level parity on matched types
+    total_cs_members = 0
+    matched_members = 0
+    member_details: List[Tuple[TypeInfo, TypeInfo, int, int, List[str]]] = []
+    proj_member_stats: Dict[str, List[int]] = defaultdict(lambda: [0, 0])  # [matched, total]
+
+    for cs, rs in matched:
+        m_ok, m_tot, m_miss = compare_members(cs, rs)
+        total_cs_members += m_tot
+        matched_members += m_ok
+        proj_member_stats[cs.project][0] += m_ok
+        proj_member_stats[cs.project][1] += m_tot
+        member_details.append((cs, rs, m_ok, m_tot, m_miss))
+
     total = len(cs_types)
     covered = len(matched) + len(mapped) + len(events)
-    pct = (covered / total * 100.0) if total else 100.0
+    type_pct = (covered / total * 100.0) if total else 100.0
+    member_pct = (matched_members / total_cs_members * 100.0) if total_cs_members else 100.0
+
+    total_cs_loc = sum(project_cs_loc.values())
+    total_rs_loc = sum(crate_rs_loc.values())
+    loc_pct = (total_rs_loc / total_cs_loc * 100.0) if total_cs_loc else 0.0
 
     print(f"C# root scanned:               {args.cs_root}")
     print(f"C# projects scanned:           {len(project_file_counts)}")
-    print(f"C# source files scanned:       {sum(project_file_counts.values())}")
+    print(f"C# source files / code LOC:    {sum(project_file_counts.values())} files / {total_cs_loc:,} LOC")
+    print(f"Rust source files / code LOC:  {sum(crate_file_counts.values())} files / {total_rs_loc:,} LOC ({loc_pct:.1f}% LOC depth)")
     print(f"C# public types scanned:       {total}")
     print(f"Rust public types scanned:     {len(rs_types)}")
-    print(f"Direct 1:1 matches:            {len(matched)}")
+    print(f"Direct 1:1 type matches:       {len(matched)}")
     print(f"Idiomatic Rust mappings:       {len(mapped)}")
     print(f"C# EventArgs/Delegates (N/A):  {len(events)}")
     print(f"Missing public C# types:       {len(missing)}")
-    print(f"Overall API coverage:          {pct:.1f}%")
+    print(f"Type API coverage:             {type_pct:.1f}%")
+    print(f"Matched-type member coverage:  {matched_members:,}/{total_cs_members:,} ({member_pct:.1f}%)")
 
     if is_multi_project:
-        print("\n--- Breakdown by C# Project ---")
-        by_proj: Dict[str, List[TypeInfo]] = defaultdict(list)
-        for t in cs_types.values():
-            by_proj[t.project].append(t)
+        print("\n--- Per-Project Parity & Depth ---")
         for proj in sorted(project_file_counts.keys()):
-            ptypes = by_proj.get(proj, [])
-            pmissing = sum(1 for t in missing if t.project == proj)
             crate, _ = suggest_rust_crate_and_stack(proj)
+            pm_ok, pm_tot = proj_member_stats[proj]
+            pm_pct = (pm_ok / pm_tot * 100.0) if pm_tot else 100.0
+            c_loc = project_cs_loc.get(proj, 0)
+            r_loc = crate_rs_loc.get(crate, 0)
+            l_pct = (r_loc / c_loc * 100.0) if c_loc else 0.0
             print(
-                f"  {proj:<42} files={project_file_counts[proj]:<3} "
-                f"types={len(ptypes):<3} missing={pmissing:<3} -> {crate}"
+                f"  {proj:<36} members={pm_ok:4d}/{pm_tot:<4d} ({pm_pct:5.1f}%)  "
+                f"LOC={r_loc:5d}/{c_loc:<5d} ({l_pct:5.1f}%) -> {crate}"
             )
-    elif missing:
-        print("\n--- Missing Public C# Types by Namespace ---")
-        by_ns: Dict[str, List[TypeInfo]] = defaultdict(list)
-        for t in missing:
-            by_ns[t.namespace_or_mod].append(t)
-        for ns in sorted(by_ns.keys()):
-            names = ", ".join(f"{t.name} ({t.kind})" for t in by_ns[ns])
-            print(f"  {ns}: {names}")
 
     if args.report:
         title = args.title or f"Automated API Parity Report: C# `{args.cs_root}` vs Rust `{args.rs_root}`"
@@ -407,17 +651,20 @@ def main() -> int:
             "",
             "## Summary",
             "",
-            "| Metric | Count |",
+            "| Metric | Value |",
             "|---|---|",
             f"| C# projects (`{args.cs_root}`) | {len(project_file_counts)} |",
-            f"| C# source files (`.cs`) | {sum(project_file_counts.values())} |",
+            f"| C# source files / code LOC | {sum(project_file_counts.values())} files / {total_cs_loc:,} LOC |",
+            f"| Rust source files / code LOC (`{args.rs_root}`) | {sum(crate_file_counts.values())} files / {total_rs_loc:,} LOC |",
+            f"| **Code LOC Depth (Rust / C#)** | **{loc_pct:.1f}%** |",
             f"| C# public types | {total} |",
-            f"| Rust public types (`{args.rs_root}`) | {len(rs_types)} |",
+            f"| Rust public types | {len(rs_types)} |",
             f"| Direct 1:1 matched types | {len(matched)} |",
             f"| Idiomatic Rust mapped types | {len(mapped)} |",
             f"| C# EventArgs / EventHandlers (N/A in Rust) | {len(events)} |",
             f"| Missing public C# types | {len(missing)} |",
-            f"| **Overall API Coverage** | **{pct:.1f}%** |",
+            f"| **Type API Coverage** | **{type_pct:.1f}%** |",
+            f"| **Matched-Type Member Coverage** | **{matched_members:,} / {total_cs_members:,} ({member_pct:.1f}%)** |",
             "",
         ]
 
@@ -425,23 +672,23 @@ def main() -> int:
         lines.append("### C# Public Types by Kind")
         lines.append("")
         lines.append("| Kind | Count |")
-        lines.append("|---|---|")
+        lines.append("|---|---:|")
         for kind, cnt in sorted(kind_counts.items(), key=lambda kv: (-kv[1], kv[0])):
             lines.append(f"| `{kind}` | {cnt} |")
         lines.append("")
 
         if is_multi_project:
-            lines.append("## Target Rust Architecture & Per-Project Breakdown")
+            lines.append("## Per-Project Parity & Implementation Depth")
             lines.append("")
             lines.append("> **Planned Rust Stack**:")
             lines.append("> - **Rendering**: Replace `SkiaSharp` (`netDxf.Shadow.Rendering.SkiaSharp`) with native Rust **Skia** (`skia-safe`).")
             lines.append("> - **UI / Studio**: Replace Blazor/Web UI (`netDxf.Shadow.Studio.*`) with **[FerroUI](https://github.com/wieslawsoltes/FerroUI/)**.")
-            lines.append("> - **Core DXF**: Build on top of the ported `rust/netdxf` crate (`100.0%` API parity).")
+            lines.append("> - **Core DXF**: Built on top of the ported `rust/netdxf` crate (`100.0%` type parity).")
             lines.append("")
             lines.append(
-                "| C# Project | `.cs` Files | Public Types | Missing | Planned Rust Crate | Target Stack |"
+                "| C# Project | Types | Missing | Member Parity | C# LOC | Rust LOC | LOC Depth | Planned Rust Crate | Target Stack |"
             )
-            lines.append("|---|---:|---:|---:|---|---|")
+            lines.append("|---|---:|---:|---:|---:|---:|---:|---|---|")
             by_proj_all: Dict[str, List[TypeInfo]] = defaultdict(list)
             by_proj_missing: Dict[str, List[TypeInfo]] = defaultdict(list)
             for t in cs_types.values():
@@ -450,52 +697,45 @@ def main() -> int:
                 by_proj_missing[t.project].append(t)
             for proj in sorted(project_file_counts.keys()):
                 crate, stack = suggest_rust_crate_and_stack(proj)
+                pm_ok, pm_tot = proj_member_stats[proj]
+                pm_pct = (pm_ok / pm_tot * 100.0) if pm_tot else 100.0
+                c_loc = project_cs_loc.get(proj, 0)
+                r_loc = crate_rs_loc.get(crate, 0)
+                l_pct = (r_loc / c_loc * 100.0) if c_loc else 0.0
                 lines.append(
-                    f"| `{proj}` | {project_file_counts[proj]} | {len(by_proj_all[proj])} "
-                    f"| {len(by_proj_missing[proj])} | `{crate}` | {stack} |"
+                    f"| `{proj}` | {len(by_proj_all[proj])} | {len(by_proj_missing[proj])} "
+                    f"| {pm_ok}/{pm_tot} ({pm_pct:.1f}%) | {c_loc:,} | {r_loc:,} | {l_pct:.1f}% "
+                    f"| `{crate}` | {stack} |"
                 )
+            lines.append("")
+
+        # Top types with missing public members (actionable depth backlog)
+        member_gaps = sorted(
+            [d for d in member_details if d[4]],
+            key=lambda d: (-len(d[4]), d[0].project, d[0].name),
+        )
+        if member_gaps:
+            lines.append("## Top Matched Types with Missing Public Members")
+            lines.append("")
+            lines.append("| Scope | Type | Matched Members | Missing Sample (up to 10) |")
+            lines.append("|---|---|---:|---|")
+            for cs, _rs, m_ok, m_tot, m_miss in member_gaps[:60]:
+                scope = cs.project if is_multi_project else cs.namespace_or_mod
+                sample = ", ".join(f"`{m}`" for m in m_miss[:10])
+                if len(m_miss) > 10:
+                    sample += f", … (+{len(m_miss) - 10})"
+                lines.append(f"| `{scope}` | `{cs.name}` | {m_ok}/{m_tot} | {sample} |")
             lines.append("")
 
         if missing:
             lines.append("## Missing Public C# Types")
             lines.append("")
-            if is_multi_project:
-                by_proj_missing_sorted: Dict[str, List[TypeInfo]] = defaultdict(list)
-                for t in missing:
-                    by_proj_missing_sorted[t.project].append(t)
-                for proj in sorted(by_proj_missing_sorted.keys()):
-                    crate, stack = suggest_rust_crate_and_stack(proj)
-                    ptypes = sorted(
-                        by_proj_missing_sorted[proj],
-                        key=lambda x: (x.namespace_or_mod, x.name),
-                    )
-                    lines.append(f"### `{proj}` → `{crate}` ({len(ptypes)} types)")
-                    lines.append("")
-                    lines.append(f"- **Target Stack**: {stack}")
-                    lines.append("")
-                    lines.append("| Namespace | Type | Kind | Source File |")
-                    lines.append("|---|---|---|---|")
-                    for t in ptypes:
-                        lines.append(
-                            f"| `{t.namespace_or_mod}` | `{t.name}` | `{t.kind}` | `{t.files[0]}` |"
-                        )
-                    lines.append("")
-            else:
-                lines.append("| Namespace | Type | Kind | Source File |")
-                lines.append("|---|---|---|---|")
-                for t in missing:
-                    lines.append(
-                        f"| `{t.namespace_or_mod}` | `{t.name}` | `{t.kind}` | `{t.files[0]}` |"
-                    )
-                lines.append("")
-
-        if matched:
-            lines.append("## Direct 1:1 Matched Types")
-            lines.append("")
-            lines.append("| C# Type | Rust Type | Rust Module |")
-            lines.append("|---|---|---|")
-            for cs, rs in matched:
-                lines.append(f"| `{cs.name}` | `{rs.name}` | `{rs.namespace_or_mod}` |")
+            lines.append("| Namespace | Type | Kind | Source File |")
+            lines.append("|---|---|---|---|")
+            for t in missing:
+                lines.append(
+                    f"| `{t.namespace_or_mod}` | `{t.name}` | `{t.kind}` | `{t.files[0]}` |"
+                )
             lines.append("")
 
         if mapped:
@@ -516,26 +756,29 @@ def main() -> int:
             "rs_root": args.rs_root,
             "cs_projects": len(project_file_counts),
             "cs_files": sum(project_file_counts.values()),
-            "cs_total": total,
-            "rs_total": len(rs_types),
-            "matched": len(matched),
-            "mapped": len(mapped),
+            "cs_code_loc": total_cs_loc,
+            "rs_files": sum(crate_file_counts.values()),
+            "rs_code_loc": total_rs_loc,
+            "loc_depth_percent": round(loc_pct, 2),
+            "cs_total_types": total,
+            "rs_total_types": len(rs_types),
+            "matched_types": len(matched),
+            "mapped_types": len(mapped),
             "events": len(events),
-            "missing": [
-                {
-                    "project": t.project,
-                    "name": t.name,
-                    "kind": t.kind,
-                    "namespace": t.namespace_or_mod,
-                    "files": t.files,
-                }
-                for t in missing
-            ],
-            "coverage_percent": round(pct, 2),
+            "missing_types": len(missing),
+            "type_coverage_percent": round(type_pct, 2),
+            "matched_members": matched_members,
+            "total_cs_members": total_cs_members,
+            "member_coverage_percent": round(member_pct, 2),
         }
         Path(args.json).write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
-    return 1 if (args.fail_on_missing and missing) else 0
+    exit_code = 0
+    if args.fail_on_missing and missing:
+        exit_code = 1
+    if args.min_member_coverage is not None and member_pct < args.min_member_coverage:
+        exit_code = 1
+    return exit_code
 
 
 if __name__ == "__main__":
