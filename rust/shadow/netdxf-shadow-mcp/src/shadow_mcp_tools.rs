@@ -20,6 +20,10 @@ impl ShadowMcpTools {
             "shadow.entities.list",
             "shadow.references.capture",
             "shadow.references.validate",
+            "shadow.object.properties",
+            "shadow.object.incoming",
+            "shadow.object.inline",
+            "shadow.objects.ordered",
         ]
     }
 
@@ -49,6 +53,37 @@ impl ShadowMcpTools {
                 let reference: DrawingObjectReference =
                     serde_json::from_value(args.clone()).map_err(|e| e.to_string())?;
                 Ok(serde_json::json!({ "valid": ctx.validate_reference(&reference) }))
+            }
+            "shadow.object.properties" => {
+                let id_str = args
+                    .get("objectId")
+                    .and_then(Value::as_str)
+                    .ok_or_else(|| "Missing objectId".to_string())?;
+                let props = Self::properties(ctx, &ObjectId::new(id_str));
+                serde_json::to_value(props).map_err(|e| e.to_string())
+            }
+            "shadow.object.incoming" => {
+                let id_str = args
+                    .get("objectId")
+                    .and_then(Value::as_str)
+                    .ok_or_else(|| "Missing objectId".to_string())?;
+                let incoming: Vec<String> = Self::incoming(ctx, &ObjectId::new(id_str))
+                    .into_iter()
+                    .map(|o| o.0)
+                    .collect();
+                Ok(serde_json::json!({ "incoming": incoming }))
+            }
+            "shadow.object.inline" => {
+                let id_str = args
+                    .get("objectId")
+                    .and_then(Value::as_str)
+                    .ok_or_else(|| "Missing objectId".to_string())?;
+                Self::inline(ctx, &ObjectId::new(id_str))
+                    .ok_or_else(|| format!("Object '{id_str}' not found"))
+            }
+            "shadow.objects.ordered" => {
+                let ids: Vec<String> = Self::ordered(ctx).into_iter().map(|o| o.0).collect();
+                Ok(serde_json::json!({ "objects": ids }))
             }
             _ => Err(format!("Unknown MCP tool '{tool}'")),
         }
