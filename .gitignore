@@ -203,3 +203,8 @@ __pycache__/
 
 # Generated conformance fixtures, reports, and source audit output
 /artifacts/
+
+# Rust build artifacts
+/rust/target/
+rust/Cargo.lock
+

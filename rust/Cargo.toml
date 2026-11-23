@@ -1,0 +1,31 @@
+[workspace]
+resolver = "2"
+members = [
+    "netdxf",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.80"
+license = "MIT"
+repository = "https://github.com/wieslawsoltes/netDxf"
+authors = ["Daniel Carvajal (upstream netDxf)", "Wieslaw Soltes"]
+
+[workspace.dependencies]
+bitflags = "2"
+indexmap = "2"
+rustc-hash = "2"
+thiserror = "2"
+encoding_rs = "0.8"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+opt-level = 3

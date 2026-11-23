@@ -1,0 +1,22 @@
+[package]
+name = "netdxf"
+description = "High-performance idiomatic Rust port of the netDxf AutoCAD DXF reader/writer library"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+bitflags.workspace = true
+indexmap.workspace = true
+rustc-hash.workspace = true
+thiserror.workspace = true
+encoding_rs.workspace = true
+
+[dev-dependencies]
+tempfile = "3"
