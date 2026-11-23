@@ -13,5 +13,9 @@ pub struct ChatGptResponsesContract;
 
 impl ChatGptResponsesContract {
     pub const ENDPOINT: &'static str = "https://api.openai.com/v1/responses";
+
+    pub fn normalize(payload: Value) -> Value {
+        payload
+    }
 }
 

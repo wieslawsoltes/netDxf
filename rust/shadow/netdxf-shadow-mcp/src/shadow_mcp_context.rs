@@ -91,6 +91,7 @@ impl ShadowMcpContext {
             r#type: obj.short_type().to_string(),
             occurrence_key: id.as_str().to_string(),
             insert_path: Vec::new(),
+            ..Default::default()
         })
     }
 

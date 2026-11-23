@@ -33,4 +33,9 @@ impl DxfLightList {
             entries: Vec::new(),
         }
     }
+
+    #[inline]
+    pub fn stored_version(&self) -> i32 {
+        self.version
+    }
 }

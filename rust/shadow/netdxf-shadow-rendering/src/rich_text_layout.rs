@@ -16,6 +16,16 @@ pub struct TextRunMetrics {
     pub descent: f64,
 }
 
+impl TextRunMetrics {
+    pub fn advance(&self) -> f64 {
+        self.width
+    }
+
+    pub fn glyph_bounds(&self) -> Bounds2 {
+        Bounds2::new(0.0, -self.descent, self.width, self.ascent)
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct PositionedTextRun {
     pub text: String,

@@ -20,6 +20,8 @@ pub struct HatchPatternOptions {
     pub boundary_tolerance: f64,
     pub maximum_rows: usize,
     pub maximum_segments: usize,
+    pub maximum_boundary_points: usize,
+    pub maximum_edge_visits: usize,
 }
 
 impl Default for HatchPatternOptions {
@@ -28,6 +30,8 @@ impl Default for HatchPatternOptions {
             boundary_tolerance: 0.01,
             maximum_rows: 100_000,
             maximum_segments: 500_000,
+            maximum_boundary_points: 262_144,
+            maximum_edge_visits: 1_000_000,
         }
     }
 }
@@ -38,9 +42,19 @@ pub struct DashInterval {
     pub end: f64,
 }
 
+impl DashInterval {
+    pub fn is_dot(&self) -> bool {
+        (self.end - self.start).abs() <= 1e-9
+    }
+}
+
 pub struct DashPattern;
 
 impl DashPattern {
+    pub fn clip(dashes: &[f64], start: f64, end: f64) -> Vec<DashInterval> {
+        Self::intervals(dashes, start, end)
+    }
+
     pub fn intervals(dashes: &[f64], start: f64, end: f64) -> Vec<DashInterval> {
         if dashes.is_empty() || end <= start {
             return if end > start {
@@ -76,6 +90,14 @@ impl DashPattern {
 pub struct HatchPatternGenerator;
 
 impl HatchPatternGenerator {
+    pub fn generate(
+        bounds: Bounds2,
+        pattern: &CadPatternLine,
+        options: &HatchPatternOptions,
+    ) -> Vec<(Vec3, Vec3)> {
+        Self::generate_line_rows(bounds, pattern, options)
+    }
+
     pub fn generate_line_rows(
         bounds: Bounds2,
         pattern: &CadPatternLine,

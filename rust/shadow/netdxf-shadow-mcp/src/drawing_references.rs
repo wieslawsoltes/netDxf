@@ -11,15 +11,26 @@ use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use std::sync::Arc;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DrawingReferenceIdentity {
     pub document_id: String,
     pub revision: i64,
 }
 
+impl DrawingReferenceIdentity {
+    pub fn workspace_id(&self) -> Option<&str> {
+        None
+    }
+
+    pub fn view_version(&self) -> i64 {
+        self.revision
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DrawingObjectReference {
     pub document_id: String,
+    pub workspace_id: Option<String>,
     pub revision: i64,
     pub view_version: i64,
     pub layout: String,
@@ -43,15 +54,31 @@ pub struct DrawingReferenceCaptureRequest {
     pub ids: Vec<ObjectId>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DrawingReferenceSet {
     pub identity: DrawingReferenceIdentity,
     pub objects: Vec<DrawingObjectReference>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+impl DrawingReferenceSet {
+    pub fn references(&self) -> &[DrawingObjectReference] {
+        &self.objects
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DrawingReferenceValidationRequest {
     pub reference_set: DrawingReferenceSet,
+}
+
+impl DrawingReferenceValidationRequest {
+    pub fn references(&self) -> &[DrawingObjectReference] {
+        &self.reference_set.objects
+    }
+
+    pub fn refresh(&self) -> bool {
+        false
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]

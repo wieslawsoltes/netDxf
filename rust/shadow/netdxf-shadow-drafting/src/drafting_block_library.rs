@@ -11,6 +11,7 @@ use std::collections::BTreeMap;
 pub enum BlockLibraryConflict {
     #[default]
     Skip,
+    Reject,
     Overwrite,
     Rename,
 }
@@ -19,6 +20,7 @@ pub enum BlockLibraryConflict {
 pub enum BlockLibraryResourceConflict {
     #[default]
     KeepTarget,
+    Reuse,
     UseSource,
 }
 
@@ -79,6 +81,10 @@ pub struct BlockLibraryPlan {
 pub struct DraftingBlockLibrary;
 
 impl DraftingBlockLibrary {
+    pub fn import(request: &BlockLibraryImport, limits: &BlockLibraryLimits) -> BlockLibraryPlan {
+        Self::plan_import(request, limits)
+    }
+
     pub fn plan_import(request: &BlockLibraryImport, limits: &BlockLibraryLimits) -> BlockLibraryPlan {
         let imported_blocks = request
             .block_names

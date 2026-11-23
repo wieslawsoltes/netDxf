@@ -12,6 +12,7 @@ pub enum CadLinetypeAlignment {
     #[default]
     Continuous,
     PerSegment,
+    Periodic,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -23,6 +24,12 @@ pub struct CadStyle {
     pub layer: String,
     pub linetype: Option<CadLinetype>,
     pub alignment: CadLinetypeAlignment,
+}
+
+impl CadStyle {
+    pub fn linetype_alignment(&self) -> CadLinetypeAlignment {
+        self.alignment
+    }
 }
 
 impl Default for CadStyle {
@@ -43,6 +50,12 @@ impl Default for CadStyle {
 pub struct CadContour {
     pub curves: Vec<Curve3>,
     pub closed: bool,
+}
+
+impl CadContour {
+    pub fn restart_linetype_at_curves(&self) -> bool {
+        false
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -152,6 +165,16 @@ pub struct CadOccurrence {
     pub components: Vec<CadComponent>,
 }
 
+impl CadOccurrence {
+    pub fn source_to_world(&self) -> Affine3 {
+        self.transform
+    }
+
+    pub fn is_presentation_only(&self) -> bool {
+        false
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CadScene {
     pub document_id: String,
@@ -159,6 +182,12 @@ pub struct CadScene {
     pub layout: String,
     pub occurrences: Vec<CadOccurrence>,
     pub bounds: Bounds2,
+}
+
+impl CadScene {
+    pub fn diagnostics(&self) -> &[String] {
+        &[]
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -191,5 +220,9 @@ impl Default for SceneOptions {
 /// Projects a single shadow entity into [`CadGeometry`].
 pub trait IEntityProjector: Send + Sync {
     fn project(&self, snapshot: &ShadowSnapshot, entity_id: &ObjectId) -> Option<CadGeometry>;
+
+    fn try_project(&self, snapshot: &ShadowSnapshot, entity_id: &ObjectId) -> Option<CadGeometry> {
+        self.project(snapshot, entity_id)
+    }
 }
 

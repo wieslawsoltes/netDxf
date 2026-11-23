@@ -13,6 +13,7 @@ impl StudioHttp {
             ok: false,
             payload: Value::Null,
             error: Some(message.into()),
+            ..Default::default()
         }
     }
 
@@ -29,6 +30,7 @@ impl StudioHttp {
             ok: true,
             payload,
             error: None,
+            ..Default::default()
         }
     }
 }

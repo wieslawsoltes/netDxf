@@ -35,6 +35,7 @@ pub struct DomainPortNode {
     pub id: usize,
     pub key: String,
     pub entity: ObjectId,
+    pub tag: Option<String>,
     pub port_name: String,
     pub port: String,
     pub kind: String,
@@ -307,6 +308,8 @@ pub struct DomainIsolationAssessment {
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainConnectivityIsolation {
+    pub source: Option<usize>,
+    pub target: Option<usize>,
     pub direction: String,
     pub options: DomainIsolationOptions,
     pub exclusions: Vec<DomainIsolationExclusion>,
@@ -322,6 +325,8 @@ pub struct DomainConnectivityIsolation {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainStructureOptions {
     pub maximum_loops: usize,
+    pub maximum_proof_steps: usize,
+    pub maximum_search_work: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -406,10 +411,20 @@ pub struct DomainPortVisit {
     pub connection: Option<usize>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainConnectionProof {
     pub connected: bool,
     pub path: Vec<DomainPortVisit>,
+}
+
+impl DomainConnectionProof {
+    pub fn nodes(&self) -> Vec<usize> {
+        self.path.iter().map(|v| v.node).collect()
+    }
+
+    pub fn edges(&self) -> Vec<usize> {
+        self.path.iter().filter_map(|v| v.connection).collect()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -421,8 +436,10 @@ pub struct DomainConnectivityWalk {
     pub complete: bool,
     pub scope_complete: bool,
     pub depth_limit_reached: bool,
+    pub visit_limit_reached: bool,
     pub examined_edges: usize,
     pub path: Vec<DomainPortVisit>,
+    pub visits: Vec<DomainPortVisit>,
     pub proof_to: Option<DomainConnectionProof>,
 }
 

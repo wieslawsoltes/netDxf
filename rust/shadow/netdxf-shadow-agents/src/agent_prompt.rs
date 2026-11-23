@@ -74,6 +74,10 @@ impl AgentSession {
         &self.state.plan
     }
 
+    pub fn transcript(&self) -> &[AgentMessageRecord] {
+        &self.messages
+    }
+
     pub fn set_plan(&mut self, plan: Vec<AgentPlanStep>) {
         self.state.plan = plan;
     }

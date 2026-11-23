@@ -37,3 +37,9 @@ impl IWorkflowDriver for StudioWorkflowDriver {
     }
 }
 
+impl StudioWorkflowDriver {
+    pub fn initialize_async(&mut self) -> Result<(), String> {
+        Ok(())
+    }
+}
+

@@ -22,6 +22,13 @@ pub struct DxfVersionCompatibilityDiagnostic {
     pub message: String,
 }
 
+impl DxfVersionCompatibilityDiagnostic {
+    #[inline]
+    pub fn source_object(&self) -> Option<&str> {
+        self.source_handle.as_deref()
+    }
+}
+
 /// Individual compatibility finding produced by `DxfDocument::check_version_compatibility`.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct DxfVersionCompatibilityIssue {

@@ -66,10 +66,16 @@ pub struct RichTextInline {
     pub style: RichTextStyle,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct TextFormatDiagnostic {
     pub offset: usize,
     pub message: String,
+}
+
+impl TextFormatDiagnostic {
+    pub fn code(&self) -> &'static str {
+        "FORMAT_DIAGNOSTIC"
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -83,6 +89,8 @@ pub struct RichTextDocument {
 pub struct RichTextParseOptions {
     pub maximum_length: usize,
     pub maximum_depth: usize,
+    pub maximum_characters: usize,
+    pub maximum_inlines: usize,
 }
 
 impl Default for RichTextParseOptions {
@@ -90,6 +98,8 @@ impl Default for RichTextParseOptions {
         Self {
             maximum_length: 1_048_576,
             maximum_depth: 64,
+            maximum_characters: 1_048_576,
+            maximum_inlines: 65_536,
         }
     }
 }

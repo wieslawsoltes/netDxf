@@ -58,9 +58,11 @@ impl BrowserReply {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct BrowserNotice {
     pub topic: String,
+    pub event_id: u64,
     pub payload: Value,
+    pub data: Value,
 }
 

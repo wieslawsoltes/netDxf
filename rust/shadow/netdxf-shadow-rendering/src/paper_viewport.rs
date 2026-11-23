@@ -15,6 +15,19 @@ pub struct RenderClip {
     pub polygon: Vec<Vec3>,
 }
 
+impl RenderClip {
+    pub fn contours(&self) -> Vec<RenderContour> {
+        if self.polygon.is_empty() {
+            Vec::new()
+        } else {
+            vec![RenderContour {
+                points: self.polygon.clone(),
+                closed: true,
+            }]
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct PaperViewportProjection {
     pub viewport_entity: Option<ObjectId>,

@@ -34,4 +34,9 @@ impl DxfSortentsTable {
             entries: Vec::new(),
         }
     }
+
+    #[inline]
+    pub fn block_record(&self) -> Option<&str> {
+        self.block_record_handle.as_deref()
+    }
 }

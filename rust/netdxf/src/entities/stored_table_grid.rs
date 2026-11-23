@@ -20,4 +20,8 @@ impl StoredTableGrid {
     pub fn column_count(&self) -> usize {
         self.column_widths.len()
     }
+
+    pub fn cells(&self) -> usize {
+        self.row_heights.len() * self.column_widths.len()
+    }
 }

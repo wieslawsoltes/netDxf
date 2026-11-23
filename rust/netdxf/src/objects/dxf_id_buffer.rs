@@ -20,4 +20,9 @@ impl DxfIdBuffer {
             object_handles: Vec::new(),
         }
     }
+
+    #[inline]
+    pub fn references(&self) -> &[String] {
+        &self.object_handles
+    }
 }

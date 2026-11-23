@@ -106,6 +106,12 @@ pub struct ReferenceComponentAnalysis {
     pub condensation_edges: Vec<ReferenceCondensationEdge>,
 }
 
+impl ReferenceComponentAnalysis {
+    pub fn complete(&self) -> bool {
+        !self.scope.truncated
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ReferencePathOptions {
     pub direction: ReferenceGraphDirection,
@@ -155,6 +161,26 @@ pub struct ReferenceImpactResult {
     pub scope: ReferenceGraph,
     pub visits: Vec<ReferenceImpactVisit>,
     pub examined_edges: usize,
+}
+
+impl ReferenceImpactResult {
+    pub fn complete(&self) -> bool {
+        !self.scope.truncated
+    }
+
+    pub fn path_to_root(&self, id: &str) -> Vec<String> {
+        let mut path = Vec::new();
+        let mut cur = Some(id.to_string());
+        while let Some(c) = cur {
+            path.push(c.clone());
+            cur = self
+                .visits
+                .iter()
+                .find(|v| v.id == c)
+                .and_then(|v| v.predecessor.clone());
+        }
+        path
+    }
 }
 
 /// Indexed reference graph over a [`ShadowSnapshot`].

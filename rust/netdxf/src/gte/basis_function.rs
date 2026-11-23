@@ -23,6 +23,11 @@ pub struct BasisFunctionInput {
 }
 
 impl BasisFunctionInput {
+    #[inline]
+    pub fn num_unique_knots(&self) -> usize {
+        self.unique_knots.len()
+    }
+
     /// Creates an open uniform clamped knot vector on `[0, 1]`.
     pub fn open_uniform(num_controls: usize, degree: usize) -> Self {
         let num_unique = num_controls.saturating_sub(degree) + 1;

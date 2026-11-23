@@ -13,12 +13,21 @@ use std::collections::BTreeMap;
 pub enum LinetypeFrameMode {
     #[default]
     Planar,
+    AuthoredPlane,
     ParallelTransport,
 }
 
 pub struct LinetypeTransport;
 
 impl LinetypeTransport {
+    pub fn create(points: &[Vec3], normal_hint: Vec3) -> Vec<(Vec3, Vec3, Vec3)> {
+        Self::compute_frames(points, normal_hint)
+    }
+
+    pub fn at(frames: &[(Vec3, Vec3, Vec3)], index: usize) -> Option<(Vec3, Vec3, Vec3)> {
+        frames.get(index).copied()
+    }
+
     /// Computes orthonormal tangent/normal/binormal frames along a polyline.
     pub fn compute_frames(points: &[Vec3], normal_hint: Vec3) -> Vec<(Vec3, Vec3, Vec3)> {
         if points.len() < 2 {

@@ -18,6 +18,7 @@ pub struct EvaluationBudgetOptions {
     pub max_tokens: u64,
     pub max_cost_usd: f64,
     pub max_requests: usize,
+    pub budget_ledger: Option<BudgetLedger>,
 }
 
 impl Default for EvaluationBudgetOptions {
@@ -34,6 +35,7 @@ impl Default for EvaluationBudgetOptions {
             max_tokens: 1_000_000,
             max_cost_usd: 10.0,
             max_requests: 100,
+            budget_ledger: None,
         }
     }
 }
@@ -42,6 +44,8 @@ impl Default for EvaluationBudgetOptions {
 pub struct BudgetRequest {
     pub provider: String,
     pub model: String,
+    pub status: String,
+    pub started_at: Option<String>,
     pub tokens: u64,
     pub input_tokens: u64,
     pub output_tokens: u64,

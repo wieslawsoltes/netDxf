@@ -25,6 +25,8 @@ pub struct Text {
 }
 
 impl Text {
+    pub const DEFAULT_MIRR_TEXT: bool = false;
+
     pub fn new(value: impl Into<String>, position: Vector3, height: f64) -> Self {
         Self {
             common: EntityCommon::new(EntityType::Text, DxfObjectCode::TEXT),
@@ -40,6 +42,11 @@ impl Text {
             style: TextStyle::DEFAULT_NAME.to_string(),
             thickness: 0.0,
         }
+    }
+
+    #[inline]
+    pub fn width(&self) -> f64 {
+        self.width_factor
     }
 
     pub fn transform_by(&mut self, transformation: Matrix3, translation: Vector3) {

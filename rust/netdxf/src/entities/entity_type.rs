@@ -41,4 +41,6 @@ pub enum EntityType {
     Wipeout,
     XLine,
     Opaque,
+    OpaqueEntity,
+    StoredTable,
 }

@@ -17,6 +17,11 @@ impl Default for DxfDimensionPictureOptions {
 }
 
 impl DxfDimensionPictureOptions {
+    #[inline]
+    pub fn raw_options(&self) -> &Self {
+        self
+    }
+
     pub fn new(maximum_pictures: usize, maximum_picture_entities: usize) -> Result<Self> {
         if maximum_pictures < 1 {
             return Err(DxfError::InvalidValue(

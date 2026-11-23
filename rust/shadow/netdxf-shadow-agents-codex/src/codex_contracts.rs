@@ -43,4 +43,8 @@ impl CodexRpcException {
             data,
         }
     }
+
+    pub fn error_data(&self) -> Option<&Value> {
+        self.data.as_ref()
+    }
 }

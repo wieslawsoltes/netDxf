@@ -21,14 +21,25 @@ pub enum ShxEncoding {
 pub enum ShxEmbedding {
     #[default]
     Horizontal,
+    Allowed,
     DualOrientation,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ShxInstruction {
     pub opcode: u8,
     pub dx: i8,
     pub dy: i8,
+}
+
+impl ShxInstruction {
+    pub fn code(&self) -> u8 {
+        self.opcode
+    }
+
+    pub fn operands(&self) -> [i8; 2] {
+        [self.dx, self.dy]
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -45,6 +56,7 @@ pub struct ShxSymbol {
 pub struct ShxReadOptions {
     pub maximum_bytes: usize,
     pub maximum_symbols: usize,
+    pub maximum_instructions: usize,
 }
 
 impl Default for ShxReadOptions {
@@ -52,6 +64,7 @@ impl Default for ShxReadOptions {
         Self {
             maximum_bytes: 16 * 1024 * 1024,
             maximum_symbols: 65_536,
+            maximum_instructions: 65_536,
         }
     }
 }

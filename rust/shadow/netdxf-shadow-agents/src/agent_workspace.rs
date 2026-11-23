@@ -9,10 +9,20 @@ use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use thiserror::Error;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentFile {
     pub path: String,
     pub content: String,
+}
+
+impl AgentFile {
+    pub fn modified_at(&self) -> Option<&str> {
+        None
+    }
+
+    pub fn version(&self) -> u64 {
+        1
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -45,10 +55,20 @@ pub struct AgentSearchMatch {
     pub text: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentFileChange {
     pub path: String,
     pub kind: String,
+}
+
+impl AgentFileChange {
+    pub fn content(&self) -> Option<&str> {
+        None
+    }
+
+    pub fn expected_version(&self) -> Option<u64> {
+        None
+    }
 }
 
 pub trait IAgentWorkspace: Send + Sync {
@@ -116,6 +136,10 @@ pub trait IAgentTransactionalWorkspace: IAgentWorkspace {
     fn changes(&self) -> Vec<AgentFileChange>;
     fn commit(&mut self);
     fn rollback(&mut self);
+
+    fn apply(&mut self) {
+        self.commit();
+    }
 }
 
 #[derive(Debug, Default)]
@@ -227,6 +251,16 @@ impl IAgentTransactionalWorkspace for MemoryAgentWorkspace {
 pub struct AgentWorkspaceTools;
 
 impl AgentWorkspaceTools {
+    pub fn register() -> &'static [&'static str] {
+        &[
+            "workspace.list",
+            "workspace.read",
+            "workspace.write",
+            "workspace.delete",
+            "workspace.search",
+        ]
+    }
+
     pub fn search(workspace: &dyn IAgentWorkspace, needle: &str) -> Vec<AgentSearchMatch> {
         let mut hits = Vec::new();
         for info in workspace.list_files() {

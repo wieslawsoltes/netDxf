@@ -76,6 +76,10 @@ pub struct WorkflowRunReport {
 /// Execution backend for replaying workflow steps.
 pub trait IWorkflowDriver {
     fn execute(&mut self, operation: &str, arguments: &Value) -> Result<Value, String>;
+
+    fn initialize_async(&mut self) -> Result<(), String> {
+        Ok(())
+    }
 }
 
 /// Records executed operations into a [`WorkflowScenario`].
@@ -93,6 +97,14 @@ impl WorkflowRecorder {
             baseline,
             steps: Vec::new(),
         }
+    }
+
+    pub fn count(&self) -> usize {
+        self.steps.len()
+    }
+
+    pub fn snapshot(&self) -> WorkflowScenario {
+        self.build()
     }
 
     pub fn record(&mut self, operation: impl Into<String>, arguments: Value, expected: Value) {

@@ -10,6 +10,10 @@ use std::f64::consts::TAU;
 /// Cacheable entity projector with deterministic dependency tracking.
 pub trait ICacheableEntityProjector: IEntityProjector {
     fn projector_key(&self) -> &str;
+
+    fn revision(&self) -> i64 {
+        1
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

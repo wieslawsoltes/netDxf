@@ -181,6 +181,11 @@ impl HatchPattern {
         self.hatch_type
     }
 
+    #[inline]
+    pub fn r#type(&self) -> HatchType {
+        self.hatch_type
+    }
+
     /// Lists all pattern names defined in an AutoCAD `.pat` file.
     pub fn names_from_file(path: impl AsRef<Path>) -> Result<Vec<String>> {
         let text = fs::read_to_string(path)?;
@@ -587,9 +592,88 @@ pub enum EdgeType {
 /// Alias matching upstream nested `HatchBoundaryPath.Edge`.
 pub type Edge = HatchBoundaryPathEdge;
 
+impl HatchBoundaryPathEdge {
+    pub fn r#type(&self) -> EdgeType {
+        match self {
+            Self::Polyline { .. } => EdgeType::Polyline,
+            Self::Line { .. } => EdgeType::Line,
+            Self::Arc { .. } => EdgeType::Arc,
+            Self::Ellipse { .. } => EdgeType::Ellipse,
+            Self::Spline { .. } => EdgeType::Spline,
+        }
+    }
+
+    pub fn convert_to(&self) -> Option<EntityObject> {
+        match self {
+            Self::Line { start, end } => Some(EntityObject::Line(Box::new(
+                crate::entities::Line::new_2d(*start, *end),
+            ))),
+            Self::Arc {
+                center,
+                radius,
+                start_angle,
+                end_angle,
+                ..
+            } => Some(EntityObject::Arc(Box::new(crate::entities::Arc::new(
+                center.to_vector3(0.0),
+                *radius,
+                *start_angle,
+                *end_angle,
+            )))),
+            Self::Polyline {
+                vertexes,
+                is_closed,
+            } => {
+                let pts: Vec<Vector2> = vertexes.iter().map(|(p, _)| *p).collect();
+                Some(EntityObject::Polyline2D(Box::new(
+                    crate::entities::Polyline2D::from_points(pts, *is_closed),
+                )))
+            }
+            _ => None,
+        }
+    }
+}
+
 /// Polyline boundary path edge matching upstream nested `HatchBoundaryPath.Polyline`.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct Polyline {
     pub vertexes: Vec<Vector3>,
     pub is_closed: bool,
+}
+
+impl Polyline {
+    pub fn convert_from(entity: &EntityObject) -> Option<Self> {
+        match entity {
+            EntityObject::Polyline2D(p) => Some(Self {
+                vertexes: p
+                    .vertexes
+                    .iter()
+                    .map(|v| Vector3::new(v.position.x, v.position.y, v.bulge))
+                    .collect(),
+                is_closed: p.is_closed,
+            }),
+            _ => None,
+        }
+    }
+
+    pub fn convert_to(&self) -> EntityObject {
+        let mut poly = crate::entities::Polyline2D::new(Vec::new(), self.is_closed);
+        for v in &self.vertexes {
+            poly.vertexes.push(crate::entities::Polyline2DVertex {
+                position: Vector2::new(v.x, v.y),
+                bulge: v.z,
+                start_width: 0.0,
+                end_width: 0.0,
+            });
+        }
+        EntityObject::Polyline2D(Box::new(poly))
+    }
+
+    pub fn explode(&self) -> Vec<EntityObject> {
+        if let EntityObject::Polyline2D(poly) = self.convert_to() {
+            poly.explode()
+        } else {
+            Vec::new()
+        }
+    }
 }

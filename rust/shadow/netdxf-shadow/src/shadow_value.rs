@@ -13,6 +13,10 @@ impl ObjectId {
         Self(value.into())
     }
 
+    pub fn value(&self) -> &str {
+        &self.0
+    }
+
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -84,6 +88,10 @@ impl Default for ShadowValue {
 impl ShadowValue {
     pub const fn null() -> Self {
         Self::Null(NullValue)
+    }
+
+    pub fn from(value: impl Into<String>) -> Self {
+        Self::from_string(value)
     }
 
     pub fn from_string(value: impl Into<String>) -> Self {
@@ -241,6 +249,10 @@ impl ShadowObject {
             Some(idx) => &self.type_name[idx + 1..],
             None => &self.type_name,
         }
+    }
+
+    pub fn r#type(&self) -> &str {
+        &self.type_name
     }
 
     pub fn get(&self, property: &str) -> ShadowValue {

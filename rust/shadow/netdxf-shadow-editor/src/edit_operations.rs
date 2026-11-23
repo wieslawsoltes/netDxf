@@ -10,6 +10,14 @@ use std::sync::Arc;
 pub struct EditOperations;
 
 impl EditOperations {
+    pub fn translate(
+        snapshot: &ShadowSnapshot,
+        entities: &[ObjectId],
+        delta: Vec3,
+    ) -> ShadowEditBatch {
+        Self::move_entities(snapshot, entities, delta)
+    }
+
     pub fn move_entities(
         snapshot: &ShadowSnapshot,
         entities: &[ObjectId],

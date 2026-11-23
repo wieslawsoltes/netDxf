@@ -110,6 +110,7 @@ pub struct DxfSectionGeometrySettings {
     pub linetype_name: String,
     pub linetype_scale: f64,
     pub lineweight: i16,
+    pub plot_style_name: String,
     pub face_transparency: i32,
     pub edge_transparency: i32,
     pub hatch_pattern: String,

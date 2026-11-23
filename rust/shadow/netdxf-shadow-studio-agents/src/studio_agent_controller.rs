@@ -15,6 +15,7 @@ pub struct StudioAgentConfiguration {
     pub mode: String,
     pub permission_mode: String,
     pub max_turns: usize,
+    pub max_no_progress_turns: usize,
     pub max_output_tokens: usize,
     pub context_window_tokens: usize,
     pub success_criteria: Option<String>,

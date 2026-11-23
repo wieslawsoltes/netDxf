@@ -15,6 +15,7 @@ pub enum PerspectiveFieldOfView {
     #[default]
     Vertical,
     Horizontal,
+    TargetPlaneHeight,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -50,6 +51,21 @@ impl Default for PerspectiveOptions {
 pub struct PickingRay {
     pub origin: Vec3,
     pub direction: Vec3,
+}
+
+impl PickingRay {
+    pub fn try_intersect_plane(self, plane_point: Vec3, plane_normal: Vec3) -> Option<Vec3> {
+        let denom = Vec3::dot(self.direction, plane_normal);
+        if denom.abs() < 1e-12 {
+            return None;
+        }
+        let t = Vec3::dot(plane_point - self.origin, plane_normal) / denom;
+        if t <= 0.0 {
+            None
+        } else {
+            Some(self.origin + self.direction * t)
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -133,7 +149,9 @@ impl PerspectiveCamera {
         let aspect = (width / height.max(1.0)).max(1e-6);
         let half_tan = (self.options.fov_degrees.to_radians() * 0.5).tan();
         let (tan_x, tan_y) = match self.options.fov_mode {
-            PerspectiveFieldOfView::Vertical => (half_tan * aspect, half_tan),
+            PerspectiveFieldOfView::Vertical | PerspectiveFieldOfView::TargetPlaneHeight => {
+                (half_tan * aspect, half_tan)
+            }
             PerspectiveFieldOfView::Horizontal => (half_tan, half_tan / aspect),
         };
         let ndc_x = x / (z * tan_x);
@@ -149,7 +167,9 @@ impl PerspectiveCamera {
         let aspect = (width / height.max(1.0)).max(1e-6);
         let half_tan = (self.options.fov_degrees.to_radians() * 0.5).tan();
         let (tan_x, tan_y) = match self.options.fov_mode {
-            PerspectiveFieldOfView::Vertical => (half_tan * aspect, half_tan),
+            PerspectiveFieldOfView::Vertical | PerspectiveFieldOfView::TargetPlaneHeight => {
+                (half_tan * aspect, half_tan)
+            }
             PerspectiveFieldOfView::Horizontal => (half_tan, half_tan / aspect),
         };
         let ndc_x = (screen_x / width.max(1.0)) * 2.0 - 1.0;

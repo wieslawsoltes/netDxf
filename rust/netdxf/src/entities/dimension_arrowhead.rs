@@ -235,6 +235,10 @@ impl DimensionArrowhead {
         )
     }
 
+    pub fn r#box() -> Block {
+        Self::box_blank()
+    }
+
     pub fn closed_blank() -> Block {
         Self::make_block(
             "_CLOSEDBLANK",

@@ -62,6 +62,9 @@ pub enum MTextLineSpacingStyle {
 }
 
 impl MTextLineSpacingStyle {
+    pub const DEFAULT: Self = Self::AtLeast;
+    pub const MULTIPLE: Self = Self::AtLeast;
+
     pub fn from_i16(v: i16) -> Option<Self> {
         Some(match v {
             1 => Self::AtLeast,

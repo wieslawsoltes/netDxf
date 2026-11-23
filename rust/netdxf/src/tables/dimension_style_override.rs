@@ -41,6 +41,11 @@ pub struct DimensionStyleOverride {
 }
 
 impl DimensionStyleOverride {
+    #[inline]
+    pub fn r#type(&self) -> DimensionStyleOverrideType {
+        self.override_type
+    }
+
     /// Creates and validates a new [`DimensionStyleOverride`].
     pub fn new(
         override_type: DimensionStyleOverrideType,

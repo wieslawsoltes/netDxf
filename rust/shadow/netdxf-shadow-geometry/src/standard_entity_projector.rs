@@ -11,6 +11,12 @@ use std::f64::consts::TAU;
 #[derive(Debug, Default)]
 pub struct StandardEntityProjector;
 
+impl StandardEntityProjector {
+    pub fn bulge(start: Vec3, end: Vec3, _bulge_factor: f64) -> Curve3 {
+        Curve3::Line(crate::curves::LineCurve { a: start, b: end })
+    }
+}
+
 impl IEntityProjector for StandardEntityProjector {
     fn project(&self, snapshot: &ShadowSnapshot, entity_id: &ObjectId) -> Option<CadGeometry> {
         let reader = snapshot.read(entity_id.clone());

@@ -11,6 +11,11 @@ pub enum PlotPaperUnits {
     Pixels = 2,
 }
 
+impl PlotPaperUnits {
+    /// Upstream C# `PlotPaperUnits.Milimeters` compatibility alias.
+    pub const MILIMETERS: Self = Self::Millimeters;
+}
+
 /// Plot rotation (group code 73).
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 #[repr(i16)]

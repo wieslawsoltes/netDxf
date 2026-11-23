@@ -15,6 +15,12 @@ pub struct RenderContour {
     pub closed: bool,
 }
 
+impl RenderContour {
+    pub fn pattern_breaks(&self) -> &[usize] {
+        &[]
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RenderRegion {
     pub contours: Vec<RenderContour>,

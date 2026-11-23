@@ -64,11 +64,25 @@ pub struct DraftingResourceStatus {
     pub uses: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DraftingLinetype {
     pub name: String,
     pub description: String,
     pub length: f64,
+}
+
+impl DraftingLinetype {
+    pub fn segments(&self) -> &[LinetypeSegmentEdit] {
+        &[]
+    }
+
+    pub fn status(&self) -> DraftingResourceStatus {
+        DraftingResourceStatus {
+            name: self.name.clone(),
+            in_use: true,
+            ..Default::default()
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

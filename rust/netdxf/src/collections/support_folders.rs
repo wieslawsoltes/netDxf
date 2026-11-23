@@ -23,6 +23,10 @@ impl SupportFolders {
         false
     }
 
+    pub fn working_folder(&self) -> Option<PathBuf> {
+        std::env::current_dir().ok()
+    }
+
     pub fn add(&mut self, folder: impl Into<PathBuf>) {
         self.folders.push(folder.into());
     }

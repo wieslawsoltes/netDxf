@@ -14,6 +14,16 @@ pub struct CadModuleState {
     pub registered_modules: Vec<String>,
 }
 
+impl CadModuleState {
+    pub fn descriptor(&self) -> Option<&str> {
+        self.registered_modules.first().map(String::as_str)
+    }
+
+    pub fn enabled(&self) -> bool {
+        !self.registered_modules.is_empty()
+    }
+}
+
 #[derive(Default)]
 pub struct CadModuleRegistry {
     modules: BTreeMap<String, Box<dyn ICadModule>>,

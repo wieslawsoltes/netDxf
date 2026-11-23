@@ -7,12 +7,22 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainIssue {
     pub code: String,
     pub severity: DiagnosticSeverity,
     pub entity: Option<ObjectId>,
     pub message: String,
+}
+
+impl DomainIssue {
+    pub fn entities(&self) -> Vec<ObjectId> {
+        self.entity.iter().cloned().collect()
+    }
+
+    pub fn position(&self) -> Option<Vec3> {
+        None
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -29,6 +39,10 @@ pub struct DomainScan {
 pub struct DomainAnalysis;
 
 impl DomainAnalysis {
+    pub fn analyze(entities: Vec<DomainEntity>) -> DomainScan {
+        Self::scan(entities)
+    }
+
     pub fn scan(entities: Vec<DomainEntity>) -> DomainScan {
         let mut issues = Vec::new();
         for e in &entities {

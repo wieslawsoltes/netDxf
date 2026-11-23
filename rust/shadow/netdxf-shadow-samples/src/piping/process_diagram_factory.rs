@@ -8,6 +8,12 @@ use netdxf::entities::{Circle, EntityObject, Line};
 pub struct ProcessDiagramFactory;
 
 impl ProcessDiagramFactory {
+    pub const DRAWING_NAME: &'static str = "ProcessDiagram";
+
+    pub fn create() -> DxfDocument {
+        Self::create_basic_diagram()
+    }
+
     pub fn create_basic_diagram() -> DxfDocument {
         let mut doc = DxfDocument::new();
         doc.entities.add(EntityObject::Line(Box::new(Line::new(

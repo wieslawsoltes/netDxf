@@ -9,3 +9,9 @@ pub struct AgentHostApplication {
     pub options: AgentHostOptions,
 }
 
+impl AgentHostApplication {
+    pub fn build(options: AgentHostOptions) -> Self {
+        Self { options }
+    }
+}
+

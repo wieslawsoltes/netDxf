@@ -77,11 +77,22 @@ pub struct DxfRawHandleDiagnostic {
     pub message: String,
 }
 
+impl DxfRawHandleDiagnostic {
+    pub fn record(&self) -> usize {
+        0
+    }
+
+    pub fn tag_index(&self) -> usize {
+        0
+    }
+}
+
 /// Resource limits and traversal options for raw DXF handle indexing.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct DxfRawHandleIndexOptions {
     pub maximum_records: usize,
     pub maximum_diagnostics: usize,
+    pub maximum_occurrences: usize,
 }
 
 impl Default for DxfRawHandleIndexOptions {
@@ -89,6 +100,7 @@ impl Default for DxfRawHandleIndexOptions {
         Self {
             maximum_records: 1_000_000,
             maximum_diagnostics: 100_000,
+            maximum_occurrences: 5_000_000,
         }
     }
 }

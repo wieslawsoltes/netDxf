@@ -23,6 +23,8 @@ pub struct DraftingCommand {
     pub scale: Option<f64>,
     pub width: Option<f64>,
     pub text: Option<String>,
+    pub value: Option<f64>,
+    pub transform: Option<DraftingTransformOptions>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -32,10 +34,22 @@ pub struct DraftingTransformMeasure {
     pub scale: f64,
 }
 
+impl DraftingTransformMeasure {
+    pub fn points(&self) -> [Vec3; 1] {
+        [self.translation]
+    }
+
+    pub fn value(&self) -> f64 {
+        self.scale
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
 pub struct DraftingTransformOptions {
     pub copy: bool,
     pub uniform_scale: bool,
+    pub reference: Option<Vec3>,
+    pub target: Option<Vec3>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]

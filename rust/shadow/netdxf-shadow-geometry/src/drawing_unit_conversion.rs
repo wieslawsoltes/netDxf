@@ -11,6 +11,10 @@ use std::f64::consts::TAU;
 pub struct DrawingUnitConversion;
 
 impl DrawingUnitConversion {
+    pub fn factor(insunits: i32) -> f64 {
+        Self::meters_per_unit(insunits)
+    }
+
     pub fn meters_per_unit(insunits: i32) -> f64 {
         match insunits {
             1 => 0.0254,

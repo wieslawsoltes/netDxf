@@ -33,13 +33,23 @@ pub struct CadModuleCommand {
     pub fields: Vec<CadModuleField>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct CadModuleDescriptor {
     pub id: String,
     pub name: String,
     pub version: String,
     pub description: String,
     pub commands: Vec<CadModuleCommand>,
+}
+
+impl CadModuleDescriptor {
+    pub fn schema_version(&self) -> u32 {
+        1
+    }
+
+    pub fn standards(&self) -> &[String] {
+        &[]
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -96,6 +106,16 @@ pub struct CadModuleIssue {
     pub message: String,
 }
 
+impl CadModuleIssue {
+    pub fn entities(&self) -> Vec<ObjectId> {
+        self.entity.iter().cloned().collect()
+    }
+
+    pub fn position(&self) -> Option<Vec3> {
+        None
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleAnalysis {
     pub document_id: String,
@@ -137,5 +157,9 @@ pub trait ICadModule: Send + Sync {
         snapshot: &ShadowSnapshot,
         options: &CadModuleAnalysisOptions,
     ) -> CadModuleAnalysis;
+
+    fn plan(&self, _snapshot: &ShadowSnapshot, _request: &CadModuleCommandRequest) -> Option<Value> {
+        None
+    }
 }
 

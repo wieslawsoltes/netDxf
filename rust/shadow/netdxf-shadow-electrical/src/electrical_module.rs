@@ -12,6 +12,10 @@ use netdxf_shadow_symbols::{SymbolDefinition, SymbolPort, SymbolStroke, SymbolSt
 pub struct ElectricalModule;
 
 impl ElectricalModule {
+    pub fn descriptor() -> CadModuleDescriptor {
+        Self::create().descriptor
+    }
+
     pub fn create() -> DomainCadModule {
         DomainCadModule {
             descriptor: CadModuleDescriptor {

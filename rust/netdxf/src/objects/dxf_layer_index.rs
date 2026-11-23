@@ -18,6 +18,12 @@ impl Default for DxfLayerIndex {
     }
 }
 
+impl DxfLayerIndex {
+    pub fn set_entries(&mut self, entries: Vec<(String, i32)>) {
+        self.entries = entries;
+    }
+}
+
 /// Represents a DXF `LAYER_FILTER` object (`netDxf.Objects.DxfLayerFilter`).
 #[derive(Clone, Debug, PartialEq)]
 pub struct DxfLayerFilter {

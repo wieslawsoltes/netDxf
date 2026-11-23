@@ -68,6 +68,7 @@ pub struct DxfTableFormula {
 impl DxfTableFormula {
     pub const MAXIMUM_LENGTH: usize = 4096;
     pub const MAXIMUM_DEPTH: usize = 128;
+    pub const MAXIMUM_EVALUATION_DEPTH: usize = 128;
     pub const MAXIMUM_OPS: usize = 1_000_000;
 
     pub fn parse(expression: &str) -> Result<Self> {

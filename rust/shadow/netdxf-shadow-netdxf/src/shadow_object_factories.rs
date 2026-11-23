@@ -3,6 +3,18 @@ use netdxf_shadow::ObjectId;
 /// Resolves live source objects by [`ObjectId`].
 pub trait IShadowObjectResolver {
     fn contains(&self, id: &ObjectId) -> bool;
+
+    fn resolve(&self, id: &ObjectId) -> Option<ObjectId> {
+        if self.contains(id) {
+            Some(id.clone())
+        } else {
+            None
+        }
+    }
+
+    fn convert(&self, id: &ObjectId) -> Option<ObjectId> {
+        self.resolve(id)
+    }
 }
 
 /// Factory helpers for creating `netdxf` entities/table objects from shadow descriptors.

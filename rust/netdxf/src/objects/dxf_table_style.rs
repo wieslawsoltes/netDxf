@@ -329,6 +329,11 @@ pub struct DxfStoredTableContentValue {
 }
 
 impl DxfStoredTableContentValue {
+    #[inline]
+    pub fn original(&self) -> &Self {
+        self
+    }
+
     pub fn format_string(&self) -> &str {
         &self.formatting.format_string
     }

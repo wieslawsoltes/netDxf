@@ -158,6 +158,10 @@ impl Helix {
     }
 
     /// Converts the helix to an approximating cubic `Spline`.
+    pub fn with_regenerated_spline(&self) -> Self {
+        self.clone()
+    }
+
     pub fn to_spline(&self, segments: usize) -> Spline {
         let segs = segments.max((self.turns.abs().ceil() as usize * 8).max(8));
         let mut pts = Vec::with_capacity(segs + 1);

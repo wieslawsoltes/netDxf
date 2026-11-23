@@ -10,6 +10,26 @@ use std::collections::BTreeMap;
 pub struct SymbolAuthoring;
 
 impl SymbolAuthoring {
+    pub fn attach(entity: ObjectId, record: DomainRecord, position: Vec3) -> DomainEntity {
+        DomainEntity {
+            entity,
+            record,
+            position,
+        }
+    }
+
+    pub fn place(symbol: &SymbolDefinition, position: Vec3) -> DomainEntity {
+        DomainEntity {
+            entity: ObjectId::new(format!("SYM:{}", symbol.id)),
+            record: DomainRecord {
+                symbol_id: symbol.id.clone(),
+                domain: symbol.domain.clone(),
+                ..Default::default()
+            },
+            position,
+        }
+    }
+
     pub fn create_simple(
         id: impl Into<String>,
         name: impl Into<String>,

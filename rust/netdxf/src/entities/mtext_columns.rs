@@ -44,6 +44,21 @@ impl MTextColumns {
         self.column_type
     }
 
+    #[inline]
+    pub fn r#type(&self) -> MTextColumnType {
+        self.column_type
+    }
+
+    pub fn validate(&self) -> Result<(), String> {
+        if self.count < 0 {
+            return Err("MText column count cannot be negative.".to_string());
+        }
+        if self.width < 0.0 || self.gutter < 0.0 {
+            return Err("MText column width and gutter must be non-negative.".to_string());
+        }
+        Ok(())
+    }
+
     /// Computes total width across all columns including gutters.
     pub fn total_width(&self) -> f64 {
         if let Some(w) = self.stored_total_width {

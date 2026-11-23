@@ -30,6 +30,11 @@ impl UnderlayDefinition {
             item_name: "1".to_string(),
         })
     }
+
+    #[inline]
+    pub fn r#type(&self) -> UnderlayType {
+        self.underlay_type
+    }
 }
 
 impl TableObject for UnderlayDefinition {

@@ -212,7 +212,7 @@ RS_BITFLAGS_RE = re.compile(
 )
 
 RS_FN_RE = re.compile(
-    r"^\s*(?:\#\[[^\]]*\]\s*)*pub\s+(?:const\s+)?(?:async\s+)?fn\s+([A-Za-z_][A-Za-z0-9_]*)",
+    r"^\s*(?:\#\[[^\]]*\]\s*)*pub\s+(?:const\s+)?(?:async\s+)?fn\s+(?:r\#)?([A-Za-z_][A-Za-z0-9_]*)",
     re.MULTILINE,
 )
 
@@ -222,7 +222,7 @@ RS_FIELD_RE = re.compile(
 )
 
 RS_CONST_RE = re.compile(
-    r"^\s*(?:\#\[[^\]]*\]\s*)*pub\s+const\s+([A-Z_][A-Z0-9_]*)\s*:",
+    r"^\s*(?:\#\[[^\]]*\]\s*)*(?:pub\s+)?const\s+([A-Z_][A-Z0-9_]*)\s*:",
     re.MULTILINE,
 )
 
@@ -504,10 +504,15 @@ def scan_rust(
         re.MULTILINE,
     )
 
-    # Collect `impl Trait for Type` mappings so Type inherits Trait's default methods
+    # Collect `impl Trait for Type` and `pub trait Sub: Super` mappings so types/subtraits inherit members
     trait_impls: List[Tuple[str, str]] = []
     trait_impl_re = re.compile(
         r"^\s*impl(?:<[^>]+>)?\s+(?:[a-z0-9_]+::)*([A-Za-z_][A-Za-z0-9_]*)(?:<[^>]+>)?\s+for\s+([A-Za-z_][A-Za-z0-9_]*)",
+        re.MULTILINE,
+    )
+    trait_supers: List[Tuple[str, str]] = []
+    trait_super_re = re.compile(
+        r"^\s*pub\s+trait\s+([A-Za-z_][A-Za-z0-9_]*)\s*:\s*([A-Za-z0-9_:\+\s]+?)\s*\{",
         re.MULTILINE,
     )
 
@@ -534,6 +539,13 @@ def scan_rust(
 
             for tm in trait_impl_re.finditer(text):
                 trait_impls.append((tm.group(1), tm.group(2)))
+
+            for sm in trait_super_re.finditer(text):
+                sub_t = sm.group(1)
+                for part in sm.group(2).split("+"):
+                    sup_t = part.strip().split("::")[-1]
+                    if sup_t and sup_t not in ("Send", "Sync", "Sized", "Clone", "Copy", "Debug"):
+                        trait_supers.append((sup_t, sub_t))
 
             for match in RS_TYPE_RE.finditer(text):
                 kind = match.group(1)
@@ -576,6 +588,12 @@ def scan_rust(
                 types[tname].members.update(RS_CONST_RE.findall(body))
                 # Trait impl methods omit `pub`
                 types[tname].members.update(re.findall(r"^\s*(?:async\s+)?fn\s+([a-z_][a-z0-9_]*)", body, re.MULTILINE))
+
+    # Propagate supertrait methods to subtraits (`pub trait Sub: Super`)
+    for _ in range(2):
+        for sup_t, sub_t in trait_supers:
+            if sup_t in types and sub_t in types:
+                types[sub_t].members.update(types[sup_t].members)
 
     # Propagate trait default methods to implementing types (`impl Trait for Type`)
     for trait_name, type_name in trait_impls:

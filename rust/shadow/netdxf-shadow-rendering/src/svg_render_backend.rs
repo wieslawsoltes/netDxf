@@ -9,10 +9,20 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct SvgImageData {
     pub mime_type: String,
     pub bytes: Vec<u8>,
+}
+
+impl SvgImageData {
+    pub fn content_type(&self) -> &str {
+        &self.mime_type
+    }
+
+    pub fn data(&self) -> &[u8] {
+        &self.bytes
+    }
 }
 
 pub trait ISvgImageResolver: Send + Sync {

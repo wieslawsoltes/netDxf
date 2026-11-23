@@ -37,11 +37,21 @@ pub struct DraftingHatchPattern {
     pub lines: Vec<DraftingHatchLine>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct HatchAuthoringRequest {
     pub layer: String,
     pub pattern: DraftingHatchPattern,
     pub boundary: Vec<Vec3>,
+}
+
+impl HatchAuthoringRequest {
+    pub fn boundaries(&self) -> &[Vec3] {
+        &self.boundary
+    }
+
+    pub fn polygons(&self) -> &[Vec3] {
+        &self.boundary
+    }
 }
 
 pub struct DraftingHatches;

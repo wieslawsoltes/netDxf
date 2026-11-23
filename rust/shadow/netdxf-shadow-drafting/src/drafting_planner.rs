@@ -26,6 +26,7 @@ pub struct DraftingPlanner;
 pub enum BlockSourceDisposition {
     #[default]
     Retain,
+    Convert,
     ConvertToInsert,
     Delete,
 }

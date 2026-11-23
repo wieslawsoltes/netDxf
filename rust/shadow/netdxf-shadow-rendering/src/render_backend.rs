@@ -105,7 +105,7 @@ pub struct RenderFrame {
     pub visible_items: Vec<RenderItem>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct RenderImage {
     pub width: u32,
     pub height: u32,
@@ -113,12 +113,26 @@ pub struct RenderImage {
     pub bytes: Vec<u8>,
 }
 
+impl RenderImage {
+    pub fn content_type(&self) -> &str {
+        &self.format
+    }
+}
+
 pub trait IRenderBackend: Send + Sync {
     fn render(&self, scene: &RenderScene, frame: &RenderFrame) -> Result<RenderImage, String>;
+
+    fn id(&self) -> &str {
+        "backend"
+    }
 }
 
 pub trait IRasterRenderBackend: IRenderBackend {
     fn render_rgba8(&self, scene: &RenderScene, frame: &RenderFrame) -> Result<Vec<u8>, String>;
+
+    fn render_pixels(&self, scene: &RenderScene, frame: &RenderFrame) -> Result<Vec<u8>, String> {
+        self.render_rgba8(scene, frame)
+    }
 }
 
 pub struct RenderHost {

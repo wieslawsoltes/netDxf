@@ -16,6 +16,14 @@ impl PolyfaceMeshFace {
     pub fn new(vertex_indexes: Vec<i16>) -> Self {
         Self { vertex_indexes }
     }
+
+    pub fn color(&self) -> Option<crate::AciColor> {
+        None
+    }
+
+    pub fn layer(&self) -> Option<&str> {
+        None
+    }
 }
 
 /// Represents a DXF `POLYLINE` polyface mesh entity.

@@ -11,6 +11,14 @@ use std::collections::BTreeMap;
 
 pub trait ITextLayoutEngine: Send + Sync {
     fn measure_run(&self, text: &str, style: &RichTextStyle) -> TextRunMetrics;
+
+    fn revision(&self) -> i64 {
+        0
+    }
+
+    fn layout(&self, _doc: &RichTextDocument, _line_spacing: f64) -> RichTextLayoutResult {
+        RichTextLayoutResult::default()
+    }
 }
 
 #[derive(Debug, Default, Clone, Copy)]

@@ -67,6 +67,17 @@ impl MText {
         self.value.push_str("}\\P");
     }
 
+    /// Appends formatted text to this `MText` value.
+    pub fn write(&mut self, text: &str) {
+        self.value.push_str(text);
+    }
+
+    /// Appends a stacked fraction `{\Snum/den;}` to this `MText` value.
+    pub fn write_fraction(&mut self, numerator: &str, denominator: &str) {
+        self.value
+            .push_str(&format!("{{\\S{numerator}/{denominator};}}"));
+    }
+
     /// Converts the MText column metadata to `MTextColumnStorage::Embedded`.
     pub fn convert_to_embedded_columns(&mut self) {
         let cols = self.columns.get_or_insert_with(MTextColumns::default);

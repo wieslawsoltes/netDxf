@@ -128,6 +128,11 @@ pub struct FIQueryIntervals {
 }
 
 impl FIQueryIntervals {
+    #[inline]
+    pub fn r#type(&self) -> FIQueryIntervalsType {
+        self.query_type
+    }
+
     /// Static find-intersection between two finite intervals `[t0, t1]`.
     pub fn finite_finite(interval0: [f64; 2], interval1: [f64; 2]) -> Self {
         if interval0[1] < interval1[0] || interval0[0] > interval1[1] {

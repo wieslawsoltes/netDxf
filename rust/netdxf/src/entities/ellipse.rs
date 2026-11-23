@@ -65,6 +65,16 @@ impl Ellipse {
         (self.minor_axis / self.major_axis).clamp(f64::EPSILON, 1.0)
     }
 
+    pub fn set_axis(&mut self, major_axis: f64, minor_axis: f64) {
+        let (maj, min) = if major_axis >= minor_axis {
+            (major_axis, minor_axis)
+        } else {
+            (minor_axis, major_axis)
+        };
+        self.major_axis = maj.abs().max(f64::EPSILON);
+        self.minor_axis = min.abs().max(f64::EPSILON);
+    }
+
     /// Major axis endpoint relative to center in WCS (DXF group 11/21/31).
     pub fn end_major_axis(&self) -> Vector3 {
         self.major_axis_endpoint_wcs()

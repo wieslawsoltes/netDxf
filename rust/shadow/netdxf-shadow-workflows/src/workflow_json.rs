@@ -5,6 +5,14 @@ use serde_json::Value;
 pub struct WorkflowJson;
 
 impl WorkflowJson {
+    pub fn write(scenario: &WorkflowScenario) -> Result<String, serde_json::Error> {
+        Self::serialize(scenario)
+    }
+
+    pub fn read(json: &str, limits: &WorkflowLimits) -> Result<WorkflowScenario, String> {
+        Self::deserialize(json, limits)
+    }
+
     pub fn serialize(scenario: &WorkflowScenario) -> Result<String, serde_json::Error> {
         serde_json::to_string_pretty(scenario)
     }

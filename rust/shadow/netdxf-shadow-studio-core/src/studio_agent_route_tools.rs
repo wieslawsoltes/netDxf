@@ -24,6 +24,14 @@ use std::sync::Arc;
 pub struct StudioAgentRouteTools;
 
 impl StudioAgentRouteTools {
+    pub fn is_studio_path(path: &str) -> bool {
+        path.starts_with("/api/cad") || path.starts_with("/api/studio")
+    }
+
+    pub fn register_read() -> Vec<Route> {
+        Self::routes().into_iter().filter(|r| !r.mutates).collect()
+    }
+
     pub fn routes() -> Vec<Route> {
         vec![
             Route {

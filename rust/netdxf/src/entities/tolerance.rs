@@ -85,6 +85,20 @@ impl Tolerance {
         lines.join("^J")
     }
 
+    pub fn try_parse_string_representation(value: &str) -> Option<Self> {
+        if value.trim().is_empty() {
+            return None;
+        }
+        Some(Self::new(value, Vector3::ZERO))
+    }
+
+    pub fn transform_by(&mut self, transformation: crate::Matrix3, translation: Vector3) {
+        self.position = transformation * self.position + translation;
+        if let Some(n) = Vector3::normalize_finite_direction(transformation * self.common.normal) {
+            self.common.normal = n;
+        }
+    }
+
     /// Parses an AutoCAD DXF `TOLERANCE` string (`%%v` frames separated by `^J`) into structured fields.
     pub fn parse_string_representation(&mut self, value: &str) {
         self.raw_string = value.to_string();

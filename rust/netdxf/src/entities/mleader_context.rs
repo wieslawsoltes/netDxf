@@ -29,6 +29,13 @@ pub struct MLeaderLine {
     pub arrow_size: Option<f64>,
 }
 
+impl MLeaderLine {
+    #[inline]
+    pub fn stored_color(&self) -> Option<AciColor> {
+        self.color
+    }
+}
+
 /// A leader node (dogleg + collection of leader lines) inside an [`MLeaderContext`].
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct MLeaderNode {
@@ -166,6 +173,13 @@ pub struct MLeaderArrowHead {
     pub block_handle: String,
 }
 
+impl MLeaderArrowHead {
+    #[inline]
+    pub fn block(&self) -> &str {
+        &self.block_handle
+    }
+}
+
 /// Block attribute value entry on a [`MultiLeader`](crate::entities::MultiLeader).
 #[derive(Debug, Clone, PartialEq)]
 pub struct MLeaderBlockAttribute {
@@ -173,6 +187,13 @@ pub struct MLeaderBlockAttribute {
     pub index: i16,
     pub width: f64,
     pub text: String,
+}
+
+impl MLeaderBlockAttribute {
+    #[inline]
+    pub fn definition(&self) -> &str {
+        &self.attribute_definition_handle
+    }
 }
 
 /// Geometric context (`CONTEXT_DATA`) of a [`MultiLeader`](crate::entities::MultiLeader).
@@ -418,6 +439,7 @@ impl MLeaderProperties {
     #[inline] pub fn text_top_attachment(&self) -> i16 { self.style_properties.text_top_attachment }
     #[inline] pub fn leader_line_linetype(&self) -> &str { &self.style_properties.leader_line_type_name }
     #[inline] pub fn leader_line_lineweight(&self) -> i32 { self.style_properties.leader_line_weight }
+    #[inline] pub fn text_editor_alignment(&self) -> i16 { self.text_alignment_type }
 }
 
 /// Complete structured data container for a [`MultiLeader`](crate::entities::MultiLeader).

@@ -36,4 +36,11 @@ impl Shape {
             thickness: 0.0,
         }
     }
+
+    pub fn transform_by(&mut self, transformation: crate::Matrix3, translation: Vector3) {
+        self.position = transformation * self.position + translation;
+        if let Some(n) = Vector3::normalize_finite_direction(transformation * self.common.normal) {
+            self.common.normal = n;
+        }
+    }
 }

@@ -33,6 +33,10 @@ pub struct AgentCommandResult {
 
 pub trait IAgentCommandRunner: Send + Sync {
     fn run(&self, command: &AgentCommand) -> AgentCommandResult;
+
+    fn execute_async(&self, command: &AgentCommand) -> AgentCommandResult {
+        self.run(command)
+    }
 }
 
 #[derive(Debug, Default)]
@@ -59,6 +63,10 @@ impl IAgentCommandRunner for LocalAgentCommandRunner {
 impl AgentCommandTools {
     pub fn is_allowed(mode: AgentPermissionMode) -> bool {
         matches!(mode, AgentPermissionMode::FullAccess)
+    }
+
+    pub fn register() -> &'static [&'static str] {
+        &["command.execute"]
     }
 }
 

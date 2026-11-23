@@ -12,6 +12,8 @@ use std::collections::BTreeMap;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ShxBigFontMapReadOptions {
     pub maximum_entries: usize,
+    pub maximum_bytes: usize,
+    pub maximum_characters: usize,
 }
 
 pub struct ShxBigFontMapFile;

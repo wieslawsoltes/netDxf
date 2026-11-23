@@ -20,6 +20,22 @@ pub struct CadStrokeGroup {
     pub argb: Option<u32>,
 }
 
+impl CadStrokeGroup {
+    pub fn transform(&self, m: Affine3) -> Self {
+        Self {
+            contours: self
+                .contours
+                .iter()
+                .map(|c| CadContour {
+                    curves: c.curves.iter().map(|cv| cv.transform(m)).collect(),
+                    closed: c.closed,
+                })
+                .collect(),
+            argb: self.argb,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CadGradient {
     pub kind: String,
@@ -35,6 +51,24 @@ pub struct CadRegion {
     pub fill_rule: CadFillRule,
     pub argb: Option<u32>,
     pub gradient: Option<CadGradient>,
+}
+
+impl CadRegion {
+    pub fn transform(&self, m: Affine3) -> Self {
+        Self {
+            contours: self
+                .contours
+                .iter()
+                .map(|c| CadContour {
+                    curves: c.curves.iter().map(|cv| cv.transform(m)).collect(),
+                    closed: c.closed,
+                })
+                .collect(),
+            fill_rule: self.fill_rule,
+            argb: self.argb,
+            gradient: self.gradient.clone(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

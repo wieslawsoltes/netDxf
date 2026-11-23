@@ -32,6 +32,12 @@ impl ICadModule for DomainCadModule {
     }
 }
 
+impl DomainCadModule {
+    pub fn plan(&self, _snapshot: &ShadowSnapshot) -> Option<String> {
+        None
+    }
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct DomainValidation {
     pub issues: Vec<String>,

@@ -6,11 +6,19 @@ use netdxf_shadow_rendering::{
 /// Resolves raster images for [`SkiaRenderBackend`].
 pub trait ISkiaImageResolver: Send + Sync {
     fn resolve_rgba(&self, file_name: &str) -> Option<(u32, u32, Vec<u8>)>;
+
+    fn resolve(&self, file_name: &str) -> Option<(u32, u32, Vec<u8>)> {
+        self.resolve_rgba(file_name)
+    }
 }
 
 /// Versioned image resolver allowing cache invalidation across frames.
 pub trait IVersionedSkiaImageResolver: ISkiaImageResolver {
     fn version(&self) -> u64;
+
+    fn revision(&self) -> u64 {
+        self.version()
+    }
 }
 
 /// Skia render backend replacing `SkiaSharp` with Rust Skia (`skia-safe`).

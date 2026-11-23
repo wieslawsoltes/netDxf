@@ -30,6 +30,10 @@ pub struct SnapResult {
 pub struct Snapping;
 
 impl Snapping {
+    pub fn find(point: Vec3, candidates: &[Vec3], tolerance: f64) -> Option<SnapResult> {
+        Self::snap_to_endpoints(point, candidates, tolerance)
+    }
+
     pub fn snap_to_grid(point: Vec3, spacing: f64) -> SnapResult {
         let s = spacing.max(1e-9);
         let snapped = Vec3::new(

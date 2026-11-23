@@ -45,4 +45,13 @@ impl LinetypeSegment {
             | Self::Shape { length, .. } => *length,
         }
     }
+
+    #[inline]
+    pub fn r#type(&self) -> crate::tables::LinetypeSegmentType {
+        match self {
+            Self::Simple { .. } => crate::tables::LinetypeSegmentType::Simple,
+            Self::Text { .. } => crate::tables::LinetypeSegmentType::Text,
+            Self::Shape { .. } => crate::tables::LinetypeSegmentType::Shape,
+        }
+    }
 }

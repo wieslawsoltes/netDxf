@@ -5,11 +5,21 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use serde_json::Value;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct ExternalAgentEvent {
     pub seq: u64,
     pub kind: String,
     pub data: Value,
+}
+
+impl ExternalAgentEvent {
+    pub fn sequence(&self) -> u64 {
+        self.seq
+    }
+
+    pub fn method(&self) -> &str {
+        &self.kind
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -21,11 +31,17 @@ pub struct ExternalAgentCall {
     pub references: Vec<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct ExternalAgentReply {
     pub id: String,
     pub ok: bool,
     pub result: Value,
+}
+
+impl ExternalAgentReply {
+    pub fn request_id(&self) -> &str {
+        &self.id
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]

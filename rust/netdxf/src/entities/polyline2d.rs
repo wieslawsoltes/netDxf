@@ -40,6 +40,8 @@ pub enum PolylineSmoothType {
 }
 
 impl PolylineSmoothType {
+    pub const BEZIER_SURFACE: Self = Self::Bezier;
+
     pub fn from_i16(v: i16) -> Option<Self> {
         Some(match v {
             0 => Self::NoSmooth,

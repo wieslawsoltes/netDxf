@@ -102,6 +102,11 @@ impl TextStyle {
         self.font_file = font_file.into();
         self.big_font = big_font.into();
     }
+
+    #[inline]
+    pub fn true_type_font_family_name(&self) -> &str {
+        &self.font_family_name
+    }
 }
 
 impl Default for TextStyle {

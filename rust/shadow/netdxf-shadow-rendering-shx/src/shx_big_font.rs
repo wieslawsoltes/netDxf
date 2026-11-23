@@ -9,10 +9,20 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ShxLeadByteRange {
     pub start: u8,
     pub end: u8,
+}
+
+impl ShxLeadByteRange {
+    pub fn first(&self) -> u8 {
+        self.start
+    }
+
+    pub fn last(&self) -> u8 {
+        self.end
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -75,5 +85,15 @@ impl ShxBigFontInfo {
 #[derive(Debug, Clone, Default)]
 pub struct ShxBigFontMap {
     pub unicode_to_code: BTreeMap<char, u32>,
+}
+
+impl ShxBigFontMap {
+    pub fn characters(&self) -> &BTreeMap<char, u32> {
+        &self.unicode_to_code
+    }
+
+    pub fn from_encoding(_encoding: &str) -> Self {
+        Self::default()
+    }
 }
 

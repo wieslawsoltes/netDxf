@@ -165,4 +165,9 @@ impl DxfDictionaryVariable {
             value: value.into(),
         }
     }
+
+    #[inline]
+    pub fn schema(&self) -> i16 {
+        self.schema_number
+    }
 }

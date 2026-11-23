@@ -54,6 +54,12 @@ pub struct ChatGptAuthenticationException {
     pub message: String,
 }
 
+impl ChatGptAuthenticationException {
+    pub fn code(&self) -> &'static str {
+        "auth_error"
+    }
+}
+
 impl ChatGptSignInClient {
     pub fn build_authorize_url(options: &ChatGptSignInOptions, state: &str) -> ChatGptAuthorizationAttempt {
         let url = format!(

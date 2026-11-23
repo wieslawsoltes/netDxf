@@ -25,11 +25,14 @@ use std::sync::Arc;
 pub struct CadNewDocumentRequest {
     pub name: String,
     pub sample: Option<String>,
+    pub demo: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadCloseDocumentRequest {
     pub document_id: String,
+    pub revision: Option<i64>,
+    pub discard: bool,
 }
 
 /// Multi-document hub managing open [`Studio`] instances.

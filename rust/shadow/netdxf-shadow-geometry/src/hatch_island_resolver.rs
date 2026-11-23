@@ -74,6 +74,17 @@ impl HatchBoundaryTopology {
 pub struct HatchIslandResolver;
 
 impl HatchIslandResolver {
+    pub fn analyze(bounds_list: &[Bounds2], options: &HatchIslandOptions) -> HatchBoundaryTopology {
+        Self::resolve(bounds_list, options)
+    }
+
+    pub fn select(
+        topology: &HatchBoundaryTopology,
+        style: CadHatchIslandStyle,
+    ) -> Vec<HatchBoundaryInfo> {
+        topology.select(style)
+    }
+
     pub fn resolve(bounds_list: &[Bounds2], _options: &HatchIslandOptions) -> HatchBoundaryTopology {
         let mut boundaries = Vec::with_capacity(bounds_list.len());
         for (i, &b) in bounds_list.iter().enumerate() {

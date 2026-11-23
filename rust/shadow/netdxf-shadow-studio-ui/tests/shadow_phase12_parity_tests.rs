@@ -140,6 +140,7 @@ fn shadow_studio_hub_agents_acp_hosting_mcp_and_symbols() {
     hub.create(&CadNewDocumentRequest {
         name: "plan-1".into(),
         sample: Some("line".into()),
+        ..Default::default()
     });
     assert!(hub.owned("plan-1"));
     assert_eq!(hub.documents(), vec!["plan-1"]);

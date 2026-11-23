@@ -36,6 +36,7 @@ impl Default for DrawingHealthOptions {
 pub struct DrawingHealthResources {
     pub available_shx_fonts: BTreeSet<String>,
     pub available_images: BTreeSet<String>,
+    pub presentation_diagnostics: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

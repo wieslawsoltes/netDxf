@@ -34,6 +34,7 @@ bitflags! {
         const SHOW_UNDERLAY = 2;
         const MONOCHROME = 4;
         const ADJUST_FOR_BACKGROUND = 8;
+        const CLIP_INSIDE_MODE = 16;
     }
 }
 

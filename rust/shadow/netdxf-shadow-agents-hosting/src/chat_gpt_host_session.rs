@@ -19,6 +19,8 @@ pub struct ChatGptHostStatus {
 pub struct ChatGptHostLease {
     pub lease_id: String,
     pub expires_at_unix: u64,
+    pub credential: Option<String>,
+    pub session_cancellation: bool,
 }
 
 pub struct ChatGptHostSession;

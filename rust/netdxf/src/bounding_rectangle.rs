@@ -73,4 +73,12 @@ impl BoundingRectangle {
     pub fn radius(&self) -> f64 {
         Vector2::distance(self.min, self.max) * 0.5
     }
+
+    #[inline]
+    pub fn point_inside(&self, point: Vector2) -> bool {
+        point.x >= self.min.x
+            && point.x <= self.max.x
+            && point.y >= self.min.y
+            && point.y <= self.max.y
+    }
 }

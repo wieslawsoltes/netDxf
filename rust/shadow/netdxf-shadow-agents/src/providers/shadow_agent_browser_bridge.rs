@@ -61,6 +61,12 @@ pub struct ShadowAgentBridgeTool {
     pub schema: Value,
 }
 
+impl ShadowAgentBridgeTool {
+    pub fn input_schema(&self) -> &Value {
+        &self.schema
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct ShadowAgentBridgeFrame {
     pub r#type: String,

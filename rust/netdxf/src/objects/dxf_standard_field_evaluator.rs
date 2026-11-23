@@ -90,6 +90,16 @@ impl DxfFieldResult {
         self.to_display_string()
     }
 
+    pub fn value(&self) -> DxfFieldDataValue {
+        match self {
+            Self::Text(s) => DxfFieldDataValue::String(s.clone()),
+            Self::Number(v) => DxfFieldDataValue::Double(*v),
+            Self::Failure { cached_value, .. } => cached_value
+                .as_ref()
+                .map_or(DxfFieldDataValue::Empty, |s| DxfFieldDataValue::String(s.clone())),
+        }
+    }
+
     pub fn value_display_text(&self) -> String {
         self.to_display_string()
     }

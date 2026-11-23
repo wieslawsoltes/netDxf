@@ -15,6 +15,8 @@ pub enum ShadowSourceValidationMode {
     #[default]
     Strict,
     Permissive,
+    EditedProperties,
+    FullGraph,
 }
 
 fn to_v3(v: Vector3) -> Vec3 {
@@ -29,6 +31,10 @@ pub struct ShadowSession {
 }
 
 impl ShadowSession {
+    pub fn object_factories(&self) -> crate::shadow_object_factories::ShadowObjectFactories {
+        crate::shadow_object_factories::ShadowObjectFactories
+    }
+
     pub fn from_document(
         doc: &DxfDocument,
         document_id: impl Into<String>,
@@ -528,7 +534,7 @@ impl IShadowStore for ShadowSession {
     }
 
     fn apply(&self, batch: &ShadowEditBatch) -> ShadowResult<Arc<ShadowSnapshot>> {
-        self.store.apply(batch)
+        IShadowStore::apply(&self.store, batch)
     }
 }
 

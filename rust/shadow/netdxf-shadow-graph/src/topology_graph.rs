@@ -26,6 +26,16 @@ pub struct GraphEdge {
     pub occurrence: String,
 }
 
+impl GraphEdge {
+    pub fn root_entity(&self) -> &ObjectId {
+        &self.entity
+    }
+
+    pub fn insert_path(&self) -> &[ObjectId] {
+        &[]
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct GraphPath {
     pub nodes: Vec<usize>,

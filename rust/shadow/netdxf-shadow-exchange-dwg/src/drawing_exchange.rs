@@ -7,6 +7,7 @@ use thiserror::Error;
 pub enum DrawingEncoding {
     #[default]
     DxfAscii,
+    Dxf,
     DxfBinary,
     Dwg,
 }

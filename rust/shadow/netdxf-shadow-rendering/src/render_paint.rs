@@ -28,3 +28,9 @@ impl Default for RenderPaint {
     }
 }
 
+impl RenderPaint {
+    pub fn resolve(&self) -> u32 {
+        self.argb
+    }
+}
+

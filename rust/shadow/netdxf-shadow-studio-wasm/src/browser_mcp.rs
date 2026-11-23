@@ -17,6 +17,10 @@ impl BrowserRuntime {
         Self::default()
     }
 
+    pub fn initialize_async(&mut self) -> Result<(), String> {
+        Ok(())
+    }
+
     pub fn dispatch(&mut self, request: BrowserRequest) -> BrowserReply {
         match request.route.as_str() {
             "ping" => BrowserReply::json(request.id, serde_json::json!({ "pong": true })),

@@ -17,6 +17,11 @@ impl DxfTableCellAddress {
     }
 
     /// Parses an A1-style cell address (e.g. `"A1"` -> `(0, 0)`, `"$AA$10"` -> `(9, 26)`).
+    #[inline]
+    pub fn parse(text: &str) -> Result<Self> {
+        Self::parse_a1(text)
+    }
+
     pub fn parse_a1(text: &str) -> Result<Self> {
         let s = text.trim();
         let bytes = s.as_bytes();

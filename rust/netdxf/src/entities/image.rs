@@ -61,6 +61,11 @@ impl Image {
         }
     }
 
+    #[inline]
+    pub fn definition(&self) -> &str {
+        &self.definition_name
+    }
+
     pub fn uvector(&self) -> Vector3 {
         let rad = self.rotation.to_radians();
         Vector3::new(rad.cos(), rad.sin(), 0.0)

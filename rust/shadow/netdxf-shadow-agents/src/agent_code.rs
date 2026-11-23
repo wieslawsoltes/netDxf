@@ -21,10 +21,16 @@ pub struct AgentCodeRequest {
     pub maximum_output_characters: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentCodeChange {
     pub path: String,
     pub summary: String,
+}
+
+impl AgentCodeChange {
+    pub fn content(&self) -> &str {
+        &self.summary
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -43,6 +49,10 @@ pub struct AgentCodeResult {
 
 pub trait IAgentCodeRunner: Send + Sync {
     fn run(&self, request: &AgentCodeRequest) -> AgentCodeResult;
+
+    fn execute_async(&self, request: &AgentCodeRequest) -> AgentCodeResult {
+        self.run(request)
+    }
 }
 
 pub struct AgentCodeTools;
@@ -50,6 +60,10 @@ pub struct AgentCodeTools;
 impl AgentCodeTools {
     pub fn supported_languages() -> &'static [&'static str] {
         &["rust", "python", "javascript"]
+    }
+
+    pub fn register() -> &'static [&'static str] {
+        &["code.execute"]
     }
 }
 

@@ -21,6 +21,7 @@ pub enum AgentPermissionMode {
 pub enum AgentRunMode {
     #[default]
     Interactive,
+    Normal,
     Autonomous,
     PlanOnly,
 }
@@ -142,10 +143,20 @@ impl AgentUsage {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentPinnedContext {
     pub key: String,
     pub content: String,
+}
+
+impl AgentPinnedContext {
+    pub fn id(&self) -> &str {
+        &self.key
+    }
+
+    pub fn text(&self) -> &str {
+        &self.content
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -159,10 +170,16 @@ pub struct AgentApproval {
     pub approved: Option<bool>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentPlanStep {
     pub title: String,
     pub status: String,
+}
+
+impl AgentPlanStep {
+    pub fn step(&self) -> &str {
+        &self.title
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -219,6 +236,12 @@ pub struct AgentCallReceipt {
     pub is_error: bool,
     pub arguments: Value,
     pub result: Value,
+}
+
+impl AgentCallReceipt {
+    pub fn json_ignore_condition(&self) -> bool {
+        false
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

@@ -49,6 +49,8 @@ pub struct CadAttributeDefinitionOperation {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadAttributeDefinitionRequest {
     pub block: String,
+    pub definition: Option<String>,
+    pub revision: Option<i64>,
     pub operations: Vec<CadAttributeDefinitionOperation>,
 }
 
@@ -76,13 +78,17 @@ pub struct CadBlockCreateRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadBlockBeginRequest {
     pub name: String,
+    pub block: String,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadBlockFinishRequest {
     pub commit: bool,
     pub save: bool,
+    pub discard: bool,
     pub revision: Option<i64>,
+    pub target_revision: Option<i64>,
     pub synchronize_attributes: bool,
     pub remove_orphan_attributes: bool,
 }
@@ -123,6 +129,7 @@ pub struct CadBlockLibrarySummary {
 pub struct CadCommandRequest {
     pub command: String,
     pub arguments: Value,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -152,6 +159,8 @@ pub struct CadGripRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadLayerRequest {
     pub name: String,
+    pub layer: Option<String>,
+    pub revision: Option<i64>,
     pub visible: Option<bool>,
 }
 
@@ -159,6 +168,7 @@ pub struct CadLayerRequest {
 pub struct CadAssignLayerRequest {
     pub entities: Vec<ObjectId>,
     pub layer: String,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -173,6 +183,8 @@ pub struct CadSnapRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadBlockDefinitionRequest {
     pub name: String,
+    pub definition: Option<String>,
+    pub revision: Option<i64>,
     pub origin: Vec3,
 }
 
@@ -189,23 +201,31 @@ pub struct CadBlockRenameRequest {
 pub struct CadHatchAuthoringRequest {
     pub layer: String,
     pub pattern: String,
+    pub hatch: Option<Value>,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadHatchPatternRequest {
     pub pattern: String,
     pub scale: f64,
+    pub entities: Vec<ObjectId>,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct StudioEditPreviewToolRequest {
     pub operation: String,
     pub arguments: Value,
+    pub identity: Option<StudioRequestIdentity>,
+    pub request: Option<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct StudioApplyEditPreviewToolRequest {
     pub token: String,
+    pub identity: Option<StudioRequestIdentity>,
+    pub request: Option<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -222,6 +242,8 @@ pub struct CadPreviewProperty {
 pub struct CadAttributeSyncOperation {
     pub insert_id: ObjectId,
     pub tag: String,
+    pub block: String,
+    pub convert_text_modes: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -259,32 +281,43 @@ pub struct CadEditOperation {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadEditPreviewRequest {
     pub operations: Vec<CadEditOperation>,
+    pub description: Option<String>,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadEditPreviewTokenRequest {
     pub token: String,
+    pub preview_id: Option<String>,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct GraphQueryRequest {
     pub root: Option<ObjectId>,
     pub max_depth: usize,
+    pub tool: Option<String>,
+    pub arguments: Value,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadHealthRequest {
     pub layout: String,
+    pub options: Value,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadHealthSelectRequest {
     pub issue_id: String,
+    pub report_id: Option<String>,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadInsertPreviewRequest {
     pub block: String,
+    pub insert: Option<String>,
     pub position: Vec3,
     pub x: Option<f64>,
     pub y: Option<f64>,
@@ -315,16 +348,22 @@ pub struct CadInsertOperation {
     pub block: String,
     pub position: Vec3,
     pub rotation: f64,
+    pub command: Option<String>,
+    pub attributes: Value,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadInsertRequest {
     pub operation: CadInsertOperation,
+    pub insert: Option<CadInsertOperation>,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadLayerIsolationRequest {
     pub layers: Vec<String>,
+    pub isolation: Option<String>,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -338,11 +377,15 @@ pub struct CadLayerStatePreviewRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadLayerStateImportRequest {
     pub payload: Value,
+    pub token: Option<String>,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadLayerStateExport {
     pub name: String,
+    pub file_name: String,
+    pub text: String,
     pub payload: Value,
 }
 
@@ -363,6 +406,8 @@ pub struct CadLayerStatePreview {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct LinetypeViewRequest {
     pub scale: f64,
+    pub alignment: Option<String>,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -411,6 +456,8 @@ pub struct CadModuleConnectivityRequest {
 pub struct CadConnectivityPage {
     pub total: usize,
     pub offset: usize,
+    pub next_offset: Option<usize>,
+    pub items: Vec<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -420,6 +467,7 @@ pub struct CadConnectivityWalkSummary {
     pub direction: String,
     pub status: String,
     pub visited: usize,
+    pub visited_count: usize,
     pub examined_edges: usize,
     pub path_length: Option<usize>,
     pub complete: bool,
@@ -510,6 +558,8 @@ pub struct CadModuleScheduleRequest {
 pub struct CadSchedulePage {
     pub total: usize,
     pub offset: usize,
+    pub next_offset: Option<usize>,
+    pub items: Vec<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -537,6 +587,8 @@ pub struct CadModuleScheduleResult {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleToggleRequest {
     pub module_id: String,
+    pub module: String,
+    pub revision: Option<i64>,
     pub enabled: bool,
 }
 
@@ -561,6 +613,8 @@ pub struct CadModuleAnalysisRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleExecuteRequest {
     pub module_id: String,
+    pub module: String,
+    pub revision: Option<i64>,
     pub command: String,
     pub arguments: Value,
 }
@@ -601,17 +655,23 @@ pub struct PerspectiveMoveRequest {
 pub struct CadResourceRequest {
     pub kind: String,
     pub name: String,
+    pub resource: Option<Value>,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadLayerStateRequest {
     pub name: String,
     pub action: String,
+    pub state: Option<Value>,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadSaveRequest {
     pub format: String,
+    pub version: Option<String>,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -626,6 +686,7 @@ pub struct CadSelectionCandidatesRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadSelectionPreviewPath {
     pub points: Vec<Vec3>,
+    pub closed: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -667,29 +728,37 @@ pub struct TransformRequest {
     pub z: f64,
     pub angle: f64,
     pub factor: f64,
+    pub amount: f64,
     pub second_x: f64,
     pub second_y: f64,
     pub copy: bool,
+    pub definition: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadWorkflowStartRequest {
     pub name: String,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadWorkflowReplayRequest {
     pub scenario: Value,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct ForkRequest {
     pub branch_name: String,
+    pub name: String,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkspaceRequest {
     pub branch_name: String,
+    pub id: String,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -715,6 +784,8 @@ pub struct MergeApplyRequest {
     pub source_branch: String,
     pub branch_id: String,
     pub plan_id: String,
+    pub document_id: String,
+    pub incoming_revision: i64,
     pub target_revision: i64,
     pub delete_branch: bool,
 }
@@ -722,6 +793,8 @@ pub struct MergeApplyRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct StudioRequestIdentity {
     pub document_id: String,
+    pub workspace_id: Option<String>,
+    pub view_version: i64,
     pub branch: String,
 }
 
@@ -787,8 +860,24 @@ pub struct AddRequest {
 
 pub struct StudioJson;
 
+impl StudioJson {
+    pub fn create_options() -> Value {
+        serde_json::json!({ "camelCase": true })
+    }
+
+    pub fn create_response_options() -> Value {
+        serde_json::json!({ "camelCase": true })
+    }
+}
+
 pub struct StudioSubscription {
     pub id: u64,
+}
+
+impl StudioSubscription {
+    pub fn reader(&self) -> u64 {
+        self.id
+    }
 }
 
 /// Interactive CAD Studio controller for a single document.
@@ -1191,6 +1280,7 @@ impl Studio {
         CadLayerStateExport {
             name: name.to_string(),
             payload: serde_json::json!({ "layers": self.layers() }),
+            ..Default::default()
         }
     }
 

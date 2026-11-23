@@ -19,6 +19,7 @@ pub struct AgentHostOptions {
     pub maximum_workspace_files: usize,
     pub maximum_workspace_bytes: usize,
     pub validate_token: bool,
+    pub workspace: Option<String>,
 }
 
 impl Default for AgentHostOptions {
@@ -36,6 +37,7 @@ impl Default for AgentHostOptions {
             maximum_workspace_files: 10_000,
             maximum_workspace_bytes: 128 * 1024 * 1024,
             validate_token: true,
+            workspace: None,
         }
     }
 }

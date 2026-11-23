@@ -9,10 +9,20 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ShxBigFontBinding {
     pub font_name: String,
     pub code_page: String,
+}
+
+impl ShxBigFontBinding {
+    pub fn font(&self) -> &str {
+        &self.font_name
+    }
+
+    pub fn map(&self) -> &str {
+        &self.code_page
+    }
 }
 
 #[derive(Debug, Clone, Default)]

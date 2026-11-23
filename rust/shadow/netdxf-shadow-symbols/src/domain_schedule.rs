@@ -47,9 +47,10 @@ pub struct DomainScheduleGroup {
     pub rows: Vec<DomainScheduleRow>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainScheduleIssue {
     pub code: String,
+    pub entity: Option<ObjectId>,
     pub message: String,
 }
 

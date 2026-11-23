@@ -48,6 +48,10 @@ impl DxfCellStyleFormat {
         self
     }
 
+    pub fn with_values(self, values: Self) -> Self {
+        values
+    }
+
     #[inline]
     pub fn original(&self) -> &Self {
         self
@@ -245,6 +249,13 @@ pub struct DxfResolvedCellStyle {
     pub resolved_properties: DxfCellProperty,
 }
 
+impl DxfResolvedCellStyle {
+    #[inline]
+    pub fn property_sources(&self) -> DxfCellProperty {
+        self.resolved_properties
+    }
+}
+
 /// Stored cell style map entry inside a `TABLESTYLE` or `TABLECONTENT`.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct DxfStoredCellStyleMapEntry {
@@ -257,6 +268,11 @@ pub struct DxfStoredCellStyleMapEntry {
 impl DxfStoredCellStyleMapEntry {
     pub fn from_entry(entry: &Self) -> Self {
         entry.clone()
+    }
+
+    #[inline]
+    pub fn format_payload(&self) -> &DxfCellStyleFormat {
+        &self.format
     }
 
     #[inline]

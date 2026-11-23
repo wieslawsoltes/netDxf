@@ -48,6 +48,16 @@ pub struct DraftingLayerStateDetails {
     pub layers: BTreeMap<String, SavedLayerProperties>,
 }
 
+impl DraftingLayerStateDetails {
+    pub fn entries(&self) -> Vec<&SavedLayerProperties> {
+        self.layers.values().collect()
+    }
+
+    pub fn state(&self) -> &str {
+        &self.name
+    }
+}
+
 pub struct DraftingLayerStates;
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -64,6 +74,8 @@ pub struct LayerStateTransfer {
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct LayerStateResourceMap {
     pub linetype_map: BTreeMap<String, String>,
+    pub source: String,
+    pub target: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -87,12 +99,16 @@ pub struct LayerStateImportConflict {
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct LayerStateImportAnalysis {
     pub conflicts: Vec<LayerStateImportConflict>,
+    pub state: Option<String>,
+    pub replaces_existing: bool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub enum LayerStateFields {
+    None,
     #[default]
     All,
+    Color,
     VisibilityOnly,
     AppearanceOnly,
 }
@@ -143,6 +159,8 @@ impl DraftingLayerStates {
 
     pub fn mask_from_fields(fields: LayerStateFields) -> i32 {
         match fields {
+            LayerStateFields::None => 0,
+            LayerStateFields::Color => 64,
             LayerStateFields::All => Self::SUPPORTED_MASK,
             LayerStateFields::VisibilityOnly => 1 | 2 | 4 | 8 | 16,
             LayerStateFields::AppearanceOnly => 64 | 128 | 256 | 512,
@@ -265,7 +283,11 @@ impl DraftingLayerStates {
                 });
             }
         }
-        LayerStateImportAnalysis { conflicts }
+        LayerStateImportAnalysis {
+            conflicts,
+            state: Some(source.name.clone()),
+            replaces_existing: exists,
+        }
     }
 
     pub fn plan(

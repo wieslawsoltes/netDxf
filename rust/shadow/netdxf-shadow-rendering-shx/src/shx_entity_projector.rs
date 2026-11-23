@@ -39,5 +39,15 @@ impl ICacheableEntityProjector for ShxEntityProjector {
     fn projector_key(&self) -> &str {
         "shx"
     }
+
+    fn revision(&self) -> i64 {
+        self.catalog.set.revision
+    }
+}
+
+impl ShxEntityProjector {
+    pub fn try_project(&self, snapshot: &ShadowSnapshot, entity_id: &ObjectId) -> Option<CadGeometry> {
+        self.project(snapshot, entity_id)
+    }
 }
 

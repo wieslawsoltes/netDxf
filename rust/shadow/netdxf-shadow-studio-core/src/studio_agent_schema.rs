@@ -31,6 +31,12 @@ pub struct Route {
     pub schema: Value,
 }
 
+impl Route {
+    pub fn pattern(&self) -> &str {
+        &self.path
+    }
+}
+
 pub struct StudioAgentSchema;
 
 impl StudioAgentSchema {

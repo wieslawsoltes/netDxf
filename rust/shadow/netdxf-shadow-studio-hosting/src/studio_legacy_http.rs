@@ -11,5 +11,9 @@ impl StudioLegacyHttp {
     pub fn is_deprecated() -> bool {
         true
     }
+
+    pub fn map_studio_legacy() -> &'static [&'static str] {
+        &[]
+    }
 }
 

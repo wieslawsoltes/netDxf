@@ -101,6 +101,7 @@ fn shadow_studio_editor_symbols_agents_and_relay_parity() {
     let assigned = studio.cad_assign_layer(&CadAssignLayerRequest {
         entities: vec![added.clone()],
         layer: "WALLS".into(),
+        ..Default::default()
     });
     assert_eq!(assigned, 1);
     assert!(studio.unsubscribe(&sub));

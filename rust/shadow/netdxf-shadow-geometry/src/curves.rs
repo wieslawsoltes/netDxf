@@ -348,5 +348,15 @@ impl CurveSampler {
             sweep: TAU,
         })
     }
+
+    pub fn distance_to_segment(pt: Vec3, a: Vec3, b: Vec3) -> f64 {
+        let ab = b - a;
+        let len_sq = Vec3::dot(ab, ab);
+        if len_sq <= 1e-18 {
+            return Vec3::distance(pt, a);
+        }
+        let t = (Vec3::dot(pt - a, ab) / len_sq).clamp(0.0, 1.0);
+        Vec3::distance(pt, a + ab * t)
+    }
 }
 

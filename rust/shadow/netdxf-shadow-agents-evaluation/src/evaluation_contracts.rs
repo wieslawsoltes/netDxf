@@ -129,6 +129,14 @@ pub struct EvaluationResult {
 
 pub trait IAgentEvaluationTarget: Send + Sync {
     fn evaluate(&self, case: &EvaluationCase, ctx: &EvaluationContext) -> EvaluationExecution;
+
+    fn target(&self) -> EvaluationTarget {
+        EvaluationTarget::default()
+    }
+
+    fn run_async(&self, case: &EvaluationCase, ctx: &EvaluationContext) -> EvaluationExecution {
+        self.evaluate(case, ctx)
+    }
 }
 
 impl EvaluationFixture {

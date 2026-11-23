@@ -49,6 +49,16 @@ impl Section {
         self.geometry_settings.is_some()
     }
 
+    #[inline]
+    pub fn stored_indicator_color(&self) -> AciColor {
+        self.indicator_color
+    }
+
+    #[inline]
+    pub fn stored_native_indicator_color(&self) -> Option<i32> {
+        None
+    }
+
     pub fn transform_by(&mut self, transformation: crate::matrix3::Matrix3, translation: Vector3) {
         for v in &mut self.vertices {
             *v = transformation * *v + translation;

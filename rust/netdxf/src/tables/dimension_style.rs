@@ -37,6 +37,10 @@ pub enum DimensionStyleTextHorizontalPlacement {
     OverExtLine2 = 4,
 }
 
+impl DimensionStyleTextHorizontalPlacement {
+    pub const AT_EXT_LINES1: Self = Self::AtExtLine1;
+}
+
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 #[repr(i16)]
 pub enum DimensionStyleFitOptions {
@@ -45,6 +49,11 @@ pub enum DimensionStyleFitOptions {
     TextFirst = 2,
     #[default]
     BestFit = 3,
+}
+
+impl DimensionStyleFitOptions {
+    pub const ARROWS: Self = Self::ArrowsFirst;
+    pub const TEXT: Self = Self::TextFirst;
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
@@ -150,6 +159,13 @@ impl Default for DimensionStyleAlternateUnits {
             sub_unit_factor: 100.0,
             sub_unit_suffix: String::new(),
         }
+    }
+}
+
+impl DimensionStyleAlternateUnits {
+    #[inline]
+    pub fn stack_units(&self) -> bool {
+        self.stacked_units
     }
 }
 

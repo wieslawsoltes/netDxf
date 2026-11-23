@@ -13,6 +13,7 @@ use std::collections::BTreeMap;
 pub enum ModelAnnotationMode {
     #[default]
     Auto,
+    Drawing,
     ShowAll,
     MatchCurrentScale,
 }
@@ -21,6 +22,16 @@ pub enum ModelAnnotationMode {
 pub struct AnnotationScale {
     pub paper_units: f64,
     pub drawing_units: f64,
+}
+
+impl AnnotationScale {
+    pub fn multiplier(&self) -> f64 {
+        if self.paper_units.abs() > 1e-12 {
+            self.drawing_units / self.paper_units
+        } else {
+            1.0
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

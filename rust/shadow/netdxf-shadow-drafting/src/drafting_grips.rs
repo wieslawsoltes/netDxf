@@ -10,6 +10,20 @@ use std::collections::BTreeMap;
 pub struct DraftingGrips;
 
 impl DraftingGrips {
+    pub fn read(snapshot: &netdxf_shadow::ShadowSnapshot, entity: &ObjectId) -> Vec<DraftingGrip> {
+        Self::extract(snapshot, entity)
+    }
+
+    pub fn r#move(
+        snapshot: &netdxf_shadow::ShadowSnapshot,
+        grip: &DraftingGrip,
+        target: Vec3,
+    ) -> DraftingPlan {
+        let mut plan = DraftingPlanner::empty_plan(snapshot, format!("GRIP MOVE {}", grip.key));
+        plan.command.points = vec![grip.position, target];
+        plan
+    }
+
     pub fn extract(snapshot: &netdxf_shadow::ShadowSnapshot, entity: &ObjectId) -> Vec<DraftingGrip> {
         let r = snapshot.read(entity.clone());
         let mut grips = Vec::new();

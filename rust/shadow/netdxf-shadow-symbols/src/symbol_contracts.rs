@@ -72,19 +72,21 @@ pub struct SymbolDefinition {
     pub attributes: Vec<SymbolAttribute>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct SymbolCatalogPage {
     pub total: usize,
     pub offset: usize,
+    pub limit: usize,
     pub items: Vec<SymbolDefinition>,
 }
 
 pub struct SymbolCatalog;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DomainPassage {
     pub from_port: String,
     pub to_port: String,
+    pub direction: String,
     pub open: bool,
 }
 
@@ -115,11 +117,21 @@ pub struct DomainRecord {
     pub references: Vec<DomainReference>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DomainEntity {
     pub entity: ObjectId,
     pub record: DomainRecord,
     pub position: Vec3,
+}
+
+impl DomainEntity {
+    pub fn data(&self) -> &DomainRecord {
+        &self.record
+    }
+
+    pub fn world_ports(&self) -> &[SymbolPort] {
+        &self.record.ports
+    }
 }
 
 impl SymbolCatalog {
@@ -127,8 +139,22 @@ impl SymbolCatalog {
         SymbolCatalogPage {
             total: items.len(),
             offset,
+            limit,
             items: items.iter().skip(offset).take(limit).cloned().collect(),
         }
+    }
+
+    pub fn resolve<'a>(items: &'a [SymbolDefinition], id: &str) -> Option<&'a SymbolDefinition> {
+        items.iter().find(|s| s.id == id)
+    }
+
+    pub fn search(items: &[SymbolDefinition], query: &str) -> Vec<SymbolDefinition> {
+        let q = query.to_ascii_lowercase();
+        items
+            .iter()
+            .filter(|s| s.id.to_ascii_lowercase().contains(&q) || s.name.to_ascii_lowercase().contains(&q))
+            .cloned()
+            .collect()
     }
 }
 

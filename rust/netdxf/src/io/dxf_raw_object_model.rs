@@ -19,6 +19,8 @@ pub enum DxfDuplicateRecordCloning {
 pub struct DxfRawObjectStoreOptions {
     pub maximum_objects: usize,
     pub maximum_tags_per_object: usize,
+    pub maximum_changes: usize,
+    pub maximum_payload_tags: usize,
 }
 
 impl Default for DxfRawObjectStoreOptions {
@@ -26,6 +28,8 @@ impl Default for DxfRawObjectStoreOptions {
         Self {
             maximum_objects: 1_000_000,
             maximum_tags_per_object: 1_000_000,
+            maximum_changes: 1_000_000,
+            maximum_payload_tags: 1_000_000,
         }
     }
 }
@@ -35,6 +39,16 @@ impl Default for DxfRawObjectStoreOptions {
 pub struct DxfRawDictionaryEntry {
     pub name: String,
     pub target_handle: u64,
+}
+
+impl DxfRawDictionaryEntry {
+    pub fn handle(&self) -> u64 {
+        self.target_handle
+    }
+
+    pub fn is_hard_owner(&self) -> bool {
+        false
+    }
 }
 
 /// Raw `DICTIONARY` stored object representation.
@@ -85,6 +99,12 @@ pub struct DxfRawIdBuffer {
     pub object_handles: Vec<u64>,
 }
 
+impl DxfRawIdBuffer {
+    pub fn handles(&self) -> &[u64] {
+        &self.object_handles
+    }
+}
+
 /// Raw `ACDBPLACEHOLDER` stored object representation.
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct DxfRawPlaceholder {
@@ -117,12 +137,28 @@ pub struct DxfRawXRecord {
     pub tags: Vec<DxfTag>,
 }
 
+impl DxfRawXRecord {
+    pub fn cloning_flag(&self) -> DxfDuplicateRecordCloning {
+        self.cloning
+    }
+
+    pub fn data(&self) -> &[DxfTag] {
+        &self.tags
+    }
+}
+
 /// Raw opaque stored object preserving arbitrary tags verbatim.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct DxfRawOpaqueStoredObject {
     pub handle: u64,
     pub owner_handle: u64,
     pub record: DxfRawRecord,
+}
+
+impl DxfRawOpaqueStoredObject {
+    pub fn reason(&self) -> &'static str {
+        "OpaqueObject"
+    }
 }
 
 /// Polymorphic raw stored object inside [`DxfRawObjectStore`].
@@ -171,6 +207,33 @@ impl DxfRawStoredObject {
             Self::SortentsTable(o) => o.owner_handle = owner,
             Self::XRecord(o) => o.owner_handle = owner,
             Self::Opaque(o) => o.owner_handle = owner,
+        }
+    }
+
+    pub fn type_name(&self) -> &'static str {
+        match self {
+            Self::Dictionary(_) => "DICTIONARY",
+            Self::DictionaryVariable(_) => "DICTIONARYVAR",
+            Self::IdBuffer(_) => "IDBUFFER",
+            Self::Placeholder(_) => "ACDBPLACEHOLDER",
+            Self::SortentsTable(_) => "SORTENTSTABLE",
+            Self::XRecord(_) => "XRECORD",
+            Self::Opaque(_) => "OPAQUE",
+        }
+    }
+
+    pub fn source_record(&self) -> Option<&DxfRawRecord> {
+        match self {
+            Self::Opaque(o) => Some(&o.record),
+            _ => None,
+        }
+    }
+
+    pub fn tags(&self) -> &[DxfTag] {
+        match self {
+            Self::XRecord(o) => &o.tags,
+            Self::Opaque(o) => &o.record.tags,
+            _ => &[],
         }
     }
 }
@@ -282,6 +345,16 @@ impl DxfRawObjectTransaction {
     }
 
     /// Ensures a root `DICTIONARY` exists and returns its handle.
+    pub fn set_default(&mut self, dictionary_handle: u64, default_handle: Option<u64>) -> bool {
+        if let Some(DxfRawStoredObject::Dictionary(dict)) = self.staged.get_mut(&dictionary_handle)
+        {
+            dict.default_handle = default_handle;
+            true
+        } else {
+            false
+        }
+    }
+
     pub fn ensure_root_dictionary(&mut self) -> u64 {
         if let Some(h) = self.root_dictionary_handle {
             if self.staged.contains_key(&h) {

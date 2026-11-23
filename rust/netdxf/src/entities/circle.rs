@@ -37,6 +37,19 @@ impl Circle {
         pts
     }
 
+    pub fn to_polyline2d(&self, precision: usize) -> crate::entities::Polyline2D {
+        let (ocs_c, elev) = MathHelper::transform_wcs_to_ocs(self.center, self.common.normal);
+        let pts: Vec<Vector2> = self
+            .polygonal_vertexes(precision)
+            .into_iter()
+            .map(|p| ocs_c + p)
+            .collect();
+        let mut poly = crate::entities::Polyline2D::from_points(pts, true);
+        poly.common.normal = self.common.normal;
+        poly.elevation = elev;
+        poly
+    }
+
     pub fn transform_by(&mut self, transformation: Matrix3, translation: Vector3) {
         let new_center = transformation * self.center + translation;
         let new_normal = Vector3::normalize_finite_direction(transformation * self.common.normal)

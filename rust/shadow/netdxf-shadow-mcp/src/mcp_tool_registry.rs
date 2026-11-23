@@ -11,22 +11,48 @@ use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use std::sync::Arc;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct McpToolDefinition {
     pub name: String,
     pub description: String,
     pub input_schema: Value,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+impl McpToolDefinition {
+    pub fn read_only(&self) -> bool {
+        false
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct McpToolResult {
     pub is_error: bool,
     pub content: Value,
 }
 
+impl McpToolResult {
+    pub fn text(text: impl Into<String>) -> Self {
+        Self {
+            is_error: false,
+            content: Value::String(text.into()),
+        }
+    }
+
+    pub fn from_object(content: Value) -> Self {
+        Self {
+            is_error: false,
+            content,
+        }
+    }
+}
+
 pub trait IMcpToolExecutor: Send + Sync {
     fn definition(&self) -> McpToolDefinition;
     fn execute(&self, arguments: &Value) -> McpToolResult;
+
+    fn tools(&self) -> Vec<McpToolDefinition> {
+        vec![self.definition()]
+    }
 }
 
 pub struct McpJson;

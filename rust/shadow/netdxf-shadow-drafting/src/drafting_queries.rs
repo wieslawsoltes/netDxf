@@ -17,6 +17,7 @@ pub enum DraftingSelectionMode {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub enum ObjectSnapMode {
+    None,
     #[default]
     Endpoint,
     Midpoint,

@@ -11,5 +11,9 @@ impl StudioCadHttp {
     pub fn routes() -> &'static [&'static str] {
         &["/api/cad/snapshot", "/api/cad/render", "/api/cad/pick"]
     }
+
+    pub fn map_cad_workspace() -> &'static [&'static str] {
+        Self::routes()
+    }
 }
 

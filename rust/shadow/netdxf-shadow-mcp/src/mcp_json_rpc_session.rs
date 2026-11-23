@@ -20,6 +20,10 @@ impl McpJsonRpcSession {
         Self { registry }
     }
 
+    pub fn process_async(&self, request: &Value) -> Value {
+        self.handle_request(request)
+    }
+
     pub fn handle_request(&self, request: &Value) -> Value {
         let id = request.get("id").cloned().unwrap_or(Value::Null);
         let method = request

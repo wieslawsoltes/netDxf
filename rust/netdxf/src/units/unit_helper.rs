@@ -18,6 +18,10 @@ impl UnitHelper {
         value * Self::conversion_factor(from, to)
     }
 
+    pub fn convert_unit(value: f64, from: DrawingUnits, to: DrawingUnits) -> f64 {
+        Self::convert(value, from, to)
+    }
+
     pub fn to_meters_factor(units: DrawingUnits) -> Option<f64> {
         Some(match units {
             DrawingUnits::Unitless => return None,

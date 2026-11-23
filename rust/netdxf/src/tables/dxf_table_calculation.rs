@@ -9,6 +9,17 @@ pub struct DxfTableCalculation;
 
 impl DxfTableCalculation {
     /// Evaluates every formula cell in a `rows x cols` grid, returning resolved numeric results.
+    pub fn evaluate<F>(
+        rows: usize,
+        cols: usize,
+        cell_provider: F,
+    ) -> Result<FxHashMap<DxfTableCellAddress, f64>>
+    where
+        F: FnMut(DxfTableCellAddress) -> TableCellValue,
+    {
+        Self::evaluate_grid(rows, cols, cell_provider)
+    }
+
     pub fn evaluate_grid<F>(
         rows: usize,
         cols: usize,

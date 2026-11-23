@@ -11,5 +11,13 @@ use std::collections::BTreeMap;
 
 pub trait ILinetypeDecorationProvider: Send + Sync {
     fn resolve_decoration(&self, name: &str) -> Option<Vec<RenderContour>>;
+
+    fn revision(&self) -> i64 {
+        0
+    }
+
+    fn try_project(&self, name: &str) -> Option<Vec<RenderContour>> {
+        self.resolve_decoration(name)
+    }
 }
 

@@ -9,6 +9,11 @@ pub struct ClippingBoundary {
 }
 
 impl ClippingBoundary {
+    #[inline]
+    pub fn r#type(&self) -> ClippingBoundaryType {
+        self.boundary_type
+    }
+
     pub fn rectangular(first: Vector2, second: Vector2) -> Self {
         Self {
             boundary_type: ClippingBoundaryType::Rectangular,

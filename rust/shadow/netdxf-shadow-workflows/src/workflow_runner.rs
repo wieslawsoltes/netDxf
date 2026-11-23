@@ -7,6 +7,14 @@ use crate::workflow_json::WorkflowJson;
 pub struct WorkflowRunner;
 
 impl WorkflowRunner {
+    pub fn compare(
+        expected: &serde_json::Value,
+        actual: &serde_json::Value,
+        max_diffs: usize,
+    ) -> Vec<crate::workflow_contracts::WorkflowDifference> {
+        WorkflowJson::compare(expected, actual, max_diffs)
+    }
+
     pub fn run(
         scenario: &WorkflowScenario,
         driver: &mut dyn IWorkflowDriver,

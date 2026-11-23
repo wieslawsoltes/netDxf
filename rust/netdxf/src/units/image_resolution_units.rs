@@ -9,6 +9,8 @@ pub enum ImageResolutionUnits {
 }
 
 impl ImageResolutionUnits {
+    pub const UNITLESS: Self = Self::NoUnits;
+
     pub fn from_i16(v: i16) -> Option<Self> {
         Some(match v {
             0 => Self::NoUnits,

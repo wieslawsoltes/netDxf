@@ -23,3 +23,9 @@ pub struct GraphCycleBasis {
     pub cycles: Vec<GraphCycle>,
 }
 
+impl GraphCycleBasis {
+    pub fn path(&self, index: usize) -> Option<&GraphCycle> {
+        self.cycles.get(index)
+    }
+}
+

@@ -209,4 +209,15 @@ impl StoredTable {
         }
         Ok(())
     }
+
+    pub fn transform_by(&mut self, transformation: crate::Matrix3, translation: Vector3) {
+        self.insertion_point = transformation * self.insertion_point + translation;
+        if let Some(d) = Vector3::normalize_finite_direction(transformation * self.horizontal_direction)
+        {
+            self.horizontal_direction = d;
+        }
+        if let Some(n) = Vector3::normalize_finite_direction(transformation * self.common.normal) {
+            self.common.normal = n;
+        }
+    }
 }

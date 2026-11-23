@@ -25,6 +25,16 @@ pub struct ParagraphLineSpacing {
     pub exact: bool,
 }
 
+impl ParagraphLineSpacing {
+    #[allow(clippy::should_implement_trait)]
+    pub fn default() -> Self {
+        Self {
+            factor: 1.0,
+            exact: false,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub enum ParagraphTabAlignment {
     #[default]
@@ -54,6 +64,11 @@ pub struct RichTextParagraphStyle {
 }
 
 impl RichTextParagraphStyle {
+    #[allow(clippy::should_implement_trait)]
+    pub fn default() -> Self {
+        <Self as Default>::default()
+    }
+
     pub fn tabs(&self) -> &[ParagraphTabStop] {
         &self.tab_stops
     }
@@ -79,6 +94,10 @@ impl RichTextParagraphStyle {
 pub struct MTextParagraphControl;
 
 impl MTextParagraphControl {
+    pub fn parse(code: &str) -> RichTextParagraphStyle {
+        Self::parse_paragraph_code(code)
+    }
+
     /// Parses an MText `\px...;` paragraph control directive into [`RichTextParagraphStyle`].
     pub fn parse_paragraph_code(code: &str) -> RichTextParagraphStyle {
         let mut style = RichTextParagraphStyle::default();

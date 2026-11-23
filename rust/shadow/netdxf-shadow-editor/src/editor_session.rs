@@ -104,6 +104,16 @@ pub struct EditorState {
     pub history: Vec<EditHistoryEntry>,
 }
 
+impl EditorState {
+    pub fn undo_count(&self) -> usize {
+        self.history.len()
+    }
+
+    pub fn redo_count(&self) -> usize {
+        usize::from(self.can_redo)
+    }
+}
+
 /// Interactive undo/redo editor session over an [`IShadowGraphStore`].
 pub struct EditorSession {
     store: Box<dyn IShadowGraphStore>,

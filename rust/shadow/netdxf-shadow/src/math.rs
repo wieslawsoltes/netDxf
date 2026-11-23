@@ -189,6 +189,11 @@ impl Affine3 {
     }
 
     #[inline]
+    pub const fn r#move(p: Vec3) -> Self {
+        Self::move_by(p)
+    }
+
+    #[inline]
     pub fn scale(p: Vec3) -> Self {
         Self::new(
             Vec3::UNIT_X * p.x,
