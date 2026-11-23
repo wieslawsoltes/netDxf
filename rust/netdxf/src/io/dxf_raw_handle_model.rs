@@ -40,6 +40,33 @@ pub struct DxfRawHandleOccurrence {
     pub group_code: i32,
     pub handle: u64,
     pub role: DxfRawHandleRole,
+    pub subclass: Option<String>,
+}
+
+impl DxfRawHandleOccurrence {
+    pub fn canonical_handle(&self) -> String {
+        format!("{:X}", self.handle)
+    }
+
+    pub fn numeric_handle(&self) -> u64 {
+        self.handle
+    }
+
+    pub fn code(&self) -> i32 {
+        self.group_code
+    }
+
+    pub fn context(&self) -> &str {
+        &self.section_name
+    }
+
+    pub fn record(&self) -> usize {
+        self.record_index
+    }
+
+    pub fn is_reference(&self) -> bool {
+        !matches!(self.role, DxfRawHandleRole::Identity)
+    }
 }
 
 /// A single diagnostic emitted while indexing or validating raw DXF handle graphs.
@@ -88,4 +115,20 @@ bitflags! {
 pub struct DxfRawDependencyClosure {
     pub visited_handles: Vec<u64>,
     pub unresolved_handles: Vec<u64>,
+    pub ambiguous_references: Vec<u64>,
+    pub uninterpreted_handles: Vec<u64>,
+}
+
+impl DxfRawDependencyClosure {
+    pub fn records(&self) -> &[u64] {
+        &self.visited_handles
+    }
+
+    pub fn unresolved_references(&self) -> &[u64] {
+        &self.unresolved_handles
+    }
+
+    pub fn are_selected_references_resolved(&self) -> bool {
+        self.unresolved_handles.is_empty() && self.ambiguous_references.is_empty()
+    }
 }

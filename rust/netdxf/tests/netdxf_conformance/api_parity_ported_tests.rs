@@ -314,6 +314,7 @@ fn entities_objects_and_raw_io_ported_types_work() {
             name: "PH".into(),
             target_handle: 0x11,
         }],
+        ..Default::default()
     }));
     tx.upsert(DxfRawStoredObject::Placeholder(DxfRawPlaceholder {
         handle: 0x11,

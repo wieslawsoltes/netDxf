@@ -45,6 +45,67 @@ impl BandedMatrix {
         self.upper_bands
     }
 
+    /// Returns the main diagonal band entries.
+    pub fn d_band(&self) -> Vec<f64> {
+        (0..self.size).map(|i| self.get(i, i)).collect()
+    }
+
+    /// Returns the `lower_bands` sub-diagonal bands.
+    pub fn l_bands(&self) -> Vec<Vec<f64>> {
+        (1..=self.lower_bands.min(self.size.saturating_sub(1)))
+            .map(|b| (0..(self.size - b)).map(|i| self.get(i + b, i)).collect())
+            .collect()
+    }
+
+    /// Returns the `upper_bands` super-diagonal bands.
+    pub fn u_bands(&self) -> Vec<Vec<f64>> {
+        (1..=self.upper_bands.min(self.size.saturating_sub(1)))
+            .map(|b| (0..(self.size - b)).map(|i| self.get(i, i + b)).collect())
+            .collect()
+    }
+
+    /// Computes in-place Cholesky factorization `A = L * L^T` for symmetric positive-definite matrices.
+    pub fn cholesky_factor(&mut self) -> bool {
+        let n = self.size;
+        if n == 0 {
+            return false;
+        }
+        for j in 0..n {
+            let mut sum = self.get(j, j);
+            for k in 0..j {
+                let ljk = self.get(j, k);
+                sum -= ljk * ljk;
+            }
+            if sum <= 0.0 || !sum.is_finite() {
+                return false;
+            }
+            let diag = sum.sqrt();
+            self.set(j, j, diag);
+            for i in (j + 1)..n {
+                let mut s = self.get(i, j);
+                for k in 0..j {
+                    s -= self.get(i, k) * self.get(j, k);
+                }
+                self.set(i, j, s / diag);
+                self.set(j, i, 0.0);
+            }
+        }
+        true
+    }
+
+    /// Computes the dense inverse `A^-1` as a row-major `size x size` matrix.
+    pub fn compute_inverse(&self) -> Option<Vec<Vec<f64>>> {
+        let n = self.size;
+        if n == 0 {
+            return None;
+        }
+        let mut eye = vec![vec![0.0; n]; n];
+        for (i, row) in eye.iter_mut().enumerate() {
+            row[i] = 1.0;
+        }
+        self.solve_system(&eye)
+    }
+
     /// Solves `A * X = B` for multiple right-hand sides (`B` has `size` rows and `num_cols` columns)
     /// using Gaussian elimination with partial pivoting.
     pub fn solve_system(&self, b: &[Vec<f64>]) -> Option<Vec<Vec<f64>>> {

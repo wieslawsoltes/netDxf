@@ -22,6 +22,33 @@ use crate::vector3::Vector3;
 pub struct DxfR12Codec;
 
 impl DxfR12Codec {
+    pub fn create() -> Self {
+        Self
+    }
+
+    pub fn create_with_code_page(_code_page: &str) -> Self {
+        Self
+    }
+
+    pub fn save(doc: &DxfDocument, path: impl AsRef<std::path::Path>) -> Result<()> {
+        let bytes = Self::write_to_bytes(doc)?;
+        std::fs::write(path, bytes)?;
+        Ok(())
+    }
+
+    pub fn save_with_code_page(
+        doc: &DxfDocument,
+        path: impl AsRef<std::path::Path>,
+        _code_page: &str,
+    ) -> Result<()> {
+        Self::save(doc, path)
+    }
+
+    pub fn read_entities(bytes: &[u8]) -> Result<Vec<EntityObject>> {
+        let doc = Self::read_from_bytes(bytes)?;
+        Ok(doc.entities.iter().cloned().collect())
+    }
+
     /// Exports a `DxfDocument` as an AutoCAD R12 (`AC1009`) ASCII DXF byte buffer.
     pub fn write_to_bytes(doc: &DxfDocument) -> Result<Vec<u8>> {
         let mut out = Vec::with_capacity(8192);

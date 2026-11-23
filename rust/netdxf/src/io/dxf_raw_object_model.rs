@@ -44,7 +44,28 @@ pub struct DxfRawDictionary {
     pub owner_handle: u64,
     pub is_hard_owner: bool,
     pub cloning: DxfDuplicateRecordCloning,
+    pub default_handle: Option<u64>,
     pub entries: Vec<DxfRawDictionaryEntry>,
+}
+
+impl DxfRawDictionary {
+    pub fn hard_owner_flag(&self) -> bool {
+        self.is_hard_owner
+    }
+
+    pub fn cloning_flag(&self) -> DxfDuplicateRecordCloning {
+        self.cloning
+    }
+
+    pub fn has_default(&self) -> bool {
+        self.default_handle.is_some()
+    }
+
+    pub fn find(&self, name: &str) -> Option<&DxfRawDictionaryEntry> {
+        self.entries
+            .iter()
+            .find(|e| e.name.eq_ignore_ascii_case(name))
+    }
 }
 
 /// Raw `DICTIONARYVAR` stored object representation.
@@ -192,6 +213,34 @@ impl DxfRawObjectStore {
             next_handle_seed: self.next_handle_seed.max(1),
         }
     }
+
+    pub fn open(options: DxfRawObjectStoreOptions) -> Self {
+        Self::new(options)
+    }
+
+    pub fn begin_edit(&self) -> DxfRawObjectTransaction {
+        self.begin_transaction()
+    }
+
+    pub fn root_dictionary(&self) -> Option<&DxfRawDictionary> {
+        let h = self.root_dictionary_handle?;
+        match self.objects.get(&h) {
+            Some(DxfRawStoredObject::Dictionary(d)) => Some(d),
+            _ => None,
+        }
+    }
+
+    pub fn document(&self) -> usize {
+        self.objects.len()
+    }
+
+    pub fn encode_text(text: &str) -> String {
+        text.replace('\r', "").replace('\n', "^J")
+    }
+
+    pub fn decode_text(text: &str) -> String {
+        text.replace("^J", "\n")
+    }
 }
 
 /// Atomic staging transaction over a [`DxfRawObjectStore`].
@@ -247,6 +296,7 @@ impl DxfRawObjectTransaction {
                 owner_handle: 0,
                 is_hard_owner: false,
                 cloning: DxfDuplicateRecordCloning::KeepExisting,
+                default_handle: None,
                 entries: Vec::new(),
             }),
         );
@@ -280,6 +330,7 @@ impl DxfRawObjectTransaction {
                 owner_handle,
                 is_hard_owner: false,
                 cloning,
+                default_handle: None,
                 entries: Vec::new(),
             }),
         );
