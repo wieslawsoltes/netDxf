@@ -758,6 +758,9 @@ impl DxfReader {
                                 is_vertical: flags.contains(TextStyleFlags::VERTICAL),
                                 oblique_angle,
                                 width_factor,
+                                flags,
+                                text_generation_flags: gen_flags,
+                                ..TextStyle::default_style()
                             };
                             ts.table.is_reserved = name.eq_ignore_ascii_case(TextStyle::DEFAULT_NAME);
                             ts.table.object.handle = handle;

@@ -20,6 +20,15 @@ use crate::tables::{
     VPort, UCS,
 };
 
+/// Controls how SPLINE 16-bit knot/control/fit counts are emitted during DXF writing.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+pub enum DxfSplineCountPolicy {
+    #[default]
+    LegacyOmit = 0,
+    WhenRepresentable = 1,
+    RequireRepresentable = 2,
+}
+
 /// Represents a DXF document for reading, creating, modifying, and writing AutoCAD DXF files.
 ///
 /// Mirrors `netDxf.DxfDocument`.
@@ -267,6 +276,211 @@ impl DxfDocument {
         target_version: DxfVersion,
     ) -> crate::DxfVersionCompatibilityReport {
         crate::DxfVersionCompatibilityReport::analyze(self, target_version)
+    }
+
+    /// Alias for `check_version_compatibility` matching C# `DxfDocument.AnalyzeVersionCompatibility`.
+    pub fn analyze_version_compatibility(
+        &self,
+        target_version: DxfVersion,
+    ) -> crate::DxfVersionCompatibilityReport {
+        self.check_version_compatibility(target_version)
+    }
+
+    /// Returns the active Model Space `VPort` (`*Active`), if present.
+    pub fn viewport(&self) -> Option<&VPort> {
+        self.vports.get(VPort::DEFAULT_NAME)
+    }
+
+    /// Returns the mutable active Model Space `VPort` (`*Active`), if present.
+    pub fn viewport_mut(&mut self) -> Option<&mut VPort> {
+        self.vports.get_mut(VPort::DEFAULT_NAME)
+    }
+
+    /// Looks up any object or entity handle in the document, returning its `DxfObject` metadata.
+    pub fn get_object_by_handle(&self, handle: &str) -> Option<&DxfObject> {
+        let needle = handle.trim();
+        if needle.is_empty() {
+            return None;
+        }
+        let matches = |obj: &DxfObject| {
+            obj.handle
+                .as_deref()
+                .is_some_and(|h| h.eq_ignore_ascii_case(needle))
+        };
+        if matches(&self.object) {
+            return Some(&self.object);
+        }
+        for e in self.entities.all() {
+            if matches(&e.common().object) {
+                return Some(&e.common().object);
+            }
+            if let EntityObject::Insert(ins) = e {
+                for a in &ins.attributes {
+                    if matches(&a.object) {
+                        return Some(&a.object);
+                    }
+                }
+            }
+        }
+        macro_rules! check_table {
+            ($table:expr) => {
+                for item in $table.iter() {
+                    if matches(&item.table_data().object) {
+                        return Some(&item.table_data().object);
+                    }
+                }
+            };
+        }
+        check_table!(self.application_registries);
+        check_table!(self.vports);
+        check_table!(self.linetypes);
+        check_table!(self.layers);
+        check_table!(self.text_styles);
+        check_table!(self.shape_styles);
+        check_table!(self.views);
+        check_table!(self.ucss);
+        check_table!(self.dimension_styles);
+        check_table!(self.mline_styles);
+        check_table!(self.mleader_styles);
+        check_table!(self.table_styles);
+        check_table!(self.groups);
+        check_table!(self.layouts);
+        check_table!(self.layer_states);
+        check_table!(self.image_definitions);
+        check_table!(self.underlay_dgn_definitions);
+        check_table!(self.underlay_dwf_definitions);
+        check_table!(self.underlay_pdf_definitions);
+        for blk in self.blocks.iter() {
+            if matches(&blk.record.object) {
+                return Some(&blk.record.object);
+            }
+            if matches(&blk.table.object) {
+                return Some(&blk.table.object);
+            }
+            if matches(&blk.end.object) {
+                return Some(&blk.end.object);
+            }
+            for e in &blk.entities {
+                if matches(&e.common().object) {
+                    return Some(&e.common().object);
+                }
+            }
+        }
+        if matches(&self.raster_variables.object) {
+            return Some(&self.raster_variables.object);
+        }
+        if let Some(geo) = &self.geo_data {
+            if matches(&geo.object) {
+                return Some(&geo.object);
+            }
+        }
+        if let Some(sun) = &self.sun {
+            if matches(&sun.object) {
+                return Some(&sun.object);
+            }
+        }
+        for study in &self.sun_studies {
+            if matches(&study.object) {
+                return Some(&study.object);
+            }
+        }
+        None
+    }
+
+    /// Returns all top-level `DxfObject` handles registered in this document.
+    pub fn objects(&self) -> Vec<&DxfObject> {
+        let mut out = Vec::new();
+        for e in self.entities.all() {
+            out.push(&e.common().object);
+        }
+        for item in self.layers.iter() {
+            out.push(&item.table.object);
+        }
+        for item in self.linetypes.iter() {
+            out.push(&item.table.object);
+        }
+        for item in self.text_styles.iter() {
+            out.push(&item.table.object);
+        }
+        for item in self.dimension_styles.iter() {
+            out.push(&item.table.object);
+        }
+        for item in self.blocks.iter() {
+            out.push(&item.table.object);
+        }
+        for item in self.layouts.iter() {
+            out.push(&item.table.object);
+        }
+        out
+    }
+
+    /// Returns named dictionary object names present in this document.
+    pub fn named_objects(&self) -> Vec<String> {
+        let mut names = Vec::new();
+        for g in self.groups.iter() {
+            names.push(g.name().to_string());
+        }
+        for l in self.layouts.iter() {
+            names.push(l.name().to_string());
+        }
+        for m in self.mline_styles.iter() {
+            names.push(m.name().to_string());
+        }
+        for m in self.mleader_styles.iter() {
+            names.push(m.name().to_string());
+        }
+        for t in self.table_styles.iter() {
+            names.push(t.name().to_string());
+        }
+        names
+    }
+
+    /// Returns the default spline count policy for this document.
+    pub fn spline_count_policy(&self) -> crate::DxfSplineCountPolicy {
+        crate::DxfSplineCountPolicy::default()
+    }
+
+    /// Atomically saves the DXF document to `path` (alias for `save_with_options`).
+    pub fn save_atomic(&mut self, path: impl AsRef<Path>, is_binary: bool) -> Result<()> {
+        self.save_with_options(path, is_binary)
+    }
+
+    /// Builds anonymous dimension geometry blocks according to `options` and atomically saves the DXF file.
+    pub fn save_with_dimension_pictures(
+        &mut self,
+        path: impl AsRef<Path>,
+        is_binary: bool,
+        options: &crate::DxfDimensionPictureOptions,
+    ) -> Result<()> {
+        let max_pics = options.maximum_pictures;
+        let mut built = 0usize;
+        let mut next_idx = 1usize;
+        let mut new_blocks = Vec::new();
+        for ent in self.entities.all_mut() {
+            if let EntityObject::Dimension(dim) = ent {
+                if built >= max_pics {
+                    break;
+                }
+                if dim.block_name.is_empty() {
+                    let bname = format!("*D{next_idx}");
+                    next_idx += 1;
+                    let style = self
+                        .dimension_styles
+                        .get(&dim.style)
+                        .cloned()
+                        .unwrap_or_else(DimensionStyle::default_style);
+                    let mut blk = DimensionBlock::build(dim, &style, &bname);
+                    blk.entities.truncate(options.maximum_picture_entities);
+                    dim.block_name = bname;
+                    new_blocks.push(blk);
+                    built += 1;
+                }
+            }
+        }
+        for blk in new_blocks {
+            self.blocks.insert(blk);
+        }
+        self.save_with_options(path, is_binary)
     }
 
     /// Probes the DXF version and binary flag of a file on disk without loading the full document.

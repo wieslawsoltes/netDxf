@@ -8,6 +8,8 @@ use crate::vector3::Vector3;
 #[derive(Clone, Debug, PartialEq)]
 pub struct VPort {
     pub table: TableObjectData,
+    pub lower_left_corner: Vector2,
+    pub upper_right_corner: Vector2,
     pub view_center: Vector2,
     pub snap_base_point: Vector2,
     pub snap_spacing: Vector2,
@@ -16,8 +18,22 @@ pub struct VPort {
     pub direction: Vector3,
     pub view_height: f64,
     pub view_aspect_ratio: f64,
+    pub lens_length: f64,
+    pub front_clipping_plane: f64,
+    pub back_clipping_plane: f64,
+    pub snap_rotation_angle: f64,
+    pub view_twist_angle: f64,
+    pub circle_sides: i16,
+    pub fast_zoom: bool,
     pub show_grid: bool,
     pub snap_mode: bool,
+    pub ucs_icon: i16,
+    pub snap_isopair: i16,
+    pub ucs_origin: Vector3,
+    pub ucs_x_axis: Vector3,
+    pub ucs_y_axis: Vector3,
+    pub base_ucs: Option<String>,
+    pub flags: i16,
 }
 
 impl VPort {
@@ -26,6 +42,8 @@ impl VPort {
     pub fn new(name: impl Into<String>) -> Result<Self> {
         Ok(Self {
             table: TableObjectData::new(name, DxfObjectCode::VPORT, true)?,
+            lower_left_corner: Vector2::ZERO,
+            upper_right_corner: Vector2::new(1.0, 1.0),
             view_center: Vector2::ZERO,
             snap_base_point: Vector2::ZERO,
             snap_spacing: Vector2::new(0.5, 0.5),
@@ -34,14 +52,30 @@ impl VPort {
             direction: Vector3::UNIT_Z,
             view_height: 10.0,
             view_aspect_ratio: 1.0,
+            lens_length: 50.0,
+            front_clipping_plane: 0.0,
+            back_clipping_plane: 0.0,
+            snap_rotation_angle: 0.0,
+            view_twist_angle: 0.0,
+            circle_sides: 1000,
+            fast_zoom: true,
             show_grid: true,
             snap_mode: false,
+            ucs_icon: 3,
+            snap_isopair: 0,
+            ucs_origin: Vector3::ZERO,
+            ucs_x_axis: Vector3::UNIT_X,
+            ucs_y_axis: Vector3::UNIT_Y,
+            base_ucs: None,
+            flags: 0,
         })
     }
 
     pub fn active() -> Self {
         Self {
             table: TableObjectData::reserved(Self::DEFAULT_NAME, DxfObjectCode::VPORT),
+            lower_left_corner: Vector2::ZERO,
+            upper_right_corner: Vector2::new(1.0, 1.0),
             view_center: Vector2::ZERO,
             snap_base_point: Vector2::ZERO,
             snap_spacing: Vector2::new(0.5, 0.5),
@@ -50,8 +84,22 @@ impl VPort {
             direction: Vector3::UNIT_Z,
             view_height: 10.0,
             view_aspect_ratio: 1.0,
+            lens_length: 50.0,
+            front_clipping_plane: 0.0,
+            back_clipping_plane: 0.0,
+            snap_rotation_angle: 0.0,
+            view_twist_angle: 0.0,
+            circle_sides: 1000,
+            fast_zoom: true,
             show_grid: true,
             snap_mode: false,
+            ucs_icon: 3,
+            snap_isopair: 0,
+            ucs_origin: Vector3::ZERO,
+            ucs_x_axis: Vector3::UNIT_X,
+            ucs_y_axis: Vector3::UNIT_Y,
+            base_ucs: None,
+            flags: 0,
         }
     }
 }

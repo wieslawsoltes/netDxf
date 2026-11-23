@@ -193,6 +193,104 @@ impl DxfRawDocument {
         Self::create(tags, self.is_binary)
     }
 
+    pub const MAXIMUM_RAW_LW_POLYLINE_VERTICES: usize = 1_000_000;
+
+    /// Returns the `$DWGCODEPAGE` value if present in the `HEADER` section.
+    pub fn encoding_code_page(&self) -> Option<String> {
+        let mut saw_var = false;
+        for tag in &self.tags {
+            if tag.code == 9 {
+                saw_var = tag.value.as_str().eq_ignore_ascii_case("$DWGCODEPAGE");
+            } else if saw_var && tag.code == 3 {
+                return Some(tag.value.as_str().to_string());
+            }
+        }
+        None
+    }
+
+    /// Returns `true` if the raw document contains at least one tag.
+    pub fn has_original_bytes(&self) -> bool {
+        !self.tags.is_empty()
+    }
+
+    /// Finds a section by name (case-insensitive).
+    pub fn find_section(&self, name: &str) -> Option<&DxfRawSection> {
+        self.sections
+            .iter()
+            .find(|s| s.name.eq_ignore_ascii_case(name))
+    }
+
+    /// Finds a record across all sections by its DXF handle (group code 5 or 105).
+    pub fn find_record_by_handle(&self, handle: &str) -> Option<&DxfRawRecord> {
+        let target = handle.trim();
+        for section in &self.sections {
+            for rec in &section.records {
+                if rec.tags.iter().any(|t| {
+                    (t.code == 5 || t.code == 105)
+                        && t.value.as_str().trim().eq_ignore_ascii_case(target)
+                }) {
+                    return Some(rec);
+                }
+            }
+        }
+        None
+    }
+
+    /// Inserts a vertex `(x, y, bulge)` into a raw `LWPOLYLINE` record at `vertex_index`,
+    /// updating the group-90 vertex count tag in place and returning a new `DxfRawDocument`.
+    pub fn insert_lw_polyline_vertex(
+        &self,
+        record: &DxfRawRecord,
+        vertex_index: usize,
+        x: f64,
+        y: f64,
+        bulge: f64,
+    ) -> Result<Self> {
+        if !record.name.eq_ignore_ascii_case("LWPOLYLINE") {
+            return Err(DxfError::InvalidValue(
+                "Record is not an LWPOLYLINE".to_string(),
+            ));
+        }
+        let mut new_tags = record.tags.clone();
+        let mut vertex_positions = Vec::new();
+        let mut count_idx = None;
+        for (i, t) in new_tags.iter().enumerate() {
+            if t.code == 90 && count_idx.is_none() {
+                count_idx = Some(i);
+            } else if t.code == 10 {
+                vertex_positions.push(i);
+            }
+        }
+        if vertex_positions.len() >= Self::MAXIMUM_RAW_LW_POLYLINE_VERTICES {
+            return Err(DxfError::InvalidValue(
+                "LWPOLYLINE vertex count exceeds maximum limit".to_string(),
+            ));
+        }
+        let insert_at = if vertex_index < vertex_positions.len() {
+            vertex_positions[vertex_index]
+        } else {
+            new_tags.len()
+        };
+        let mut v_tags = vec![
+            DxfTag::new(10, CodeValue::Double(x)),
+            DxfTag::new(20, CodeValue::Double(y)),
+        ];
+        if bulge != 0.0 {
+            v_tags.push(DxfTag::new(42, CodeValue::Double(bulge)));
+        }
+        new_tags.splice(insert_at..insert_at, v_tags);
+        if let Some(ci) = count_idx {
+            let new_count = (vertex_positions.len() + 1) as i32;
+            new_tags[ci] = DxfTag::new(90, CodeValue::Int32(new_count));
+        }
+        Ok(self.with_record(record, new_tags))
+    }
+
+    /// Atomically saves the raw document to a file path.
+    pub fn save_atomic(&self, path: impl AsRef<Path>, is_binary: bool) -> Result<()> {
+        self.save(path, is_binary)
+    }
+
     /// Atomically saves the raw document to a file path.
     pub fn save(&self, path: impl AsRef<Path>, is_binary: bool) -> Result<()> {
         let bytes = self.save_to_bytes(is_binary)?;

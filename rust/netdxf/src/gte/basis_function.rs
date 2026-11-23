@@ -49,33 +49,119 @@ impl BasisFunctionInput {
 pub struct BasisFunction {
     pub num_controls: usize,
     pub degree: usize,
+    pub uniform: bool,
     pub periodic: bool,
+    pub open: bool,
     pub knots: Vec<f64>,
+    pub unique_knots: Vec<UniqueKnot>,
 }
 
 impl BasisFunction {
     pub fn new(input: &BasisFunctionInput) -> Self {
-        let mut knots = Vec::new();
+        let mut bf = Self {
+            num_controls: 0,
+            degree: 0,
+            uniform: false,
+            periodic: false,
+            open: false,
+            knots: Vec::new(),
+            unique_knots: Vec::new(),
+        };
+        bf.create(input);
+        bf
+    }
+
+    /// Initializes or re-initializes the basis function from `BasisFunctionInput`.
+    pub fn create(&mut self, input: &BasisFunctionInput) {
+        self.num_controls = input.num_controls;
+        self.degree = input.degree;
+        self.uniform = input.uniform;
+        self.periodic = input.periodic;
+        self.unique_knots = input.unique_knots.clone();
+        self.knots.clear();
         for uk in &input.unique_knots {
             for _ in 0..uk.multiplicity {
-                knots.push(uk.t);
+                self.knots.push(uk.t);
             }
         }
-        Self {
-            num_controls: input.num_controls,
-            degree: input.degree,
-            periodic: input.periodic,
-            knots,
-        }
+        self.open = !self.periodic
+            && self
+                .unique_knots
+                .first()
+                .is_some_and(|uk| uk.multiplicity == self.degree + 1)
+            && self
+                .unique_knots
+                .last()
+                .is_some_and(|uk| uk.multiplicity == self.degree + 1);
     }
 
     pub fn from_knots(num_controls: usize, degree: usize, knots: Vec<f64>) -> Self {
+        let mut unique_knots: Vec<UniqueKnot> = Vec::new();
+        for &k in &knots {
+            if let Some(last) = unique_knots.last_mut() {
+                if (last.t - k).abs() <= f64::EPSILON {
+                    last.multiplicity += 1;
+                    continue;
+                }
+            }
+            unique_knots.push(UniqueKnot::new(k, 1));
+        }
+        let open = unique_knots
+            .first()
+            .is_some_and(|uk| uk.multiplicity == degree + 1)
+            && unique_knots
+                .last()
+                .is_some_and(|uk| uk.multiplicity == degree + 1);
         Self {
             num_controls,
             degree,
+            uniform: false,
             periodic: false,
+            open,
             knots,
+            unique_knots,
         }
+    }
+
+    #[inline]
+    pub fn is_open(&self) -> bool {
+        self.open
+    }
+
+    #[inline]
+    pub fn is_uniform(&self) -> bool {
+        self.uniform
+    }
+
+    #[inline]
+    pub fn is_periodic(&self) -> bool {
+        self.periodic
+    }
+
+    #[inline]
+    pub fn num_knots(&self) -> usize {
+        self.knots.len()
+    }
+
+    #[inline]
+    pub fn num_unique_knots(&self) -> usize {
+        self.unique_knots.len()
+    }
+
+    #[inline]
+    pub fn unique_knots(&self) -> &[UniqueKnot] {
+        &self.unique_knots
+    }
+
+    #[inline]
+    pub fn knot_value(&self, i: usize) -> f64 {
+        self.knots.get(i).copied().unwrap_or(0.0)
+    }
+
+    /// Returns the knot interval index `i` for parameter `t`.
+    #[inline]
+    pub fn knot_index(&self, t: f64) -> usize {
+        self.find_span(t)
     }
 
     #[inline]
@@ -92,6 +178,9 @@ impl BasisFunction {
     pub fn find_span(&self, t: f64) -> usize {
         let n = self.num_controls;
         let p = self.degree;
+        if n == 0 || self.knots.len() <= n {
+            return p;
+        }
         if t >= self.knots[n] {
             return n - 1;
         }
@@ -113,6 +202,14 @@ impl BasisFunction {
             }
         }
         mid
+    }
+
+    /// Evaluates basis functions and derivatives up to `order`, returning `(imin, imax, ders)`
+    /// matching GTE `BasisFunction.Evaluate(t, order, out imin, out imax)`.
+    pub fn evaluate(&self, t: f64, order: usize) -> (usize, usize, Vec<Vec<f64>>) {
+        let (span, ders) = self.evaluate_derivatives(t, order);
+        let imin = span.saturating_sub(self.degree);
+        (imin, span, ders)
     }
 
     /// Evaluates non-vanishing basis functions `N_{span-p, p}(t) .. N_{span, p}(t)`
@@ -161,7 +258,11 @@ impl BasisFunction {
                 let pk = (p - k) as isize;
                 if r >= k {
                     let denom = ndu[(pk + 1) as usize][rk as usize];
-                    a[s2][0] = if denom.abs() > 0.0 { a[s1][0] / denom } else { 0.0 };
+                    a[s2][0] = if denom.abs() > 0.0 {
+                        a[s1][0] / denom
+                    } else {
+                        0.0
+                    };
                     d = a[s2][0] * ndu[rk as usize][pk as usize];
                 }
                 let j1 = if rk >= -1 { 1 } else { (-rk) as usize };
@@ -181,7 +282,11 @@ impl BasisFunction {
                 }
                 if r <= pk as usize {
                     let denom = ndu[(pk + 1) as usize][r];
-                    a[s2][k] = if denom.abs() > 0.0 { -a[s1][k - 1] / denom } else { 0.0 };
+                    a[s2][k] = if denom.abs() > 0.0 {
+                        -a[s1][k - 1] / denom
+                    } else {
+                        0.0
+                    };
                     d += a[s2][k] * ndu[r][pk as usize];
                 }
                 ders_row[r] = d;

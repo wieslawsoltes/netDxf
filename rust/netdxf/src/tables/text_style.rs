@@ -24,11 +24,15 @@ pub struct TextStyle {
     pub font_family_name: String,
     pub font_style: FontStyle,
     pub height: f64,
+    pub last_height: f64,
     pub is_backward: bool,
     pub is_upside_down: bool,
     pub is_vertical: bool,
     pub oblique_angle: f64,
     pub width_factor: f64,
+    pub flags: TextStyleFlags,
+    pub text_generation_flags: i16,
+    pub extended_font_data: Option<String>,
 }
 
 impl TextStyle {
@@ -43,11 +47,15 @@ impl TextStyle {
             font_family_name: String::new(),
             font_style: FontStyle::REGULAR,
             height: 0.0,
+            last_height: 0.2,
             is_backward: false,
             is_upside_down: false,
             is_vertical: false,
             oblique_angle: 0.0,
             width_factor: 1.0,
+            flags: TextStyleFlags::NONE,
+            text_generation_flags: 0,
+            extended_font_data: None,
         })
     }
 
@@ -59,12 +67,43 @@ impl TextStyle {
             font_family_name: String::new(),
             font_style: FontStyle::REGULAR,
             height: 0.0,
+            last_height: 0.2,
             is_backward: false,
             is_upside_down: false,
             is_vertical: false,
             oblique_angle: 0.0,
             width_factor: 1.0,
+            flags: TextStyleFlags::NONE,
+            text_generation_flags: 0,
+            extended_font_data: None,
         }
+    }
+
+    /// Creates a `TextStyle` preserving raw stored primary and big font file names.
+    pub fn from_stored_font_files(
+        name: impl Into<String>,
+        font_file: impl Into<String>,
+        big_font: impl Into<String>,
+    ) -> Result<Self> {
+        let mut style = Self::new(name, font_file)?;
+        style.big_font = big_font.into();
+        Ok(style)
+    }
+
+    /// Updates raw stored primary and big font file names.
+    pub fn set_stored_font_files(
+        &mut self,
+        font_file: impl Into<String>,
+        big_font: impl Into<String>,
+    ) {
+        self.font_file = font_file.into();
+        self.big_font = big_font.into();
+    }
+}
+
+impl Default for TextStyle {
+    fn default() -> Self {
+        Self::default_style()
     }
 }
 

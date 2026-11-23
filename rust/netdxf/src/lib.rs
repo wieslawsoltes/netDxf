@@ -52,7 +52,7 @@ pub use clipping_boundary_type::ClippingBoundaryType;
 pub use coordinate_system::CoordinateSystem;
 pub use dxf_class::DxfClass;
 pub use dxf_dimension_picture_options::DxfDimensionPictureOptions;
-pub use dxf_document::DxfDocument;
+pub use dxf_document::{DxfDocument, DxfSplineCountPolicy};
 pub use dxf_object::DxfObject;
 pub use dxf_object_code::DxfObjectCode;
 pub use dxf_version_compatibility_report::{

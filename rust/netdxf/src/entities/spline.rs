@@ -455,6 +455,93 @@ impl Spline {
         self.knots = new_knots;
         true
     }
+
+    pub const MAX_DEGREE: i16 = 10;
+
+    #[inline]
+    pub fn is_closed(&self) -> bool {
+        self.flags.contains(SplineTypeFlags::CLOSED)
+    }
+
+    #[inline]
+    pub fn is_periodic(&self) -> bool {
+        self.flags.contains(SplineTypeFlags::PERIODIC)
+    }
+
+    #[inline]
+    pub fn is_closed_periodic(&self) -> bool {
+        self.is_closed() && self.is_periodic()
+    }
+
+    #[inline]
+    pub fn is_rational(&self) -> bool {
+        self.flags.contains(SplineTypeFlags::RATIONAL)
+            || self.weights.iter().any(|&w| (w - 1.0).abs() > 1e-12)
+    }
+
+    #[inline]
+    pub fn ctrl_point_tolerance(&self) -> f64 {
+        self.control_point_tolerance
+    }
+
+    #[inline]
+    pub fn has_explicit_periodic_control_points(&self) -> bool {
+        let p = self.degree as usize;
+        self.is_closed_periodic()
+            && self.control_points.len() > p
+            && self.control_points[..p]
+                .iter()
+                .zip(self.control_points[self.control_points.len() - p..].iter())
+                .all(|(a, b)| (*a - *b).modulus() <= self.control_point_tolerance)
+    }
+
+    /// Evaluates position and derivatives up to `order` (0..=3) at parameter `u`.
+    pub fn evaluate_derivatives(&self, u: f64, order: usize) -> Option<Vec<Vector3>> {
+        let p = self.degree as usize;
+        let n = self.control_points.len();
+        if n == 0 || self.knots.len() < n + p + 1 {
+            return None;
+        }
+        let weights = if self.weights.len() == n {
+            self.weights.clone()
+        } else {
+            vec![1.0; n]
+        };
+        let curve = crate::gte::NURBSCurve::from_knots(
+            p,
+            self.knots.clone(),
+            self.control_points.clone(),
+            weights,
+        );
+        Some(curve.evaluate(u, order.min(3)))
+    }
+
+    /// Converts the spline to a `Polyline3D` with `precision` sampled vertices.
+    pub fn to_polyline3d(&self, precision: usize) -> crate::entities::polyline3d::Polyline3D {
+        let mut poly = crate::entities::polyline3d::Polyline3D::new(
+            self.polygonal_vertexes(precision),
+            self.is_closed(),
+        );
+        poly.common.layer = self.common.layer.clone();
+        poly.common.color = self.common.color;
+        poly.common.linetype = self.common.linetype.clone();
+        poly
+    }
+
+    /// Alias for `to_polyline3d` matching C# `Spline.ConvertTo`.
+    pub fn convert_to(&self, precision: usize) -> crate::entities::polyline3d::Polyline3D {
+        self.to_polyline3d(precision)
+    }
+
+    /// Creates a `Spline` from a `Polyline3D` (matches C# `Spline.ConvertFrom`).
+    pub fn convert_from(polyline: &crate::entities::polyline3d::Polyline3D, degree: i16) -> Self {
+        let mut spline =
+            Self::from_control_points(polyline.vertexes.clone(), degree, polyline.is_closed);
+        spline.common.layer = polyline.common.layer.clone();
+        spline.common.color = polyline.common.color;
+        spline.common.linetype = polyline.common.linetype.clone();
+        spline
+    }
 }
 
 /// One-sided limit direction for spline derivative evaluation at knots.

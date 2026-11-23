@@ -1,7 +1,8 @@
 use crate::bounding_rectangle::BoundingRectangle;
 use crate::dxf_object_code::DxfObjectCode;
-use crate::entities::entity_object::EntityCommon;
+use crate::entities::entity_object::{EntityCommon, EntityObject};
 use crate::entities::entity_type::EntityType;
+use crate::entities::face3d::{Face3D, Face3DEdgeFlags};
 use crate::matrix3::Matrix3;
 use crate::vector3::Vector3;
 
@@ -32,6 +33,94 @@ impl PolyfaceMesh {
             vertexes,
             faces,
         }
+    }
+
+    #[inline]
+    pub fn declared_vertex_count(&self) -> usize {
+        self.vertexes.len()
+    }
+
+    #[inline]
+    pub fn declared_face_count(&self) -> usize {
+        self.faces.len()
+    }
+
+    #[inline]
+    pub fn face_records(&self) -> &[PolyfaceMeshFace] {
+        &self.faces
+    }
+
+    /// Updates a 1-based vertex index on face `face_idx` at corner `corner_idx`, preserving visibility sign.
+    pub fn set_face_vertex_index(
+        &mut self,
+        face_idx: usize,
+        corner_idx: usize,
+        vertex_index_1based: i16,
+    ) -> bool {
+        if let Some(face) = self.faces.get_mut(face_idx) {
+            if let Some(slot) = face.vertex_indexes.get_mut(corner_idx) {
+                let sign = if *slot < 0 { -1 } else { 1 };
+                *slot = sign * vertex_index_1based.abs();
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Sets edge visibility (`true` = visible / positive index, `false` = hidden / negative index).
+    pub fn set_face_edge_visibility(
+        &mut self,
+        face_idx: usize,
+        corner_idx: usize,
+        visible: bool,
+    ) -> bool {
+        if let Some(face) = self.faces.get_mut(face_idx) {
+            if let Some(slot) = face.vertex_indexes.get_mut(corner_idx) {
+                let mag = slot.abs();
+                *slot = if visible { mag } else { -mag };
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Explodes the polyface mesh into `Face3D` entities preserving invisible edge flags.
+    pub fn explode(&self) -> Vec<EntityObject> {
+        let mut out = Vec::with_capacity(self.faces.len());
+        for face in &self.faces {
+            if face.vertex_indexes.len() < 3 {
+                continue;
+            }
+            let mut pts = Vec::with_capacity(4);
+            let mut flags = Face3DEdgeFlags::NONE;
+            for (corner, &raw_idx) in face.vertex_indexes.iter().take(4).enumerate() {
+                if raw_idx == 0 {
+                    continue;
+                }
+                if raw_idx < 0 {
+                    flags |= match corner {
+                        0 => Face3DEdgeFlags::FIRST,
+                        1 => Face3DEdgeFlags::SECOND,
+                        2 => Face3DEdgeFlags::THIRD,
+                        3 => Face3DEdgeFlags::FOURTH,
+                        _ => Face3DEdgeFlags::NONE,
+                    };
+                }
+                let idx = (raw_idx.unsigned_abs() as usize).saturating_sub(1);
+                if let Some(&pt) = self.vertexes.get(idx) {
+                    pts.push(pt);
+                }
+            }
+            if pts.len() >= 3 {
+                let p3 = pts.get(3).copied().unwrap_or(pts[2]);
+                let mut f = Face3D::new(pts[0], pts[1], pts[2], p3);
+                f.edge_flags = flags;
+                f.common.layer = self.common.layer.clone();
+                f.common.color = self.common.color;
+                out.push(EntityObject::Face3D(Box::new(f)));
+            }
+        }
+        out
     }
 
     pub fn transform_by(&mut self, transformation: Matrix3, translation: Vector3) {

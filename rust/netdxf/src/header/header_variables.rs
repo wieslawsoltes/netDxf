@@ -120,4 +120,81 @@ impl HeaderVariables {
             ..Self::default()
         }
     }
+
+    /// Adds or replaces a custom header variable (`$...`).
+    pub fn add_custom_variable(&mut self, variable: HeaderVariable) {
+        self.custom_variables.insert(variable.name.clone(), variable);
+    }
+
+    /// Removes a custom header variable by name.
+    pub fn remove_custom_variable(&mut self, name: &str) -> Option<HeaderVariable> {
+        self.custom_variables.shift_remove(name)
+    }
+
+    /// Returns `true` if a custom header variable with `name` exists.
+    pub fn contains_custom_variable(&self, name: &str) -> bool {
+        self.custom_variables.contains_key(name)
+    }
+
+    /// Looks up a custom header variable by name.
+    pub fn try_get_custom_variable(&self, name: &str) -> Option<&HeaderVariable> {
+        self.custom_variables.get(name)
+    }
+
+    /// Clears all custom header variables.
+    pub fn clear_custom_variables(&mut self) {
+        self.custom_variables.clear();
+    }
+
+    /// Returns the names of all custom header variables.
+    pub fn custom_names(&self) -> Vec<&str> {
+        self.custom_variables.keys().map(|s| s.as_str()).collect()
+    }
+
+    /// Returns all custom header variables.
+    pub fn custom_values(&self) -> Vec<&HeaderVariable> {
+        self.custom_variables.values().collect()
+    }
+
+    /// Returns the canonical known DXF header variable names.
+    pub fn known_names() -> &'static [&'static str] {
+        &[
+            "$ACADVER", "$DWGCODEPAGE", "$LASTSAVEDBY", "$HANDSEED", "$ANGBASE", "$ANGDIR",
+            "$ATTMODE", "$AUNITS", "$AUPREC", "$CECOLOR", "$CELTSCALE", "$CELTYPE", "$CELWEIGHT",
+            "$CLAYER", "$CMLJUST", "$CMLSCALE", "$CMLSTYLE", "$DIMSTYLE", "$TEXTSIZE", "$TEXTSTYLE",
+            "$LUNITS", "$LUPREC", "$MIRRTEXT", "$EXTNAMES", "$INSBASE", "$INSUNITS", "$LTSCALE",
+            "$LWDISPLAY", "$PDMODE", "$PDSIZE", "$PLINEGEN", "$PSLTSCALE", "$SPLINESEGS", "$SURFU",
+            "$SURFV", "$TDCREATE", "$TDUCREATE", "$TDUPDATE", "$TDUUPDATE", "$TDINDWG", "$UCSORG",
+            "$UCSXDIR", "$UCSYDIR",
+        ]
+    }
+
+    /// Returns snapshots of the core known header variables as `HeaderVariable` values.
+    pub fn known_values(&self) -> Vec<HeaderVariable> {
+        use crate::header::header_variable::HeaderVariableValue;
+        vec![
+            HeaderVariable::new("$ACADVER", 1, HeaderVariableValue::String(self.acad_ver.as_code().to_string())),
+            HeaderVariable::new("$DWGCODEPAGE", 3, HeaderVariableValue::String(self.dwg_code_page.clone())),
+            HeaderVariable::new("$HANDSEED", 5, HeaderVariableValue::String(self.handle_seed.clone())),
+            HeaderVariable::new("$CLAYER", 8, HeaderVariableValue::String(self.c_layer.clone())),
+            HeaderVariable::new("$DIMSTYLE", 2, HeaderVariableValue::String(self.dim_style.clone())),
+            HeaderVariable::new("$TEXTSTYLE", 7, HeaderVariableValue::String(self.text_style.clone())),
+            HeaderVariable::new("$TEXTSIZE", 40, HeaderVariableValue::Float(self.text_size)),
+            HeaderVariable::new("$LTSCALE", 40, HeaderVariableValue::Float(self.lt_scale)),
+            HeaderVariable::new("$UCSORG", 10, HeaderVariableValue::Vector3(self.ucs_org)),
+            HeaderVariable::new("$UCSXDIR", 10, HeaderVariableValue::Vector3(self.ucs_x_dir)),
+            HeaderVariable::new("$UCSYDIR", 10, HeaderVariableValue::Vector3(self.ucs_y_dir)),
+        ]
+    }
+
+    /// Constructs the current `UCS` from `$UCSORG`, `$UCSXDIR`, and `$UCSYDIR`.
+    pub fn current_ucs(&self) -> crate::tables::UCS {
+        crate::tables::UCS::from_origin_axes(
+            "CurrentUCS",
+            self.ucs_org,
+            self.ucs_x_dir,
+            self.ucs_y_dir,
+        )
+        .unwrap_or_else(|_| crate::tables::UCS::new("CurrentUCS").expect("valid UCS name"))
+    }
 }

@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::ops::{Add, Div, Index, IndexMut, Mul, Sub};
 
 /// Dynamic-size double-precision vector (`netDxf.GTE.GVector`).
@@ -8,7 +9,15 @@ pub struct GVector {
 
 impl GVector {
     pub fn zero(size: usize) -> Self {
-        Self { elements: vec![0.0; size] }
+        Self {
+            elements: vec![0.0; size],
+        }
+    }
+
+    pub fn unit(size: usize, d: usize) -> Self {
+        let mut v = Self::zero(size);
+        v.make_unit(d);
+        v
     }
 
     pub fn from_vec(elements: Vec<f64>) -> Self {
@@ -21,8 +30,18 @@ impl GVector {
     }
 
     #[inline]
+    pub fn size(&self) -> usize {
+        self.elements.len()
+    }
+
+    #[inline]
     pub fn is_empty(&self) -> bool {
         self.elements.is_empty()
+    }
+
+    #[inline]
+    pub fn vector(&self) -> &[f64] {
+        &self.elements
     }
 
     #[inline]
@@ -35,8 +54,67 @@ impl GVector {
         &mut self.elements
     }
 
+    pub fn make_zero(&mut self) {
+        self.elements.fill(0.0);
+    }
+
+    pub fn make_unit(&mut self, d: usize) {
+        self.elements.fill(0.0);
+        if let Some(slot) = self.elements.get_mut(d) {
+            *slot = 1.0;
+        }
+    }
+
+    /// Lifts n-tuple `self` to homogeneous (n+1)-tuple `(self, last)`.
+    pub fn h_lift(&self, last: f64) -> Self {
+        let mut out = Vec::with_capacity(self.elements.len() + 1);
+        out.extend_from_slice(&self.elements);
+        out.push(last);
+        Self { elements: out }
+    }
+
+    /// Projects homogeneous n-tuple `(u, v[n-1])` to (n-1)-tuple `u`.
+    pub fn h_project(&self) -> Option<Self> {
+        if self.elements.len() > 1 {
+            Some(Self {
+                elements: self.elements[..self.elements.len() - 1].to_vec(),
+            })
+        } else {
+            None
+        }
+    }
+
+    /// Lifts n-tuple `(w0, w1)` to (n+1)-tuple `(w0, value, w1)` inserting at `inject`.
+    pub fn lift(&self, inject: usize, value: f64) -> Self {
+        let idx = inject.min(self.elements.len());
+        let mut out = Vec::with_capacity(self.elements.len() + 1);
+        out.extend_from_slice(&self.elements[..idx]);
+        out.push(value);
+        out.extend_from_slice(&self.elements[idx..]);
+        Self { elements: out }
+    }
+
+    /// Projects n-tuple `(w0, v[reject], w1)` to (n-1)-tuple `(w0, w1)`.
+    pub fn project(&self, reject: usize) -> Self {
+        let n = self.elements.len();
+        if n <= 1 {
+            return Self::zero(0);
+        }
+        let mut out = Vec::with_capacity(n - 1);
+        for (i, &val) in self.elements.iter().enumerate() {
+            if i != reject {
+                out.push(val);
+            }
+        }
+        Self { elements: out }
+    }
+
     pub fn dot(u: &Self, v: &Self) -> f64 {
-        u.elements.iter().zip(v.elements.iter()).map(|(a, b)| a * b).sum()
+        u.elements
+            .iter()
+            .zip(v.elements.iter())
+            .map(|(a, b)| a * b)
+            .sum()
     }
 
     pub fn length(&self) -> f64 {
@@ -145,6 +223,21 @@ impl GVector {
     }
 }
 
+impl PartialOrd for GVector {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        if self.len() != other.len() {
+            return None;
+        }
+        for (&a, &b) in self.elements.iter().zip(other.elements.iter()) {
+            let ord = a.total_cmp(&b);
+            if ord != Ordering::Equal {
+                return Some(ord);
+            }
+        }
+        Some(Ordering::Equal)
+    }
+}
+
 impl Index<usize> for GVector {
     type Output = f64;
     #[inline]
@@ -163,14 +256,26 @@ impl IndexMut<usize> for GVector {
 impl Add for &GVector {
     type Output = GVector;
     fn add(self, rhs: &GVector) -> GVector {
-        GVector::from_vec(self.elements.iter().zip(&rhs.elements).map(|(a, b)| a + b).collect())
+        GVector::from_vec(
+            self.elements
+                .iter()
+                .zip(&rhs.elements)
+                .map(|(a, b)| a + b)
+                .collect(),
+        )
     }
 }
 
 impl Sub for &GVector {
     type Output = GVector;
     fn sub(self, rhs: &GVector) -> GVector {
-        GVector::from_vec(self.elements.iter().zip(&rhs.elements).map(|(a, b)| a - b).collect())
+        GVector::from_vec(
+            self.elements
+                .iter()
+                .zip(&rhs.elements)
+                .map(|(a, b)| a - b)
+                .collect(),
+        )
     }
 }
 

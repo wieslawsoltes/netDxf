@@ -44,3 +44,15 @@ impl BSplineCurve {
         self.evaluate(t, 0)[0]
     }
 }
+
+impl crate::gte::ParametricCurve for BSplineCurve {
+    fn t_min(&self) -> f64 {
+        self.basis.min_domain()
+    }
+    fn t_max(&self) -> f64 {
+        self.basis.max_domain()
+    }
+    fn evaluate(&self, t: f64, order: usize) -> Vec<Vector3> {
+        BSplineCurve::evaluate(self, t, order)
+    }
+}

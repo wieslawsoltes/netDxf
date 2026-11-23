@@ -1,4 +1,5 @@
-use std::ops::Mul;
+use std::fmt;
+use std::ops::{Add, Index, IndexMut, Mul, Sub};
 
 use crate::math_helper::MathHelper;
 use crate::matrix3::Matrix3;
@@ -57,6 +58,41 @@ impl Matrix4 {
         }
     }
 
+    // Element accessors matching C# M11..M44
+    #[inline] pub const fn m11(self) -> f64 { self.m[0][0] }
+    #[inline] pub const fn m12(self) -> f64 { self.m[0][1] }
+    #[inline] pub const fn m13(self) -> f64 { self.m[0][2] }
+    #[inline] pub const fn m14(self) -> f64 { self.m[0][3] }
+    #[inline] pub const fn m21(self) -> f64 { self.m[1][0] }
+    #[inline] pub const fn m22(self) -> f64 { self.m[1][1] }
+    #[inline] pub const fn m23(self) -> f64 { self.m[1][2] }
+    #[inline] pub const fn m24(self) -> f64 { self.m[1][3] }
+    #[inline] pub const fn m31(self) -> f64 { self.m[2][0] }
+    #[inline] pub const fn m32(self) -> f64 { self.m[2][1] }
+    #[inline] pub const fn m33(self) -> f64 { self.m[2][2] }
+    #[inline] pub const fn m34(self) -> f64 { self.m[2][3] }
+    #[inline] pub const fn m41(self) -> f64 { self.m[3][0] }
+    #[inline] pub const fn m42(self) -> f64 { self.m[3][1] }
+    #[inline] pub const fn m43(self) -> f64 { self.m[3][2] }
+    #[inline] pub const fn m44(self) -> f64 { self.m[3][3] }
+
+    #[inline] pub fn set_m11(&mut self, v: f64) { self.m[0][0] = v; }
+    #[inline] pub fn set_m12(&mut self, v: f64) { self.m[0][1] = v; }
+    #[inline] pub fn set_m13(&mut self, v: f64) { self.m[0][2] = v; }
+    #[inline] pub fn set_m14(&mut self, v: f64) { self.m[0][3] = v; }
+    #[inline] pub fn set_m21(&mut self, v: f64) { self.m[1][0] = v; }
+    #[inline] pub fn set_m22(&mut self, v: f64) { self.m[1][1] = v; }
+    #[inline] pub fn set_m23(&mut self, v: f64) { self.m[1][2] = v; }
+    #[inline] pub fn set_m24(&mut self, v: f64) { self.m[1][3] = v; }
+    #[inline] pub fn set_m31(&mut self, v: f64) { self.m[2][0] = v; }
+    #[inline] pub fn set_m32(&mut self, v: f64) { self.m[2][1] = v; }
+    #[inline] pub fn set_m33(&mut self, v: f64) { self.m[2][2] = v; }
+    #[inline] pub fn set_m34(&mut self, v: f64) { self.m[2][3] = v; }
+    #[inline] pub fn set_m41(&mut self, v: f64) { self.m[3][0] = v; }
+    #[inline] pub fn set_m42(&mut self, v: f64) { self.m[3][1] = v; }
+    #[inline] pub fn set_m43(&mut self, v: f64) { self.m[3][2] = v; }
+    #[inline] pub fn set_m44(&mut self, v: f64) { self.m[3][3] = v; }
+
     #[inline]
     pub fn is_identity(self) -> bool {
         self.is_identity_with(MathHelper::DEFAULT_EPSILON)
@@ -92,7 +128,36 @@ impl Matrix4 {
         true
     }
 
+    #[allow(clippy::should_implement_trait)]
+    #[inline]
+    pub fn add(a: Self, b: Self) -> Self {
+        a + b
+    }
+
+    #[inline]
+    pub fn subtract(a: Self, b: Self) -> Self {
+        a - b
+    }
+
+    #[inline]
+    pub fn multiply(a: Self, b: Self) -> Self {
+        a * b
+    }
+
+    #[inline]
+    pub fn multiply_vector(a: Self, u: Vector4) -> Vector4 {
+        a * u
+    }
+
+    #[inline]
+    pub fn multiply_scalar(m: Self, a: f64) -> Self {
+        m * a
+    }
+
     pub fn determinant(self) -> f64 {
+        if self.is_identity_exact() {
+            return 1.0;
+        }
         let m = &self.m;
         let s0 = m[0][0] * m[1][1] - m[1][0] * m[0][1];
         let s1 = m[0][0] * m[1][2] - m[1][0] * m[0][2];
@@ -112,6 +177,9 @@ impl Matrix4 {
     }
 
     pub fn inverse(self) -> Option<Self> {
+        if self.is_identity_exact() {
+            return Some(Self::IDENTITY);
+        }
         let m = &self.m;
         let s0 = m[0][0] * m[1][1] - m[1][0] * m[0][1];
         let s1 = m[0][0] * m[1][2] - m[1][0] * m[0][2];
@@ -174,11 +242,157 @@ impl Matrix4 {
         }
         Self { m: r }
     }
+
+    /// Builds a rotation matrix around the X axis (counter-clockwise angle in radians).
+    #[inline]
+    pub fn rotation_x(angle: f64) -> Self {
+        let (sin, cos) = angle.sin_cos();
+        Self::new(
+            1.0, 0.0, 0.0, 0.0,
+            0.0, cos, -sin, 0.0,
+            0.0, sin, cos, 0.0,
+            0.0, 0.0, 0.0, 1.0,
+        )
+    }
+
+    /// Builds a rotation matrix around the Y axis (counter-clockwise angle in radians).
+    #[inline]
+    pub fn rotation_y(angle: f64) -> Self {
+        let (sin, cos) = angle.sin_cos();
+        Self::new(
+            cos, 0.0, sin, 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            -sin, 0.0, cos, 0.0,
+            0.0, 0.0, 0.0, 1.0,
+        )
+    }
+
+    /// Builds a rotation matrix around the Z axis (counter-clockwise angle in radians).
+    #[inline]
+    pub fn rotation_z(angle: f64) -> Self {
+        let (sin, cos) = angle.sin_cos();
+        Self::new(
+            cos, -sin, 0.0, 0.0,
+            sin, cos, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0,
+        )
+    }
+
+    /// Builds a uniform scaling matrix.
+    #[inline]
+    pub const fn scale(value: f64) -> Self {
+        Self::scale_xyz(value, value, value)
+    }
+
+    /// Builds a scaling matrix from a `Vector3`.
+    #[inline]
+    pub const fn scale_vec(value: Vector3) -> Self {
+        Self::scale_xyz(value.x, value.y, value.z)
+    }
+
+    /// Builds a scaling matrix for x, y, and z axes.
+    #[inline]
+    pub const fn scale_xyz(x: f64, y: f64, z: f64) -> Self {
+        Self::new(
+            x, 0.0, 0.0, 0.0,
+            0.0, y, 0.0, 0.0,
+            0.0, 0.0, z, 0.0,
+            0.0, 0.0, 0.0, 1.0,
+        )
+    }
+
+    /// Builds a translation matrix from a `Vector3`.
+    #[inline]
+    pub const fn translation(vector: Vector3) -> Self {
+        Self::translation_xyz(vector.x, vector.y, vector.z)
+    }
+
+    /// Builds a translation matrix along X, Y, Z.
+    #[inline]
+    pub const fn translation_xyz(x: f64, y: f64, z: f64) -> Self {
+        Self::new(
+            1.0, 0.0, 0.0, x,
+            0.0, 1.0, 0.0, y,
+            0.0, 0.0, 1.0, z,
+            0.0, 0.0, 0.0, 1.0,
+        )
+    }
+
+    /// Builds the reflection matrix of a mirror plane with `normal` passing through `point`.
+    #[inline]
+    pub fn reflection(normal: Vector3, point: Vector3) -> Self {
+        let n = Vector3::normalize(normal);
+        let a = n.x;
+        let b = n.y;
+        let c = n.z;
+        let d = -Vector3::dot_product(point, n);
+        Self::new(
+            1.0 - 2.0 * a * a, -2.0 * a * b, -2.0 * a * c, -2.0 * a * d,
+            -2.0 * a * b, 1.0 - 2.0 * b * b, -2.0 * b * c, -2.0 * b * d,
+            -2.0 * a * c, -2.0 * b * c, 1.0 - 2.0 * c * c, -2.0 * c * d,
+            0.0, 0.0, 0.0, 1.0,
+        )
+    }
 }
 
 impl Default for Matrix4 {
     fn default() -> Self {
         Self::IDENTITY
+    }
+}
+
+impl Index<(usize, usize)> for Matrix4 {
+    type Output = f64;
+    #[inline]
+    fn index(&self, (r, c): (usize, usize)) -> &f64 {
+        &self.m[r][c]
+    }
+}
+
+impl IndexMut<(usize, usize)> for Matrix4 {
+    #[inline]
+    fn index_mut(&mut self, (r, c): (usize, usize)) -> &mut f64 {
+        &mut self.m[r][c]
+    }
+}
+
+impl Add for Matrix4 {
+    type Output = Self;
+    fn add(self, b: Self) -> Self {
+        let mut r = [[0.0; 4]; 4];
+        for (i, row) in r.iter_mut().enumerate() {
+            for (j, cell) in row.iter_mut().enumerate() {
+                *cell = self.m[i][j] + b.m[i][j];
+            }
+        }
+        Self { m: r }
+    }
+}
+
+impl Sub for Matrix4 {
+    type Output = Self;
+    fn sub(self, b: Self) -> Self {
+        let mut r = [[0.0; 4]; 4];
+        for (i, row) in r.iter_mut().enumerate() {
+            for (j, cell) in row.iter_mut().enumerate() {
+                *cell = self.m[i][j] - b.m[i][j];
+            }
+        }
+        Self { m: r }
+    }
+}
+
+impl Mul<f64> for Matrix4 {
+    type Output = Self;
+    fn mul(self, s: f64) -> Self {
+        let mut r = [[0.0; 4]; 4];
+        for (i, row) in r.iter_mut().enumerate() {
+            for (j, cell) in row.iter_mut().enumerate() {
+                *cell = self.m[i][j] * s;
+            }
+        }
+        Self { m: r }
     }
 }
 
@@ -201,6 +415,12 @@ impl Mul<Vector4> for Matrix4 {
 impl Mul for Matrix4 {
     type Output = Self;
     fn mul(self, b: Self) -> Self {
+        if self.is_identity_exact() {
+            return b;
+        }
+        if b.is_identity_exact() {
+            return self;
+        }
         let mut r = [[0.0; 4]; 4];
         for (i, row) in r.iter_mut().enumerate() {
             for (j, cell) in row.iter_mut().enumerate() {
@@ -211,5 +431,14 @@ impl Mul for Matrix4 {
             }
         }
         Self { m: r }
+    }
+}
+
+impl fmt::Display for Matrix4 {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "|{}, {}, {}, {}|", self.m[0][0], self.m[0][1], self.m[0][2], self.m[0][3])?;
+        writeln!(f, "|{}, {}, {}, {}|", self.m[1][0], self.m[1][1], self.m[1][2], self.m[1][3])?;
+        writeln!(f, "|{}, {}, {}, {}|", self.m[2][0], self.m[2][1], self.m[2][2], self.m[2][3])?;
+        write!(f, "|{}, {}, {}, {}|", self.m[3][0], self.m[3][1], self.m[3][2], self.m[3][3])
     }
 }

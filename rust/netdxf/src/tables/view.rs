@@ -15,6 +15,11 @@ pub struct View {
     pub front_clipping_plane: f64,
     pub back_clipping_plane: f64,
     pub fov: f64,
+    pub lens_length: f64,
+    pub flags: i16,
+    pub is_paper_space: bool,
+    pub is_camera_plottable: bool,
+    pub live_section: Option<String>,
 }
 
 impl View {
@@ -29,7 +34,21 @@ impl View {
             front_clipping_plane: 0.0,
             back_clipping_plane: 0.0,
             fov: 40.0,
+            lens_length: 50.0,
+            flags: 0,
+            is_paper_space: false,
+            is_camera_plottable: false,
+            live_section: None,
         })
+    }
+
+    #[inline]
+    pub fn has_stored_live_section(&self) -> bool {
+        self.live_section.as_deref().is_some_and(|s| !s.is_empty())
+    }
+
+    pub fn clear_live_section_reference(&mut self) {
+        self.live_section = None;
     }
 }
 

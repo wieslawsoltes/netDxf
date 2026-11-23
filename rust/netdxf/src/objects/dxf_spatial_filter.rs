@@ -10,6 +10,7 @@ pub struct DxfSpatialFilter {
     pub extrusion_direction: Vector3,
     pub origin: Vector3,
     pub display_boundary: bool,
+    pub is_clipping_enabled: bool,
     pub front_clipping_plane: Option<f64>,
     pub back_clipping_plane: Option<f64>,
     pub inverse_block_transform: [f64; 12],
@@ -31,10 +32,45 @@ impl DxfSpatialFilter {
             extrusion_direction: Vector3::UNIT_Z,
             origin: Vector3::ZERO,
             display_boundary: true,
+            is_clipping_enabled: true,
             front_clipping_plane: None,
             back_clipping_plane: None,
             inverse_block_transform: ident,
             block_transform: ident,
         }
+    }
+
+    #[inline]
+    pub fn boundary(&self) -> &[Vector2] {
+        &self.boundary_points
+    }
+
+    pub fn set_boundary(&mut self, points: impl IntoIterator<Item = Vector2>) {
+        self.boundary_points = points.into_iter().collect();
+    }
+
+    #[inline]
+    pub fn normal(&self) -> Vector3 {
+        self.extrusion_direction
+    }
+
+    #[inline]
+    pub fn front_clipping_distance(&self) -> Option<f64> {
+        self.front_clipping_plane
+    }
+
+    #[inline]
+    pub fn back_clipping_distance(&self) -> Option<f64> {
+        self.back_clipping_plane
+    }
+
+    #[inline]
+    pub fn clip_boundary_transform(&self) -> &[f64; 12] {
+        &self.block_transform
+    }
+
+    #[inline]
+    pub fn inverse_insert_transform(&self) -> &[f64; 12] {
+        &self.inverse_block_transform
     }
 }
