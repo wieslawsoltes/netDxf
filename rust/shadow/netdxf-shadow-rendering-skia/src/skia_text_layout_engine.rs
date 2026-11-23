@@ -29,12 +29,45 @@ pub struct SkiaTextLayoutEngine {
     misses: AtomicI64,
     layout_compilations: AtomicI64,
     shared_layout_hits: AtomicI64,
+    revision: AtomicI64,
     cache: RwLock<HashMap<RunCacheKey, TextRunMetrics>>,
 }
 
 impl SkiaTextLayoutEngine {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    pub fn revision(&self) -> i64 {
+        self.revision.load(Ordering::Relaxed)
+    }
+
+    pub fn cache_statistics(&self) -> SkiaTextCacheStatistics {
+        self.statistics()
+    }
+
+    pub fn invalidate_fonts(&self) {
+        self.clear_cache();
+        self.revision.fetch_add(1, Ordering::Relaxed);
+    }
+
+    pub fn set_typeface_resolver(&self) {
+        self.invalidate_fonts();
+    }
+
+    pub fn layout(&self, text: &str, style: &RichTextStyle) -> TextRunMetrics {
+        self.layout_compilations.fetch_add(1, Ordering::Relaxed);
+        self.measure_run(text, style)
+    }
+
+    pub fn outline(&self, text: &str, style: &RichTextStyle) -> Vec<(f64, f64)> {
+        let m = self.layout(text, style);
+        vec![
+            (0.0, -m.descent),
+            (m.width, -m.descent),
+            (m.width, m.ascent),
+            (0.0, m.ascent),
+        ]
     }
 
     pub fn statistics(&self) -> SkiaTextCacheStatistics {

@@ -31,6 +31,55 @@ impl Default for Viewport {
 }
 
 impl Viewport {
+    pub fn pixels_per_unit(&self) -> f64 {
+        self.zoom
+    }
+
+    pub fn to_screen(&self, p: Vec3) -> Vec3 {
+        self.world_to_screen(p)
+    }
+
+    pub fn to_world(&self, p: Vec3) -> Vec3 {
+        self.screen_to_world(p)
+    }
+
+    pub fn world_bounds(&self) -> Bounds2 {
+        let tl = self.screen_to_world(Vec3::xy(0.0, 0.0));
+        let br = self.screen_to_world(Vec3::xy(self.width, self.height));
+        Bounds2::new(
+            tl.x.min(br.x),
+            tl.y.min(br.y),
+            tl.x.max(br.x),
+            tl.y.max(br.y),
+        )
+    }
+
+    pub fn validate(&self) -> Result<(), String> {
+        if !self.width.is_finite()
+            || !self.height.is_finite()
+            || self.width <= 0.0
+            || self.height <= 0.0
+            || !self.zoom.is_finite()
+            || self.zoom <= 0.0
+        {
+            return Err("Viewport dimensions and zoom must be positive and finite.".into());
+        }
+        Ok(())
+    }
+
+    pub fn fit(&mut self, bounds: Bounds2, margin_ratio: f64) {
+        if bounds.is_empty() {
+            return;
+        }
+        self.center = bounds.center();
+        let w = bounds.width().max(1e-9);
+        let h = bounds.height().max(1e-9);
+        let scale = (1.0 - margin_ratio.clamp(0.0, 0.45)).max(0.1);
+        self.zoom = ((self.width * scale) / w)
+            .min((self.height * scale) / h)
+            .clamp(1e-6, 1e6);
+    }
+
     pub fn world_to_screen(&self, p: Vec3) -> Vec3 {
         let dx = (p.x - self.center.x) * self.zoom + self.width * 0.5;
         let dy = self.height * 0.5 - (p.y - self.center.y) * self.zoom;

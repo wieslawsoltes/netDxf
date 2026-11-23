@@ -63,3 +63,33 @@ pub struct ShxFont {
     pub symbols: BTreeMap<u32, ShxSymbol>,
 }
 
+impl ShxFont {
+    pub fn big_font(&self) -> bool {
+        self.encoding == ShxEncoding::BigFont
+    }
+
+    pub fn is_font(&self) -> bool {
+        self.above > 0
+    }
+
+    pub fn cap_height(&self) -> u8 {
+        self.above
+    }
+
+    pub fn descender(&self) -> u8 {
+        self.below
+    }
+
+    pub fn supports_vertical_text(&self) -> bool {
+        self.embedding == ShxEmbedding::DualOrientation
+    }
+
+    pub fn names(&self) -> Vec<&str> {
+        self.symbols
+            .values()
+            .filter(|s| !s.name.is_empty())
+            .map(|s| s.name.as_str())
+            .collect()
+    }
+}
+

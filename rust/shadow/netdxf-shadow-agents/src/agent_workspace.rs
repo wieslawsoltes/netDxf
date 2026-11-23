@@ -45,6 +45,61 @@ pub trait IAgentWorkspace: Send + Sync {
     fn list_files(&self) -> Vec<AgentFileInfo>;
     fn read_file(&self, path: &str) -> Option<String>;
     fn write_file(&mut self, path: &str, content: String);
+
+    fn list(&self) -> Vec<AgentFileInfo> {
+        self.list_files()
+    }
+
+    fn read(&self, path: &str) -> Option<String> {
+        self.read_file(path)
+    }
+
+    fn write(&mut self, path: &str, content: String) {
+        self.write_file(path, content);
+    }
+
+    fn delete(&mut self, _path: &str) -> bool {
+        false
+    }
+
+    fn search(&self, needle: &str) -> Vec<AgentSearchMatch>
+    where
+        Self: Sized,
+    {
+        let mut hits = Vec::new();
+        for info in self.list_files() {
+            if let Some(content) = self.read_file(&info.path) {
+                for (idx, line) in content.lines().enumerate() {
+                    if line.contains(needle) {
+                        hits.push(AgentSearchMatch {
+                            path: info.path.clone(),
+                            line: idx + 1,
+                            text: line.to_string(),
+                        });
+                    }
+                }
+            }
+        }
+        hits
+    }
+
+    fn export(&self) -> Vec<AgentFile> {
+        self.list_files()
+            .into_iter()
+            .filter_map(|info| {
+                self.read_file(&info.path).map(|content| AgentFile {
+                    path: info.path,
+                    content,
+                })
+            })
+            .collect()
+    }
+
+    fn import(&mut self, files: Vec<AgentFile>) {
+        for f in files {
+            self.write_file(&f.path, f.content);
+        }
+    }
 }
 
 pub trait IAgentTransactionalWorkspace: IAgentWorkspace {
