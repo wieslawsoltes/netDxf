@@ -27,6 +27,7 @@ impl EvaluationRunner {
                         message: String::new(),
                     }],
                     execution: exec,
+                    ..Default::default()
                 }
             })
             .collect()

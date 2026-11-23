@@ -13,7 +13,37 @@ use std::collections::BTreeMap;
 pub struct LinetypePlanOptions {
     pub metric_space: LinetypeMetricSpace,
     pub rotation_pivot: LinetypeTextRotationPivot,
+    pub text_rotation_pivot: LinetypeTextRotationPivot,
+    pub text_pivot: LinetypeTextRotationPivot,
     pub frame_mode: LinetypeFrameMode,
+    pub close_frame_seam: bool,
+    pub maximum_elements: usize,
+    pub maximum_points: usize,
+    pub maximum_placements: usize,
+    pub maximum_scene_placements: usize,
+    pub maximum_expansion_work: usize,
+    pub maximum_scene_expansion_work: usize,
+    pub maximum_text_length: usize,
+}
+
+impl Default for LinetypePlanOptions {
+    fn default() -> Self {
+        Self {
+            metric_space: LinetypeMetricSpace::default(),
+            rotation_pivot: LinetypeTextRotationPivot::default(),
+            text_rotation_pivot: LinetypeTextRotationPivot::default(),
+            text_pivot: LinetypeTextRotationPivot::default(),
+            frame_mode: LinetypeFrameMode::default(),
+            close_frame_seam: true,
+            maximum_elements: 64,
+            maximum_points: 100_000,
+            maximum_placements: 10_000,
+            maximum_scene_placements: 100_000,
+            maximum_expansion_work: 50_000,
+            maximum_scene_expansion_work: 500_000,
+            maximum_text_length: 256,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]

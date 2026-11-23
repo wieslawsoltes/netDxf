@@ -17,10 +17,20 @@ pub struct DrawingReferenceIdentity {
     pub revision: i64,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DrawingObjectReference {
+    pub document_id: String,
+    pub revision: i64,
+    pub view_version: i64,
+    pub layout: String,
     pub id: ObjectId,
+    pub object_id: ObjectId,
+    pub definition_object_id: Option<ObjectId>,
+    pub handle: String,
     pub type_name: String,
+    pub r#type: String,
+    pub occurrence_key: String,
+    pub insert_path: Vec<ObjectId>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -60,8 +70,13 @@ impl DrawingReferences {
             .iter()
             .filter_map(|id| {
                 snapshot.objects.get(id).map(|obj| DrawingObjectReference {
+                    document_id: snapshot.document_id.clone(),
+                    revision: snapshot.revision,
                     id: id.clone(),
+                    object_id: id.clone(),
                     type_name: obj.type_name.clone(),
+                    r#type: obj.short_type().to_string(),
+                    ..Default::default()
                 })
             })
             .collect();

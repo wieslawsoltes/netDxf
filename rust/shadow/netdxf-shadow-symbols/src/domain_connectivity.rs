@@ -215,7 +215,16 @@ pub struct DomainIsolationExclusion {
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainIsolationTraversalSummary {
     pub visited_nodes: usize,
+    pub visited_count: usize,
     pub blocked_nodes: usize,
+    pub examined_edges: usize,
+    pub complete: bool,
+    pub scope_complete: bool,
+    pub depth_limit_reached: bool,
+    pub edge_limit_reached: bool,
+    pub visit_limit_reached: bool,
+    pub target_status: Option<String>,
+    pub target_path_length: Option<usize>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -225,7 +234,19 @@ pub struct DomainIsolationAssessment {
     pub summary: DomainIsolationTraversalSummary,
 }
 
-pub struct DomainConnectivityIsolation;
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
+pub struct DomainConnectivityIsolation {
+    pub direction: String,
+    pub options: DomainIsolationOptions,
+    pub exclusions: Vec<DomainIsolationExclusion>,
+    pub before: DomainIsolationTraversalSummary,
+    pub after: DomainIsolationTraversalSummary,
+    pub before_visits: Vec<DomainPortVisit>,
+    pub after_visits: Vec<DomainPortVisit>,
+    pub assessments: Vec<DomainIsolationAssessment>,
+    pub proof_to: Option<usize>,
+    pub scope_complete: bool,
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainStructureOptions {
@@ -267,7 +288,19 @@ pub struct DomainLoop {
     pub steps: Vec<DomainLoopStep>,
 }
 
-pub struct DomainConnectivityStructure;
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
+pub struct DomainConnectivityStructure {
+    pub options: DomainStructureOptions,
+    pub port_structures: Vec<DomainPortStructure>,
+    pub condensation: Vec<DomainCondensationLink>,
+    pub loops: Vec<DomainLoop>,
+    pub loop_steps: usize,
+    pub loop_search_complete: bool,
+    pub loop_limit_reached: bool,
+    pub loop_proof: Option<DomainConnectionProof>,
+    pub proof_limit_reached: bool,
+    pub scope_complete: bool,
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DomainPortVisit {
@@ -281,7 +314,19 @@ pub struct DomainConnectionProof {
     pub path: Vec<DomainPortVisit>,
 }
 
-pub struct DomainConnectivityWalk;
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
+pub struct DomainConnectivityWalk {
+    pub source: usize,
+    pub target: Option<usize>,
+    pub direction: String,
+    pub status: String,
+    pub complete: bool,
+    pub scope_complete: bool,
+    pub depth_limit_reached: bool,
+    pub examined_edges: usize,
+    pub path: Vec<DomainPortVisit>,
+    pub proof_to: Option<DomainConnectionProof>,
+}
 
 impl DomainConnectivityWalk {
     /// Proves connectivity between `start` and `goal` over `connections` via BFS.
@@ -372,7 +417,12 @@ impl DomainConnectivityIsolation {
             exclusions: Vec::new(),
             summary: DomainIsolationTraversalSummary {
                 visited_nodes: visited,
+                visited_count: visited,
                 blocked_nodes: blocked.len(),
+                examined_edges: filtered.len(),
+                complete: true,
+                scope_complete: true,
+                ..Default::default()
             },
         }
     }

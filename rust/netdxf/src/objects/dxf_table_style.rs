@@ -132,6 +132,26 @@ pub struct DxfTableStyleRow {
     pub fill_enabled: bool,
     pub borders: DxfTableStyleRowBorders,
     pub data_types: DxfTableStyleRowDataTypes,
+    pub tags: Vec<(i32, String)>,
+}
+
+impl DxfTableStyleRow {
+    #[inline] pub fn stored_text_style_name(&self) -> &str { &self.text_style }
+    pub fn with_borders(mut self, borders: DxfTableStyleRowBorders) -> Self {
+        self.borders = borders;
+        self
+    }
+    pub fn with_data_types(mut self, data_types: DxfTableStyleRowDataTypes) -> Self {
+        self.data_types = data_types;
+        self
+    }
+    pub fn with_text_style(mut self, text_style: impl Into<String>) -> Self {
+        self.text_style = text_style.into();
+        self
+    }
+    pub fn with_values(self, values: Self) -> Self {
+        values
+    }
 }
 
 /// Edit and value snapshot aliases for [`DxfTableStyleRow`].

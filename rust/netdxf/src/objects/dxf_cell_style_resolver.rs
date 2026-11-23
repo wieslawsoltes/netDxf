@@ -11,6 +11,42 @@ pub struct DxfCellStyleFormat {
     pub vertical_margin: Option<f64>,
     pub alignment: Option<i16>,
     pub format_string: Option<String>,
+    pub borders: Vec<DxfCellGridFormat>,
+    pub margins: Option<DxfCellMargins>,
+    pub content: Option<DxfCellContentFormat>,
+    pub stored_type: i32,
+    pub stored_data_flags: i32,
+    pub stored_margin_flags: i32,
+}
+
+impl DxfCellStyleFormat {
+    pub fn edit(&self) -> Self {
+        self.clone()
+    }
+
+    pub fn from_format(fmt: &Self) -> Self {
+        fmt.clone()
+    }
+
+    pub fn with_borders(mut self, borders: Vec<DxfCellGridFormat>) -> Self {
+        self.borders = borders;
+        self
+    }
+
+    pub fn with_margins(mut self, margins: DxfCellMargins) -> Self {
+        self.margins = Some(margins);
+        self
+    }
+
+    pub fn with_content(mut self, content: DxfCellContentFormat) -> Self {
+        self.content = Some(content);
+        self
+    }
+
+    pub fn with_text_style(mut self, text_style: impl Into<String>) -> Self {
+        self.text_style = Some(text_style.into());
+        self
+    }
 }
 
 /// Resolves effective table cell formatting by cascading overrides (`netDxf.Objects.DxfCellStyleResolver`).
@@ -41,6 +77,7 @@ impl DxfCellStyleResolver {
                 .iter()
                 .flatten()
                 .find_map(|f| f.format_string.clone()),
+            ..Default::default()
         }
     }
 }

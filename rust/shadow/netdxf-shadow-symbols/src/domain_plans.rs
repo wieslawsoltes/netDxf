@@ -22,6 +22,7 @@ impl DomainPlans {
                 entity: e.entity.clone(),
                 tag: e.record.tag.clone(),
                 columns: e.record.properties.clone(),
+                ..Default::default()
             });
         }
         let groups = by_group
@@ -31,6 +32,8 @@ impl DomainPlans {
         DomainSchedule {
             groups,
             issues: Vec::new(),
+            complete: true,
+            ..Default::default()
         }
     }
 }

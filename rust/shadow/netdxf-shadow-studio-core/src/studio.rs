@@ -165,14 +165,34 @@ pub struct CadAttributeSyncOperation {
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadAttributeSyncSummary {
+    pub block: Option<ObjectId>,
+    pub block_name: String,
     pub synced: usize,
+    pub added: usize,
+    pub removed: usize,
+    pub retained: usize,
+    pub removed_x_data: usize,
+    pub text_conversions: usize,
+    pub reference_count: usize,
+    pub references: Vec<ObjectId>,
+    pub details_truncated: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadEditOperation {
+    pub kind: String,
     pub entity: ObjectId,
     pub property: String,
     pub value: Value,
+    pub command: Option<CadCommandRequest>,
+    pub layer: Option<CadLayerRequest>,
+    pub insert: Option<CadInsertOperation>,
+    pub resource: Option<CadResourceRequest>,
+    pub block_library: Option<CadBlockLibraryOperation>,
+    pub attribute_definitions: Option<CadAttributeDefinitionRequest>,
+    pub attribute_sync: Option<CadAttributeSyncOperation>,
+    pub module: Option<String>,
+    pub module_command: Option<CadModuleExecuteRequest>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -260,6 +280,25 @@ pub struct LinetypeViewRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleConnectivityRequest {
     pub module_id: String,
+    pub module: String,
+    pub layout: Option<String>,
+    pub direction: Option<String>,
+    pub source: Option<String>,
+    pub target: Option<String>,
+    pub tolerance: Option<f64>,
+    pub node_offset: usize,
+    pub edge_offset: usize,
+    pub component_offset: usize,
+    pub issue_offset: usize,
+    pub condensation_offset: usize,
+    pub critical_connection_offset: usize,
+    pub assessment_offset: usize,
+    pub before_visit_offset: usize,
+    pub after_visit_offset: usize,
+    pub excluded_ports: Vec<String>,
+    pub excluded_connections: Vec<usize>,
+    pub include_structure: bool,
+    pub include_isolation: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -270,13 +309,39 @@ pub struct CadConnectivityPage {
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadConnectivityWalkSummary {
+    pub source: String,
+    pub target: Option<String>,
+    pub direction: String,
+    pub status: String,
     pub visited: usize,
+    pub examined_edges: usize,
+    pub path_length: Option<usize>,
+    pub complete: bool,
+    pub scope_complete: bool,
+    pub depth_limit_reached: bool,
+    pub visit_limit_reached: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleConnectivityResult {
+    pub document_id: String,
+    pub module: String,
+    pub layout: String,
     pub nodes: usize,
     pub connections: usize,
+    pub edges: usize,
+    pub components: usize,
+    pub issues: usize,
+    pub complete: bool,
+    pub declarations_complete: bool,
+    pub condensation: usize,
+    pub critical_connections: usize,
+    pub assessments: usize,
+    pub before_visits: usize,
+    pub after_visits: usize,
+    pub walk: Option<CadConnectivityWalkSummary>,
+    pub structure: Option<CadConnectivityStructureSummary>,
+    pub isolation: Option<CadConnectivityIsolationSummary>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -303,7 +368,17 @@ pub struct CadSchedulePage {
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleScheduleResult {
+    pub document_id: String,
+    pub module: String,
+    pub layout: String,
+    pub drawing_units: String,
     pub rows: usize,
+    pub groups: usize,
+    pub issues: usize,
+    pub invalid_records: usize,
+    pub objects_visited: usize,
+    pub complete: bool,
+    pub limitations: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -377,7 +452,17 @@ pub struct CadSelectionPreviewPath {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadSelectionCandidate {
     pub entity: ObjectId,
+    pub leaf_entity: Option<ObjectId>,
+    pub handle: String,
+    pub r#type: String,
+    pub leaf_type: Option<String>,
+    pub layer: String,
+    pub occurrence: String,
     pub label: String,
+    pub argb: u32,
+    pub bounds: netdxf_shadow::Bounds2,
+    pub preview: Vec<CadSelectionPreviewPath>,
+    pub preview_truncated: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

@@ -38,6 +38,16 @@ pub struct EvaluationCost {
 #[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
 pub struct EvaluationTelemetry {
     pub duration_ms: u64,
+    pub inference_milliseconds: u64,
+    pub first_token_milliseconds: u64,
+    pub inferences: usize,
+    pub retries: usize,
+    pub input_tokens: u64,
+    pub output_tokens: u64,
+    pub reasoning_tokens: u64,
+    pub cache_read_tokens: u64,
+    pub cache_write_tokens: u64,
+    pub usage_complete: bool,
     pub cost: EvaluationCost,
 }
 
@@ -47,17 +57,27 @@ pub struct EvaluationToolCall {
     pub arguments: Value,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct EvaluationExecution {
     pub output: String,
     pub tool_calls: Vec<EvaluationToolCall>,
     pub telemetry: EvaluationTelemetry,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct EvaluationResult {
+    pub schema_version: u32,
+    pub grader_version: String,
     pub case_id: String,
+    pub description: String,
+    pub repeat: usize,
+    pub seed_hash: String,
+    pub fingerprint: String,
+    pub elapsed_milliseconds: u64,
     pub passed: bool,
+    pub cost: EvaluationCost,
+    pub checkpoint: Option<String>,
+    pub events: Vec<Value>,
     pub checks: Vec<EvaluationCheck>,
     pub execution: EvaluationExecution,
 }
@@ -73,4 +93,3 @@ impl EvaluationFixture {
         }
     }
 }
-

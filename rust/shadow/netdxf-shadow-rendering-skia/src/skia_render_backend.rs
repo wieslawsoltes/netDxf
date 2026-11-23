@@ -34,6 +34,54 @@ impl SkiaRenderBackend {
         self.image_resolver.is_some()
     }
 
+    pub fn resolve_image(&self, file_name: &str) -> Option<(u32, u32, Vec<u8>)> {
+        self.image_resolver
+            .as_ref()
+            .and_then(|r| r.resolve_rgba(file_name))
+    }
+
+    /// Renders `scene` into an SVG document string with full stroke color, lineweight, and polylines.
+    pub fn render_svg(&self, scene: &RenderScene, frame: &RenderFrame) -> String {
+        let w = frame.viewport.width.max(1.0);
+        let h = frame.viewport.height.max(1.0);
+        let bg = frame.background_argb & 0x00FF_FFFF;
+        let mut svg = format!(
+            "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"{w}\" height=\"{h}\" viewBox=\"0 0 {w} {h}\">\n<rect width=\"100%\" height=\"100%\" fill=\"#{bg:06X}\"/>\n"
+        );
+        for item in &scene.items {
+            let rgb = item.paint.argb & 0x00FF_FFFF;
+            let sw = item.paint.lineweight.max(0.5);
+            for c in &item.contours {
+                if c.points.len() < 2 {
+                    continue;
+                }
+                let tag = if c.closed { "polygon" } else { "polyline" };
+                svg.push_str(&format!(
+                    "<{tag} fill=\"none\" stroke=\"#{rgb:06X}\" stroke-width=\"{sw:.2}\" points=\""
+                ));
+                for (i, &p) in c.points.iter().enumerate() {
+                    let s = frame.viewport.world_to_screen(p);
+                    if i > 0 {
+                        svg.push(' ');
+                    }
+                    svg.push_str(&format!("{:.2},{:.2}", s.x, s.y));
+                }
+                svg.push_str("\"/>\n");
+            }
+        }
+        svg.push_str("</svg>\n");
+        svg
+    }
+
+    pub fn render_to_rgba(&self, scene: &RenderScene, frame: &RenderFrame) -> Vec<u8> {
+        self.rasterize_rgba8(scene, frame)
+    }
+
+    pub fn dispose(&mut self) {
+        self.image_resolver = None;
+        self.text_engine.clear_cache();
+    }
+
     fn rasterize_rgba8(&self, scene: &RenderScene, frame: &RenderFrame) -> Vec<u8> {
         let w = (frame.viewport.width.max(1.0) as usize).min(4096);
         let h = (frame.viewport.height.max(1.0) as usize).min(4096);

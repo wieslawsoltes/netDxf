@@ -25,6 +25,13 @@ impl Default for DimAssocOsnapPointRef {
     }
 }
 
+impl DimAssocOsnapPointRef {
+    #[inline] pub fn marker_index(&self) -> i32 { self.gs_marker }
+    #[inline] pub fn near_parameter(&self) -> f64 { self.near_param }
+    #[inline] pub fn point(&self) -> Vector3 { self.osnap_point }
+    #[inline] pub fn geometry(&self) -> Option<&str> { self.main_entity_handle.as_deref() }
+}
+
 /// Represents a DXF `DIMASSOC` associative dimension object (`netDxf.Objects.DxfStoredDimAssoc`).
 #[derive(Clone, Debug, PartialEq)]
 pub struct DxfStoredDimAssoc {
@@ -34,6 +41,27 @@ pub struct DxfStoredDimAssoc {
     pub trans_space: bool,
     pub rotated_dim_type: i16,
     pub point_refs: Vec<DimAssocOsnapPointRef>,
+    pub source_version: Option<crate::header::DxfVersion>,
+    pub tags: Vec<(i32, String)>,
+}
+
+impl DxfStoredDimAssoc {
+    #[inline] pub fn associativity_mask(&self) -> i32 { self.associativity_flags }
+    #[inline] pub fn dimension(&self) -> Option<&str> { self.dimension_handle.as_deref() }
+    #[inline] pub fn rotated_dimension_type(&self) -> i16 { self.rotated_dim_type }
+    #[inline] pub fn point_references(&self) -> &[DimAssocOsnapPointRef] { &self.point_refs }
+    pub fn references(&self) -> Vec<&str> {
+        let mut out = Vec::new();
+        if let Some(d) = self.dimension_handle.as_deref() {
+            out.push(d);
+        }
+        for p in &self.point_refs {
+            if let Some(h) = p.main_entity_handle.as_deref() {
+                out.push(h);
+            }
+        }
+        out
+    }
 }
 
 impl Default for DxfStoredDimAssoc {
@@ -45,6 +73,8 @@ impl Default for DxfStoredDimAssoc {
             trans_space: false,
             rotated_dim_type: 0,
             point_refs: Vec::new(),
+            source_version: None,
+            tags: Vec::new(),
         }
     }
 }
