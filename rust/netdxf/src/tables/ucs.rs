@@ -92,6 +92,42 @@ impl UCS {
             self.x_axis.z, self.y_axis.z, self.z_axis.z,
         )
     }
+
+    /// Sets the UCS axes from `(x_direction, y_direction)` with Gram-Schmidt orthonormalization.
+    pub fn set_axis(&mut self, x_direction: Vector3, y_direction: Vector3) {
+        let x = Vector3::normalize(x_direction);
+        let z = Vector3::normalize(Vector3::cross_product(x, y_direction));
+        let y = Vector3::normalize(Vector3::cross_product(z, x));
+        self.x_axis = x;
+        self.y_axis = y;
+        self.z_axis = z;
+    }
+
+    pub fn set_orthographic_origin(&mut self, ortho_type: UcsOrthographicType, origin: Vector3) {
+        self.orthographic_origins.insert(ortho_type, origin);
+    }
+
+    pub fn try_get_orthographic_origin(&self, ortho_type: UcsOrthographicType) -> Option<Vector3> {
+        self.orthographic_origins.get(&ortho_type).copied()
+    }
+
+    pub fn remove_orthographic_origin(&mut self, ortho_type: UcsOrthographicType) -> bool {
+        self.orthographic_origins.remove(&ortho_type).is_some()
+    }
+
+    pub fn set_orthographic_base(
+        &mut self,
+        base_ucs: Option<String>,
+        ortho_type: Option<UcsOrthographicType>,
+    ) {
+        self.base_ucs = base_ucs;
+        self.orthographic_view_type = ortho_type;
+    }
+
+    /// Transforms a point from UCS coordinates to WCS coordinates.
+    pub fn transform(&self, ucs_point: Vector3) -> Vector3 {
+        self.get_transformation() * ucs_point + self.origin
+    }
 }
 
 impl TableObject for UCS {

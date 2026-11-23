@@ -65,6 +65,11 @@ impl Layout {
             is_paper_space: true,
         })
     }
+
+    #[inline] pub fn associated_block(&self) -> &str { &self.associated_block_name }
+    #[inline] pub fn ucs_origin(&self) -> Vector3 { self.origin }
+    #[inline] pub fn ucs_x_axis(&self) -> Vector3 { self.x_axis }
+    #[inline] pub fn ucs_y_axis(&self) -> Vector3 { self.y_axis }
 }
 
 impl TableObject for Layout {

@@ -52,6 +52,10 @@ pub struct Viewport {
     pub circle_zoom_percent: i16,
     pub status: ViewportStatusFlags,
     pub frozen_layers: Vec<String>,
+    pub elevation: f64,
+    pub ucs_origin: Vector3,
+    pub clipping_boundary: Option<String>,
+    pub sun: Option<String>,
 }
 
 impl Viewport {
@@ -80,6 +84,20 @@ impl Viewport {
                 | ViewportStatusFlags::FAST_ZOOM
                 | ViewportStatusFlags::GRID_MODE,
             frozen_layers: Vec::new(),
+            elevation: 0.0,
+            ucs_origin: Vector3::ZERO,
+            clipping_boundary: None,
+            sun: None,
+        }
+    }
+
+    #[inline] pub fn snap_base(&self) -> Vector2 { self.snap_base_point }
+
+    pub fn transform_by(&mut self, transformation: crate::matrix3::Matrix3, translation: Vector3) {
+        self.center = transformation * self.center + translation;
+        self.view_target = transformation * self.view_target + translation;
+        if let Some(d) = Vector3::normalize_finite_direction(transformation * self.view_direction) {
+            self.view_direction = d;
         }
     }
 }

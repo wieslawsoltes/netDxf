@@ -291,6 +291,200 @@ impl DxfRawDocument {
         self.save(path, is_binary)
     }
 
+    /// Reads raw `POINT` geometry from a record.
+    pub fn read_point_geometry(record: &DxfRawRecord) -> Option<crate::io::DxfRawPointGeometry> {
+        if !record.name.eq_ignore_ascii_case("POINT") {
+            return None;
+        }
+        let mut g = crate::io::DxfRawPointGeometry {
+            extrusion: crate::Vector3::UNIT_Z,
+            ..Default::default()
+        };
+        for t in &record.tags {
+            match t.code {
+                10 => g.position.x = t.value.as_f64(),
+                20 => g.position.y = t.value.as_f64(),
+                30 => g.position.z = t.value.as_f64(),
+                39 => g.thickness = t.value.as_f64(),
+                50 => g.angle = t.value.as_f64(),
+                210 => g.extrusion.x = t.value.as_f64(),
+                220 => g.extrusion.y = t.value.as_f64(),
+                230 => g.extrusion.z = t.value.as_f64(),
+                _ => {}
+            }
+        }
+        Some(g)
+    }
+
+    /// Reads raw `LINE` geometry from a record.
+    pub fn read_line_geometry(record: &DxfRawRecord) -> Option<crate::io::DxfRawLineGeometry> {
+        if !record.name.eq_ignore_ascii_case("LINE") {
+            return None;
+        }
+        let mut g = crate::io::DxfRawLineGeometry {
+            extrusion: crate::Vector3::UNIT_Z,
+            ..Default::default()
+        };
+        for t in &record.tags {
+            match t.code {
+                10 => g.start.x = t.value.as_f64(),
+                20 => g.start.y = t.value.as_f64(),
+                30 => g.start.z = t.value.as_f64(),
+                11 => g.end.x = t.value.as_f64(),
+                21 => g.end.y = t.value.as_f64(),
+                31 => g.end.z = t.value.as_f64(),
+                39 => g.thickness = t.value.as_f64(),
+                210 => g.extrusion.x = t.value.as_f64(),
+                220 => g.extrusion.y = t.value.as_f64(),
+                230 => g.extrusion.z = t.value.as_f64(),
+                _ => {}
+            }
+        }
+        Some(g)
+    }
+
+    /// Reads raw `CIRCLE` geometry from a record.
+    pub fn read_circle_geometry(record: &DxfRawRecord) -> Option<crate::io::DxfRawCircleGeometry> {
+        if !record.name.eq_ignore_ascii_case("CIRCLE") {
+            return None;
+        }
+        let mut g = crate::io::DxfRawCircleGeometry {
+            extrusion: crate::Vector3::UNIT_Z,
+            ..Default::default()
+        };
+        for t in &record.tags {
+            match t.code {
+                10 => g.center.x = t.value.as_f64(),
+                20 => g.center.y = t.value.as_f64(),
+                30 => g.center.z = t.value.as_f64(),
+                40 => g.radius = t.value.as_f64(),
+                39 => g.thickness = t.value.as_f64(),
+                210 => g.extrusion.x = t.value.as_f64(),
+                220 => g.extrusion.y = t.value.as_f64(),
+                230 => g.extrusion.z = t.value.as_f64(),
+                _ => {}
+            }
+        }
+        Some(g)
+    }
+
+    /// Reads raw `ARC` geometry from a record.
+    pub fn read_arc_geometry(record: &DxfRawRecord) -> Option<crate::io::DxfRawArcGeometry> {
+        if !record.name.eq_ignore_ascii_case("ARC") {
+            return None;
+        }
+        let mut g = crate::io::DxfRawArcGeometry {
+            extrusion: crate::Vector3::UNIT_Z,
+            ..Default::default()
+        };
+        for t in &record.tags {
+            match t.code {
+                10 => g.center.x = t.value.as_f64(),
+                20 => g.center.y = t.value.as_f64(),
+                30 => g.center.z = t.value.as_f64(),
+                40 => g.radius = t.value.as_f64(),
+                50 => g.start_angle = t.value.as_f64(),
+                51 => g.end_angle = t.value.as_f64(),
+                39 => g.thickness = t.value.as_f64(),
+                210 => g.extrusion.x = t.value.as_f64(),
+                220 => g.extrusion.y = t.value.as_f64(),
+                230 => g.extrusion.z = t.value.as_f64(),
+                _ => {}
+            }
+        }
+        Some(g)
+    }
+
+    /// Reads raw `ELLIPSE` geometry from a record.
+    pub fn read_ellipse_geometry(record: &DxfRawRecord) -> Option<crate::io::DxfRawEllipseGeometry> {
+        if !record.name.eq_ignore_ascii_case("ELLIPSE") {
+            return None;
+        }
+        let mut g = crate::io::DxfRawEllipseGeometry {
+            extrusion: crate::Vector3::UNIT_Z,
+            minor_axis_ratio: 1.0,
+            end_parameter: std::f64::consts::TAU,
+            ..Default::default()
+        };
+        for t in &record.tags {
+            match t.code {
+                10 => g.center.x = t.value.as_f64(),
+                20 => g.center.y = t.value.as_f64(),
+                30 => g.center.z = t.value.as_f64(),
+                11 => g.major_axis_endpoint.x = t.value.as_f64(),
+                21 => g.major_axis_endpoint.y = t.value.as_f64(),
+                31 => g.major_axis_endpoint.z = t.value.as_f64(),
+                40 => g.minor_axis_ratio = t.value.as_f64(),
+                41 => g.start_parameter = t.value.as_f64(),
+                42 => g.end_parameter = t.value.as_f64(),
+                210 => g.extrusion.x = t.value.as_f64(),
+                220 => g.extrusion.y = t.value.as_f64(),
+                230 => g.extrusion.z = t.value.as_f64(),
+                _ => {}
+            }
+        }
+        Some(g)
+    }
+
+    /// Reads raw `LWPOLYLINE` geometry from a record.
+    pub fn read_lw_polyline_geometry(
+        record: &DxfRawRecord,
+    ) -> Option<crate::io::DxfRawLwPolylineGeometry> {
+        if !record.name.eq_ignore_ascii_case("LWPOLYLINE") {
+            return None;
+        }
+        let mut g = crate::io::DxfRawLwPolylineGeometry {
+            extrusion: crate::Vector3::UNIT_Z,
+            ..Default::default()
+        };
+        let mut cur: Option<crate::io::DxfRawLwPolylineVertex> = None;
+        for t in &record.tags {
+            match t.code {
+                70 => g.is_closed = (t.value.as_i16() & 1) != 0,
+                38 => g.elevation = t.value.as_f64(),
+                39 => g.thickness = t.value.as_f64(),
+                43 => g.constant_width = t.value.as_f64(),
+                210 => g.extrusion.x = t.value.as_f64(),
+                220 => g.extrusion.y = t.value.as_f64(),
+                230 => g.extrusion.z = t.value.as_f64(),
+                10 => {
+                    if let Some(v) = cur.take() {
+                        g.vertices.push(v);
+                    }
+                    cur = Some(crate::io::DxfRawLwPolylineVertex {
+                        position: crate::Vector2::new(t.value.as_f64(), 0.0),
+                        ..Default::default()
+                    });
+                }
+                20 => {
+                    if let Some(v) = cur.as_mut() {
+                        v.position.y = t.value.as_f64();
+                    }
+                }
+                40 => {
+                    if let Some(v) = cur.as_mut() {
+                        v.start_width = t.value.as_f64();
+                    }
+                }
+                41 => {
+                    if let Some(v) = cur.as_mut() {
+                        v.end_width = t.value.as_f64();
+                    }
+                }
+                42 => {
+                    if let Some(v) = cur.as_mut() {
+                        v.bulge = t.value.as_f64();
+                    }
+                }
+                _ => {}
+            }
+        }
+        if let Some(v) = cur {
+            g.vertices.push(v);
+        }
+        Some(g)
+    }
+
     /// Atomically saves the raw document to a file path.
     pub fn save(&self, path: impl AsRef<Path>, is_binary: bool) -> Result<()> {
         let bytes = self.save_to_bytes(is_binary)?;

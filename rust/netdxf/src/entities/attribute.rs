@@ -31,6 +31,9 @@ pub struct Attribute {
     pub lineweight: Lineweight,
     pub transparency: Transparency,
     pub normal: Vector3,
+    pub color_name: String,
+    pub is_position_locked: bool,
+    pub mtext: Option<crate::entities::AttributeMText>,
 }
 
 impl Attribute {
@@ -55,6 +58,9 @@ impl Attribute {
             lineweight: Lineweight::ByLayer,
             transparency: Transparency::BY_LAYER,
             normal: Vector3::UNIT_Z,
+            color_name: String::new(),
+            is_position_locked: false,
+            mtext: None,
         }
     }
 
@@ -79,6 +85,32 @@ impl Attribute {
             lineweight: def.lineweight,
             transparency: def.transparency,
             normal: def.normal,
+            color_name: def.color_name.clone(),
+            is_position_locked: def.is_position_locked,
+            mtext: def.mtext.clone(),
         }
+    }
+
+    #[inline] pub fn is_visible(&self) -> bool { !self.flags.contains(AttributeFlags::HIDDEN) }
+    #[inline] pub fn has_mtext(&self) -> bool { self.mtext.is_some() }
+    #[inline] pub fn get_mtext(&self) -> Option<&crate::entities::AttributeMText> { self.mtext.as_ref() }
+    pub fn get_text_data(&self) -> crate::entities::AttributeTextData {
+        crate::entities::AttributeTextData {
+            text: self.value.clone(),
+            content: self.value.clone(),
+            mtext: self.mtext.clone(),
+            is_multiline: self.mtext.is_some(),
+            locked: self.is_position_locked,
+            lock_position_in_block: self.is_position_locked,
+            ..Default::default()
+        }
+    }
+    pub fn create_transformed(&self, transformation: crate::matrix3::Matrix3, translation: Vector3) -> Self {
+        let mut copy = self.clone();
+        copy.position = transformation * copy.position + translation;
+        if let Some(n) = Vector3::normalize_finite_direction(transformation * copy.normal) {
+            copy.normal = n;
+        }
+        copy
     }
 }

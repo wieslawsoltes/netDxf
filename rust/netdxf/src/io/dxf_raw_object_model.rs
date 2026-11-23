@@ -451,4 +451,98 @@ impl DxfRawObjectTransaction {
         store.root_dictionary_handle = self.root_dictionary_handle;
         store.next_handle_seed = self.next_handle_seed;
     }
+
+    pub fn remove_entry(&mut self, dictionary_handle: u64, name: &str) -> bool {
+        if let Some(DxfRawStoredObject::Dictionary(dict)) = self.staged.get_mut(&dictionary_handle)
+        {
+            if let Some(idx) = dict
+                .entries
+                .iter()
+                .position(|e| e.name.eq_ignore_ascii_case(name))
+            {
+                dict.entries.remove(idx);
+                return true;
+            }
+        }
+        false
+    }
+
+    pub fn rename_entry(&mut self, dictionary_handle: u64, old_name: &str, new_name: &str) -> bool {
+        if let Some(DxfRawStoredObject::Dictionary(dict)) = self.staged.get_mut(&dictionary_handle)
+        {
+            if let Some(entry) = dict
+                .entries
+                .iter_mut()
+                .find(|e| e.name.eq_ignore_ascii_case(old_name))
+            {
+                entry.name = new_name.to_string();
+                return true;
+            }
+        }
+        false
+    }
+
+    pub fn set_dictionary_flags(
+        &mut self,
+        dictionary_handle: u64,
+        is_hard_owner: bool,
+        cloning: DxfDuplicateRecordCloning,
+    ) -> bool {
+        if let Some(DxfRawStoredObject::Dictionary(dict)) = self.staged.get_mut(&dictionary_handle)
+        {
+            dict.is_hard_owner = is_hard_owner;
+            dict.cloning = cloning;
+            return true;
+        }
+        false
+    }
+
+    pub fn set_variable(&mut self, handle: u64, value: impl Into<String>) -> bool {
+        if let Some(DxfRawStoredObject::DictionaryVariable(var)) = self.staged.get_mut(&handle) {
+            var.value = value.into();
+            return true;
+        }
+        false
+    }
+
+    pub fn set_xrecord(&mut self, handle: u64, tags: Vec<DxfTag>) -> bool {
+        if let Some(DxfRawStoredObject::XRecord(xr)) = self.staged.get_mut(&handle) {
+            xr.tags = tags;
+            return true;
+        }
+        false
+    }
+
+    pub fn set_id_buffer(&mut self, handle: u64, object_handles: Vec<u64>) -> bool {
+        if let Some(DxfRawStoredObject::IdBuffer(buf)) = self.staged.get_mut(&handle) {
+            buf.object_handles = object_handles;
+            return true;
+        }
+        false
+    }
+
+    pub fn set_draw_order(&mut self, handle: u64, entries: Vec<DxfRawSortOrderEntry>) -> bool {
+        if let Some(DxfRawStoredObject::SortentsTable(tbl)) = self.staged.get_mut(&handle) {
+            tbl.entries = entries;
+            return true;
+        }
+        false
+    }
+
+    pub fn remove_extension_dictionary(&mut self, owner_handle: u64) -> usize {
+        let dict_handles: Vec<u64> = self
+            .staged
+            .values()
+            .filter_map(|o| match o {
+                DxfRawStoredObject::Dictionary(d) if d.owner_handle == owner_handle => {
+                    Some(d.handle)
+                }
+                _ => None,
+            })
+            .collect();
+        dict_handles
+            .into_iter()
+            .map(|h| self.delete_owned_tree(h))
+            .sum()
+    }
 }

@@ -31,6 +31,9 @@ pub struct AttributeDefinition {
     pub lineweight: Lineweight,
     pub transparency: Transparency,
     pub normal: Vector3,
+    pub color_name: String,
+    pub is_position_locked: bool,
+    pub mtext: Option<crate::entities::AttributeMText>,
 }
 
 impl AttributeDefinition {
@@ -56,6 +59,24 @@ impl AttributeDefinition {
             lineweight: Lineweight::ByLayer,
             transparency: Transparency::BY_LAYER,
             normal: Vector3::UNIT_Z,
+            color_name: String::new(),
+            is_position_locked: false,
+            mtext: None,
+        }
+    }
+
+    #[inline] pub fn is_visible(&self) -> bool { !self.flags.contains(AttributeFlags::HIDDEN) }
+    #[inline] pub fn has_mtext(&self) -> bool { self.mtext.is_some() }
+    #[inline] pub fn get_mtext(&self) -> Option<&crate::entities::AttributeMText> { self.mtext.as_ref() }
+    pub fn get_text_data(&self) -> crate::entities::AttributeTextData {
+        crate::entities::AttributeTextData {
+            text: self.value.clone(),
+            content: self.value.clone(),
+            mtext: self.mtext.clone(),
+            is_multiline: self.mtext.is_some(),
+            locked: self.is_position_locked,
+            lock_position_in_block: self.is_position_locked,
+            ..Default::default()
         }
     }
 }

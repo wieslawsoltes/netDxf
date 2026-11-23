@@ -252,7 +252,10 @@ impl EntityObject {
             Self::Face3D(e) => e.transform_by(transformation, translation),
             Self::Insert(e) => e.transform_by(transformation, translation),
             Self::Line(e) => e.transform_by(transformation, translation),
+            Self::Hatch(e) => e.transform_by(transformation, translation),
+            Self::Helix(e) => e.transform_by(transformation, translation),
             Self::Mesh(e) => e.transform_by(transformation, translation),
+            Self::MLine(e) => e.transform_by(transformation, translation),
             Self::MText(e) => e.transform_by(transformation, translation),
             Self::Point(e) => e.transform_by(transformation, translation),
             Self::PolyfaceMesh(e) => e.transform_by(transformation, translation),
@@ -262,9 +265,21 @@ impl EntityObject {
             Self::Ray(e) => e.transform_by(transformation, translation),
             Self::Spline(e) => e.transform_by(transformation, translation),
             Self::Text(e) => e.transform_by(transformation, translation),
+            Self::Viewport(e) => e.transform_by(transformation, translation),
             Self::XLine(e) => e.transform_by(transformation, translation),
             _ => {}
         }
+    }
+
+    #[inline] pub fn color(&self) -> AciColor { self.common().color }
+    #[inline] pub fn linetype(&self) -> &str { &self.common().linetype }
+    #[inline] pub fn linetype_scale(&self) -> f64 { self.common().linetype_scale }
+    #[inline] pub fn lineweight(&self) -> Lineweight { self.common().lineweight }
+    #[inline] pub fn transparency(&self) -> Transparency { self.common().transparency }
+    #[inline] pub fn is_visible(&self) -> bool { self.common().is_visible }
+    #[inline] pub fn normal(&self) -> Vector3 { self.common().normal }
+    pub fn clear_proxy_graphics(&mut self) {
+        self.common_mut().object.x_data.shift_remove("ACAD_PROXY_ENTITY");
     }
 
     pub fn bounding_rectangle(&self) -> Option<BoundingRectangle> {
