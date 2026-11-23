@@ -52,6 +52,10 @@ impl DrawingEntities {
         self.all.iter()
     }
 
+    pub fn iter_mut(&mut self) -> std::slice::IterMut<'_, EntityObject> {
+        self.all.iter_mut()
+    }
+
     pub fn arcs(&self) -> impl Iterator<Item = &Arc> {
         self.all.iter().filter_map(|e| match e { EntityObject::Arc(v) => Some(v.as_ref()), _ => None })
     }

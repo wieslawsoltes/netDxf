@@ -163,6 +163,61 @@ pub struct DomainNetworkComponent {
 
 pub struct DomainConnectivity;
 
+impl DomainConnectivity {
+    /// Connects port nodes within `options.tolerance` and computes connected network components.
+    pub fn analyze(
+        ports: &[DomainPortNode],
+        options: &DomainConnectivityOptions,
+    ) -> (Vec<DomainConnection>, Vec<DomainNetworkComponent>) {
+        let mut connections = Vec::new();
+        let mut adj = vec![Vec::new(); ports.len()];
+        let tol = options.tolerance.max(0.0);
+
+        for i in 0..ports.len() {
+            for j in (i + 1)..ports.len() {
+                let d = Vec3::distance(ports[i].position, ports[j].position);
+                if d <= tol {
+                    let cid = connections.len();
+                    connections.push(DomainConnection {
+                        id: cid,
+                        a: i,
+                        b: j,
+                        distance: d,
+                    });
+                    adj[i].push(j);
+                    adj[j].push(i);
+                }
+            }
+        }
+
+        let mut visited = vec![false; ports.len()];
+        let mut components = Vec::new();
+        for start in 0..ports.len() {
+            if visited[start] {
+                continue;
+            }
+            let mut stack = vec![start];
+            visited[start] = true;
+            let mut nodes = Vec::new();
+            while let Some(u) = stack.pop() {
+                nodes.push(u);
+                for &v in &adj[u] {
+                    if !visited[v] {
+                        visited[v] = true;
+                        stack.push(v);
+                    }
+                }
+            }
+            nodes.sort_unstable();
+            components.push(DomainNetworkComponent {
+                id: components.len(),
+                nodes,
+            });
+        }
+        (connections, components)
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainIsolationOptions {
     pub respect_closed_valves: bool,
@@ -244,6 +299,68 @@ pub struct DomainConnectionProof {
 }
 
 pub struct DomainConnectivityWalk;
+
+impl DomainConnectivityWalk {
+    /// Proves connectivity between `start` and `goal` over `connections` via BFS.
+    pub fn prove_connection(
+        node_count: usize,
+        connections: &[DomainConnection],
+        start: usize,
+        goal: usize,
+    ) -> DomainConnectionProof {
+        if start >= node_count || goal >= node_count {
+            return DomainConnectionProof {
+                connected: false,
+                path: Vec::new(),
+            };
+        }
+        let mut adj = vec![Vec::new(); node_count];
+        for c in connections {
+            if c.a < node_count && c.b < node_count {
+                adj[c.a].push(c.b);
+                adj[c.b].push(c.a);
+            }
+        }
+        let mut visited = vec![false; node_count];
+        let mut parent = vec![usize::MAX; node_count];
+        let mut queue = std::collections::VecDeque::new();
+        visited[start] = true;
+        queue.push_back(start);
+
+        while let Some(u) = queue.pop_front() {
+            if u == goal {
+                let mut chain = vec![goal];
+                let mut cur = goal;
+                while cur != start {
+                    cur = parent[cur];
+                    chain.push(cur);
+                }
+                chain.reverse();
+                let path = chain
+                    .into_iter()
+                    .enumerate()
+                    .map(|(depth, node)| DomainPortVisit { node, depth })
+                    .collect();
+                return DomainConnectionProof {
+                    connected: true,
+                    path,
+                };
+            }
+            for &v in &adj[u] {
+                if !visited[v] {
+                    visited[v] = true;
+                    parent[v] = u;
+                    queue.push_back(v);
+                }
+            }
+        }
+
+        DomainConnectionProof {
+            connected: false,
+            path: Vec::new(),
+        }
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainScheduleOptions {

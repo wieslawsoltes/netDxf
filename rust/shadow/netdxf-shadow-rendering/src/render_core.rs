@@ -375,6 +375,62 @@ pub struct PerspectiveCamera {
     pub options: PerspectiveOptions,
 }
 
+impl PerspectiveCamera {
+    pub fn forward(self) -> Vec3 {
+        (self.target - self.eye).normalized()
+    }
+
+    pub fn right(self) -> Vec3 {
+        Vec3::cross(self.forward(), self.up).normalized()
+    }
+
+    pub fn camera_up(self) -> Vec3 {
+        Vec3::cross(self.right(), self.forward()).normalized()
+    }
+
+    pub fn project_point(self, world: Vec3, width: f64, height: f64) -> Option<Vec3> {
+        let rel = world - self.eye;
+        let z = Vec3::dot(rel, self.forward());
+        if z <= self.options.near_plane || z >= self.options.far_plane {
+            return None;
+        }
+        let x = Vec3::dot(rel, self.right());
+        let y = Vec3::dot(rel, self.camera_up());
+        let aspect = (width / height.max(1.0)).max(1e-6);
+        let half_tan = (self.options.fov_degrees.to_radians() * 0.5).tan();
+        let (tan_x, tan_y) = match self.options.fov_mode {
+            PerspectiveFieldOfView::Vertical => (half_tan * aspect, half_tan),
+            PerspectiveFieldOfView::Horizontal => (half_tan, half_tan / aspect),
+        };
+        let ndc_x = x / (z * tan_x);
+        let ndc_y = y / (z * tan_y);
+        Some(Vec3::new(
+            (ndc_x + 1.0) * 0.5 * width,
+            (1.0 - ndc_y) * 0.5 * height,
+            z,
+        ))
+    }
+
+    pub fn unproject_ray(self, screen_x: f64, screen_y: f64, width: f64, height: f64) -> PickingRay {
+        let aspect = (width / height.max(1.0)).max(1e-6);
+        let half_tan = (self.options.fov_degrees.to_radians() * 0.5).tan();
+        let (tan_x, tan_y) = match self.options.fov_mode {
+            PerspectiveFieldOfView::Vertical => (half_tan * aspect, half_tan),
+            PerspectiveFieldOfView::Horizontal => (half_tan, half_tan / aspect),
+        };
+        let ndc_x = (screen_x / width.max(1.0)) * 2.0 - 1.0;
+        let ndc_y = 1.0 - (screen_y / height.max(1.0)) * 2.0;
+        let dir = (self.forward()
+            + self.right() * (ndc_x * tan_x)
+            + self.camera_up() * (ndc_y * tan_y))
+            .normalized();
+        PickingRay {
+            origin: self.eye,
+            direction: dir,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PaperViewportProjection {
     pub transform: Affine3,
@@ -449,6 +505,38 @@ pub struct LinetypePlacement {
 }
 
 pub struct LinetypePlanner;
+
+impl LinetypePlanner {
+    /// Walks a polyline by arc length and emits placements every `spacing` units.
+    pub fn plan(points: &[Vec3], spacing: f64) -> Vec<LinetypePlacement> {
+        if points.len() < 2 || spacing <= 1e-9 {
+            return Vec::new();
+        }
+        let mut placements = Vec::new();
+        let mut accum = 0.0;
+        let mut next_target = spacing;
+        for w in points.windows(2) {
+            let seg = w[1] - w[0];
+            let len = seg.length();
+            if len <= 1e-12 {
+                continue;
+            }
+            let tangent = seg / len;
+            while next_target <= accum + len && placements.len() < 100_000 {
+                let local = next_target - accum;
+                placements.push(LinetypePlacement {
+                    distance: next_target,
+                    position: w[0] + tangent * local,
+                    tangent,
+                });
+                next_target += spacing;
+            }
+            accum += len;
+        }
+        placements
+    }
+}
+
 pub struct LinetypeTransport;
 
 pub trait ILinetypeDecorationProvider: Send + Sync {

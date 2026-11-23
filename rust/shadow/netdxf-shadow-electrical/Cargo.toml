@@ -9,6 +9,7 @@ authors.workspace = true
 description = "Electrical engineering CAD discipline module and symbol library for netDxf.Shadow"
 
 [dependencies]
+netdxf-shadow.workspace = true
 netdxf-shadow-disciplines.workspace = true
 netdxf-shadow-modules.workspace = true
 netdxf-shadow-symbols.workspace = true

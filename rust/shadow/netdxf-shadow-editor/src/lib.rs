@@ -43,6 +43,21 @@ impl Snapping {
             distance: Vec3::distance(point, snapped),
         }
     }
+
+    pub fn snap_to_endpoints(point: Vec3, candidates: &[Vec3], tolerance: f64) -> Option<SnapResult> {
+        let mut best: Option<SnapResult> = None;
+        for &c in candidates {
+            let d = Vec3::distance(point, c);
+            if d <= tolerance && best.map_or(true, |b| d < b.distance) {
+                best = Some(SnapResult {
+                    point: c,
+                    mode: SnapMode::Endpoint,
+                    distance: d,
+                });
+            }
+        }
+        best
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -92,6 +107,42 @@ pub struct ShadowPreviewSummary {
 }
 
 pub struct ShadowEditPreview;
+
+impl ShadowEditPreview {
+    pub fn summarize(patch: &ShadowGraphPatch, options: &ShadowPreviewOptions) -> ShadowPreviewSummary {
+        let mut summary = ShadowPreviewSummary::default();
+        let limit = if options.maximum_changes == 0 {
+            usize::MAX
+        } else {
+            options.maximum_changes
+        };
+        for change in &patch.changes {
+            match (&change.before, &change.after) {
+                (None, Some(_)) => summary.added += 1,
+                (Some(_), None) => summary.removed += 1,
+                (Some(before), Some(after)) => {
+                    summary.modified += 1;
+                    for (k, av) in &after.properties {
+                        if summary.changes.len() >= limit {
+                            break;
+                        }
+                        let bv = before.get(k);
+                        if bv != *av {
+                            summary.changes.push(ShadowPreviewChange {
+                                object: change.id.clone(),
+                                property: k.clone(),
+                                before: bv,
+                                after: av.clone(),
+                            });
+                        }
+                    }
+                }
+                (None, None) => {}
+            }
+        }
+        summary
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EditHistoryEntry {
@@ -172,5 +223,27 @@ impl EditorSession {
             revision: after.revision,
         });
         Ok(after)
+    }
+
+    pub fn undo(&mut self) -> ShadowResult<Option<Arc<ShadowSnapshot>>> {
+        let Some(prev) = self.undo_stack.pop() else {
+            return Ok(None);
+        };
+        let cur = self.store.current();
+        let patch = ShadowGraphPatch::between(&cur, &prev)?;
+        let restored = self.store.apply_patch(&patch)?;
+        self.redo_stack.push(cur);
+        Ok(Some(restored))
+    }
+
+    pub fn redo(&mut self) -> ShadowResult<Option<Arc<ShadowSnapshot>>> {
+        let Some(next) = self.redo_stack.pop() else {
+            return Ok(None);
+        };
+        let cur = self.store.current();
+        let patch = ShadowGraphPatch::between(&cur, &next)?;
+        let restored = self.store.apply_patch(&patch)?;
+        self.undo_stack.push(cur);
+        Ok(Some(restored))
     }
 }

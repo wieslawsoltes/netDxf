@@ -18,10 +18,18 @@ serde.workspace = true
 
 [dev-dependencies]
 netdxf.workspace = true
+netdxf-shadow-drafting.workspace = true
+netdxf-shadow-editor.workspace = true
+netdxf-shadow-electrical.workspace = true
 netdxf-shadow-geometry.workspace = true
 netdxf-shadow-graph.workspace = true
 netdxf-shadow-health.workspace = true
+netdxf-shadow-mcp.workspace = true
 netdxf-shadow-netdxf.workspace = true
+netdxf-shadow-pid.workspace = true
+netdxf-shadow-rendering-shx.workspace = true
+netdxf-shadow-symbols.workspace = true
+serde_json.workspace = true
 
 [lints]
 workspace = true
