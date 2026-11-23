@@ -1,0 +1,27 @@
+[package]
+name = "netdxf-shadow-studio-ui"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "FerroUI-based CAD Studio desktop/web UI shell replacing netDxf.Shadow.Studio.Web"
+
+[dependencies]
+netdxf-shadow.workspace = true
+netdxf-shadow-markdown.workspace = true
+netdxf-shadow-rendering.workspace = true
+netdxf-shadow-rendering-skia.workspace = true
+netdxf-shadow-studio-core.workspace = true
+serde.workspace = true
+
+[dev-dependencies]
+netdxf.workspace = true
+netdxf-shadow-geometry.workspace = true
+netdxf-shadow-graph.workspace = true
+netdxf-shadow-health.workspace = true
+netdxf-shadow-netdxf.workspace = true
+
+[lints]
+workspace = true

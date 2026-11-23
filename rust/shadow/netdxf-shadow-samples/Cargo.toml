@@ -1,0 +1,17 @@
+[package]
+name = "netdxf-shadow-samples"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Built-in CAD sample drawings for netDxf.Shadow Studio"
+
+[dependencies]
+netdxf.workspace = true
+netdxf-shadow-pid.workspace = true
+netdxf-shadow-rendering-shx.workspace = true
+
+[lints]
+workspace = true

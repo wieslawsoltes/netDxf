@@ -1,0 +1,17 @@
+[package]
+name = "netdxf-shadow-rendering"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Backend-agnostic CAD render compiler, SVG renderer, rich text, and camera for netDxf.Shadow"
+
+[dependencies]
+netdxf-shadow.workspace = true
+netdxf-shadow-geometry.workspace = true
+serde.workspace = true
+
+[lints]
+workspace = true

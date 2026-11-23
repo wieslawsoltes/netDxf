@@ -1,0 +1,20 @@
+[package]
+name = "netdxf-shadow-agents-hosting"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "External agent host, browser studio relay, and companion workspace for netDxf.Shadow"
+
+[dependencies]
+netdxf-shadow-agents.workspace = true
+netdxf-shadow-agents-acp.workspace = true
+netdxf-shadow-agents-codex.workspace = true
+netdxf-shadow-mcp.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true

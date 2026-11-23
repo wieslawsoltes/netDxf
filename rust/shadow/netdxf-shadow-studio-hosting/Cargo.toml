@@ -1,0 +1,18 @@
+[package]
+name = "netdxf-shadow-studio-hosting"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Studio HTTP/RPC host adapters for netDxf.Shadow"
+
+[dependencies]
+netdxf-shadow-studio-core.workspace = true
+netdxf-shadow-studio-agents.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true

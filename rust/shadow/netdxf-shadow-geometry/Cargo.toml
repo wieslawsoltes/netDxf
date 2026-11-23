@@ -1,0 +1,16 @@
+[package]
+name = "netdxf-shadow-geometry"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "CAD geometry projection, curves, hatch patterns, and spatial indexing for netDxf.Shadow"
+
+[dependencies]
+netdxf-shadow.workspace = true
+serde.workspace = true
+
+[lints]
+workspace = true

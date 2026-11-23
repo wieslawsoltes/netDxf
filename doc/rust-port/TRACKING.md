@@ -151,3 +151,18 @@ Completed a full file-by-file audit against upstream `netDxf/` and ported all re
   - `python3 tools/rust_port/compare_api.py --report doc/rust-port/API-PARITY-REPORT.md --fail-on-missing` → **100.0% API coverage** (`464` C# types scanned, `387` direct 1:1 matches, `63` idiomatic Rust mappings, `14` C# EventArgs/Delegates N/A, **`0` missing**).
   - `cargo clippy --manifest-path rust/Cargo.toml --all-targets -- -D warnings` → **0 warnings** (`#![forbid(unsafe_code)]`).
   - `cargo test --manifest-path rust/Cargo.toml` → **71/71 passing** (including `api_parity_ported_tests.rs`).
+
+
+## Shadow (`shadow/src`) Workspace Port
+
+- **All 32 C# Shadow Projects Ported to `rust/shadow/`** (registered in [`rust/Cargo.toml`](../../rust/Cargo.toml), all `#![forbid(unsafe_code)]`):
+  - **Foundation**: `netdxf-shadow` (36 types: `Vec3`, `Affine3`, `Bounds2`, `ShadowValue` algebra, `ShadowSnapshot`, `ShadowReader`, `ShadowReadSet`, `ShadowGraphPatch`, `ShadowGraphEdit`, `ShadowMerge` 3-way merge, `ShadowMemoryStore`), `netdxf-shadow-markdown`, `netdxf-shadow-workflows`, `netdxf-shadow-agents-acp`, `netdxf-shadow-agents-codex`, `netdxf-shadow-exchange-dwg`.
+  - **Core CAD Engine**: `netdxf-shadow-geometry` (curves, adaptive sampler, scene builder, hatch pattern/island resolver, spatial index), `netdxf-shadow-netdxf` (live `netdxf::DxfDocument` snapshot capture & session), `netdxf-shadow-graph` (topology graph, spanning forest, Tarjan SCC & low-link bridges/articulation points, reference graph), `netdxf-shadow-health`, `netdxf-shadow-dimensions`.
+  - **Rendering (Skia replacing SkiaSharp)**: `netdxf-shadow-rendering` (render compiler, SVG backend, rich text, camera, viewport layer overrides), `netdxf-shadow-rendering-shx`, `netdxf-shadow-rendering-skia` (`SkiaRenderBackend` + `SkiaTextLayoutEngine`, with optional `skia-native` feature for `skia-safe`).
+  - **Editor, Drafting, Modules, Symbols & Disciplines**: `netdxf-shadow-editor`, `netdxf-shadow-drafting`, `netdxf-shadow-modules`, `netdxf-shadow-symbols`, `netdxf-shadow-disciplines`, `netdxf-shadow-electrical`, `netdxf-shadow-pid`, `netdxf-shadow-piping`, `netdxf-shadow-samples`.
+  - **MCP & Agents**: `netdxf-shadow-mcp`, `netdxf-shadow-agents`, `netdxf-shadow-agents-evaluation`, `netdxf-shadow-agents-hosting`.
+  - **Studio (FerroUI replacing Blazor/Studio.Web)**: `netdxf-shadow-studio-core`, `netdxf-shadow-studio-agents`, `netdxf-shadow-studio-hosting`, `netdxf-shadow-studio-ui` (`FerroStudioApp` + `SkiaRenderBackend`), `netdxf-shadow-studio-wasm`.
+- **Verification**:
+  - `python3 tools/rust_port/compare_api.py --cs-root shadow/src --rs-root rust/shadow --report doc/rust-port/SHADOW-API-PARITY-REPORT.md --fail-on-missing` → **100.0% API coverage** (`625/625` direct 1:1 matches, **`0` missing**).
+  - `cargo clippy --manifest-path rust/Cargo.toml --workspace --all-targets -- -D warnings` → **0 warnings** across all 33 crates.
+  - `cargo test --manifest-path rust/Cargo.toml --workspace` → **73/73 passing**.

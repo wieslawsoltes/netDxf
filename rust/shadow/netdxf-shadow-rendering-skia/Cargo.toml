@@ -1,0 +1,24 @@
+[package]
+name = "netdxf-shadow-rendering-skia"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Skia-based raster rendering and text layout backend replacing SkiaSharp for netDxf.Shadow"
+
+[features]
+default = []
+# Enable native skia-safe bindings when Skia C++ binaries are available
+skia-native = ["dep:skia-safe"]
+
+[dependencies]
+netdxf-shadow.workspace = true
+netdxf-shadow-geometry.workspace = true
+netdxf-shadow-rendering.workspace = true
+serde.workspace = true
+skia-safe = { version = "0.153", optional = true }
+
+[lints]
+workspace = true

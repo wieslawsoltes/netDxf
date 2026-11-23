@@ -1,0 +1,16 @@
+[package]
+name = "netdxf-shadow-workflows"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Deterministic workflow recording and replay runner for netDxf.Shadow"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true

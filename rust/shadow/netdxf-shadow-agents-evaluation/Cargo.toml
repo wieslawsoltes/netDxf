@@ -1,0 +1,17 @@
+[package]
+name = "netdxf-shadow-agents-evaluation"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Evaluation harness, budgets, and telemetry for netDxf.Shadow agents"
+
+[dependencies]
+netdxf-shadow-agents.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true
