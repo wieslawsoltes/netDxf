@@ -44,10 +44,16 @@ impl Default for BlockLibraryLimits {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct BlockLibraryResource {
     pub kind: String,
+    pub table: String,
     pub name: String,
+    pub action: String,
+    pub source: Option<ObjectId>,
+    pub source_name: String,
+    pub target: Option<ObjectId>,
+    pub target_name: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]

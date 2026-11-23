@@ -19,18 +19,8 @@ impl BrowserRuntime {
 
     pub fn dispatch(&mut self, request: BrowserRequest) -> BrowserReply {
         match request.route.as_str() {
-            "ping" => BrowserReply {
-                id: request.id,
-                ok: true,
-                payload: serde_json::json!({ "pong": true }),
-                error: None,
-            },
-            _ => BrowserReply {
-                id: request.id,
-                ok: true,
-                payload: serde_json::json!({ "route": request.route }),
-                error: None,
-            },
+            "ping" => BrowserReply::json(request.id, serde_json::json!({ "pong": true })),
+            _ => BrowserReply::json(request.id, serde_json::json!({ "route": request.route })),
         }
     }
 }

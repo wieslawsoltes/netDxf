@@ -14,11 +14,17 @@ pub struct AttributeSynchronizationRemoval {
     pub tag: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AttributeSynchronizationReference {
+    pub insert: ObjectId,
     pub insert_id: ObjectId,
     pub definition_id: ObjectId,
     pub tag: String,
+    pub added: usize,
+    pub removed: usize,
+    pub retained: usize,
+    pub removed_x_data: usize,
+    pub text_conversions: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]

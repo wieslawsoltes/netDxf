@@ -11,8 +11,14 @@ use thiserror::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ChatGptSignInOptions {
+    pub app_name: String,
     pub client_id: String,
     pub redirect_uri: String,
+    pub callback_uri: Option<String>,
+    pub host_id: Option<String>,
+    pub expected_subject: Option<String>,
+    pub id_token_hint: Option<String>,
+    pub login_hint: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

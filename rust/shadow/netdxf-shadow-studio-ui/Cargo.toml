@@ -19,8 +19,10 @@ serde.workspace = true
 [dev-dependencies]
 netdxf.workspace = true
 netdxf-shadow-agents.workspace = true
+netdxf-shadow-agents-acp.workspace = true
 netdxf-shadow-agents-evaluation.workspace = true
 netdxf-shadow-agents-hosting.workspace = true
+netdxf-shadow-disciplines.workspace = true
 netdxf-shadow-drafting.workspace = true
 netdxf-shadow-editor.workspace = true
 netdxf-shadow-electrical.workspace = true
