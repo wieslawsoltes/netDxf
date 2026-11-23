@@ -7,6 +7,9 @@ pub struct AcpClient {
     pub options: AcpConnectionOptions,
     pub services: AcpClientServices,
     pub process: Option<AcpProcessOptions>,
+    pub connected: bool,
+    pub initialization: Option<Value>,
+    pub connection_error: Option<String>,
     next_id: u64,
 }
 
@@ -16,6 +19,9 @@ impl AcpClient {
             options,
             services,
             process: None,
+            connected: false,
+            initialization: None,
+            connection_error: None,
             next_id: 1,
         }
     }
@@ -29,8 +35,38 @@ impl AcpClient {
             options,
             services,
             process: Some(process),
+            connected: false,
+            initialization: None,
+            connection_error: None,
             next_id: 1,
         }
+    }
+
+    pub fn is_connected(&self) -> bool {
+        self.connected
+    }
+
+    pub fn start(&mut self) {
+        self.connected = true;
+        self.connection_error = None;
+    }
+
+    pub fn initialize(&mut self, capabilities: Value) -> Value {
+        self.connected = true;
+        self.initialization = Some(capabilities.clone());
+        self.build_request("initialize", capabilities)
+    }
+
+    pub fn request(&mut self, method: &str, params: Value) -> Value {
+        self.build_request(method, params)
+    }
+
+    pub fn cancel_session(&mut self, session_id: &str) -> Value {
+        self.build_request("session/cancel", json!({ "sessionId": session_id }))
+    }
+
+    pub fn completion(&self) -> bool {
+        !self.connected
     }
 
     pub fn build_request(&mut self, method: &str, params: Value) -> Value {

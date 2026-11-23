@@ -990,6 +990,181 @@ impl Studio {
         };
         netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch).is_ok()
     }
+
+    pub fn cad_command(&mut self, command: &str, args: &Value) -> Value {
+        serde_json::json!({
+            "documentId": self.document_id,
+            "revision": self.current_snapshot().revision,
+            "command": command,
+            "args": args,
+            "ok": true,
+        })
+    }
+
+    pub fn cad_create_block(&mut self, name: &str, origin: Vec3, entities: Vec<ObjectId>) -> bool {
+        let snap = self.current_snapshot();
+        let id = ObjectId::new(format!("O:Block:{name}"));
+        let mut obj = netdxf_shadow::ShadowObject::new(id.clone(), "netDxf.Blocks.Block");
+        obj.properties
+            .insert("Name".into(), netdxf_shadow::ShadowValue::from_string(name));
+        obj.properties.insert(
+            "Origin".into(),
+            netdxf_shadow::ShadowValue::from_vec3(origin, false),
+        );
+        let refs = entities
+            .into_iter()
+            .map(netdxf_shadow::ShadowValue::reference)
+            .collect();
+        obj.properties
+            .insert("Entities".into(), netdxf_shadow::ShadowValue::sequence(refs));
+        let patch = netdxf_shadow::ShadowGraphPatch::new(
+            snap.document_id.clone(),
+            snap.revision,
+            vec![netdxf_shadow::ShadowObjectChange {
+                id,
+                before: None,
+                after: Some(obj),
+            }],
+        );
+        netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch).is_ok()
+    }
+
+    pub fn cad_define_block(&mut self, name: &str, origin: Vec3) -> bool {
+        let selected = self.selection.clone();
+        self.cad_create_block(name, origin, selected)
+    }
+
+    pub fn cad_create_hatch(&mut self, layer: &str, pattern_name: &str, scale: f64, angle: f64) -> Option<ObjectId> {
+        let snap = self.current_snapshot();
+        let id = ObjectId::new(format!("O:Hatch:{}", snap.objects.len() + 1));
+        let mut obj = netdxf_shadow::ShadowObject::new(id.clone(), "netDxf.Entities.Hatch");
+        obj.properties
+            .insert("Layer".into(), netdxf_shadow::ShadowValue::from_string(layer));
+        obj.properties.insert(
+            "PatternName".into(),
+            netdxf_shadow::ShadowValue::from_string(pattern_name),
+        );
+        obj.properties.insert(
+            "PatternScale".into(),
+            netdxf_shadow::ShadowValue::from_f64(scale),
+        );
+        obj.properties.insert(
+            "PatternAngle".into(),
+            netdxf_shadow::ShadowValue::from_f64(angle),
+        );
+        let patch = netdxf_shadow::ShadowGraphPatch::new(
+            snap.document_id.clone(),
+            snap.revision,
+            vec![netdxf_shadow::ShadowObjectChange {
+                id: id.clone(),
+                before: None,
+                after: Some(obj),
+            }],
+        );
+        netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch)
+            .ok()
+            .map(|_| id)
+    }
+
+    pub fn cad_change_hatch_pattern(&mut self, hatch_id: &ObjectId, pattern_name: &str, scale: f64, angle: f64) -> bool {
+        let snap = self.current_snapshot();
+        let Some(existing) = snap.objects.get(hatch_id) else {
+            return false;
+        };
+        let mut updated = (**existing).clone();
+        updated.properties.insert(
+            "PatternName".into(),
+            netdxf_shadow::ShadowValue::from_string(pattern_name),
+        );
+        updated.properties.insert(
+            "PatternScale".into(),
+            netdxf_shadow::ShadowValue::from_f64(scale),
+        );
+        updated.properties.insert(
+            "PatternAngle".into(),
+            netdxf_shadow::ShadowValue::from_f64(angle),
+        );
+        let patch = netdxf_shadow::ShadowGraphPatch::new(
+            snap.document_id.clone(),
+            snap.revision,
+            vec![netdxf_shadow::ShadowObjectChange {
+                id: hatch_id.clone(),
+                before: Some((**existing).clone()),
+                after: Some(updated),
+            }],
+        );
+        netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch).is_ok()
+    }
+
+    pub fn cad_edit_attributes(&mut self, edits: &[(ObjectId, String)]) -> usize {
+        let snap = self.current_snapshot();
+        let mut changes = Vec::new();
+        for (id, value) in edits {
+            if let Some(existing) = snap.objects.get(id) {
+                let mut updated = (**existing).clone();
+                updated.properties.insert(
+                    "Value".into(),
+                    netdxf_shadow::ShadowValue::from_string(value.clone()),
+                );
+                changes.push(netdxf_shadow::ShadowObjectChange {
+                    id: id.clone(),
+                    before: Some((**existing).clone()),
+                    after: Some(updated),
+                });
+            }
+        }
+        let count = changes.len();
+        if count > 0 {
+            let patch = netdxf_shadow::ShadowGraphPatch::new(
+                snap.document_id.clone(),
+                snap.revision,
+                changes,
+            );
+            let _ = netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch);
+        }
+        count
+    }
+
+    pub fn cad_edit_attribute_definitions(&mut self, edits: &[(ObjectId, String, String)]) -> usize {
+        let snap = self.current_snapshot();
+        let mut changes = Vec::new();
+        for (id, prompt, default_val) in edits {
+            if let Some(existing) = snap.objects.get(id) {
+                let mut updated = (**existing).clone();
+                updated.properties.insert(
+                    "Prompt".into(),
+                    netdxf_shadow::ShadowValue::from_string(prompt.clone()),
+                );
+                updated.properties.insert(
+                    "Value".into(),
+                    netdxf_shadow::ShadowValue::from_string(default_val.clone()),
+                );
+                changes.push(netdxf_shadow::ShadowObjectChange {
+                    id: id.clone(),
+                    before: Some((**existing).clone()),
+                    after: Some(updated),
+                });
+            }
+        }
+        let count = changes.len();
+        if count > 0 {
+            let patch = netdxf_shadow::ShadowGraphPatch::new(
+                snap.document_id.clone(),
+                snap.revision,
+                changes,
+            );
+            let _ = netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch);
+        }
+        count
+    }
+
+    pub fn cad_edit_preview(&self, patch: &netdxf_shadow::ShadowGraphPatch) -> Value {
+        serde_json::json!({
+            "documentId": patch.document_id,
+            "expectedRevision": patch.expected_revision,
+            "changeCount": patch.changes.len(),
+        })
+    }
 }
 
 impl StudioJson {

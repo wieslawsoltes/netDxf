@@ -10,6 +10,7 @@ pub struct StudioAgentController {
     pub cancelled: bool,
     pub companion_connected: bool,
     pub pending_approvals: Vec<String>,
+    pub workspace_files: std::collections::BTreeMap<String, String>,
 }
 
 impl StudioAgentController {
@@ -19,7 +20,52 @@ impl StudioAgentController {
             cancelled: false,
             companion_connected: false,
             pending_approvals: Vec::new(),
+            workspace_files: std::collections::BTreeMap::new(),
         }
+    }
+
+    pub fn document_id(&self) -> Option<&str> {
+        self.config.document_id.as_deref()
+    }
+
+    pub fn configure(&mut self, config: StudioAgentConfiguration) {
+        self.config = config;
+    }
+
+    pub fn disconnect(&mut self) {
+        self.companion_connected = false;
+        self.cancelled = true;
+    }
+
+    pub fn files(&self) -> Vec<String> {
+        self.workspace_files.keys().cloned().collect()
+    }
+
+    pub fn apply_files(&mut self, files: std::collections::BTreeMap<String, String>) {
+        for (k, v) in files {
+            self.workspace_files.insert(k, v);
+        }
+    }
+
+    pub fn export_files(&self) -> std::collections::BTreeMap<String, String> {
+        self.workspace_files.clone()
+    }
+
+    pub fn export(&self) -> Value {
+        serde_json::json!({
+            "documentId": self.config.document_id,
+            "provider": self.config.provider,
+            "model": self.config.model,
+            "fileCount": self.workspace_files.len(),
+        })
+    }
+
+    pub fn call(&self, tool: &str, args: Value) -> Value {
+        serde_json::json!({
+            "tool": tool,
+            "args": args,
+            "ok": !self.cancelled,
+        })
     }
 
     pub fn capabilities(&self) -> Vec<&'static str> {

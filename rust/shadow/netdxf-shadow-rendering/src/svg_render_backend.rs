@@ -24,6 +24,57 @@ pub trait ISvgImageResolver: Send + Sync {
 pub struct SvgRenderBackend;
 
 impl SvgRenderBackend {
+    pub fn color(argb: u32) -> String {
+        format!("#{:06x}", argb & 0x00FF_FFFF)
+    }
+
+    pub fn attribute(name: &str, value: &str) -> String {
+        let escaped = value
+            .replace('&', "&amp;")
+            .replace('"', "&quot;")
+            .replace('<', "&lt;")
+            .replace('>', "&gt;");
+        format!("{name}=\"{escaped}\"")
+    }
+
+    pub fn id(prefix: &str, index: usize) -> String {
+        format!("{prefix}-{index}")
+    }
+
+    pub fn path(d: &str, stroke_argb: u32, stroke_width: f64, fill: Option<&str>) -> String {
+        let fill_str = fill.unwrap_or("none");
+        format!(
+            "<path d=\"{d}\" fill=\"{fill_str}\" stroke=\"{}\" stroke-width=\"{stroke_width:.2}\"/>",
+            Self::color(stroke_argb)
+        )
+    }
+
+    pub fn text(x: f64, y: f64, content: &str, font_size: f64, argb: u32) -> String {
+        let escaped = content
+            .replace('&', "&amp;")
+            .replace('<', "&lt;")
+            .replace('>', "&gt;");
+        format!(
+            "<text x=\"{x:.2}\" y=\"{y:.2}\" font-size=\"{font_size:.2}\" fill=\"{}\">{escaped}</text>",
+            Self::color(argb)
+        )
+    }
+
+    pub fn image(x: f64, y: f64, width: f64, height: f64, href: &str) -> String {
+        format!(
+            "<image x=\"{x:.2}\" y=\"{y:.2}\" width=\"{width:.2}\" height=\"{height:.2}\" {}/>",
+            Self::attribute("href", href)
+        )
+    }
+
+    pub fn gradient(id: &str, start_argb: u32, end_argb: u32) -> String {
+        format!(
+            "<linearGradient id=\"{id}\"><stop offset=\"0%\" stop-color=\"{}\"/><stop offset=\"100%\" stop-color=\"{}\"/></linearGradient>",
+            Self::color(start_argb),
+            Self::color(end_argb)
+        )
+    }
+
     pub fn render_svg_string(&self, scene: &RenderScene, frame: &RenderFrame) -> String {
         let mut svg = format!(
             "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"{}\" height=\"{}\" viewBox=\"0 0 {} {}\">\n",

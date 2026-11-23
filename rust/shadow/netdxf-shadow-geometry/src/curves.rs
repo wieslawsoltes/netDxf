@@ -98,20 +98,134 @@ pub struct NurbsCurve {
 }
 
 impl NurbsCurve {
-    pub fn evaluate(&self, t: f64) -> Vec3 {
-        if self.control_points.is_empty() {
+    pub fn controls(&self) -> &[Vec3] {
+        &self.control_points
+    }
+
+    pub fn closed(&self) -> bool {
+        if self.control_points.len() < 2 {
+            return false;
+        }
+        let first = self.control_points[0];
+        let last = self.control_points[self.control_points.len() - 1];
+        Vec3::distance(first, last) <= 1e-6
+    }
+
+    pub fn domain_start(&self) -> f64 {
+        let p = self.degree;
+        if self.knots.len() > p {
+            self.knots[p]
+        } else {
+            0.0
+        }
+    }
+
+    pub fn domain_end(&self) -> f64 {
+        let n = self.control_points.len();
+        if n > 0 && self.knots.len() > n {
+            self.knots[n]
+        } else {
+            1.0
+        }
+    }
+
+    pub fn blend(&self, span: usize, u: f64) -> Vec<f64> {
+        let p = self.degree;
+        let mut basis = vec![0.0; p + 1];
+        let mut left = vec![0.0; p + 1];
+        let mut right = vec![0.0; p + 1];
+        basis[0] = 1.0;
+        for j in 1..=p {
+            left[j] = u - self.knots[span + 1 - j];
+            right[j] = self.knots[span + j] - u;
+            let mut saved = 0.0;
+            for r in 0..j {
+                let denom = right[r + 1] + left[j - r];
+                let temp = if denom.abs() > f64::EPSILON {
+                    basis[r] / denom
+                } else {
+                    0.0
+                };
+                basis[r] = saved + right[r + 1] * temp;
+                saved = left[j - r] * temp;
+            }
+            basis[j] = saved;
+        }
+        basis
+    }
+
+    /// Evaluates the rational NURBS curve at parameter `u` in `[domain_start(), domain_end()]` using Cox-de Boor.
+    pub fn at(&self, u: f64) -> Vec3 {
+        let n = self.control_points.len();
+        if n == 0 {
             return Vec3::ZERO;
         }
-        if self.control_points.len() == 1 {
+        if n == 1 {
             return self.control_points[0];
         }
-        let u = t.clamp(0.0, 1.0);
-        let idx = ((u * (self.control_points.len() - 1) as f64).floor() as usize)
-            .min(self.control_points.len() - 2);
-        let frac = u * (self.control_points.len() - 1) as f64 - idx as f64;
-        let a = self.control_points[idx];
-        let b = self.control_points[idx + 1];
-        a + (b - a) * frac
+        let p = self.degree.min(n - 1);
+        if self.knots.len() < n + p + 1 {
+            // Fallback to clamped uniform evaluation if knot vector is incomplete
+            let t = u.clamp(0.0, 1.0);
+            let idx = ((t * (n - 1) as f64).floor() as usize).min(n - 2);
+            let frac = t * (n - 1) as f64 - idx as f64;
+            let a = self.control_points[idx];
+            let b = self.control_points[idx + 1];
+            return a + (b - a) * frac;
+        }
+        let u_min = self.knots[p];
+        let u_max = self.knots[n];
+        let u = u.clamp(u_min, u_max);
+        let span = if (u - u_max).abs() <= f64::EPSILON {
+            n - 1
+        } else {
+            let mut lo = p;
+            let mut hi = n;
+            let mut mid = (lo + hi) / 2;
+            while u < self.knots[mid] || u >= self.knots[mid + 1] {
+                if u < self.knots[mid] {
+                    hi = mid;
+                } else {
+                    lo = mid;
+                }
+                mid = (lo + hi) / 2;
+                if hi <= lo + 1 {
+                    break;
+                }
+            }
+            mid.clamp(p, n - 1)
+        };
+        let basis = self.blend(span, u);
+        let mut numer = Vec3::ZERO;
+        let mut denom = 0.0;
+        for (j, &nj) in basis.iter().enumerate() {
+            let ci = span + j - p;
+            let w = self.weights.get(ci).copied().unwrap_or(1.0);
+            let bw = nj * w;
+            numer = numer + self.control_points[ci] * bw;
+            denom += bw;
+        }
+        if denom.abs() > f64::EPSILON {
+            numer * (1.0 / denom)
+        } else {
+            numer
+        }
+    }
+
+    pub fn evaluate(&self, t: f64) -> Vec3 {
+        let u0 = self.domain_start();
+        let u1 = self.domain_end();
+        let u = u0 + t.clamp(0.0, 1.0) * (u1 - u0);
+        self.at(u)
+    }
+
+    pub fn transform(&self, affine: &Affine3) -> Self {
+        Self {
+            degree: self.degree,
+            control_points: self.control_points.iter().map(|&p| affine.point(p)).collect(),
+            weights: self.weights.clone(),
+            knots: self.knots.clone(),
+        }
     }
 }
 

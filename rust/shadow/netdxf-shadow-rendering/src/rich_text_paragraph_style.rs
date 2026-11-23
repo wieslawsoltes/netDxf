@@ -46,7 +46,34 @@ pub struct RichTextParagraphStyle {
     pub first_line_indent: f64,
     pub left_indent: f64,
     pub right_indent: f64,
+    pub space_before: f64,
+    pub space_after: f64,
+    pub line_spacing: Option<ParagraphLineSpacing>,
+    pub line_spacing_value: f64,
     pub tab_stops: Vec<ParagraphTabStop>,
+}
+
+impl RichTextParagraphStyle {
+    pub fn tabs(&self) -> &[ParagraphTabStop] {
+        &self.tab_stops
+    }
+
+    pub fn validate(&self) -> Result<(), String> {
+        if !self.first_line_indent.is_finite()
+            || !self.left_indent.is_finite()
+            || !self.right_indent.is_finite()
+            || !self.space_before.is_finite()
+            || !self.space_after.is_finite()
+        {
+            return Err("Paragraph metrics must be finite.".into());
+        }
+        if let Some(ls) = self.line_spacing {
+            if !ls.factor.is_finite() || ls.factor <= 0.0 {
+                return Err("Paragraph line spacing factor must be positive and finite.".into());
+            }
+        }
+        Ok(())
+    }
 }
 
 pub struct MTextParagraphControl;
