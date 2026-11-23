@@ -30,6 +30,7 @@ pub struct Leader {
     pub offset: Vector2,
     pub direction: Vector2,
     pub annotation_handle: Option<String>,
+    pub style_overrides_list: Vec<crate::tables::DimensionStyleOverride>,
 }
 
 impl Leader {
@@ -46,6 +47,7 @@ impl Leader {
             offset: Vector2::ZERO,
             direction: Vector2::UNIT_X,
             annotation_handle: None,
+            style_overrides_list: Vec::new(),
         }
     }
 
@@ -85,5 +87,5 @@ impl Leader {
     #[inline] pub fn annotation(&self) -> Option<&str> { self.annotation_handle.as_deref() }
     #[inline] pub fn hook(&self) -> Vector2 { self.direction }
     #[inline] pub fn normal(&self) -> Vector3 { self.common.normal }
-    #[inline] pub fn style_overrides(&self) -> &[String] { &[] }
+    #[inline] pub fn style_overrides(&self) -> &[crate::tables::DimensionStyleOverride] { &self.style_overrides_list }
 }

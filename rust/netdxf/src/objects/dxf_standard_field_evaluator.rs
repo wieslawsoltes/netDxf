@@ -20,6 +20,7 @@ pub struct DxfStoredField {
     pub evaluation_option: i32,
     pub object_ids: Vec<String>,
     pub children: Vec<DxfStoredField>,
+    pub stored_source_version: Option<crate::header::DxfVersion>,
 }
 
 impl DxfStoredField {
@@ -41,6 +42,7 @@ impl DxfStoredField {
             evaluation_option: 0,
             object_ids: Vec::new(),
             children: Vec::new(),
+            stored_source_version: None,
         }
     }
 
@@ -54,7 +56,7 @@ impl DxfStoredField {
     #[inline] pub fn referenced_objects(&self) -> &[String] { &self.object_ids }
     #[inline] pub fn references(&self) -> &[String] { &self.object_ids }
     #[inline] pub fn payload(&self) -> &str { &self.evaluated_text }
-    #[inline] pub fn source_version(&self) -> Option<crate::header::DxfVersion> { None }
+    #[inline] pub fn source_version(&self) -> Option<crate::header::DxfVersion> { self.stored_source_version }
 }
 
 /// Result of evaluating a standard DXF field (`netDxf.Objects.DxfFieldResult`).

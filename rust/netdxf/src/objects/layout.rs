@@ -22,6 +22,7 @@ pub struct Layout {
     pub y_axis: Vector3,
     pub tab_order: i16,
     pub associated_block_name: String,
+    pub viewport_handle: Option<String>,
     pub is_paper_space: bool,
 }
 
@@ -43,6 +44,7 @@ impl Layout {
             y_axis: Vector3::UNIT_Y,
             tab_order: 0,
             associated_block_name: Block::MODEL_SPACE_NAME.to_string(),
+            viewport_handle: None,
             is_paper_space: false,
         }
     }
@@ -62,6 +64,7 @@ impl Layout {
             y_axis: Vector3::UNIT_Y,
             tab_order: 1,
             associated_block_name: Block::PAPER_SPACE_NAME.to_string(),
+            viewport_handle: None,
             is_paper_space: true,
         })
     }
@@ -70,7 +73,7 @@ impl Layout {
     #[inline] pub fn ucs_origin(&self) -> Vector3 { self.origin }
     #[inline] pub fn ucs_x_axis(&self) -> Vector3 { self.x_axis }
     #[inline] pub fn ucs_y_axis(&self) -> Vector3 { self.y_axis }
-    #[inline] pub fn viewport(&self) -> Option<&str> { None }
+    #[inline] pub fn viewport(&self) -> Option<&str> { self.viewport_handle.as_deref() }
 }
 
 impl TableObject for Layout {

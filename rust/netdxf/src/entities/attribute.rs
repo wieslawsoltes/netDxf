@@ -33,6 +33,10 @@ pub struct Attribute {
     pub normal: Vector3,
     pub color_name: String,
     pub is_position_locked: bool,
+    pub linetype_scale_value: f64,
+    pub definition_tag: Option<String>,
+    pub shadow_mode_value: crate::entities::EntityShadowMode,
+    pub proxy_graphics_data: Option<Vec<u8>>,
     pub mtext: Option<crate::entities::AttributeMText>,
 }
 
@@ -60,6 +64,10 @@ impl Attribute {
             normal: Vector3::UNIT_Z,
             color_name: String::new(),
             is_position_locked: false,
+            linetype_scale_value: 1.0,
+            definition_tag: None,
+            shadow_mode_value: crate::entities::EntityShadowMode::CastAndReceive,
+            proxy_graphics_data: None,
             mtext: None,
         }
     }
@@ -87,6 +95,10 @@ impl Attribute {
             normal: def.normal,
             color_name: def.color_name.clone(),
             is_position_locked: def.is_position_locked,
+            linetype_scale_value: def.linetype_scale_value,
+            definition_tag: Some(def.tag.clone()),
+            shadow_mode_value: def.shadow_mode_value,
+            proxy_graphics_data: def.proxy_graphics_data.clone(),
             mtext: def.mtext.clone(),
         }
     }
@@ -98,14 +110,38 @@ impl Attribute {
     #[inline] pub fn get_mtext(&self) -> Option<&crate::entities::AttributeMText> { self.mtext.as_ref() }
     #[inline] pub fn set_mtext(&mut self, mtext: Option<crate::entities::AttributeMText>) { self.mtext = mtext; }
     #[inline] pub fn width(&self) -> f64 { self.width_factor }
-    #[inline] pub fn linetype_scale(&self) -> f64 { 1.0 }
+    #[inline] pub fn linetype_scale(&self) -> f64 { self.linetype_scale_value }
     #[inline] pub fn owner(&self) -> Option<&str> { self.object.owner_handle.as_deref() }
-    #[inline] pub fn definition(&self) -> Option<&str> { None }
-    #[inline] pub fn set_definition(&mut self, _def: &AttributeDefinition) {}
-    #[inline] pub fn prepare_definition_binding(&mut self) {}
-    #[inline] pub fn shadow_mode(&self) -> crate::entities::EntityShadowMode { crate::entities::EntityShadowMode::CastAndReceive }
-    #[inline] pub fn proxy_graphics(&self) -> Option<&[u8]> { None }
-    #[inline] pub fn clear_proxy_graphics(&mut self) {}
+    #[inline] pub fn definition(&self) -> Option<&str> { self.definition_tag.as_deref() }
+    pub fn set_definition(&mut self, def: &AttributeDefinition) {
+        self.definition_tag = Some(def.tag.clone());
+        self.tag = def.tag.clone();
+        self.style = def.style.clone();
+        self.height = def.height;
+        self.width_factor = def.width_factor;
+        self.oblique_angle = def.oblique_angle;
+        self.alignment = def.alignment;
+        self.flags = def.flags;
+    }
+    pub fn prepare_definition_binding(
+        &self,
+        new_tag: Option<String>,
+        preserve_value: bool,
+    ) -> crate::entities::AttributeDefinitionBindingChange {
+        crate::entities::AttributeDefinitionBindingChange {
+            previous_tag: self.definition_tag.clone(),
+            new_tag,
+            preserve_value,
+        }
+    }
+    #[inline] pub fn shadow_mode(&self) -> crate::entities::EntityShadowMode { self.shadow_mode_value }
+    #[inline] pub fn proxy_graphics(&self) -> Option<&[u8]> { self.proxy_graphics_data.as_deref() }
+    pub fn set_proxy_graphics(&mut self, data: Vec<u8>) {
+        if data.len() <= Self::MAXIMUM_PROXY_GRAPHICS_BYTES {
+            self.proxy_graphics_data = Some(data);
+        }
+    }
+    #[inline] pub fn clear_proxy_graphics(&mut self) { self.proxy_graphics_data = None; }
 
     pub fn set_text_data(&mut self, data: &crate::entities::AttributeTextData) {
         self.value = data.text.clone();

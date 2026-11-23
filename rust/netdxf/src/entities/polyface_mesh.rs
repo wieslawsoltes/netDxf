@@ -10,19 +10,25 @@ use crate::vector3::Vector3;
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PolyfaceMeshFace {
     pub vertex_indexes: Vec<i16>,
+    pub face_color: Option<crate::AciColor>,
+    pub face_layer: Option<String>,
 }
 
 impl PolyfaceMeshFace {
     pub fn new(vertex_indexes: Vec<i16>) -> Self {
-        Self { vertex_indexes }
+        Self {
+            vertex_indexes,
+            face_color: None,
+            face_layer: None,
+        }
     }
 
     pub fn color(&self) -> Option<crate::AciColor> {
-        None
+        self.face_color
     }
 
     pub fn layer(&self) -> Option<&str> {
-        None
+        self.face_layer.as_deref()
     }
 }
 

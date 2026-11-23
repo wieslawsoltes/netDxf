@@ -20,6 +20,9 @@ pub struct View {
     pub is_paper_space: bool,
     pub is_camera_plottable: bool,
     pub live_section: Option<String>,
+    pub render_mode_value: i16,
+    pub sun_handle: Option<String>,
+    pub ucs_name: Option<String>,
 }
 
 impl View {
@@ -39,6 +42,9 @@ impl View {
             is_paper_space: false,
             is_camera_plottable: false,
             live_section: None,
+            render_mode_value: 0,
+            sun_handle: None,
+            ucs_name: None,
         })
     }
 
@@ -51,9 +57,9 @@ impl View {
         self.live_section = None;
     }
 
-    #[inline] pub fn render_mode(&self) -> i16 { 0 }
-    #[inline] pub fn sun(&self) -> Option<&str> { None }
-    #[inline] pub fn ucs(&self) -> Option<&str> { None }
+    #[inline] pub fn render_mode(&self) -> i16 { self.render_mode_value }
+    #[inline] pub fn sun(&self) -> Option<&str> { self.sun_handle.as_deref() }
+    #[inline] pub fn ucs(&self) -> Option<&str> { self.ucs_name.as_deref() }
     #[inline] pub fn view_center(&self) -> crate::vector2::Vector2 { self.target.to_vector2() }
     #[inline] pub fn view_direction(&self) -> Vector3 { self.camera }
     #[inline] pub fn view_mode(&self) -> i16 { self.flags }

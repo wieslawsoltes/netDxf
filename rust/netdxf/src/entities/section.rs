@@ -15,6 +15,7 @@ pub struct Section {
     pub bottom_height: f64,
     pub indicator_transparency: i16,
     pub indicator_color: AciColor,
+    pub native_indicator_color: Option<i32>,
     pub indicator_color_name: String,
     pub vertices: Vec<Vector3>,
     pub back_line_vertices: Vec<Vector3>,
@@ -36,6 +37,7 @@ impl Section {
             bottom_height: -1.0,
             indicator_transparency: 70,
             indicator_color: AciColor::DEFAULT,
+            native_indicator_color: None,
             indicator_color_name: String::new(),
             vertices,
             back_line_vertices: Vec::new(),
@@ -56,7 +58,7 @@ impl Section {
 
     #[inline]
     pub fn stored_native_indicator_color(&self) -> Option<i32> {
-        None
+        self.native_indicator_color
     }
 
     pub fn transform_by(&mut self, transformation: crate::matrix3::Matrix3, translation: Vector3) {

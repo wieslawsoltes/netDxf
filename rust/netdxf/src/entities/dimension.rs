@@ -69,6 +69,8 @@ pub struct Dimension {
     pub oblique_angle: f64,
     pub leader_length: f64,
     pub ordinate_axis: OrdinateDimensionAxis,
+    pub style_overrides_list: Vec<crate::tables::DimensionStyleOverride>,
+    pub text_position_manually_set_flag: bool,
 }
 
 impl Dimension {
@@ -96,6 +98,8 @@ impl Dimension {
             oblique_angle: 0.0,
             leader_length: 0.0,
             ordinate_axis: OrdinateDimensionAxis::X,
+            style_overrides_list: Vec::new(),
+            text_position_manually_set_flag: false,
         }
     }
 
@@ -128,6 +132,8 @@ impl Dimension {
             oblique_angle: 0.0,
             leader_length: 0.0,
             ordinate_axis: OrdinateDimensionAxis::X,
+            style_overrides_list: Vec::new(),
+            text_position_manually_set_flag: false,
         }
     }
 
@@ -138,7 +144,70 @@ impl Dimension {
     }
 
     #[inline] pub fn block(&self) -> &str { &self.block_name }
-    #[inline] pub fn style_overrides(&self) -> &[String] { &[] }
-    #[inline] pub fn text_position_manually_set(&self) -> bool { false }
-    #[inline] pub fn update(&mut self) {}
+    #[inline] pub fn style_overrides(&self) -> &[crate::tables::DimensionStyleOverride] { &self.style_overrides_list }
+    #[inline] pub fn text_position_manually_set(&self) -> bool { self.text_position_manually_set_flag }
+
+    /// Recomputes `measurement` and (unless manually positioned) `text_reference_point` from the dimension's geometry.
+    pub fn update(&mut self) {
+        let p1 = self.first_reference_point.to_vector2();
+        let p2 = self.second_reference_point.to_vector2();
+        let def = self.definition_point.to_vector2();
+        match self.dimension_type {
+            DimensionType::Linear => {
+                let rad = self.rotation * crate::math_helper::MathHelper::DEG_TO_RAD;
+                let dir = Vector2::new(rad.cos(), rad.sin());
+                self.measurement = Vector2::dot_product(p2 - p1, dir).abs();
+                if !self.text_position_manually_set_flag {
+                    let perp = Vector2::perpendicular(dir);
+                    let d1 = p1 + perp * Vector2::dot_product(def - p1, perp);
+                    let d2 = p2 + perp * Vector2::dot_product(def - p2, perp);
+                    self.text_reference_point = Vector2::mid_point(d1, d2);
+                }
+            }
+            DimensionType::Aligned => {
+                self.measurement = Vector2::distance(p1, p2);
+                if !self.text_position_manually_set_flag {
+                    let d = Vector2::normalize(p2 - p1);
+                    let dir = if Vector2::is_nan(d) { Vector2::UNIT_X } else { d };
+                    let perp = Vector2::perpendicular(dir);
+                    let d1 = p1 + perp * Vector2::dot_product(def - p1, perp);
+                    let d2 = p2 + perp * Vector2::dot_product(def - p2, perp);
+                    self.text_reference_point = Vector2::mid_point(d1, d2);
+                }
+            }
+            DimensionType::Radius | DimensionType::Diameter => {
+                self.measurement = Vector2::distance(def, p1);
+                if !self.text_position_manually_set_flag {
+                    self.text_reference_point = Vector2::mid_point(def, p1);
+                }
+            }
+            DimensionType::Angular | DimensionType::Angular3Point => {
+                let v1 = p1 - def;
+                let v2 = p2 - def;
+                let a1 = v1.y.atan2(v1.x);
+                let a2 = v2.y.atan2(v2.x);
+                let mut diff = (a2 - a1).to_degrees().rem_euclid(360.0);
+                if diff > 180.0 {
+                    diff = 360.0 - diff;
+                }
+                self.measurement = diff;
+            }
+            DimensionType::Ordinate => {
+                self.measurement = match self.ordinate_axis {
+                    OrdinateDimensionAxis::X => p1.x,
+                    OrdinateDimensionAxis::Y => p1.y,
+                };
+            }
+            DimensionType::ArcLength => {
+                let r = Vector2::distance(def, p1);
+                let v1 = p1 - def;
+                let v2 = p2 - def;
+                let mut ang = (v2.y.atan2(v2.x) - v1.y.atan2(v1.x)).rem_euclid(std::f64::consts::TAU);
+                if ang > std::f64::consts::PI {
+                    ang = std::f64::consts::TAU - ang;
+                }
+                self.measurement = r * ang;
+            }
+        }
+    }
 }

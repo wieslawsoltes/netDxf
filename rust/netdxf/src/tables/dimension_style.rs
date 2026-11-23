@@ -228,6 +228,8 @@ pub struct DimensionStyle {
     pub suppress_zero_feet: bool,
     pub suppress_zero_inches: bool,
     pub dim_roundoff: f64,
+    pub tick_size_value: f64,
+    pub user_positioned_text_flag: bool,
     pub alternate_units: DimensionStyleAlternateUnits,
     pub tolerances: DimensionStyleTolerances,
 }
@@ -299,6 +301,8 @@ impl DimensionStyle {
             suppress_zero_feet: true,
             suppress_zero_inches: true,
             dim_roundoff: 0.0,
+            tick_size_value: 0.0,
+            user_positioned_text_flag: false,
             alternate_units: DimensionStyleAlternateUnits::default(),
             tolerances: DimensionStyleTolerances::default(),
         }
@@ -334,8 +338,8 @@ impl DimensionStyle {
     #[inline] pub fn text_inside_align(&self) -> bool { self.text_inside_horizontal }
     #[inline] pub fn text_outside_align(&self) -> bool { self.text_outside_horizontal }
     #[inline] pub fn text_vertical_position(&self) -> DimensionStyleTextVerticalPlacement { self.text_vertical_placement }
-    #[inline] pub fn tick_size(&self) -> f64 { 0.0 }
-    #[inline] pub fn user_positioned_text(&self) -> bool { false }
+    #[inline] pub fn tick_size(&self) -> f64 { self.tick_size_value }
+    #[inline] pub fn user_positioned_text(&self) -> bool { self.user_positioned_text_flag }
 }
 
 impl TableObject for DimensionStyle {

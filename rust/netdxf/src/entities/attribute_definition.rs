@@ -33,6 +33,9 @@ pub struct AttributeDefinition {
     pub normal: Vector3,
     pub color_name: String,
     pub is_position_locked: bool,
+    pub linetype_scale_value: f64,
+    pub shadow_mode_value: crate::entities::EntityShadowMode,
+    pub proxy_graphics_data: Option<Vec<u8>>,
     pub mtext: Option<crate::entities::AttributeMText>,
 }
 
@@ -61,6 +64,9 @@ impl AttributeDefinition {
             normal: Vector3::UNIT_Z,
             color_name: String::new(),
             is_position_locked: false,
+            linetype_scale_value: 1.0,
+            shadow_mode_value: crate::entities::EntityShadowMode::CastAndReceive,
+            proxy_graphics_data: None,
             mtext: None,
         }
     }
@@ -72,11 +78,16 @@ impl AttributeDefinition {
     #[inline] pub fn get_mtext(&self) -> Option<&crate::entities::AttributeMText> { self.mtext.as_ref() }
     #[inline] pub fn set_mtext(&mut self, mtext: Option<crate::entities::AttributeMText>) { self.mtext = mtext; }
     #[inline] pub fn width(&self) -> f64 { self.width_factor }
-    #[inline] pub fn linetype_scale(&self) -> f64 { 1.0 }
+    #[inline] pub fn linetype_scale(&self) -> f64 { self.linetype_scale_value }
     #[inline] pub fn owner(&self) -> Option<&str> { self.object.owner_handle.as_deref() }
-    #[inline] pub fn shadow_mode(&self) -> crate::entities::EntityShadowMode { crate::entities::EntityShadowMode::CastAndReceive }
-    #[inline] pub fn proxy_graphics(&self) -> Option<&[u8]> { None }
-    #[inline] pub fn clear_proxy_graphics(&mut self) {}
+    #[inline] pub fn shadow_mode(&self) -> crate::entities::EntityShadowMode { self.shadow_mode_value }
+    #[inline] pub fn proxy_graphics(&self) -> Option<&[u8]> { self.proxy_graphics_data.as_deref() }
+    pub fn set_proxy_graphics(&mut self, data: Vec<u8>) {
+        if data.len() <= Self::MAXIMUM_PROXY_GRAPHICS_BYTES {
+            self.proxy_graphics_data = Some(data);
+        }
+    }
+    #[inline] pub fn clear_proxy_graphics(&mut self) { self.proxy_graphics_data = None; }
 
     pub fn set_text_data(&mut self, data: &crate::entities::AttributeTextData) {
         self.value = data.text.clone();

@@ -313,6 +313,7 @@ fn entities_objects_and_raw_io_ported_types_work() {
         entries: vec![DxfRawDictionaryEntry {
             name: "PH".into(),
             target_handle: 0x11,
+            hard_owner: false,
         }],
         ..Default::default()
     }));

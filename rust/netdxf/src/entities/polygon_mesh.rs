@@ -19,6 +19,7 @@ pub struct PolygonMesh {
     pub smooth_type: PolylineSmoothType,
     pub density_m: i16,
     pub density_n: i16,
+    pub end_sequence_handle: Option<String>,
 }
 
 impl PolygonMesh {
@@ -31,7 +32,7 @@ impl PolygonMesh {
     #[inline] pub fn v(&self) -> i16 { self.n }
     #[inline] pub fn mesh_vertexes(&self) -> &[Vector3] { &self.vertexes }
     #[inline] pub fn vertex_records(&self) -> &[Vector3] { &self.vertexes }
-    #[inline] pub fn end_sequence_record(&self) -> Option<&str> { None }
+    #[inline] pub fn end_sequence_record(&self) -> Option<&str> { self.end_sequence_handle.as_deref() }
 
     pub fn to_mesh(&self) -> crate::entities::Mesh {
         let mut faces = Vec::new();
@@ -67,6 +68,7 @@ impl PolygonMesh {
             smooth_type: PolylineSmoothType::NoSmooth,
             density_m: Self::DEFAULT_SURF_U,
             density_n: Self::DEFAULT_SURF_V,
+            end_sequence_handle: None,
         }
     }
 

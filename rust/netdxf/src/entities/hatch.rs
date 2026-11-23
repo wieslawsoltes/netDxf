@@ -395,7 +395,15 @@ impl HatchBoundaryPath {
         }
     }
 
-    pub fn update(&mut self) {}
+    pub fn update(&mut self) {
+        let is_poly = matches!(self.edges.as_slice(), [HatchBoundaryPathEdge::Polyline { .. }]);
+        if is_poly {
+            self.path_type_flags.insert(HatchBoundaryPathTypeFlags::POLYLINE);
+        } else {
+            self.path_type_flags.remove(HatchBoundaryPathTypeFlags::POLYLINE);
+        }
+        self.path_type_flags.insert(HatchBoundaryPathTypeFlags::DERIVED);
+    }
 
     pub fn explode(&self) -> Vec<EntityObject> {
         let mut out = Vec::new();

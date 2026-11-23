@@ -60,6 +60,9 @@ pub struct EntityCommon {
     pub linetype_scale: f64,
     pub is_visible: bool,
     pub normal: Vector3,
+    pub color_name: String,
+    pub shadow_mode: EntityShadowMode,
+    pub proxy_graphics: Option<Vec<u8>>,
     pub reactors: Vec<String>,
 }
 
@@ -76,6 +79,9 @@ impl EntityCommon {
             linetype_scale: 1.0,
             is_visible: true,
             normal: Vector3::UNIT_Z,
+            color_name: String::new(),
+            shadow_mode: EntityShadowMode::CastAndReceive,
+            proxy_graphics: None,
             reactors: Vec::new(),
         }
     }
@@ -254,10 +260,13 @@ impl EntityObject {
             Self::Line(e) => e.transform_by(transformation, translation),
             Self::Hatch(e) => e.transform_by(transformation, translation),
             Self::Helix(e) => e.transform_by(transformation, translation),
+            Self::Image(e) => e.transform_by(transformation, translation),
+            Self::Leader(e) => e.transform_by(transformation, translation),
             Self::Mesh(e) => e.transform_by(transformation, translation),
             Self::MLine(e) => e.transform_by(transformation, translation),
             Self::MText(e) => e.transform_by(transformation, translation),
             Self::Ole2Frame(e) => e.transform_by(transformation, translation),
+            Self::OleFrame(e) => e.transform_by(transformation, translation),
             Self::Point(e) => e.transform_by(transformation, translation),
             Self::PolyfaceMesh(e) => e.transform_by(transformation, translation),
             Self::PolygonMesh(e) => e.transform_by(transformation, translation),
@@ -265,9 +274,16 @@ impl EntityObject {
             Self::Polyline3D(e) => e.transform_by(transformation, translation),
             Self::Ray(e) => e.transform_by(transformation, translation),
             Self::Section(e) => e.transform_by(transformation, translation),
+            Self::Shape(e) => e.transform_by(transformation, translation),
+            Self::Solid(e) => e.transform_by(transformation, translation),
             Self::Spline(e) => e.transform_by(transformation, translation),
+            Self::Table(e) => e.transform_by(transformation, translation),
             Self::Text(e) => e.transform_by(transformation, translation),
+            Self::Tolerance(e) => e.transform_by(transformation, translation),
+            Self::Trace(e) => e.transform_by(transformation, translation),
+            Self::Underlay(e) => e.transform_by(transformation, translation),
             Self::Viewport(e) => e.transform_by(transformation, translation),
+            Self::Wipeout(e) => e.transform_by(transformation, translation),
             Self::XLine(e) => e.transform_by(transformation, translation),
             _ => {}
         }
@@ -276,7 +292,7 @@ impl EntityObject {
     pub const MAXIMUM_PROXY_GRAPHICS_BYTES: usize = 16 * 1024 * 1024;
 
     #[inline] pub fn color(&self) -> AciColor { self.common().color }
-    #[inline] pub fn color_name(&self) -> &str { "" }
+    #[inline] pub fn color_name(&self) -> &str { &self.common().color_name }
     #[inline] pub fn linetype(&self) -> &str { &self.common().linetype }
     #[inline] pub fn linetype_scale(&self) -> f64 { self.common().linetype_scale }
     #[inline] pub fn lineweight(&self) -> Lineweight { self.common().lineweight }
@@ -285,10 +301,11 @@ impl EntityObject {
     #[inline] pub fn normal(&self) -> Vector3 { self.common().normal }
     #[inline] pub fn owner(&self) -> Option<&str> { self.common().object.owner_handle.as_deref() }
     #[inline] pub fn reactors(&self) -> &[String] { &self.common().reactors }
-    #[inline] pub fn shadow_mode(&self) -> EntityShadowMode { EntityShadowMode::CastAndReceive }
-    #[inline] pub fn proxy_graphics(&self) -> Option<&[u8]> { None }
+    #[inline] pub fn shadow_mode(&self) -> EntityShadowMode { self.common().shadow_mode }
+    #[inline] pub fn proxy_graphics(&self) -> Option<&[u8]> { self.common().proxy_graphics.as_deref() }
     #[inline] pub fn r#type(&self) -> EntityType { self.entity_type() }
     pub fn clear_proxy_graphics(&mut self) {
+        self.common_mut().proxy_graphics = None;
         self.common_mut().object.x_data.shift_remove("ACAD_PROXY_ENTITY");
     }
 

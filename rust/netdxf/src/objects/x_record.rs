@@ -8,6 +8,7 @@ pub struct XRecord {
     pub object: DxfObject,
     pub cloning_flags: i16,
     pub entries: Vec<DxfTag>,
+    pub schema_managed: bool,
 }
 
 impl XRecord {
@@ -16,12 +17,13 @@ impl XRecord {
             object: DxfObject::new(DxfObjectCode::XRECORD),
             cloning_flags: 1,
             entries: Vec::new(),
+            schema_managed: false,
         }
     }
 
     #[inline] pub fn cloning(&self) -> i16 { self.cloning_flags }
     #[inline] pub fn data(&self) -> &[DxfTag] { &self.entries }
-    #[inline] pub fn is_schema_managed(&self) -> bool { false }
+    #[inline] pub fn is_schema_managed(&self) -> bool { self.schema_managed }
 }
 
 impl Default for XRecord {

@@ -84,7 +84,11 @@ impl OleFrame {
         self
     }
 
-    pub fn transform_by(&mut self, _transformation: crate::matrix3::Matrix3, _translation: Vector3) {}
+    pub fn transform_by(&mut self, transformation: crate::matrix3::Matrix3, _translation: Vector3) {
+        if let Some(n) = Vector3::normalize_finite_direction(transformation * self.common.normal) {
+            self.common.normal = n;
+        }
+    }
 }
 
 /// OLE object relationship type (DXF group 71).

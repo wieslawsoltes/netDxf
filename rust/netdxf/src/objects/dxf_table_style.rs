@@ -112,6 +112,7 @@ pub struct DxfTableStyleHeader {
     pub description: String,
     pub flow_direction: i16,
     pub flags: i16,
+    pub version: i16,
     pub horizontal_cell_margin: f64,
     pub vertical_cell_margin: f64,
     pub suppress_title: bool,
@@ -120,7 +121,7 @@ pub struct DxfTableStyleHeader {
 
 impl DxfTableStyleHeader {
     #[inline] pub fn stored_flags(&self) -> i16 { self.flags }
-    #[inline] pub fn stored_version(&self) -> i16 { 0 }
+    #[inline] pub fn stored_version(&self) -> i16 { self.version }
     #[inline] pub fn suppress_column_heading(&self) -> bool { self.suppress_header }
 }
 

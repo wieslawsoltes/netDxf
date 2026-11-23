@@ -75,15 +75,17 @@ pub struct DxfRawHandleDiagnostic {
     pub kind: DxfRawHandleDiagnosticKind,
     pub handle: u64,
     pub message: String,
+    pub record_index: usize,
+    pub tag_index_value: usize,
 }
 
 impl DxfRawHandleDiagnostic {
     pub fn record(&self) -> usize {
-        0
+        self.record_index
     }
 
     pub fn tag_index(&self) -> usize {
-        0
+        self.tag_index_value
     }
 }
 

@@ -303,6 +303,7 @@ pub struct MLeaderStyleProperties {
     pub break_size: f64,
     pub extend_leader_to_text: bool,
     pub is_annotative: bool,
+    pub overwrite_property_value_flag: bool,
 }
 
 impl MLeaderStyleProperties {
@@ -323,7 +324,7 @@ impl MLeaderStyleProperties {
     #[inline] pub fn max_leader_points(&self) -> i32 { self.max_leader_segment_points }
     #[inline] pub fn maximum_leader_points(&self) -> i32 { self.max_leader_segment_points }
     #[inline] pub fn leader_type(&self) -> i16 { self.leader_line_type }
-    #[inline] pub fn overwrite_property_value(&self) -> bool { false }
+    #[inline] pub fn overwrite_property_value(&self) -> bool { self.overwrite_property_value_flag }
     #[inline] pub fn text_align_always_left(&self) -> bool { self.text_always_left_justify }
     #[inline] pub fn text_alignment_type(&self) -> i16 { self.text_alignment }
     #[inline] pub fn text_always_left(&self) -> bool { self.text_always_left_justify }
@@ -378,6 +379,7 @@ impl Default for MLeaderStyleProperties {
             break_size: 0.125,
             extend_leader_to_text: false,
             is_annotative: false,
+            overwrite_property_value_flag: false,
         }
     }
 }
@@ -394,6 +396,7 @@ pub struct MLeaderProperties {
     pub block_connection_type: i16,
     pub enable_frame_text: bool,
     pub is_annotative: bool,
+    pub is_text_direction_negative_flag: bool,
     pub arrow_heads: Vec<MLeaderArrowHead>,
     pub block_attributes: Vec<MLeaderBlockAttribute>,
 }
@@ -426,7 +429,7 @@ impl MLeaderProperties {
     #[inline] pub fn has_dogleg(&self) -> bool { self.style_properties.enable_dogleg }
     #[inline] pub fn has_landing(&self) -> bool { self.style_properties.enable_landing }
     #[inline] pub fn has_text_frame(&self) -> bool { self.enable_frame_text }
-    #[inline] pub fn is_text_direction_negative(&self) -> bool { false }
+    #[inline] pub fn is_text_direction_negative(&self) -> bool { self.is_text_direction_negative_flag }
     #[inline] pub fn leader_extend_to_text(&self) -> bool { self.style_properties.extend_leader_to_text }
     #[inline] pub fn leader_type(&self) -> i16 { self.style_properties.leader_line_type }
     #[inline] pub fn property_override_flags(&self) -> i32 { self.property_override_flag }

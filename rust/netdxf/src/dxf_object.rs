@@ -8,6 +8,7 @@ pub struct DxfObject {
     pub code_name: String,
     pub handle: Option<String>,
     pub owner_handle: Option<String>,
+    pub extension_dictionary_handle: Option<String>,
     pub x_data: IndexMap<String, XData>,
     pub persistent_reactors: Vec<String>,
 }
@@ -18,6 +19,7 @@ impl DxfObject {
             code_name: code_name.into(),
             handle: None,
             owner_handle: None,
+            extension_dictionary_handle: None,
             x_data: IndexMap::new(),
             persistent_reactors: Vec::new(),
         }
@@ -43,5 +45,5 @@ impl DxfObject {
     }
 
     #[inline] pub fn owner(&self) -> Option<&str> { self.owner_handle.as_deref() }
-    #[inline] pub fn extension_dictionary(&self) -> Option<&str> { None }
+    #[inline] pub fn extension_dictionary(&self) -> Option<&str> { self.extension_dictionary_handle.as_deref() }
 }

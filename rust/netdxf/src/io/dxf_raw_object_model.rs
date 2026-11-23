@@ -35,10 +35,11 @@ impl Default for DxfRawObjectStoreOptions {
 }
 
 /// Single entry inside a [`DxfRawDictionary`].
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct DxfRawDictionaryEntry {
     pub name: String,
     pub target_handle: u64,
+    pub hard_owner: bool,
 }
 
 impl DxfRawDictionaryEntry {
@@ -47,7 +48,7 @@ impl DxfRawDictionaryEntry {
     }
 
     pub fn is_hard_owner(&self) -> bool {
-        false
+        self.hard_owner
     }
 }
 
@@ -153,11 +154,16 @@ pub struct DxfRawOpaqueStoredObject {
     pub handle: u64,
     pub owner_handle: u64,
     pub record: DxfRawRecord,
+    pub opaque_reason: String,
 }
 
 impl DxfRawOpaqueStoredObject {
-    pub fn reason(&self) -> &'static str {
-        "OpaqueObject"
+    pub fn reason(&self) -> &str {
+        if self.opaque_reason.is_empty() {
+            "OpaqueObject"
+        } else {
+            &self.opaque_reason
+        }
     }
 }
 
@@ -487,6 +493,7 @@ impl DxfRawObjectTransaction {
                 dict.entries.push(DxfRawDictionaryEntry {
                     name: key,
                     target_handle,
+                    hard_owner: dict.is_hard_owner,
                 });
             }
             return true;
@@ -510,6 +517,7 @@ impl DxfRawObjectTransaction {
                     cloned_entries.push(DxfRawDictionaryEntry {
                         name: entry.name,
                         target_handle: child_new_h,
+                        hard_owner: entry.hard_owner,
                     });
                 }
                 dict.entries = cloned_entries;

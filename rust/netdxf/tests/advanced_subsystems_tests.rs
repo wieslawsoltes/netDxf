@@ -312,3 +312,84 @@ fn multileader_geodata_sun_light_ole_section_and_dimension_block_roundtrip() {
         assert!(d2.entities.len() >= 4, "expected radius line, center mark, and MText in *D2");
     }
 }
+
+#[test]
+fn phase20_deep_entity_and_object_behaviors() {
+    use netdxf::entities::{
+        Attribute, AttributeDefinition, EntityObject, HatchBoundaryPath, HatchBoundaryPathEdge,
+        HatchBoundaryPathTypeFlags, Insert, Solid, Trace,
+    };
+    use netdxf::Matrix3;
+
+    // Dimension::update recomputes measurement and midpoint
+    let mut dim = Dimension::linear(Vector2::new(0.0, 0.0), Vector2::new(30.0, 40.0), 5.0, 0.0);
+    dim.first_reference_point = Vector3::new(0.0, 0.0, 0.0);
+    dim.second_reference_point = Vector3::new(100.0, 0.0, 0.0);
+    dim.update();
+    assert!((dim.measurement - 100.0).abs() < 1e-6);
+    assert!((dim.text_reference_point.x - 50.0).abs() < 1e-6);
+
+    // Attribute definition binding & proxy graphics
+    let def = AttributeDefinition::new("TAG1");
+    let mut attr = Attribute::new("OLD", "VAL");
+    let binding = attr.prepare_definition_binding(Some(def.tag.clone()), false);
+    assert_eq!(binding.previous_tag.as_deref(), None);
+    assert_eq!(binding.new_tag.as_deref(), Some("TAG1"));
+    attr.set_definition(&def);
+    assert_eq!(attr.definition(), Some("TAG1"));
+    attr.set_proxy_graphics(vec![1, 2, 3]);
+    assert_eq!(attr.proxy_graphics(), Some(&[1u8, 2, 3][..]));
+    attr.clear_proxy_graphics();
+    assert_eq!(attr.proxy_graphics(), None);
+
+    // Insert sequence end record (only created when attributes exist)
+    let mut ins = Insert::new("BLOCK_A");
+    assert!(ins.end_sequence_record().is_none());
+    ins.ensure_attribute_sequence_end();
+    assert!(ins.end_sequence_record().is_none());
+    ins.attributes.push(Attribute::new("TAG1", "VAL1"));
+    ins.ensure_attribute_sequence_end();
+    assert!(ins.end_sequence_record().is_some());
+
+    // HatchBoundaryPath::update sets POLYLINE / DERIVED flags based on edges
+    let mut path = HatchBoundaryPath::new(vec![HatchBoundaryPathEdge::Line {
+        start: Vector2::ZERO,
+        end: Vector2::new(10.0, 0.0),
+    }]);
+    path.update();
+    assert!(!path
+        .path_type_flags
+        .contains(HatchBoundaryPathTypeFlags::POLYLINE));
+    assert!(path
+        .path_type_flags
+        .contains(HatchBoundaryPathTypeFlags::DERIVED));
+
+    // EntityObject::transform_by transforms Solid and Trace vertices
+    let mut solid_ent = EntityObject::Solid(Box::new(Solid::new(
+        Vector2::new(0.0, 0.0),
+        Vector2::new(1.0, 0.0),
+        Vector2::new(1.0, 1.0),
+        Vector2::new(0.0, 1.0),
+    )));
+    solid_ent.transform_by(Matrix3::IDENTITY, Vector3::new(10.0, 20.0, 0.0));
+    if let EntityObject::Solid(s) = solid_ent {
+        assert!((s.first_vertex.x - 10.0).abs() < 1e-6);
+        assert!((s.first_vertex.y - 20.0).abs() < 1e-6);
+    } else {
+        panic!("expected Solid");
+    }
+
+    let mut trace_ent = EntityObject::Trace(Box::new(Trace::new(
+        Vector2::new(0.0, 0.0),
+        Vector2::new(2.0, 0.0),
+        Vector2::new(2.0, 2.0),
+        Vector2::new(0.0, 2.0),
+    )));
+    trace_ent.transform_by(Matrix3::IDENTITY, Vector3::new(5.0, -5.0, 0.0));
+    if let EntityObject::Trace(t) = trace_ent {
+        assert!((t.first_vertex.x - 5.0).abs() < 1e-6);
+        assert!((t.first_vertex.y + 5.0).abs() < 1e-6);
+    } else {
+        panic!("expected Trace");
+    }
+}

@@ -64,6 +64,7 @@ pub struct PlotSettings {
     pub flags: i16,
     pub print_scale_numerator: f64,
     pub print_scale_denominator: f64,
+    pub standard_scale_type_value: i16,
     pub scale_to_fit: bool,
     pub shade_plot_mode: i16,
     pub shade_plot_resolution_mode: i16,
@@ -82,7 +83,7 @@ impl PlotSettings {
     }
 
     #[inline] pub fn standard_scale_factor(&self) -> f64 { self.print_scale() }
-    #[inline] pub fn standard_scale_type(&self) -> i16 { 0 }
+    #[inline] pub fn standard_scale_type(&self) -> i16 { self.standard_scale_type_value }
     #[inline] pub fn view_name(&self) -> &str { &self.page_setup_name }
     #[inline] pub fn window_bottom_left(&self) -> Vector2 { self.origin }
     #[inline] pub fn window_up_right(&self) -> Vector2 { self.paper_size }
@@ -105,6 +106,7 @@ impl Default for PlotSettings {
             flags: 688,
             print_scale_numerator: 1.0,
             print_scale_denominator: 1.0,
+            standard_scale_type_value: 0,
             scale_to_fit: false,
             shade_plot_mode: 0,
             shade_plot_resolution_mode: 2,

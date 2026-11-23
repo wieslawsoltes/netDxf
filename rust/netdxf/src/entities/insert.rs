@@ -23,6 +23,7 @@ pub struct Insert {
     pub row_count: i16,
     pub column_spacing: f64,
     pub row_spacing: f64,
+    pub attribute_sequence_end_handle: Option<String>,
 }
 
 impl Insert {
@@ -40,6 +41,7 @@ impl Insert {
             row_count: 1,
             column_spacing: 0.0,
             row_spacing: 0.0,
+            attribute_sequence_end_handle: None,
         }
     }
 
@@ -63,11 +65,14 @@ impl Insert {
 
     #[inline]
     pub fn end_sequence_record(&self) -> Option<&str> {
-        None
+        self.attribute_sequence_end_handle.as_deref()
     }
 
-    #[inline]
-    pub fn ensure_attribute_sequence_end(&mut self) {}
+    pub fn ensure_attribute_sequence_end(&mut self) {
+        if !self.attributes.is_empty() && self.attribute_sequence_end_handle.is_none() {
+            self.attribute_sequence_end_handle = Some("SEQEND".to_string());
+        }
+    }
 
     #[inline]
     pub fn instance_count(&self) -> usize {
@@ -79,15 +84,29 @@ impl Insert {
         self.instance_count() > 1
     }
 
-    #[inline]
-    pub fn prepare_attribute_replacement(&mut self) {}
+    pub fn prepare_attribute_replacement(
+        &self,
+        tag: impl Into<String>,
+        replacement: Attribute,
+    ) -> crate::entities::InsertAttributeReplacement {
+        crate::entities::InsertAttributeReplacement {
+            tag: tag.into(),
+            replacement,
+        }
+    }
 
     pub fn replace_attributes(&mut self, attributes: Vec<Attribute>) {
         self.attributes = attributes;
+        if self.attributes.is_empty() {
+            self.attribute_sequence_end_handle = None;
+        } else {
+            self.ensure_attribute_sequence_end();
+        }
     }
 
-    #[inline]
-    pub fn set_attribute_sequence_end(&mut self) {}
+    pub fn set_attribute_sequence_end(&mut self, handle: Option<String>) {
+        self.attribute_sequence_end_handle = handle;
+    }
 
     pub fn sync(&mut self, block: &Block) {
         self.sync_attributes(block);

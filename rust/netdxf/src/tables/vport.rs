@@ -33,6 +33,10 @@ pub struct VPort {
     pub ucs_x_axis: Vector3,
     pub ucs_y_axis: Vector3,
     pub base_ucs: Option<String>,
+    pub render_mode_value: i16,
+    pub sun_handle: Option<String>,
+    pub ucs_orthographic_type_value: i16,
+    pub ucs_per_viewport_flag: bool,
     pub flags: i16,
 }
 
@@ -67,6 +71,10 @@ impl VPort {
             ucs_x_axis: Vector3::UNIT_X,
             ucs_y_axis: Vector3::UNIT_Y,
             base_ucs: None,
+            render_mode_value: 0,
+            sun_handle: None,
+            ucs_orthographic_type_value: 0,
+            ucs_per_viewport_flag: true,
             flags: 0,
         })
     }
@@ -99,23 +107,27 @@ impl VPort {
             ucs_x_axis: Vector3::UNIT_X,
             ucs_y_axis: Vector3::UNIT_Y,
             base_ucs: None,
+            render_mode_value: 0,
+            sun_handle: None,
+            ucs_orthographic_type_value: 0,
+            ucs_per_viewport_flag: true,
             flags: 0,
         }
     }
 
     #[inline] pub fn named_ucs(&self) -> Option<&str> { self.base_ucs.as_deref() }
-    #[inline] pub fn render_mode(&self) -> i16 { 0 }
+    #[inline] pub fn render_mode(&self) -> i16 { self.render_mode_value }
     #[inline] pub fn snap_rotation(&self) -> f64 { self.snap_rotation_angle }
     #[inline] pub fn snap_style(&self) -> i16 { self.snap_isopair }
-    #[inline] pub fn sun(&self) -> Option<&str> { None }
+    #[inline] pub fn sun(&self) -> Option<&str> { self.sun_handle.as_deref() }
     #[inline] pub fn ucs_elevation(&self) -> f64 { self.ucs_origin.z }
-    #[inline] pub fn ucs_orthographic_type(&self) -> i16 { 0 }
+    #[inline] pub fn ucs_orthographic_type(&self) -> i16 { self.ucs_orthographic_type_value }
     #[inline] pub fn view_direction(&self) -> Vector3 { self.direction }
     #[inline] pub fn view_target(&self) -> Vector3 { self.target }
     #[inline] pub fn view_twist(&self) -> f64 { self.view_twist_angle }
     #[inline] pub fn show_ucs_icon(&self) -> bool { (self.ucs_icon & 1) != 0 }
     #[inline] pub fn ucs_at_origin(&self) -> bool { (self.ucs_icon & 2) != 0 }
-    #[inline] pub fn ucs_per_viewport(&self) -> bool { true }
+    #[inline] pub fn ucs_per_viewport(&self) -> bool { self.ucs_per_viewport_flag }
     #[inline] pub fn view_mode(&self) -> i16 { self.flags }
 }
 
