@@ -82,6 +82,42 @@ impl Vector4 {
             && MathHelper::is_equal_with(self.z, other.z, threshold)
             && MathHelper::is_equal_with(self.w, other.w, threshold)
     }
+
+    #[inline]
+    pub fn subtract(u: Self, v: Self) -> Self {
+        u - v
+    }
+
+    #[inline]
+    pub fn negate(u: Self) -> Self {
+        -u
+    }
+
+    #[inline]
+    pub fn multiply(u: Self, scalar: f64) -> Self {
+        u * scalar
+    }
+
+    #[inline]
+    pub fn divide(u: Self, scalar: f64) -> Self {
+        u / scalar
+    }
+
+    #[inline]
+    pub fn is_normalized(self) -> bool {
+        MathHelper::is_one(self.modulus())
+    }
+
+    #[inline]
+    pub fn round(u: Self, num_digits: i32) -> Self {
+        let factor = 10_f64.powi(num_digits.clamp(0, 15));
+        Self::new(
+            (u.x * factor).round() / factor,
+            (u.y * factor).round() / factor,
+            (u.z * factor).round() / factor,
+            (u.w * factor).round() / factor,
+        )
+    }
 }
 
 impl Index<usize> for Vector4 {

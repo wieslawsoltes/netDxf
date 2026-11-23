@@ -183,6 +183,43 @@ impl From<[f64; 3]> for Vector3 {
     }
 }
 
+impl Vector3 {
+    #[inline]
+    pub fn subtract(u: Self, v: Self) -> Self {
+        u - v
+    }
+
+    #[inline]
+    pub fn negate(u: Self) -> Self {
+        -u
+    }
+
+    #[inline]
+    pub fn multiply(u: Self, scalar: f64) -> Self {
+        u * scalar
+    }
+
+    #[inline]
+    pub fn divide(u: Self, scalar: f64) -> Self {
+        u / scalar
+    }
+
+    #[inline]
+    pub fn is_normalized(self) -> bool {
+        MathHelper::is_one(self.modulus())
+    }
+
+    /// Rotates `self` around `axis` by `angle` radians using Rodrigues' rotation formula.
+    pub fn rotate_around_axis(self, axis: Self, angle: f64) -> Self {
+        let k = Self::normalize(axis);
+        if Self::is_nan(k) {
+            return self;
+        }
+        let (sin_a, cos_a) = angle.sin_cos();
+        self * cos_a + Self::cross_product(k, self) * sin_a + k * (Self::dot_product(k, self) * (1.0 - cos_a))
+    }
+}
+
 impl From<Vector2> for Vector3 {
     #[inline]
     fn from(v: Vector2) -> Self {

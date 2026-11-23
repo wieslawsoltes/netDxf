@@ -81,6 +81,8 @@ pub struct MultiLeader {
     pub block_rotation: f64,
     pub arrowhead_size: f64,
     pub leaders: Vec<MLeaderLeaderNode>,
+    pub version: i16,
+    pub stored_version: i16,
 }
 
 impl MultiLeader {
@@ -113,6 +115,64 @@ impl MultiLeader {
             block_rotation: 0.0,
             arrowhead_size: 2.5,
             leaders: vec![node],
+            version: 2,
+            stored_version: 2,
+        }
+    }
+
+    pub fn context(&self) -> crate::entities::mleader_context::MLeaderContext {
+        crate::entities::mleader_context::MLeaderContext {
+            content_scale: self.content_scale,
+            content_base_point: self.content_base_point,
+            text_height: self.text_height,
+            has_mtext: self.content_type == MLeaderContentType::MText,
+            has_block: self.content_type == MLeaderContentType::Block,
+            ..Default::default()
+        }
+    }
+
+    pub fn properties(&self) -> crate::entities::mleader_context::MLeaderProperties {
+        let mut props = crate::entities::mleader_context::MLeaderProperties::default();
+        props.style_properties.content_type = self.content_type;
+        props.style_properties.scale = self.content_scale;
+        props.style_properties.arrow_size = self.arrowhead_size;
+        props
+    }
+
+    pub fn validate(&self) -> Result<(), String> {
+        if !self.content_scale.is_finite() || self.content_scale <= 0.0 {
+            return Err("MultiLeader content_scale must be positive and finite.".into());
+        }
+        if !self.text_height.is_finite() || self.text_height <= 0.0 {
+            return Err("MultiLeader text_height must be positive and finite.".into());
+        }
+        Ok(())
+    }
+
+    pub fn transform_by(&mut self, transformation: crate::matrix3::Matrix3, translation: Vector3) {
+        self.content_base_point = transformation * self.content_base_point + translation;
+        self.text_location = transformation * self.text_location + translation;
+        self.block_position = transformation * self.block_position + translation;
+        let td = Vector3::normalize(transformation * self.text_direction);
+        if !Vector3::is_nan(td) {
+            self.text_direction = td;
+        }
+        let n = Vector3::normalize(transformation * self.common.normal);
+        if !Vector3::is_nan(n) {
+            self.common.normal = n;
+        }
+        for leader in &mut self.leaders {
+            leader.last_leader_line_point =
+                transformation * leader.last_leader_line_point + translation;
+            let dv = Vector3::normalize(transformation * leader.dogleg_vector);
+            if !Vector3::is_nan(dv) {
+                leader.dogleg_vector = dv;
+            }
+            for line in &mut leader.leader_lines {
+                for pt in &mut line.points {
+                    *pt = transformation * *pt + translation;
+                }
+            }
         }
     }
 }

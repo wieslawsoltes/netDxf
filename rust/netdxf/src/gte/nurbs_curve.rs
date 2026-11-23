@@ -82,6 +82,46 @@ impl NURBSCurve {
     pub fn position(&self, t: f64) -> Vector3 {
         self.evaluate(t, 0)[0]
     }
+
+    #[inline]
+    pub fn basis_function(&self) -> &BasisFunction {
+        &self.basis
+    }
+
+    #[inline]
+    pub fn num_controls(&self) -> usize {
+        self.controls.len()
+    }
+
+    #[inline]
+    pub fn get_control(&self, index: usize) -> Option<Vector3> {
+        self.controls.get(index).copied()
+    }
+
+    #[inline]
+    pub fn set_control(&mut self, index: usize, value: Vector3) -> bool {
+        if let Some(slot) = self.controls.get_mut(index) {
+            *slot = value;
+            true
+        } else {
+            false
+        }
+    }
+
+    #[inline]
+    pub fn get_weight(&self, index: usize) -> Option<f64> {
+        self.weights.get(index).copied()
+    }
+
+    #[inline]
+    pub fn set_weight(&mut self, index: usize, value: f64) -> bool {
+        if let Some(slot) = self.weights.get_mut(index) {
+            *slot = value;
+            true
+        } else {
+            false
+        }
+    }
 }
 
 impl crate::gte::ParametricCurve for NURBSCurve {

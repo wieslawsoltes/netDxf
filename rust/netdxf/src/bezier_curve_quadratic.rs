@@ -15,6 +15,33 @@ impl BezierCurveQuadratic {
     }
 
     #[inline]
+    pub const fn start_point(&self) -> Vector3 {
+        self.p0
+    }
+
+    #[inline]
+    pub const fn control_point(&self) -> Vector3 {
+        self.p1
+    }
+
+    #[inline]
+    pub const fn end_point(&self) -> Vector3 {
+        self.p2
+    }
+
+    pub fn reverse(&mut self) {
+        std::mem::swap(&mut self.p0, &mut self.p2);
+    }
+
+    /// Splits this quadratic Bezier curve at parameter `t` in `[0, 1]` using de Casteljau's algorithm.
+    pub fn split(&self, t: f64) -> (Self, Self) {
+        let q0 = self.p0 + (self.p1 - self.p0) * t;
+        let q1 = self.p1 + (self.p2 - self.p1) * t;
+        let r = q0 + (q1 - q0) * t;
+        (Self::new(self.p0, q0, r), Self::new(r, q1, self.p2))
+    }
+
+    #[inline]
     pub fn calculate_point(&self, t: f64) -> Vector3 {
         let u = 1.0 - t;
         self.p0 * (u * u) + self.p1 * (2.0 * u * t) + self.p2 * (t * t)
