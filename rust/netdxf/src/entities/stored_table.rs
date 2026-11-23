@@ -11,10 +11,13 @@ pub struct StoredTableCell {
     pub row: usize,
     pub column: usize,
     pub cell_type: i16,
+    pub stored_flags: i32,
     pub text: String,
     pub formula: Option<String>,
+    pub field_handle: Option<String>,
     pub value: TableCellValue,
     pub block_name: Option<String>,
+    pub tags: Vec<(i32, String)>,
 }
 
 impl StoredTableCell {
@@ -32,10 +35,13 @@ impl StoredTableCell {
             row,
             column,
             cell_type: 1,
+            stored_flags: 0,
             text: s,
             formula,
+            field_handle: None,
             value,
             block_name: None,
+            tags: Vec::new(),
         }
     }
 
@@ -44,11 +50,40 @@ impl StoredTableCell {
             row,
             column,
             cell_type: 1,
+            stored_flags: 0,
             text: format!("{value}"),
             formula: None,
+            field_handle: None,
             value: TableCellValue::Float(value),
             block_name: None,
+            tags: Vec::new(),
         }
+    }
+
+    pub fn stored_type(&self) -> i16 {
+        self.cell_type
+    }
+
+    pub fn value_type(&self) -> &'static str {
+        match &self.value {
+            TableCellValue::Empty => "Empty",
+            TableCellValue::Float(_) => "Double",
+            TableCellValue::Int(_) => "Long",
+            TableCellValue::Text(_) => "String",
+            TableCellValue::Formula(_) => "Formula",
+        }
+    }
+
+    pub fn has_literal_value(&self) -> bool {
+        !matches!(self.value, TableCellValue::Empty)
+    }
+
+    pub fn literal_value(&self) -> &str {
+        &self.text
+    }
+
+    pub fn has_field_reference(&self) -> bool {
+        self.field_handle.is_some()
     }
 }
 
@@ -65,6 +100,10 @@ pub struct StoredTable {
     pub row_heights: Vec<f64>,
     pub column_widths: Vec<f64>,
     pub cells: Vec<StoredTableCell>,
+    pub backing_content: Option<String>,
+    pub stored_backing_content: Option<String>,
+    pub source_version: Option<crate::header::DxfVersion>,
+    pub payload: Vec<(i32, String)>,
 }
 
 impl StoredTable {
@@ -86,7 +125,27 @@ impl StoredTable {
             row_heights: vec![10.0; row_count],
             column_widths: vec![30.0; column_count],
             cells,
+            backing_content: None,
+            stored_backing_content: None,
+            source_version: None,
+            payload: Vec::new(),
         }
+    }
+
+    pub fn references(&self) -> Vec<&str> {
+        let mut out = Vec::new();
+        if !self.block_name.is_empty() {
+            out.push(self.block_name.as_str());
+        }
+        if let Some(bc) = self.backing_content.as_deref() {
+            out.push(bc);
+        }
+        for cell in &self.cells {
+            if let Some(fh) = cell.field_handle.as_deref() {
+                out.push(fh);
+            }
+        }
+        out
     }
 
     pub fn get_cell(&self, row: usize, column: usize) -> Option<&StoredTableCell> {

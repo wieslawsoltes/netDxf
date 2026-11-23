@@ -88,4 +88,38 @@ impl<T: TableObject> TableObjects<T> {
     pub fn names(&self) -> impl Iterator<Item = &str> {
         self.items.values().map(|v| v.name())
     }
+
+    #[inline]
+    pub fn count(&self) -> usize {
+        self.items.len()
+    }
+
+    pub fn items(&self) -> Vec<&T> {
+        self.items.values().collect()
+    }
+
+    #[inline]
+    pub fn try_get_value(&self, name: &str) -> Option<&T> {
+        self.get(name)
+    }
+
+    pub fn clear(&mut self) {
+        self.items.retain(|_, v| v.is_reserved());
+    }
+
+    #[inline]
+    pub fn has_references(&self, name: &str) -> bool {
+        self.get(name).is_some_and(|v| v.has_references())
+    }
+
+    #[inline]
+    pub fn get_references(&self, name: &str) -> Vec<String> {
+        self.get(name)
+            .map_or_else(Vec::new, |v| v.get_references())
+    }
+
+    #[inline]
+    pub fn owner(&self) -> &'static str {
+        self.kind
+    }
 }

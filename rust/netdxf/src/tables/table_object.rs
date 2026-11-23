@@ -48,8 +48,18 @@ impl TableObjectData {
 
 /// Trait implemented by all DXF table objects stored in `TableObjects<T>`.
 pub trait TableObject {
+    const INVALID_CHARACTERS: &'static [char] = INVALID_CHARACTERS;
+
     fn table_data(&self) -> &TableObjectData;
     fn table_data_mut(&mut self) -> &mut TableObjectData;
+
+    #[inline]
+    fn is_valid_name(name: &str) -> bool
+    where
+        Self: Sized,
+    {
+        is_valid_name(name)
+    }
 
     #[inline]
     fn name(&self) -> &str {
@@ -64,5 +74,15 @@ pub trait TableObject {
     #[inline]
     fn handle(&self) -> Option<&str> {
         self.table_data().object.handle.as_deref()
+    }
+
+    #[inline]
+    fn has_references(&self) -> bool {
+        false
+    }
+
+    #[inline]
+    fn get_references(&self) -> Vec<String> {
+        Vec::new()
     }
 }

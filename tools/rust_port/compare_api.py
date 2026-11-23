@@ -439,6 +439,13 @@ def scan_rust(
     if root is None or not root.exists():
         return types, {}, {}
 
+    # Track type aliases `pub type Alias = Target;` so aliases inherit target members
+    type_aliases: Dict[str, str] = {}
+    alias_re = re.compile(
+        r"^\s*pub\s+type\s+([A-Za-z_][A-Za-z0-9_]*)(?:<[^>]*>)?\s*=\s*(?:[a-z0-9_]+::)*([A-Za-z_][A-Za-z0-9_]*)",
+        re.MULTILINE,
+    )
+
     # Track members per type across both type definition and `impl Type` blocks
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = [d for d in dirnames if d not in ("target", ".git", "tests", "examples", "benches")]
@@ -456,6 +463,9 @@ def scan_rust(
                 rel_file = str(fpath.resolve().relative_to(repo_root))
             except ValueError:
                 rel_file = str(fpath)
+
+            for am in alias_re.finditer(text):
+                type_aliases[am.group(1)] = am.group(2)
 
             for match in RS_TYPE_RE.finditer(text):
                 kind = match.group(1)
@@ -498,6 +508,12 @@ def scan_rust(
                 types[tname].members.update(RS_CONST_RE.findall(body))
                 # Trait impl methods omit `pub`
                 types[tname].members.update(re.findall(r"^\s*(?:async\s+)?fn\s+([a-z_][a-z0-9_]*)", body, re.MULTILINE))
+
+    # Propagate target type members to `pub type Alias = Target;` aliases
+    for _ in range(3):
+        for alias, target in type_aliases.items():
+            if alias in types and target in types:
+                types[alias].members.update(types[target].members)
 
     return types, dict(crate_files), dict(crate_loc)
 

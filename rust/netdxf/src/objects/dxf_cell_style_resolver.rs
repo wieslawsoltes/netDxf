@@ -47,6 +47,30 @@ impl DxfCellStyleFormat {
         self.text_style = Some(text_style.into());
         self
     }
+
+    #[inline]
+    pub fn original(&self) -> &Self {
+        self
+    }
+
+    #[inline]
+    pub fn values(&self) -> &Self {
+        self
+    }
+
+    #[inline]
+    pub fn changes_text_style(&self) -> bool {
+        self.text_style.is_some()
+    }
+
+    pub fn remap_resources<F>(&mut self, mut map_text_style: F)
+    where
+        F: FnMut(&str) -> String,
+    {
+        if let Some(ts) = self.text_style.as_deref() {
+            self.text_style = Some(map_text_style(ts));
+        }
+    }
 }
 
 /// Resolves effective table cell formatting by cascading overrides (`netDxf.Objects.DxfCellStyleResolver`).
@@ -119,6 +143,15 @@ pub struct DxfCellMargins {
     pub bottom: f64,
 }
 
+impl DxfCellMargins {
+    #[inline] pub fn bottom_margin(&self) -> f64 { self.bottom }
+    #[inline] pub fn right_margin(&self) -> f64 { self.right }
+    #[inline] pub fn horizontal_margin(&self) -> f64 { self.left }
+    #[inline] pub fn vertical_margin(&self) -> f64 { self.top }
+    #[inline] pub fn horizontal_spacing(&self) -> f64 { self.left + self.right }
+    #[inline] pub fn vertical_spacing(&self) -> f64 { self.top + self.bottom }
+}
+
 /// Cell content formatting definition.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct DxfCellContentFormat {
@@ -131,6 +164,19 @@ pub struct DxfCellContentFormat {
     pub text_style: Option<String>,
     pub text_height: Option<f64>,
     pub auto_scale: bool,
+    pub property_flags: i32,
+    pub property_overrides: i32,
+    pub color: Option<AciColor>,
+}
+
+impl DxfCellContentFormat {
+    #[inline] pub fn block_scale(&self) -> f64 { self.scale }
+    #[inline] pub fn stored_alignment(&self) -> i32 { self.alignment }
+    #[inline] pub fn stored_color(&self) -> Option<AciColor> { self.color }
+    #[inline] pub fn stored_data_type(&self) -> i32 { self.data_type }
+    #[inline] pub fn stored_property_flags(&self) -> i32 { self.property_flags }
+    #[inline] pub fn stored_property_overrides(&self) -> i32 { self.property_overrides }
+    #[inline] pub fn stored_unit_type(&self) -> i32 { self.unit_type }
 }
 
 /// Immutable snapshot of [`DxfCellContentFormat`] values.
@@ -145,6 +191,30 @@ pub struct DxfCellGridFormat {
     pub double_line_spacing: f64,
     pub color: Option<crate::aci_color::AciColor>,
     pub linetype: Option<String>,
+    pub property_overrides: i32,
+}
+
+impl DxfCellGridFormat {
+    #[inline] pub fn changes_linetype(&self) -> bool { self.linetype.is_some() }
+    #[inline] pub fn original(&self) -> &Self { self }
+    #[inline] pub fn values(&self) -> &Self { self }
+    pub fn with_linetype(mut self, linetype: impl Into<String>) -> Self {
+        self.linetype = Some(linetype.into());
+        self
+    }
+    pub fn with_values(mut self, values: &Self) -> Self {
+        self.border_type = values.border_type;
+        self.visible = values.visible;
+        self.lineweight = values.lineweight;
+        self.double_line_spacing = values.double_line_spacing;
+        self.color = values.color;
+        self
+    }
+    #[inline] pub fn stored_border_type(&self) -> i32 { self.border_type }
+    #[inline] pub fn stored_color(&self) -> Option<AciColor> { self.color }
+    #[inline] pub fn stored_lineweight(&self) -> i16 { self.lineweight }
+    #[inline] pub fn stored_property_overrides(&self) -> i32 { self.property_overrides }
+    #[inline] pub fn stored_visibility(&self) -> bool { self.visible }
 }
 
 /// Cell grid format definition, edit, and values snapshots.
@@ -172,6 +242,32 @@ pub struct DxfStoredCellStyleMapEntry {
     pub style_type: i32,
     pub name: String,
     pub format: DxfCellStyleFormat,
+}
+
+impl DxfStoredCellStyleMapEntry {
+    pub fn from_entry(entry: &Self) -> Self {
+        entry.clone()
+    }
+
+    #[inline]
+    pub fn stored_type(&self) -> i32 {
+        self.style_type
+    }
+
+    #[inline]
+    pub fn original(&self) -> &Self {
+        self
+    }
+
+    pub fn with_format(mut self, format: DxfCellStyleFormat) -> Self {
+        self.format = format;
+        self
+    }
+
+    pub fn with_name(mut self, name: impl Into<String>) -> Self {
+        self.name = name.into();
+        self
+    }
 }
 
 /// Definition and edit variants for [`DxfStoredCellStyleMapEntry`].

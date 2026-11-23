@@ -29,6 +29,7 @@ impl DimAssocOsnapPointRef {
     #[inline] pub fn marker_index(&self) -> i32 { self.gs_marker }
     #[inline] pub fn near_parameter(&self) -> f64 { self.near_param }
     #[inline] pub fn point(&self) -> Vector3 { self.osnap_point }
+    #[inline] pub fn point_index(&self) -> i16 { self.subentity_type }
     #[inline] pub fn geometry(&self) -> Option<&str> { self.main_entity_handle.as_deref() }
 }
 
