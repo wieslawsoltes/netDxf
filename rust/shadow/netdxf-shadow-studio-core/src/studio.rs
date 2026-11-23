@@ -484,6 +484,10 @@ pub struct Studio {
     pub session: ShadowSession,
     pub scene_builder: CadSceneBuilder,
     pub render_compiler: RenderCompiler,
+    pub selection: Vec<ObjectId>,
+    pub active_block: Option<String>,
+    pub subscriptions: Vec<u64>,
+    next_subscription_id: u64,
 }
 
 impl Studio {
@@ -497,7 +501,37 @@ impl Studio {
             session,
             scene_builder: CadSceneBuilder::new(),
             render_compiler: RenderCompiler::new(),
+            selection: Vec::new(),
+            active_block: None,
+            subscriptions: Vec::new(),
+            next_subscription_id: 1,
         }
+    }
+
+    pub fn from_dxf_bytes(
+        document_id: impl Into<String>,
+        bytes: &[u8],
+    ) -> Result<Self, netdxf::DxfError> {
+        let doc_id = document_id.into();
+        let doc = netdxf::DxfDocument::load_from_bytes(bytes)?;
+        let session =
+            ShadowSession::from_document(&doc, doc_id.clone(), ShadowCaptureOptions::default());
+        Ok(Self {
+            document_id: doc_id,
+            session,
+            scene_builder: CadSceneBuilder::new(),
+            render_compiler: RenderCompiler::new(),
+            selection: Vec::new(),
+            active_block: None,
+            subscriptions: Vec::new(),
+            next_subscription_id: 1,
+        })
+    }
+
+    pub fn export_dxf_bytes(&self, is_binary: bool) -> Result<Vec<u8>, netdxf::DxfError> {
+        let mut doc = netdxf::DxfDocument::new();
+        self.session.write_back(&mut doc);
+        doc.save_to_bytes(is_binary)
     }
 
     pub fn current_snapshot(&self) -> Arc<ShadowSnapshot> {
@@ -519,6 +553,143 @@ impl Studio {
         let cad = self.build_cad_scene(layout);
         self.render_compiler
             .compile(&cad, &RenderCompileOptions::default())
+    }
+
+    pub fn active_subscriptions(&self) -> usize {
+        self.subscriptions.len()
+    }
+
+    pub fn subscribe(&mut self) -> StudioSubscription {
+        let id = self.next_subscription_id;
+        self.next_subscription_id += 1;
+        self.subscriptions.push(id);
+        StudioSubscription { id }
+    }
+
+    pub fn unsubscribe(&mut self, sub: &StudioSubscription) -> bool {
+        if let Some(idx) = self.subscriptions.iter().position(|&x| x == sub.id) {
+            self.subscriptions.remove(idx);
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn select(&mut self, request: &CadSelectionRequest) -> Vec<ObjectId> {
+        match request.mode.as_str() {
+            "add" => {
+                for id in &request.ids {
+                    if !self.selection.contains(id) {
+                        self.selection.push(id.clone());
+                    }
+                }
+            }
+            "remove" => {
+                self.selection.retain(|id| !request.ids.contains(id));
+            }
+            "clear" => self.selection.clear(),
+            _ => self.selection = request.ids.clone(),
+        }
+        self.selection.clone()
+    }
+
+    pub fn cad_begin_block(&mut self, request: &CadBlockBeginRequest) {
+        self.active_block = Some(request.name.clone());
+    }
+
+    pub fn cad_finish_block(&mut self, _request: &CadBlockFinishRequest) -> Option<String> {
+        self.active_block.take()
+    }
+
+    pub fn block_root(&self) -> Option<&str> {
+        self.active_block.as_deref()
+    }
+
+    pub fn cad_block_libraries(&self) -> CadBlockLibrarySummary {
+        let snap = self.current_snapshot();
+        let count = snap
+            .objects
+            .values()
+            .filter(|o| o.short_type() == "Block")
+            .count();
+        CadBlockLibrarySummary { block_count: count }
+    }
+
+    pub fn cad_assign_layer(&mut self, request: &CadAssignLayerRequest) -> usize {
+        let snap = self.current_snapshot();
+        let mut changes = Vec::new();
+        for id in &request.entities {
+            if let Some(existing) = snap.objects.get(id) {
+                let mut updated = (**existing).clone();
+                updated.properties.insert(
+                    "Layer".into(),
+                    netdxf_shadow::ShadowValue::from_string(request.layer.clone()),
+                );
+                changes.push(netdxf_shadow::ShadowObjectChange {
+                    id: id.clone(),
+                    before: Some((**existing).clone()),
+                    after: Some(updated),
+                });
+            }
+        }
+        let count = changes.len();
+        if !changes.is_empty() {
+            let patch = netdxf_shadow::ShadowGraphPatch::new(
+                snap.document_id.clone(),
+                snap.revision,
+                changes,
+            );
+            let _ = netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch);
+        }
+        count
+    }
+
+    pub fn add(&mut self, request: &AddRequest) -> Option<ObjectId> {
+        let snap = self.current_snapshot();
+        let new_id = ObjectId::new(format!("E_{}", snap.objects.len() + 1));
+        let mut obj = netdxf_shadow::ShadowObject::new(new_id.clone(), request.entity_type.clone());
+        if let Some(map) = request.properties.as_object() {
+            for (k, v) in map {
+                let sv = match v {
+                    Value::Bool(b) => netdxf_shadow::ShadowValue::from_bool(*b),
+                    Value::Number(n) => {
+                        netdxf_shadow::ShadowValue::from_f64(n.as_f64().unwrap_or(0.0))
+                    }
+                    Value::String(s) => netdxf_shadow::ShadowValue::from_string(s.clone()),
+                    _ => netdxf_shadow::ShadowValue::null(),
+                };
+                obj.properties.insert(k.clone(), sv);
+            }
+        }
+        let patch = netdxf_shadow::ShadowGraphPatch::new(
+            snap.document_id.clone(),
+            snap.revision,
+            vec![netdxf_shadow::ShadowObjectChange {
+                id: new_id.clone(),
+                before: None,
+                after: Some(obj),
+            }],
+        );
+        netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch).ok()?;
+        Some(new_id)
+    }
+
+    pub fn layers(&self) -> Vec<String> {
+        let snap = self.current_snapshot();
+        snap.objects
+            .values()
+            .filter(|o| o.short_type() == "Layer")
+            .map(|o| snap.read(o.id.clone()).field("Name").text().to_string())
+            .collect()
+    }
+
+    pub fn layouts(&self) -> Vec<String> {
+        let snap = self.current_snapshot();
+        snap.objects
+            .values()
+            .filter(|o| o.short_type() == "Layout")
+            .map(|o| snap.read(o.id.clone()).field("Name").text().to_string())
+            .collect()
     }
 }
 

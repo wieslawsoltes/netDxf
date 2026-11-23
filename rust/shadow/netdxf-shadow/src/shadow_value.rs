@@ -226,6 +226,16 @@ pub struct ShadowObject {
 }
 
 impl ShadowObject {
+    pub fn new(id: ObjectId, type_name: impl Into<String>) -> Self {
+        Self {
+            id,
+            type_name: type_name.into(),
+            kind: ShadowObjectKind::default(),
+            properties: BTreeMap::new(),
+            writable_properties: BTreeSet::new(),
+        }
+    }
+
     pub fn short_type(&self) -> &str {
         match self.type_name.rfind('.') {
             Some(idx) => &self.type_name[idx + 1..],

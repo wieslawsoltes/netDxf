@@ -9,6 +9,13 @@ use serde_json::Value;
 pub struct StudioAgentConfiguration {
     pub provider: String,
     pub model: String,
+    pub endpoint: Option<String>,
+    pub api_key: Option<String>,
+    pub document_id: Option<String>,
+    pub mode: String,
+    pub permission_mode: String,
     pub max_turns: usize,
+    pub max_output_tokens: usize,
+    pub context_window_tokens: usize,
+    pub success_criteria: Option<String>,
 }
-

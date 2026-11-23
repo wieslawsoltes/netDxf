@@ -59,6 +59,65 @@ pub struct MemoryAgentWorkspace {
     staged_changes: Vec<AgentFileChange>,
 }
 
+impl MemoryAgentWorkspace {
+    pub fn normalize_path(path: &str) -> String {
+        path.replace('\\', "/").trim_start_matches('/').to_string()
+    }
+
+    pub fn list(&self) -> Vec<AgentFileInfo> {
+        self.list_files()
+    }
+
+    pub fn read(&self, path: &str) -> Option<String> {
+        let norm = Self::normalize_path(path);
+        self.files.get(&norm).or_else(|| self.files.get(path)).cloned()
+    }
+
+    pub fn write(&mut self, path: &str, content: impl Into<String>) {
+        let norm = Self::normalize_path(path);
+        self.write_file(&norm, content.into());
+    }
+
+    pub fn delete(&mut self, path: &str) -> bool {
+        let norm = Self::normalize_path(path);
+        let removed = self.files.remove(&norm).is_some() || self.files.remove(path).is_some();
+        if removed {
+            self.staged_changes.push(AgentFileChange {
+                path: norm,
+                kind: "delete".into(),
+            });
+        }
+        removed
+    }
+
+    pub fn search(&self, needle: &str) -> Vec<AgentSearchMatch> {
+        AgentWorkspaceTools::search(self, needle)
+    }
+
+    pub fn apply(&mut self, files: &[AgentFile]) {
+        for f in files {
+            self.write(&f.path, f.content.clone());
+        }
+    }
+
+    pub fn export(&self) -> Vec<AgentFile> {
+        self.files
+            .iter()
+            .map(|(path, content)| AgentFile {
+                path: path.clone(),
+                content: content.clone(),
+            })
+            .collect()
+    }
+
+    pub fn import(&mut self, files: Vec<AgentFile>) {
+        self.files.clear();
+        for f in files {
+            self.files.insert(Self::normalize_path(&f.path), f.content);
+        }
+    }
+}
+
 impl IAgentWorkspace for MemoryAgentWorkspace {
     fn list_files(&self) -> Vec<AgentFileInfo> {
         self.files

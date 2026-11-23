@@ -168,5 +168,106 @@ impl EditorSession {
         self.undo_stack.push(cur);
         Ok(Some(restored))
     }
+
+    pub fn select(&mut self, ids: Vec<ObjectId>) {
+        self.selection = ids;
+    }
+
+    pub fn reset_history(&mut self) {
+        self.undo_stack.clear();
+        self.redo_stack.clear();
+        self.history.clear();
+    }
+
+    pub fn preview(
+        &self,
+        patch: &ShadowGraphPatch,
+        options: &ShadowPreviewOptions,
+    ) -> ShadowPreviewSummary {
+        ShadowEditPreview::summarize(patch, options)
+    }
+
+    pub fn apply_preview(
+        &mut self,
+        label: impl Into<String>,
+        patch: &ShadowGraphPatch,
+    ) -> ShadowResult<Arc<ShadowSnapshot>> {
+        self.apply_patch(label, patch)
+    }
+
+    pub fn preview_merge(
+        &self,
+        incoming: &ShadowSnapshot,
+        options: &ShadowPreviewOptions,
+    ) -> ShadowResult<ShadowPreviewSummary> {
+        let cur = self.store.current();
+        let patch = ShadowGraphPatch::between(&cur, incoming)?;
+        Ok(ShadowEditPreview::summarize(&patch, options))
+    }
+
+    pub fn apply_merge(
+        &mut self,
+        label: impl Into<String>,
+        incoming: &ShadowSnapshot,
+    ) -> ShadowResult<Arc<ShadowSnapshot>> {
+        let cur = self.store.current();
+        let patch = ShadowGraphPatch::between(&cur, incoming)?;
+        self.apply_patch(label, &patch)
+    }
+
+    pub fn create_entity(
+        &mut self,
+        type_name: impl Into<String>,
+        properties: std::collections::BTreeMap<String, ShadowValue>,
+    ) -> ShadowResult<(ObjectId, Arc<ShadowSnapshot>)> {
+        let cur = self.store.current();
+        let new_id = ObjectId::new(format!("E_{}", cur.objects.len() + 1));
+        let mut obj = netdxf_shadow::ShadowObject::new(new_id.clone(), type_name);
+        obj.properties = properties;
+        let patch = ShadowGraphPatch::new(
+            cur.document_id.clone(),
+            cur.revision,
+            vec![netdxf_shadow::ShadowObjectChange {
+                id: new_id.clone(),
+                before: None,
+                after: Some(obj),
+            }],
+        );
+        let after = self.apply_patch("create_entity", &patch)?;
+        Ok((new_id, after))
+    }
+
+    pub fn delete_entities(&mut self, ids: &[ObjectId]) -> ShadowResult<Arc<ShadowSnapshot>> {
+        let cur = self.store.current();
+        let mut changes = Vec::new();
+        for id in ids {
+            if let Some(existing) = cur.objects.get(id) {
+                changes.push(netdxf_shadow::ShadowObjectChange {
+                    id: id.clone(),
+                    before: Some((**existing).clone()),
+                    after: None,
+                });
+            }
+        }
+        let patch = ShadowGraphPatch::new(cur.document_id.clone(), cur.revision, changes);
+        self.selection.retain(|id| !ids.contains(id));
+        self.apply_patch("delete_entities", &patch)
+    }
+
+    pub fn replace_collection(
+        &mut self,
+        label: impl Into<String>,
+        patch: &ShadowGraphPatch,
+    ) -> ShadowResult<Arc<ShadowSnapshot>> {
+        self.apply_patch(label, patch)
+    }
+
+    pub fn execute(
+        &mut self,
+        label: impl Into<String>,
+        batch: &ShadowEditBatch,
+    ) -> ShadowResult<Arc<ShadowSnapshot>> {
+        self.apply_batch(label, batch)
+    }
 }
 
