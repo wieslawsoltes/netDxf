@@ -382,6 +382,7 @@ fn remaining_shadow_services_end_to_end_verification() {
         &snap,
         &DrawingReferenceCaptureRequest {
             ids: vec![ObjectId::new("O:Entity:0")],
+            ..Default::default()
         },
     );
     let val = DrawingReferences::validate(

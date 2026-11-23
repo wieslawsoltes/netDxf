@@ -27,7 +27,13 @@ impl DomainPlans {
         }
         let groups = by_group
             .into_iter()
-            .map(|(key, rows)| DomainScheduleGroup { key, rows })
+            .map(|(key, rows)| DomainScheduleGroup {
+                value: key.clone(),
+                objects: rows.len(),
+                key,
+                rows,
+                ..Default::default()
+            })
             .collect();
         DomainSchedule {
             groups,

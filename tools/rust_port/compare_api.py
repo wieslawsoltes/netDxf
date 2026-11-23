@@ -533,7 +533,13 @@ def compare_members(cs: TypeInfo, rs: TypeInfo) -> Tuple[int, int, List[str]]:
     missing: List[str] = []
     for m in sorted(cs.members):
         nm = normalize_name(m)
-        if nm in rs_expanded or (nm.startswith("is") and nm[2:] in rs_expanded):
+        nm_no_async = nm[:-5] if nm.endswith("async") and len(nm) > 5 else nm
+        if (
+            nm in rs_expanded
+            or nm_no_async in rs_expanded
+            or (nm.startswith("is") and nm[2:] in rs_expanded)
+            or (nm_no_async.startswith("is") and nm_no_async[2:] in rs_expanded)
+        ):
             matched += 1
         else:
             missing.append(m)

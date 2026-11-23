@@ -78,6 +78,7 @@ fn shadow_camera_skia_svg_and_text_cache_parity() {
         viewport: Viewport::default(),
         background_argb: 0xFF10_1010,
         device_pixel_ratio: 1.0,
+        ..Default::default()
     };
     let backend = SkiaRenderBackend::new();
     let svg = backend.render_svg(&scene, &frame);

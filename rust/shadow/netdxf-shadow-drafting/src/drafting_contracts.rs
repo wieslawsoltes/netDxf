@@ -38,10 +38,14 @@ pub struct DraftingTransformOptions {
     pub uniform_scale: bool,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub struct DraftingLimits {
     pub maximum_entities: usize,
     pub maximum_vertices: usize,
+    pub maximum_cloned_objects: usize,
+    pub maximum_coordinate: f64,
+    pub maximum_points: usize,
+    pub minimum_length: f64,
 }
 
 impl Default for DraftingLimits {
@@ -49,6 +53,10 @@ impl Default for DraftingLimits {
         Self {
             maximum_entities: 100_000,
             maximum_vertices: 1_000_000,
+            maximum_cloned_objects: 25_000,
+            maximum_coordinate: 1e12,
+            maximum_points: 100_000,
+            minimum_length: 1e-9,
         }
     }
 }
@@ -59,10 +67,14 @@ pub struct DraftingPlan {
     pub patch: ShadowGraphPatch,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DraftingGrip {
+    pub id: String,
     pub entity: ObjectId,
     pub key: String,
+    pub property: String,
+    pub kind: String,
+    pub index: usize,
     pub position: Vec3,
 }
 
@@ -72,6 +84,38 @@ impl DraftingGuard {
     pub fn validate_limits(entity_count: usize, limits: &DraftingLimits) -> Result<(), String> {
         if entity_count > limits.maximum_entities {
             Err("Entity count exceeds drafting limits.".into())
+        } else {
+            Ok(())
+        }
+    }
+
+    pub fn current(snapshot: &netdxf_shadow::ShadowSnapshot, expected_revision: i64) -> Result<(), String> {
+        if snapshot.revision != expected_revision {
+            Err("The document changed. Refresh before editing.".into())
+        } else {
+            Ok(())
+        }
+    }
+
+    pub fn entity(snapshot: &netdxf_shadow::ShadowSnapshot, id: &ObjectId) -> Result<(), String> {
+        if snapshot.objects.contains_key(id) {
+            Ok(())
+        } else {
+            Err(format!("Unknown entity '{}'.", id.as_str()))
+        }
+    }
+
+    pub fn planar(pt: Vec3) -> Result<Vec3, String> {
+        if pt.x.is_finite() && pt.y.is_finite() && pt.z.is_finite() {
+            Ok(pt)
+        } else {
+            Err("Coordinates must be finite.".into())
+        }
+    }
+
+    pub fn selection(ids: &[ObjectId], max_len: usize) -> Result<(), String> {
+        if ids.len() > max_len {
+            Err(format!("Selection exceeds limit of {max_len} entities."))
         } else {
             Ok(())
         }

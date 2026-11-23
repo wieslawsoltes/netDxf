@@ -9,12 +9,17 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct ViewportLayerOverride {
     pub layer: String,
     pub frozen: Option<bool>,
+    pub plot: Option<bool>,
     pub argb: Option<u32>,
+    pub rgb: Option<u32>,
+    pub linetype: Option<String>,
     pub lineweight: Option<f64>,
+    pub lineweight_millimeters: Option<f64>,
+    pub transparency_percent: Option<u8>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

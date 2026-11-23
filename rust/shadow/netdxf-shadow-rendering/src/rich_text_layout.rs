@@ -24,10 +24,15 @@ pub struct PositionedTextRun {
     pub metrics: TextRunMetrics,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
 pub struct TextRule {
     pub start: Vec3,
     pub end: Vec3,
+    pub x1: f64,
+    pub y1: f64,
+    pub x2: f64,
+    pub y2: f64,
+    pub color: Option<u32>,
     pub thickness: f64,
 }
 
@@ -48,6 +53,11 @@ pub struct RichTextLine {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct RichTextLayoutResult {
     pub lines: Vec<RichTextLine>,
+    pub runs: Vec<PositionedTextRun>,
+    pub rules: Vec<TextRule>,
+    pub bounds: Bounds2,
+    pub layout_bounds: Bounds2,
+    pub diagnostics: Vec<TextFormatDiagnostic>,
     pub total_width: f64,
     pub total_height: f64,
 }
@@ -106,9 +116,19 @@ impl RichTextLayout {
         }
 
         let total_width = lines.iter().map(|l| l.width).fold(0.0_f64, f64::max);
-        let total_height = lines.iter().map(|l| l.height).sum();
+        let total_height: f64 = lines.iter().map(|l| l.height).sum();
+        let all_runs: Vec<PositionedTextRun> =
+            lines.iter().flat_map(|l| l.runs.iter().cloned()).collect();
+        let all_rules: Vec<TextRule> =
+            lines.iter().flat_map(|l| l.rules.iter().copied()).collect();
+        let bounds = Bounds2::new(0.0, -total_height, total_width, 0.0);
         RichTextLayoutResult {
             lines,
+            runs: all_runs,
+            rules: all_rules,
+            bounds,
+            layout_bounds: bounds,
+            diagnostics: doc.diagnostics.clone(),
             total_width,
             total_height,
         }

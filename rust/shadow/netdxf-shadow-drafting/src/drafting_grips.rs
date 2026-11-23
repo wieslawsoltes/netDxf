@@ -17,8 +17,12 @@ impl DraftingGrips {
             let f = r.field(key);
             if f.exists() {
                 grips.push(DraftingGrip {
+                    id: format!("{}:{}", entity.as_str(), key),
                     entity: entity.clone(),
                     key: key.to_string(),
+                    property: key.to_string(),
+                    kind: "Point".to_string(),
+                    index: grips.len(),
                     position: f.vector(Vec3::ZERO),
                 });
             }

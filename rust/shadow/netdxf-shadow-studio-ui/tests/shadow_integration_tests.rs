@@ -135,6 +135,7 @@ fn shadow_pipeline_geometry_graph_health_svg_and_ferroui_skia_render() {
         },
         background_argb: 0xFF18_1A1F,
         device_pixel_ratio: 1.0,
+        ..Default::default()
     };
     let svg = SvgRenderBackend.render(&render_scene, &frame).unwrap();
     assert!(String::from_utf8(svg.bytes).unwrap().contains("<svg"));

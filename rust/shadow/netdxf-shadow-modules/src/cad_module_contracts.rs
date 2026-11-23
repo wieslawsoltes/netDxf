@@ -17,10 +17,15 @@ pub struct CadModuleField {
     pub description: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct CadModuleCommand {
+    pub id: String,
     pub name: String,
     pub description: String,
+    pub requires_selection: bool,
+    pub requires_symbol: bool,
+    pub minimum_points: usize,
+    pub maximum_points: usize,
     pub fields: Vec<CadModuleField>,
 }
 
@@ -78,7 +83,12 @@ pub struct CadModuleIssue {
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleAnalysis {
+    pub document_id: String,
+    pub revision: i64,
     pub module_id: String,
+    pub complete: bool,
+    pub objects_visited: usize,
+    pub limitation: Option<String>,
     pub records: Vec<CadModuleRecord>,
     pub issues: Vec<CadModuleIssue>,
 }
@@ -88,10 +98,15 @@ pub struct CadModuleAnalysisOptions {
     pub include_connectivity: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleCommandRequest {
     pub module_id: String,
     pub command: String,
+    pub symbol_id: Option<String>,
+    pub symbol_version: Option<String>,
+    pub entities: Vec<ObjectId>,
+    pub points: Vec<Vec3>,
+    pub properties: BTreeMap<String, String>,
     pub arguments: Value,
 }
 

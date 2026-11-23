@@ -93,11 +93,16 @@ impl Viewport {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct RenderFrame {
     pub viewport: Viewport,
     pub background_argb: u32,
+    pub background: u32,
+    pub selection_color: u32,
     pub device_pixel_ratio: f64,
+    pub scene: Option<RenderScene>,
+    pub selection: Vec<String>,
+    pub visible_items: Vec<RenderItem>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

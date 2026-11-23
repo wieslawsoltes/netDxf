@@ -46,11 +46,16 @@ impl Default for LinetypePlanOptions {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
 pub struct LinetypePlacement {
+    pub ordinal: usize,
+    pub contour_index: usize,
+    pub element_index: usize,
     pub distance: f64,
     pub position: Vec3,
     pub tangent: Vec3,
+    pub frame: Affine3,
+    pub decoration: usize,
 }
 
 pub struct LinetypePlanner;
@@ -74,9 +79,11 @@ impl LinetypePlanner {
             while next_target <= accum + len && placements.len() < 100_000 {
                 let local = next_target - accum;
                 placements.push(LinetypePlacement {
+                    ordinal: placements.len(),
                     distance: next_target,
                     position: w[0] + tangent * local,
                     tangent,
+                    ..Default::default()
                 });
                 next_target += spacing;
             }

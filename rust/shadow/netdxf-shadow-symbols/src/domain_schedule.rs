@@ -39,6 +39,11 @@ pub struct DomainScheduleRow {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DomainScheduleGroup {
     pub key: String,
+    pub value: String,
+    pub objects: usize,
+    pub routes: usize,
+    pub measured_segments: usize,
+    pub segment_length: f64,
     pub rows: Vec<DomainScheduleRow>,
 }
 
@@ -95,7 +100,19 @@ impl DomainSchedule {
         }
         let groups = grouped
             .into_iter()
-            .map(|(key, rows)| DomainScheduleGroup { key, rows })
+            .map(|(key, rows)| {
+                let objects = rows.len();
+                let segment_length: f64 = rows.iter().filter_map(|r| r.segment_length).sum();
+                DomainScheduleGroup {
+                    value: key.clone(),
+                    key,
+                    objects,
+                    routes: 0,
+                    measured_segments: 0,
+                    segment_length,
+                    rows,
+                }
+            })
             .collect();
         Self {
             document_id: document_id.into(),

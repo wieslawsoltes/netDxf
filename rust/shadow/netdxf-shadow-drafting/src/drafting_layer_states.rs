@@ -50,9 +50,14 @@ pub struct DraftingLayerStateDetails {
 
 pub struct DraftingLayerStates;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct LayerStateTransfer {
     pub name: String,
+    pub description: String,
+    pub current_layer: String,
+    pub paper_space: bool,
+    pub restore_mask: i32,
+    pub entries: Vec<SavedLayerProperties>,
     pub details: DraftingLayerStateDetails,
 }
 
@@ -61,9 +66,13 @@ pub struct LayerStateResourceMap {
     pub linetype_map: BTreeMap<String, String>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct LayerStateImportOptions {
+    pub name: Option<String>,
     pub overwrite_existing: bool,
+    pub overwrite: bool,
+    pub layers: Vec<String>,
+    pub linetypes: BTreeMap<String, String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -210,6 +219,11 @@ impl DraftingLayerStates {
         let details = Self::details(snapshot, id)?;
         Ok(LayerStateTransfer {
             name: details.name.clone(),
+            description: details.description.clone(),
+            current_layer: "0".to_string(),
+            paper_space: false,
+            restore_mask: Self::SUPPORTED_MASK,
+            entries: details.layers.values().cloned().collect(),
             details,
         })
     }

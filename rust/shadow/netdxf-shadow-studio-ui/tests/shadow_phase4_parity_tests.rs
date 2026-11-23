@@ -127,7 +127,7 @@ fn editor_session_translate_transform_and_layer_states_roundtrip() {
     let analysis = DraftingLayerStates::analyze_import(
         &after_ls,
         &transfer,
-        &LayerStateImportOptions { overwrite_existing: true },
+        &LayerStateImportOptions { overwrite_existing: true, ..Default::default() },
     );
     assert!(analysis.conflicts.is_empty());
 }

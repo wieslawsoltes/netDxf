@@ -55,9 +55,14 @@ impl Default for RichTextStyle {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct RichTextInline {
     pub text: String,
+    pub lower: Option<String>,
+    pub stack_separator: Option<char>,
+    pub is_paragraph_control: bool,
+    pub source_start: usize,
+    pub source_length: usize,
     pub style: RichTextStyle,
 }
 
@@ -118,9 +123,12 @@ impl RichText {
 
         let flush = |buf: &mut String, style: &RichTextStyle, out: &mut Vec<RichTextInline>| {
             if !buf.is_empty() {
+                let len = buf.len();
                 out.push(RichTextInline {
                     text: std::mem::take(buf),
+                    source_length: len,
                     style: style.clone(),
+                    ..Default::default()
                 });
             }
         };

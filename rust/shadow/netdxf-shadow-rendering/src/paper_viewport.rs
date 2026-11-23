@@ -9,15 +9,20 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct RenderClip {
     pub bounds: Bounds2,
     pub polygon: Vec<Vec3>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct PaperViewportProjection {
+    pub viewport_entity: Option<ObjectId>,
     pub transform: Affine3,
+    pub model_to_paper: Affine3,
+    pub paper_to_model: Affine3,
+    pub scale: f64,
+    pub perspective: Option<PerspectiveCamera>,
     pub clip: RenderClip,
 }
 

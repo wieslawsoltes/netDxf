@@ -35,6 +35,31 @@ impl CadSceneBuilder {
         self.projectors.push(projector);
     }
 
+    #[inline]
+    pub fn projectors(&self) -> &[Box<dyn IEntityProjector>] {
+        &self.projectors
+    }
+
+    #[inline]
+    pub fn cache_statistics(&self) -> ProjectionCacheStatistics {
+        self.cache_stats
+    }
+
+    #[inline]
+    pub fn last_build_statistics(&self) -> SceneBuildStatistics {
+        self.build_stats
+    }
+
+    #[inline]
+    pub fn projection_version(&self) -> u64 {
+        1
+    }
+
+    #[inline]
+    pub fn is_snapshot_cacheable(snapshot: &ShadowSnapshot) -> bool {
+        !snapshot.document_id.is_empty()
+    }
+
     pub fn build(&mut self, snapshot: &ShadowSnapshot, options: &SceneOptions) -> CadScene {
         let mut occurrences = Vec::new();
         let mut scene_bounds = Bounds2::EMPTY;

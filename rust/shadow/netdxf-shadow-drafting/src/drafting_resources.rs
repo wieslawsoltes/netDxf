@@ -7,10 +7,15 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct ResourceEdit {
+    pub id: Option<ObjectId>,
+    pub action: String,
+    pub kind: String,
     pub name: String,
     pub description: Option<String>,
+    pub linetype: Option<LinetypeEdit>,
+    pub text_style: Option<TextStyleEdit>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -49,10 +54,14 @@ pub struct TextStyleEdit {
     pub vertical: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DraftingResourceStatus {
+    pub id: Option<ObjectId>,
     pub name: String,
     pub in_use: bool,
+    pub current: bool,
+    pub reserved: bool,
+    pub uses: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -150,7 +159,11 @@ impl DraftingResources {
                     backward: r.field("IsBackward").boolean(false),
                     upside_down: r.field("IsUpsideDown").boolean(false),
                     vertical: r.field("IsVertical").boolean(false),
-                    status: DraftingResourceStatus { name, in_use: true },
+                    status: DraftingResourceStatus {
+                        name,
+                        in_use: true,
+                        ..Default::default()
+                    },
                 }
             })
             .collect()
@@ -189,6 +202,7 @@ impl DraftingResources {
             .map(|o| DraftingResourceStatus {
                 name: snapshot.read(o.id.clone()).field("Name").text().to_string(),
                 in_use: true,
+                ..Default::default()
             })
             .collect()
     }

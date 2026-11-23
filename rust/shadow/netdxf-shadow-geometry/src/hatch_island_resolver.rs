@@ -43,6 +43,24 @@ pub struct HatchBoundaryInfo {
 #[derive(Debug, Clone, Default)]
 pub struct HatchBoundaryTopology {
     pub boundaries: Vec<HatchBoundaryInfo>,
+    pub loops: Vec<HatchBoundaryInfo>,
+    pub sampled_point_count: usize,
+    pub segment_comparisons: usize,
+    pub containment_edge_visits: usize,
+}
+
+impl HatchBoundaryTopology {
+    pub fn select(&self, style: CadHatchIslandStyle) -> Vec<HatchBoundaryInfo> {
+        self.boundaries
+            .iter()
+            .copied()
+            .filter(|b| match style {
+                CadHatchIslandStyle::Normal => true,
+                CadHatchIslandStyle::Outer => b.depth <= 1,
+                CadHatchIslandStyle::Ignore => b.depth == 0,
+            })
+            .collect()
+    }
 }
 
 pub struct HatchIslandResolver;
@@ -73,7 +91,11 @@ impl HatchIslandResolver {
                 bounds: b,
             });
         }
-        HatchBoundaryTopology { boundaries }
+        HatchBoundaryTopology {
+            loops: boundaries.clone(),
+            boundaries,
+            ..Default::default()
+        }
     }
 }
 

@@ -26,9 +26,14 @@ pub enum DraftingHatchPatternType {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DraftingHatchPattern {
     pub name: String,
+    pub description: String,
     pub pattern_type: DraftingHatchPatternType,
+    pub r#type: DraftingHatchPatternType,
     pub scale: f64,
     pub angle: f64,
+    pub is_double: bool,
+    pub islands: bool,
+    pub origin: Vec3,
     pub lines: Vec<DraftingHatchLine>,
 }
 
@@ -46,9 +51,11 @@ impl DraftingHatches {
         DraftingHatchPattern {
             name: "SOLID".into(),
             pattern_type: DraftingHatchPatternType::Solid,
+            r#type: DraftingHatchPatternType::Solid,
             scale: 1.0,
             angle: 0.0,
             lines: Vec::new(),
+            ..Default::default()
         }
     }
 
@@ -86,9 +93,11 @@ impl DraftingHatches {
         DraftingHatchPattern {
             name: upper,
             pattern_type: DraftingHatchPatternType::Predefined,
+            r#type: DraftingHatchPatternType::Predefined,
             scale: scale.max(1e-6),
             angle,
             lines,
+            ..Default::default()
         }
     }
 

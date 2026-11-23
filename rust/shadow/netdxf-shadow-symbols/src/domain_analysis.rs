@@ -17,6 +17,11 @@ pub struct DomainIssue {
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DomainScan {
+    pub complete: bool,
+    pub objects_visited: usize,
+    pub limitation: Option<String>,
+    pub records: Vec<DomainRecord>,
+    pub context_records: Vec<DomainRecord>,
     pub entities: Vec<DomainEntity>,
     pub issues: Vec<DomainIssue>,
 }
@@ -36,7 +41,17 @@ impl DomainAnalysis {
                 });
             }
         }
-        DomainScan { entities, issues }
+        let records = entities.iter().map(|e| e.record.clone()).collect();
+        let objects_visited = entities.len();
+        DomainScan {
+            complete: true,
+            objects_visited,
+            limitation: None,
+            records,
+            context_records: Vec::new(),
+            entities,
+            issues,
+        }
     }
 }
 

@@ -26,10 +26,15 @@ pub enum ObjectSnapMode {
     Nearest,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct ObjectSnap {
     pub mode: ObjectSnapMode,
+    pub kind: ObjectSnapMode,
     pub point: Vec3,
+    pub position: Vec3,
+    pub distance: f64,
+    pub approximate: bool,
+    pub occurrence: String,
     pub entity: Option<ObjectId>,
 }
 
@@ -132,7 +137,12 @@ impl DraftingQueries {
                         d,
                         ObjectSnap {
                             mode,
+                            kind: mode,
                             point: pt,
+                            position: pt,
+                            distance: d,
+                            approximate: false,
+                            occurrence: occ.key.clone(),
                             entity: Some(occ.entity.clone()),
                         },
                     ));

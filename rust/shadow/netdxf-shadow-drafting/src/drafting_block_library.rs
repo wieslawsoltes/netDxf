@@ -22,11 +22,16 @@ pub enum BlockLibraryResourceConflict {
     UseSource,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct BlockLibraryImport {
+    pub name: String,
+    pub source_block: String,
     pub block_names: Vec<String>,
     pub conflict_policy: BlockLibraryConflict,
+    pub block_conflict: BlockLibraryConflict,
     pub resource_policy: BlockLibraryResourceConflict,
+    pub resource_conflict: BlockLibraryResourceConflict,
+    pub preserve_layer_zero: bool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

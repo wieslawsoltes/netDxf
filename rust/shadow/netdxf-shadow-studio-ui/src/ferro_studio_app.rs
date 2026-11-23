@@ -126,6 +126,7 @@ impl FerroStudioApp {
             viewport: self.viewport,
             background_argb: self.background_argb,
             device_pixel_ratio: 1.0,
+            ..Default::default()
         };
         self.backend.render_svg(&scene, &frame)
     }
@@ -136,6 +137,7 @@ impl FerroStudioApp {
             viewport: self.viewport,
             background_argb: self.background_argb,
             device_pixel_ratio: 1.0,
+            ..Default::default()
         };
         self.backend.render(&scene, &frame)
     }

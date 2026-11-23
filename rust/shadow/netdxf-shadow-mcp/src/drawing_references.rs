@@ -33,8 +33,13 @@ pub struct DrawingObjectReference {
     pub insert_path: Vec<ObjectId>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DrawingReferenceCaptureRequest {
+    pub document_id: String,
+    pub workspace_id: Option<String>,
+    pub revision: i64,
+    pub view_version: i64,
+    pub maximum: usize,
     pub ids: Vec<ObjectId>,
 }
 

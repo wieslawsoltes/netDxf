@@ -21,8 +21,13 @@ pub enum PerspectiveFieldOfView {
 pub struct PerspectiveOptions {
     pub fov_degrees: f64,
     pub fov_mode: PerspectiveFieldOfView,
+    pub field_of_view: PerspectiveFieldOfView,
+    pub film_height_millimeters: f64,
     pub near_plane: f64,
     pub far_plane: f64,
+    pub near_distance_fraction: f64,
+    pub maximum_points: usize,
+    pub maximum_work: usize,
 }
 
 impl Default for PerspectiveOptions {
@@ -30,8 +35,13 @@ impl Default for PerspectiveOptions {
         Self {
             fov_degrees: 45.0,
             fov_mode: PerspectiveFieldOfView::Vertical,
+            field_of_view: PerspectiveFieldOfView::Vertical,
+            film_height_millimeters: 24.0,
             near_plane: 0.1,
             far_plane: 100_000.0,
+            near_distance_fraction: 0.01,
+            maximum_points: 100_000,
+            maximum_work: 500_000,
         }
     }
 }

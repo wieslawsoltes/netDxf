@@ -7,10 +7,14 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct BlockCreation {
     pub name: String,
+    pub description: String,
     pub origin: Vec3,
+    pub base_point: Vec3,
+    pub layer: String,
+    pub disposition: BlockSourceDisposition,
     pub entities: Vec<ObjectId>,
 }
 
@@ -26,10 +30,15 @@ pub enum BlockSourceDisposition {
     Delete,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct BlockDefinitionRequest {
     pub name: String,
+    pub description: String,
     pub origin: Vec3,
+    pub base_point: Vec3,
+    pub insert_layer: String,
+    pub redefine: bool,
+    pub entities: Vec<ObjectId>,
     pub disposition: BlockSourceDisposition,
 }
 
@@ -41,6 +50,44 @@ impl DraftingBlocks {
             .filter(|o| o.short_type() == "Block")
             .map(|o| snapshot.read(o.id.clone()).field("Name").text().to_string())
             .collect()
+    }
+
+    pub fn definition(snapshot: &netdxf_shadow::ShadowSnapshot, name: &str) -> Option<ObjectId> {
+        snapshot
+            .objects
+            .values()
+            .find(|o| {
+                o.short_type() == "Block"
+                    && snapshot
+                        .read(o.id.clone())
+                        .field("Name")
+                        .text()
+                        .eq_ignore_ascii_case(name)
+            })
+            .map(|o| o.id.clone())
+    }
+
+    pub fn validate_name(name: &str) -> Result<(), String> {
+        if name.trim().is_empty() {
+            Err("Block name cannot be empty.".into())
+        } else {
+            Ok(())
+        }
+    }
+
+    pub fn validate_reference(
+        snapshot: &netdxf_shadow::ShadowSnapshot,
+        name: &str,
+    ) -> Result<ObjectId, String> {
+        Self::definition(snapshot, name).ok_or_else(|| format!("Unknown block '{name}'."))
+    }
+
+    pub fn rename(
+        snapshot: &netdxf_shadow::ShadowSnapshot,
+        block_id: &ObjectId,
+        new_name: impl Into<String>,
+    ) -> Result<DraftingPlan, String> {
+        DraftingPlanner::rename_block(snapshot, block_id, new_name)
     }
 }
 
@@ -128,6 +175,7 @@ impl DraftingPlanner {
                 name: request.name.clone(),
                 origin: request.origin,
                 entities: Vec::new(),
+                ..Default::default()
             },
         )
     }
@@ -144,6 +192,7 @@ impl DraftingPlanner {
                 name: request.name.clone(),
                 origin: request.origin,
                 entities: Vec::new(),
+                ..Default::default()
             },
         )
     }
