@@ -14,6 +14,8 @@ pub struct Ole2Frame {
     pub ole_object_type: i16,
     pub tile_mode: i16,
     pub binary_data: Vec<u8>,
+    pub metadata_fields: Ole2FrameMetadataFields,
+    pub additional_metadata: Vec<(i32, String)>,
 }
 
 impl Ole2Frame {
@@ -27,7 +29,28 @@ impl Ole2Frame {
             ole_object_type: 2,
             tile_mode: 0,
             binary_data,
+            metadata_fields: Ole2FrameMetadataFields::ALL,
+            additional_metadata: Vec::new(),
         }
+    }
+
+    #[inline] pub fn description(&self) -> &str { &self.ole_client_type }
+    #[inline] pub fn binary_data_length(&self) -> usize { self.binary_data.len() }
+    #[inline] pub fn get_binary_data(&self) -> &[u8] { &self.binary_data }
+    #[inline] pub fn object_type(&self) -> OleObjectType {
+        match self.ole_object_type {
+            1 => OleObjectType::Link,
+            3 => OleObjectType::Static,
+            _ => OleObjectType::Embedded,
+        }
+    }
+    pub fn with_metadata_fields(mut self, fields: Ole2FrameMetadataFields) -> Self {
+        self.metadata_fields = fields;
+        self
+    }
+    pub fn transform_by(&mut self, transformation: crate::matrix3::Matrix3, translation: Vector3) {
+        self.upper_left_corner = transformation * self.upper_left_corner + translation;
+        self.lower_right_corner = transformation * self.lower_right_corner + translation;
     }
 }
 

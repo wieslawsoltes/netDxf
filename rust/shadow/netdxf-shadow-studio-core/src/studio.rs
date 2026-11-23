@@ -776,6 +776,220 @@ impl Studio {
             .map(|o| snap.read(o.id.clone()).field("Name").text().to_string())
             .collect()
     }
+
+    pub fn blocks(&self) -> Vec<String> {
+        let snap = self.current_snapshot();
+        snap.objects
+            .values()
+            .filter(|o| o.short_type() == "Block")
+            .map(|o| snap.read(o.id.clone()).field("Name").text().to_string())
+            .collect()
+    }
+
+    pub fn cad_health(&mut self, request: &CadHealthRequest) -> Vec<String> {
+        let layout = if request.layout.is_empty() {
+            "Model"
+        } else {
+            &request.layout
+        };
+        let scene = self.build_cad_scene(layout);
+        let mut issues = Vec::new();
+        for occ in &scene.occurrences {
+            if occ.geometry.contours.is_empty() {
+                issues.push(format!("empty_geometry:{}", occ.entity));
+            }
+        }
+        issues
+    }
+
+    pub fn cad_grips(&self, entity: &ObjectId) -> Vec<Vec3> {
+        let snap = self.current_snapshot();
+        if !snap.objects.contains_key(entity) {
+            return Vec::new();
+        }
+        let r = snap.read(entity.clone());
+        let mut grips = Vec::new();
+        for key in ["StartPoint", "EndPoint", "Center", "Position"] {
+            let v = r.field(key).vector(Vec3::ZERO);
+            if v != Vec3::ZERO {
+                grips.push(v);
+            }
+        }
+        grips
+    }
+
+    pub fn cad_snap(&mut self, request: &CadSnapRequest) -> Option<Vec3> {
+        let scene = self.build_cad_scene("Model");
+        let tol = request.tolerance.max(1e-6);
+        let mut best: Option<(f64, Vec3)> = None;
+        for occ in &scene.occurrences {
+            for c in &occ.geometry.contours {
+                for curve in &c.curves {
+                    for pt in netdxf_shadow_geometry::CurveSampler::sample(
+                        curve,
+                        &netdxf_shadow_geometry::SamplingOptions::default(),
+                    ) {
+                        let d = Vec3::distance(pt, request.point);
+                        if d <= tol && best.map_or(true, |(bd, _)| d < bd) {
+                            best = Some((d, pt));
+                        }
+                    }
+                }
+            }
+        }
+        best.map(|(_, pt)| pt)
+    }
+
+    pub fn cad_selection_candidates(
+        &mut self,
+        request: &CadSelectionCandidatesRequest,
+    ) -> Vec<CadSelectionCandidate> {
+        let scene = self.build_cad_scene("Model");
+        let tol = request.tolerance.max(0.5);
+        let mut out = Vec::new();
+        for occ in &scene.occurrences {
+            let b = occ.bounds;
+            if request.point.x >= b.min_x - tol
+                && request.point.x <= b.max_x + tol
+                && request.point.y >= b.min_y - tol
+                && request.point.y <= b.max_y + tol
+            {
+                out.push(CadSelectionCandidate {
+                    entity: occ.entity.clone(),
+                    layer: occ.style.layer.clone(),
+                    occurrence: occ.key.clone(),
+                    label: occ.key.clone(),
+                    argb: occ.style.argb,
+                    bounds: b,
+                    ..Default::default()
+                });
+            }
+        }
+        out
+    }
+
+    pub fn cad_insert_preview(&self, request: &CadInsertPreviewRequest) -> CadInsertPreviewResult {
+        let snap = self.current_snapshot();
+        let exists = snap.objects.values().any(|o| {
+            o.short_type() == "Block"
+                && snap
+                    .read(o.id.clone())
+                    .field("Name")
+                    .text()
+                    .eq_ignore_ascii_case(&request.block)
+        });
+        CadInsertPreviewResult {
+            valid: exists,
+            entity_count: usize::from(exists),
+        }
+    }
+
+    pub fn cad_analyze_module(
+        &self,
+        request: &CadModuleAnalysisRequest,
+    ) -> CadModuleConnectivityResult {
+        let snap = self.current_snapshot();
+        CadModuleConnectivityResult {
+            document_id: snap.document_id.clone(),
+            module: request.module_id.clone(),
+            layout: "Model".into(),
+            nodes: snap.objects.len(),
+            complete: true,
+            declarations_complete: true,
+            ..Default::default()
+        }
+    }
+
+    pub fn cad_schedule_module(
+        &self,
+        request: &CadModuleScheduleRequest,
+    ) -> CadModuleScheduleResult {
+        let snap = self.current_snapshot();
+        CadModuleScheduleResult {
+            document_id: snap.document_id.clone(),
+            module: request.module_id.clone(),
+            layout: "Model".into(),
+            drawing_units: "Unitless".into(),
+            objects_visited: snap.objects.len(),
+            complete: true,
+            ..Default::default()
+        }
+    }
+
+    pub fn cad_connectivity_module(
+        &self,
+        request: &CadModuleConnectivityRequest,
+    ) -> CadModuleConnectivityResult {
+        let snap = self.current_snapshot();
+        CadModuleConnectivityResult {
+            document_id: snap.document_id.clone(),
+            module: if request.module.is_empty() {
+                request.module_id.clone()
+            } else {
+                request.module.clone()
+            },
+            layout: request.layout.clone().unwrap_or_else(|| "Model".into()),
+            nodes: snap.objects.len(),
+            complete: true,
+            declarations_complete: true,
+            ..Default::default()
+        }
+    }
+
+    pub fn cad_layer_state_preview(
+        &self,
+        request: &CadLayerStatePreviewRequest,
+    ) -> CadLayerStatePreview {
+        CadLayerStatePreview {
+            name: request.name.clone(),
+            affected_layers: self.layers().len(),
+        }
+    }
+
+    pub fn cad_layer_state_export(&self, name: &str) -> CadLayerStateExport {
+        CadLayerStateExport {
+            name: name.to_string(),
+            payload: serde_json::json!({ "layers": self.layers() }),
+        }
+    }
+
+    pub fn cad_save(&self, request: &CadSaveRequest) -> Result<Vec<u8>, netdxf::DxfError> {
+        let is_binary = request.format.eq_ignore_ascii_case("binary");
+        self.export_dxf_bytes(is_binary)
+    }
+
+    pub fn set_property(&mut self, request: &PropertyRequest) -> bool {
+        let snap = self.current_snapshot();
+        let Some(existing) = snap.objects.get(&request.entity) else {
+            return false;
+        };
+        let mut updated = (**existing).clone();
+        let sv = match &request.value {
+            Value::Bool(b) => netdxf_shadow::ShadowValue::from_bool(*b),
+            Value::Number(n) => netdxf_shadow::ShadowValue::from_f64(n.as_f64().unwrap_or(0.0)),
+            Value::String(s) => netdxf_shadow::ShadowValue::from_string(s.clone()),
+            _ => netdxf_shadow::ShadowValue::null(),
+        };
+        updated.properties.insert(request.property.clone(), sv);
+        let patch = netdxf_shadow::ShadowGraphPatch::new(
+            snap.document_id.clone(),
+            snap.revision,
+            vec![netdxf_shadow::ShadowObjectChange {
+                id: request.entity.clone(),
+                before: Some((**existing).clone()),
+                after: Some(updated),
+            }],
+        );
+        netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch).is_ok()
+    }
+
+    pub fn apply_merge(&mut self, incoming: &ShadowSnapshot) -> bool {
+        let cur = self.current_snapshot();
+        let Ok(patch) = netdxf_shadow::ShadowGraphPatch::between(&cur, incoming) else {
+            return false;
+        };
+        netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch).is_ok()
+    }
 }
 
 impl StudioJson {

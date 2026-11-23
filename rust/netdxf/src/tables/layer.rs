@@ -14,6 +14,7 @@ pub struct Layer {
     pub color: AciColor,
     pub is_visible: bool,
     pub is_frozen: bool,
+    pub is_frozen_in_new_viewports: bool,
     pub is_locked: bool,
     pub plot: bool,
     pub linetype: String,
@@ -31,6 +32,7 @@ impl Layer {
             color: AciColor::DEFAULT,
             is_visible: true,
             is_frozen: false,
+            is_frozen_in_new_viewports: false,
             is_locked: false,
             plot: true,
             linetype: Linetype::CONTINUOUS_NAME.to_string(),
@@ -46,6 +48,7 @@ impl Layer {
             color: AciColor::DEFAULT,
             is_visible: true,
             is_frozen: false,
+            is_frozen_in_new_viewports: false,
             is_locked: false,
             plot: true,
             linetype: Linetype::CONTINUOUS_NAME.to_string(),
@@ -64,6 +67,12 @@ impl Layer {
             f |= LayerFlags::LOCKED;
         }
         f
+    }
+}
+
+impl Default for Layer {
+    fn default() -> Self {
+        Self::default_layer()
     }
 }
 

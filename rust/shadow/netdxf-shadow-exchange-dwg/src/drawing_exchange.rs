@@ -70,6 +70,33 @@ impl DrawingExchange {
         }
     }
 
+    #[inline]
+    pub fn is_dwg(data: &[u8]) -> bool {
+        Self::detect_encoding(data) == DrawingEncoding::Dwg
+    }
+
+    pub fn write_versions() -> &'static [DxfVersion] {
+        &[
+            DxfVersion::AutoCad12,
+            DxfVersion::AutoCad2000,
+            DxfVersion::AutoCad2004,
+            DxfVersion::AutoCad2007,
+            DxfVersion::AutoCad2010,
+            DxfVersion::AutoCad2013,
+            DxfVersion::AutoCad2018,
+        ]
+    }
+
+    pub fn convert(
+        &self,
+        data: &[u8],
+        target_encoding: DrawingEncoding,
+        target_version: Option<DxfVersion>,
+    ) -> Result<DrawingExchangeResult, DrawingExchangeException> {
+        let mut doc = self.load_dxf(data)?;
+        self.export_dxf(&mut doc, target_encoding, target_version)
+    }
+
     pub fn load_dxf(&self, data: &[u8]) -> Result<DxfDocument, DrawingExchangeException> {
         if data.len() > self.limits.maximum_input_bytes {
             return Err(DrawingExchangeException {

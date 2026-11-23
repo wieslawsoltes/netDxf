@@ -15,6 +15,7 @@ impl Linetype {
     pub const BY_LAYER_NAME: &'static str = "ByLayer";
     pub const BY_BLOCK_NAME: &'static str = "ByBlock";
     pub const CONTINUOUS_NAME: &'static str = "Continuous";
+    pub const DEFAULT_NAME: &'static str = "ByLayer";
 
     pub fn new(name: impl Into<String>) -> Result<Self> {
         Ok(Self {
@@ -77,6 +78,19 @@ impl Linetype {
             table: TableObjectData::new("Dot", DxfObjectCode::LINETYPE, false).unwrap(),
             description: "Dot . . . . . . . . . . . . . . . . . . . . . . . .".to_string(),
             segments: vec![
+                LinetypeSegment::Simple { length: 0.0 },
+                LinetypeSegment::Simple { length: -0.25 },
+            ],
+        }
+    }
+
+    pub fn dash_dot() -> Self {
+        Self {
+            table: TableObjectData::new("DashDot", DxfObjectCode::LINETYPE, false).unwrap(),
+            description: "Dash dot __ . __ . __ . __ . __ . __ . __ . __".to_string(),
+            segments: vec![
+                LinetypeSegment::Simple { length: 0.5 },
+                LinetypeSegment::Simple { length: -0.25 },
                 LinetypeSegment::Simple { length: 0.0 },
                 LinetypeSegment::Simple { length: -0.25 },
             ],
