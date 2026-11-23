@@ -533,6 +533,30 @@ impl Spline {
         self.to_polyline3d(precision)
     }
 
+    pub const MAXIMUM_BASIS_CONVERSION_STEPS: usize = 64;
+    pub const MAXIMUM_CONVERTED_VERTICES: usize = 16_384;
+    pub const MAXIMUM_DEGREE_ELEVATION_BLEND_OPERATIONS: usize = 1_000_000;
+    pub const MAXIMUM_DERIVATIVE_ORDER: usize = 3;
+    pub const MAXIMUM_REFINED_CONTROL_POINTS: usize = 16_384;
+    pub const MAXIMUM_TRIM_BLEND_OPERATIONS: usize = 1_000_000;
+
+    /// Evaluates a point on the spline at parameter `u` (matches C# `Spline.PointAt`).
+    pub fn point_at(&self, u: f64) -> Option<Vector3> {
+        self.evaluate_derivatives(u, 0)
+            .and_then(|d| d.first().copied())
+    }
+
+    /// Splits the spline at parameter `u` (matches C# `Spline.SplitAt`).
+    pub fn split_at(&self, u: f64) -> Option<(Spline, Spline)> {
+        self.split(u)
+    }
+
+    /// Resets all control point weights to `1.0` (matches C# `Spline.SetUniformWeights`).
+    pub fn set_uniform_weights(&mut self) {
+        self.weights = vec![1.0; self.control_points.len()];
+        self.flags.remove(SplineTypeFlags::RATIONAL);
+    }
+
     /// Creates a `Spline` from a `Polyline3D` (matches C# `Spline.ConvertFrom`).
     pub fn convert_from(polyline: &crate::entities::polyline3d::Polyline3D, degree: i16) -> Self {
         let mut spline =

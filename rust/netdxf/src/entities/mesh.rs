@@ -165,6 +165,51 @@ impl Mesh {
         }
     }
 
+    pub fn set_vertex(&mut self, index: usize, position: Vector3) -> bool {
+        if let Some(v) = self.vertexes.get_mut(index) {
+            *v = position;
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn set_vertexes(&mut self, vertexes: Vec<Vector3>) {
+        self.vertexes = vertexes;
+    }
+
+    pub fn set_vertex_positions(&mut self, positions: &[Vector3]) -> bool {
+        if positions.len() != self.vertexes.len() {
+            return false;
+        }
+        self.vertexes.copy_from_slice(positions);
+        true
+    }
+
+    pub fn set_edge_crease(&mut self, index: usize, crease: f64) -> bool {
+        self.blend_crease(index, crease)
+    }
+
+    pub fn set_edge_vertex_indices(&mut self, index: usize, start_index: i32, end_index: i32) -> bool {
+        if let Some(edge) = self.edges.get_mut(index) {
+            edge.start_vertex_index = start_index;
+            edge.end_vertex_index = end_index;
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn set_face_vertex_index(&mut self, face_index: usize, corner_index: usize, vertex_index: i32) -> bool {
+        if let Some(face) = self.faces.get_mut(face_index) {
+            if let Some(slot) = face.get_mut(corner_index) {
+                *slot = vertex_index;
+                return true;
+            }
+        }
+        false
+    }
+
     /// Explodes the unsubdivided control mesh into `Face3D` entities (fan-triangulating n-gons with >4 vertices).
     pub fn explode_control_mesh(&self) -> Vec<EntityObject> {
         emit_faces_as_face3d(&self.vertexes, &self.faces, &self.common)

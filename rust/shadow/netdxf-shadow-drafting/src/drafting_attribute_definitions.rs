@@ -24,12 +24,22 @@ pub struct AttributeDefinitionEdit {
     pub default_value: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct AttributeDefinitionCreation {
     pub tag: String,
     pub prompt: String,
+    pub value: String,
     pub default_value: String,
     pub position: Vec3,
+    pub layer: String,
+    pub text_style: String,
+    pub height: f64,
+    pub invisible: bool,
+    pub constant: bool,
+    pub verify: bool,
+    pub preset: bool,
+    pub multiline: bool,
+    pub position_locked: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

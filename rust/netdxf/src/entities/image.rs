@@ -60,4 +60,33 @@ impl Image {
             clipping_boundary: None,
         }
     }
+
+    pub fn uvector(&self) -> Vector3 {
+        let rad = self.rotation.to_radians();
+        Vector3::new(rad.cos(), rad.sin(), 0.0)
+    }
+
+    pub fn vvector(&self) -> Vector3 {
+        let rad = self.rotation.to_radians();
+        Vector3::new(-rad.sin(), rad.cos(), 0.0)
+    }
+
+    pub fn transform_by(&mut self, transformation: crate::matrix3::Matrix3, translation: Vector3) {
+        self.position = transformation * self.position + translation;
+        let u = transformation * (self.uvector() * self.width);
+        let v = transformation * (self.vvector() * self.height);
+        let new_w = u.modulus();
+        let new_h = v.modulus();
+        if new_w > f64::EPSILON {
+            self.width = new_w;
+            self.rotation = u.y.atan2(u.x).to_degrees();
+        }
+        if new_h > f64::EPSILON {
+            self.height = new_h;
+        }
+        let new_normal = Vector3::normalize(transformation * self.common.normal);
+        if !Vector3::is_nan(new_normal) {
+            self.common.normal = new_normal;
+        }
+    }
 }

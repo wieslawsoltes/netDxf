@@ -22,9 +22,16 @@ bitflags! {
         const GRID_MODE = 512;
         const ISOMETRIC_SNAP_STYLE = 1024;
         const HIDE_PLOT_MODE = 2048;
+        const ISO_PAIR_TOP = 4096;
+        const ISO_PAIR_RIGHT = 8192;
         const DISPLAY_LOCKED = 16384;
+        const VIEWPORT_ZOOM_LOCKING = 16384;
+        const CURRENTLY_ALWAYS_ENABLED = 32768;
         const NON_RECTANGULAR_CLIPPING = 65536;
         const VIEWPORT_OFF = 131072;
+        const DISPLAY_GRID_BEYOND_DRAWING_LIMITS = 262144;
+        const ADAPTIVE_GRID_DISPLAY = 524288;
+        const SUBDIVISION_GRID_BELOW_SPACING = 1048576;
     }
 }
 

@@ -131,6 +131,98 @@ impl AciColor {
     }
 
     #[inline]
+    pub const fn to_color(self) -> (u8, u8, u8) {
+        (self.r, self.g, self.b)
+    }
+
+    #[inline]
+    pub fn from_color(r: u8, g: u8, b: u8) -> Self {
+        Self::from_rgb(r, g, b)
+    }
+
+    /// Returns the `[R, G, B]` table entry for a 1..=255 ACI index.
+    pub fn index_rgb(index: i16) -> Option<[u8; 3]> {
+        if (1..=255).contains(&index) {
+            Some(INDEX_RGB[index as usize])
+        } else {
+            None
+        }
+    }
+
+    /// Maps an RGB triple to its closest AutoCAD Color Index (1..=255).
+    pub fn rgb_to_aci(r: u8, g: u8, b: u8) -> i16 {
+        Self::nearest_aci_index(r, g, b)
+    }
+
+    /// Converts HSL (`h` in `[0, 1]`, `s` in `[0, 1]`, `l` in `[0, 1]`) to an `AciColor`.
+    pub fn from_hsl(h: f64, s: f64, l: f64) -> Self {
+        let h = h.rem_euclid(1.0);
+        let s = s.clamp(0.0, 1.0);
+        let l = l.clamp(0.0, 1.0);
+        let (r, g, b) = if s == 0.0 {
+            (l, l, l)
+        } else {
+            let q = if l < 0.5 { l * (1.0 + s) } else { l + s - l * s };
+            let p = 2.0 * l - q;
+            let hue_to_rgb = |mut t: f64| -> f64 {
+                if t < 0.0 {
+                    t += 1.0;
+                }
+                if t > 1.0 {
+                    t -= 1.0;
+                }
+                if t < 1.0 / 6.0 {
+                    p + (q - p) * 6.0 * t
+                } else if t < 0.5 {
+                    q
+                } else if t < 2.0 / 3.0 {
+                    p + (q - p) * (2.0 / 3.0 - t) * 6.0
+                } else {
+                    p
+                }
+            };
+            (
+                hue_to_rgb(h + 1.0 / 3.0),
+                hue_to_rgb(h),
+                hue_to_rgb(h - 1.0 / 3.0),
+            )
+        };
+        Self::from_rgb(
+            (r * 255.0).round() as u8,
+            (g * 255.0).round() as u8,
+            (b * 255.0).round() as u8,
+        )
+    }
+
+    /// Converts this color to `(hue, saturation, lightness)` each in `[0.0, 1.0]`.
+    pub fn to_hsl(self) -> (f64, f64, f64) {
+        let r = self.r as f64 / 255.0;
+        let g = self.g as f64 / 255.0;
+        let b = self.b as f64 / 255.0;
+        let max = r.max(g).max(b);
+        let min = r.min(g).min(b);
+        let l = (max + min) * 0.5;
+        if (max - min).abs() < f64::EPSILON {
+            return (0.0, 0.0, l);
+        }
+        let d = max - min;
+        let s = if l > 0.5 {
+            d / (2.0 - max - min)
+        } else {
+            d / (max + min)
+        };
+        let mut h = if (max - r).abs() < f64::EPSILON {
+            (g - b) / d + if g < b { 6.0 } else { 0.0 }
+        } else if (max - g).abs() < f64::EPSILON {
+            (b - r) / d + 2.0
+        } else {
+            (r - g) / d + 4.0
+        };
+        h /= 6.0;
+        (h, s, l)
+    }
+
+    #[inline]
     pub const fn is_by_layer(self) -> bool {
         self.index == 256
     }

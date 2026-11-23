@@ -42,6 +42,10 @@ pub struct Light {
     pub hotspot_angle: f64,
     pub falloff_angle: f64,
     pub cast_shadows: bool,
+    pub shadow_type: LightShadowType,
+    pub shadow_map_size: i16,
+    pub shadow_map_softness: i16,
+    pub version_number: i32,
 }
 
 impl Light {
@@ -62,7 +66,20 @@ impl Light {
             hotspot_angle: 45.0,
             falloff_angle: 50.0,
             cast_shadows: true,
+            shadow_type: LightShadowType::RayTraced,
+            shadow_map_size: 256,
+            shadow_map_softness: 1,
+            version_number: 0,
         }
+    }
+
+    pub fn is_on(&self) -> bool {
+        self.status
+    }
+
+    pub fn transform_by(&mut self, transformation: crate::matrix3::Matrix3, translation: Vector3) {
+        self.position = transformation * self.position + translation;
+        self.target = transformation * self.target + translation;
     }
 }
 

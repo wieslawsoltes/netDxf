@@ -21,10 +21,17 @@ pub enum TextDecoration {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RichTextStyle {
     pub font: String,
+    pub font_family: String,
     pub height: f64,
+    pub width_factor: f64,
+    pub oblique_degrees: f64,
+    pub tracking: f64,
     pub bold: bool,
     pub italic: bool,
+    pub color: Option<u32>,
     pub argb: Option<u32>,
+    pub vertical_alignment: String,
+    pub paragraph: Option<RichTextParagraphStyle>,
     pub decoration: TextDecoration,
 }
 
@@ -32,10 +39,17 @@ impl Default for RichTextStyle {
     fn default() -> Self {
         Self {
             font: "Arial".into(),
+            font_family: "Arial".into(),
             height: 2.5,
+            width_factor: 1.0,
+            oblique_degrees: 0.0,
+            tracking: 1.0,
             bold: false,
             italic: false,
+            color: None,
             argb: None,
+            vertical_alignment: "Bottom".into(),
+            paragraph: None,
             decoration: TextDecoration::None,
         }
     }

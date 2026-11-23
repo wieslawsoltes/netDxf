@@ -89,6 +89,45 @@ pub struct CadGeometry {
     pub texts: Vec<CadText>,
     pub images: Vec<CadImage>,
     pub points: Vec<Vec3>,
+    pub components: Vec<CadComponent>,
+}
+
+impl CadGeometry {
+    pub fn empty() -> Self {
+        Self::default()
+    }
+
+    pub fn display_contours(&self) -> &[CadContour] {
+        &self.contours
+    }
+
+    pub fn strokes(&self) -> &[CadStrokeGroup] {
+        &self.stroke_groups
+    }
+
+    pub fn text(&self) -> Option<&CadText> {
+        self.texts.first()
+    }
+
+    pub fn image(&self) -> Option<&CadImage> {
+        self.images.first()
+    }
+
+    pub fn transform(&self, affine: &Affine3) -> Self {
+        let mut out = self.clone();
+        for p in &mut out.points {
+            *p = affine.point(*p);
+        }
+        for t in &mut out.texts {
+            t.origin = affine.point(t.origin);
+        }
+        for img in &mut out.images {
+            for c in &mut img.corners {
+                *c = affine.point(*c);
+            }
+        }
+        out
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
