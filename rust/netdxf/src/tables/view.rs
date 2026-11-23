@@ -50,6 +50,14 @@ impl View {
     pub fn clear_live_section_reference(&mut self) {
         self.live_section = None;
     }
+
+    #[inline] pub fn render_mode(&self) -> i16 { 0 }
+    #[inline] pub fn sun(&self) -> Option<&str> { None }
+    #[inline] pub fn ucs(&self) -> Option<&str> { None }
+    #[inline] pub fn view_center(&self) -> crate::vector2::Vector2 { self.target.to_vector2() }
+    #[inline] pub fn view_direction(&self) -> Vector3 { self.camera }
+    #[inline] pub fn view_mode(&self) -> i16 { self.flags }
+    #[inline] pub fn viewmode(&self) -> i16 { self.flags }
 }
 
 impl TableObject for View {

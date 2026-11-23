@@ -29,6 +29,11 @@ impl Group {
             entity_handles: Vec::new(),
         })
     }
+
+    #[inline]
+    pub fn entities(&self) -> &[String] {
+        &self.entity_handles
+    }
 }
 
 impl TableObject for Group {

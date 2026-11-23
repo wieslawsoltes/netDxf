@@ -54,4 +54,18 @@ impl Line {
     pub fn bounding_rectangle(&self) -> BoundingRectangle {
         BoundingRectangle::new(self.start_point.to_vector2(), self.end_point.to_vector2())
     }
+
+    #[inline] pub fn start(&self) -> Vector3 { self.start_point }
+    #[inline] pub fn end(&self) -> Vector3 { self.end_point }
+
+    pub fn convert_to(&self) -> crate::entities::Polyline2D {
+        crate::entities::Polyline2D::from_points(
+            vec![self.start_point.to_vector2(), self.end_point.to_vector2()],
+            false,
+        )
+    }
+
+    pub fn convert_from(start: Vector3, end: Vector3) -> Self {
+        Self::new(start, end)
+    }
 }

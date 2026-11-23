@@ -45,4 +45,23 @@ impl BSplineReduction {
     pub fn control_data(&self) -> &[Vector3] {
         &self.control_data
     }
+
+    #[inline]
+    pub fn num_controls(&self) -> usize {
+        self.control_data.len()
+    }
+
+    #[inline]
+    pub fn num_samples(&self) -> usize {
+        self.control_data.len()
+    }
+
+    #[inline]
+    pub fn sample_data(&self) -> &[Vector3] {
+        &self.control_data
+    }
+
+    pub fn basis_function(&self) -> BasisFunctionInput {
+        BasisFunctionInput::open_uniform(self.control_data.len().max(self.degree + 1), self.degree)
+    }
 }

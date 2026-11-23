@@ -75,6 +75,12 @@ impl PlotSettings {
             1.0
         }
     }
+
+    #[inline] pub fn standard_scale_factor(&self) -> f64 { self.print_scale() }
+    #[inline] pub fn standard_scale_type(&self) -> i16 { 0 }
+    #[inline] pub fn view_name(&self) -> &str { &self.page_setup_name }
+    #[inline] pub fn window_bottom_left(&self) -> Vector2 { self.origin }
+    #[inline] pub fn window_up_right(&self) -> Vector2 { self.paper_size }
 }
 
 impl Default for PlotSettings {

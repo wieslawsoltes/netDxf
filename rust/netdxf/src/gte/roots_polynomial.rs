@@ -111,4 +111,27 @@ impl RootsPolynomial {
         }
         roots
     }
+
+    /// Solves the cubic polynomial `c0 + c1*x + c2*x^2 + c3*x^3 = 0` for real roots.
+    pub fn solve_cubic(c0: f64, c1: f64, c2: f64, c3: f64) -> Vec<f64> {
+        Self::find(&[c0, c1, c2, c3], 128)
+    }
+
+    /// Solves the quartic polynomial `c0 + c1*x + c2*x^2 + c3*x^3 + c4*x^4 = 0` for real roots.
+    pub fn solve_quartic(c0: f64, c1: f64, c2: f64, c3: f64, c4: f64) -> Vec<f64> {
+        Self::find(&[c0, c1, c2, c3, c4], 128)
+    }
+
+    pub fn get_root_info_quadratic(c0: f64, c1: f64, c2: f64) -> Vec<i32> {
+        let roots = Self::solve_quadratic(c0, c1, c2);
+        if roots.len() == 1 { vec![2] } else { vec![1; roots.len()] }
+    }
+
+    pub fn get_root_info_cubic(c0: f64, c1: f64, c2: f64, c3: f64) -> Vec<i32> {
+        vec![1; Self::solve_cubic(c0, c1, c2, c3).len()]
+    }
+
+    pub fn get_root_info_quartic(c0: f64, c1: f64, c2: f64, c3: f64, c4: f64) -> Vec<i32> {
+        vec![1; Self::solve_quartic(c0, c1, c2, c3, c4).len()]
+    }
 }

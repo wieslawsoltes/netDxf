@@ -26,4 +26,9 @@ impl DxfClass {
             is_an_entity: false,
         }
     }
+
+    #[inline] pub fn name(&self) -> &str { &self.dxf_name }
+    #[inline] pub fn proxy_flags(&self) -> i32 { self.proxy_capabilities }
+    #[inline] pub fn was_proxy(&self) -> bool { self.was_a_proxy }
+    #[inline] pub fn is_entity(&self) -> bool { self.is_an_entity }
 }

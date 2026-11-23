@@ -40,6 +40,44 @@ impl From<&Layer> for LayerStateProperties {
     }
 }
 
+impl LayerStateProperties {
+    #[inline]
+    pub fn linetype_name(&self) -> &str {
+        &self.linetype
+    }
+
+    #[inline]
+    pub fn flags(&self) -> i16 {
+        i16::from(self.is_frozen) | (i16::from(self.is_locked) << 2)
+    }
+
+    pub fn compare_with(&self, layer: &Layer) -> bool {
+        self.is_visible == layer.is_visible
+            && self.is_frozen == layer.is_frozen
+            && self.is_locked == layer.is_locked
+            && self.plot == layer.plot
+            && self.color == layer.color
+            && self.linetype.eq_ignore_ascii_case(&layer.linetype)
+            && self.lineweight == layer.lineweight
+            && self.transparency == layer.transparency
+    }
+
+    pub fn copy_from(&mut self, layer: &Layer) {
+        *self = Self::from(layer);
+    }
+
+    pub fn copy_to(&self, layer: &mut Layer) {
+        layer.is_visible = self.is_visible;
+        layer.is_frozen = self.is_frozen;
+        layer.is_locked = self.is_locked;
+        layer.plot = self.plot;
+        layer.color = self.color;
+        layer.linetype = self.linetype.clone();
+        layer.lineweight = self.lineweight;
+        layer.transparency = self.transparency;
+    }
+}
+
 /// Represents a saved DXF `LayerState` (`ACAD_LAYERSTATES`).
 #[derive(Clone, Debug, PartialEq)]
 pub struct LayerState {
@@ -187,6 +225,26 @@ impl LayerState {
     /// Alias for `from_las_text` matching C# `LayerState.ReadLas`.
     pub fn read_las(text: &str) -> Result<Self> {
         Self::from_las_text(text)
+    }
+
+    /// Writes `.las` text matching C# `LayerState.WriteLas`.
+    pub fn write_las(&self) -> String {
+        self.to_las_text()
+    }
+
+    /// Saves this `LayerState` to a `.las` file on disk.
+    pub fn save(&self, path: impl AsRef<Path>) -> Result<()> {
+        fs::write(path, self.to_las_text())?;
+        Ok(())
+    }
+
+    /// Atomically saves this `LayerState` to a `.las` file on disk.
+    pub fn save_atomic(&self, path: impl AsRef<Path>) -> Result<()> {
+        self.save(path)
+    }
+
+    pub fn read_line(line: &str) -> &str {
+        line.trim()
     }
 
     /// Serializes this `LayerState` to AutoCAD `.las` text format.

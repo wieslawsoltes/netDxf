@@ -9,6 +9,12 @@ pub struct PolygonMeshRecord {
     pub vertexes: Vec<Vector3>,
     pub is_closed_in_m: bool,
     pub is_closed_in_n: bool,
+    pub is_sequence_end: bool,
+    pub uses_block_record_owner: bool,
+    pub layer: Option<String>,
+    pub linetype: Option<String>,
+    pub stored_owner: Option<String>,
+    pub source_version: Option<crate::header::DxfVersion>,
     pub seqend_handle: Option<String>,
 }
 
@@ -20,7 +26,7 @@ impl From<&PolygonMesh> for PolygonMeshRecord {
             vertexes: mesh.vertexes.clone(),
             is_closed_in_m: mesh.is_closed_in_m,
             is_closed_in_n: mesh.is_closed_in_n,
-            seqend_handle: None,
+            ..Default::default()
         }
     }
 }

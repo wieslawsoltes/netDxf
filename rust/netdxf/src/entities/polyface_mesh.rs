@@ -50,6 +50,30 @@ impl PolyfaceMesh {
         &self.faces
     }
 
+    #[inline]
+    pub fn vertex_records(&self) -> &[Vector3] {
+        &self.vertexes
+    }
+
+    #[inline]
+    pub fn record_sequence(&self) -> (&[Vector3], &[PolyfaceMeshFace]) {
+        (&self.vertexes, &self.faces)
+    }
+
+    #[inline]
+    pub fn end_sequence_record(&self) -> Option<&str> {
+        None
+    }
+
+    pub fn set_vertex(&mut self, index: usize, point: Vector3) -> bool {
+        if let Some(slot) = self.vertexes.get_mut(index) {
+            *slot = point;
+            true
+        } else {
+            false
+        }
+    }
+
     /// Updates a 1-based vertex index on face `face_idx` at corner `corner_idx`, preserving visibility sign.
     pub fn set_face_vertex_index(
         &mut self,

@@ -25,6 +25,36 @@ impl PolygonMesh {
     pub const DEFAULT_SURF_U: i16 = 6;
     pub const DEFAULT_SURF_V: i16 = 6;
     pub const MAXIMUM_BEZIER_BLEND_OPERATIONS: usize = 1_000_000;
+    pub const MAXIMUM_SURFACE_SAMPLES: usize = 65_536;
+
+    #[inline] pub fn u(&self) -> i16 { self.m }
+    #[inline] pub fn v(&self) -> i16 { self.n }
+    #[inline] pub fn mesh_vertexes(&self) -> &[Vector3] { &self.vertexes }
+    #[inline] pub fn vertex_records(&self) -> &[Vector3] { &self.vertexes }
+    #[inline] pub fn end_sequence_record(&self) -> Option<&str> { None }
+
+    pub fn to_mesh(&self) -> crate::entities::Mesh {
+        let mut faces = Vec::new();
+        let m = self.m.max(0) as usize;
+        let n = self.n.max(0) as usize;
+        if m >= 2 && n >= 2 && self.vertexes.len() >= m * n {
+            let u_max = if self.is_closed_in_m { m } else { m - 1 };
+            let v_max = if self.is_closed_in_n { n } else { n - 1 };
+            for u in 0..u_max {
+                let u1 = (u + 1) % m;
+                for v in 0..v_max {
+                    let v1 = (v + 1) % n;
+                    faces.push(vec![
+                        (u * n + v) as i32,
+                        (u1 * n + v) as i32,
+                        (u1 * n + v1) as i32,
+                        (u * n + v1) as i32,
+                    ]);
+                }
+            }
+        }
+        crate::entities::Mesh::new(self.vertexes.clone(), faces)
+    }
 
     pub fn new(m: i16, n: i16, vertexes: Vec<Vector3>) -> Self {
         Self {

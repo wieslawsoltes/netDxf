@@ -51,6 +51,12 @@ impl DxfGeoData {
     #[inline] pub fn observation_from(&self) -> &str { &self.observation_from_tag }
     #[inline] pub fn observation_to(&self) -> &str { &self.observation_to_tag }
     #[inline] pub fn observation_coverage(&self) -> &str { &self.observation_coverage_tag }
+    #[inline] pub fn sea_level_elevation(&self) -> f64 { self.reference_point.z }
+
+    pub fn set_mesh(&mut self, points: Vec<DxfGeoMeshPoint>, faces: Vec<DxfGeoMeshFace>) {
+        self.mesh_points = points;
+        self.mesh_faces = faces;
+    }
 }
 
 impl Default for DxfGeoData {

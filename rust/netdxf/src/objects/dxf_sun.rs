@@ -81,8 +81,13 @@ pub struct DxfStoredSunStudy {
 
 impl DxfStoredSunStudy {
     #[inline] pub fn date_count(&self) -> usize { self.julian_dates.len() }
+    #[inline] pub fn start_time(&self) -> i32 { self.start_time_seconds }
     #[inline] pub fn end_time(&self) -> i32 { self.end_time_seconds }
     #[inline] pub fn interval(&self) -> i32 { self.interval_seconds }
+    #[inline] pub fn text_style(&self) -> Option<&str> { self.page_setup.as_deref() }
+    #[inline] pub fn view(&self) -> Option<&str> { self.page_setup.as_deref() }
+    #[inline] pub fn visual_style(&self) -> Option<&str> { self.page_setup.as_deref() }
+    #[inline] pub fn payload(&self) -> &[i32] { &self.raw_hour_flags }
 
     pub fn select_dates(&mut self, dates: impl IntoIterator<Item = (i32, i32)>) {
         self.select_dates_from_calendar = true;

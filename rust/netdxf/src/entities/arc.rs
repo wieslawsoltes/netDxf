@@ -35,6 +35,34 @@ impl Arc {
         if diff == 0.0 { 360.0 } else { diff }
     }
 
+    #[inline]
+    pub fn is_counterclockwise(&self) -> bool {
+        true
+    }
+
+    pub fn to_polyline2d(&self, precision: usize) -> crate::entities::Polyline2D {
+        let (ocs_c, elev) = MathHelper::transform_wcs_to_ocs(self.center, self.common.normal);
+        let pts: Vec<Vector2> = self
+            .polygonal_vertexes(precision)
+            .into_iter()
+            .map(|p| ocs_c + p)
+            .collect();
+        let mut pl = crate::entities::Polyline2D::from_points(pts, false);
+        pl.elevation = elev;
+        pl.common.normal = self.common.normal;
+        pl.common.layer = self.common.layer.clone();
+        pl.common.color = self.common.color;
+        pl
+    }
+
+    pub fn convert_to(&self, precision: usize) -> crate::entities::Polyline2D {
+        self.to_polyline2d(precision)
+    }
+
+    pub fn convert_from(center: Vector3, radius: f64, start_angle: f64, end_angle: f64) -> Self {
+        Self::new(center, radius, start_angle, end_angle)
+    }
+
     pub fn polygonal_vertexes(&self, precision: usize) -> Vec<Vector2> {
         let n = precision.max(2);
         let start = self.start_angle * MathHelper::DEG_TO_RAD;

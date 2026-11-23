@@ -70,4 +70,11 @@ impl Underlay {
             clipping_boundary: None,
         }
     }
+
+    #[inline] pub fn definition(&self) -> &str { &self.definition_name }
+    #[inline] pub fn scale_z(&self) -> f64 { 1.0 }
+
+    pub fn transform_by(&mut self, transformation: crate::matrix3::Matrix3, translation: Vector3) {
+        self.position = transformation * self.position + translation;
+    }
 }

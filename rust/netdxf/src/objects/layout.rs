@@ -70,6 +70,7 @@ impl Layout {
     #[inline] pub fn ucs_origin(&self) -> Vector3 { self.origin }
     #[inline] pub fn ucs_x_axis(&self) -> Vector3 { self.x_axis }
     #[inline] pub fn ucs_y_axis(&self) -> Vector3 { self.y_axis }
+    #[inline] pub fn viewport(&self) -> Option<&str> { None }
 }
 
 impl TableObject for Layout {

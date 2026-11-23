@@ -61,6 +61,50 @@ impl Insert {
         &self.block_name
     }
 
+    #[inline]
+    pub fn end_sequence_record(&self) -> Option<&str> {
+        None
+    }
+
+    #[inline]
+    pub fn ensure_attribute_sequence_end(&mut self) {}
+
+    pub fn get_transformation(&self) -> Matrix3 {
+        let ocs_to_wcs = MathHelper::arbitrary_axis(self.common.normal);
+        let rot = Matrix3::rotation_z(self.rotation * MathHelper::DEG_TO_RAD);
+        let scale = Matrix3::scale(self.scale.x, self.scale.y, self.scale.z);
+        ocs_to_wcs * rot * scale
+    }
+
+    pub fn get_grid_position(&self, row: usize, column: usize) -> Vector3 {
+        let ocs_to_wcs = MathHelper::arbitrary_axis(self.common.normal);
+        let rot = Matrix3::rotation_z(self.rotation * MathHelper::DEG_TO_RAD);
+        let grid_local = Vector3::new(
+            column as f64 * self.column_spacing,
+            row as f64 * self.row_spacing,
+            0.0,
+        );
+        self.position + ocs_to_wcs * (rot * grid_local)
+    }
+
+    pub fn explode_cell(&self, block: &Block, row: usize, column: usize) -> Vec<EntityObject> {
+        let lin = self.get_transformation();
+        let translation = self.get_grid_position(row, column) - (lin * block.origin);
+        block
+            .entities
+            .iter()
+            .map(|ent| {
+                let mut cloned = ent.clone();
+                cloned.transform_by(lin, translation);
+                cloned
+            })
+            .collect()
+    }
+
+    pub fn explode_enumerable(&self, block: &Block) -> Vec<EntityObject> {
+        self.explode(block)
+    }
+
     /// Synchronizes `attributes` against `block.attribute_definitions`, preserving existing values by tag.
     pub fn sync_attributes(&mut self, block: &Block) {
         let existing = std::mem::take(&mut self.attributes);

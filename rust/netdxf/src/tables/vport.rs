@@ -102,6 +102,19 @@ impl VPort {
             flags: 0,
         }
     }
+
+    #[inline] pub fn named_ucs(&self) -> Option<&str> { self.base_ucs.as_deref() }
+    #[inline] pub fn render_mode(&self) -> i16 { 0 }
+    #[inline] pub fn snap_rotation(&self) -> f64 { self.snap_rotation_angle }
+    #[inline] pub fn snap_style(&self) -> i16 { self.snap_isopair }
+    #[inline] pub fn sun(&self) -> Option<&str> { None }
+    #[inline] pub fn ucs_elevation(&self) -> f64 { self.ucs_origin.z }
+    #[inline] pub fn ucs_orthographic_type(&self) -> i16 { 0 }
+    #[inline] pub fn view_direction(&self) -> Vector3 { self.direction }
+    #[inline] pub fn view_target(&self) -> Vector3 { self.target }
+    #[inline] pub fn view_twist(&self) -> f64 { self.view_twist_angle }
+    #[inline] pub fn show_ucs_icon(&self) -> bool { (self.ucs_icon & 1) != 0 }
+    #[inline] pub fn ucs_at_origin(&self) -> bool { (self.ucs_icon & 2) != 0 }
 }
 
 impl TableObject for VPort {

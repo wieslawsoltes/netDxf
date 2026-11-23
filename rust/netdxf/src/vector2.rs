@@ -166,6 +166,31 @@ impl Vector2 {
     pub const fn to_vector3(self, z: f64) -> Vector3 {
         Vector3 { x: self.x, y: self.y, z }
     }
+
+    #[inline]
+    pub fn subtract(u: Self, v: Self) -> Self {
+        u - v
+    }
+
+    #[inline]
+    pub fn negate(u: Self) -> Self {
+        -u
+    }
+
+    #[inline]
+    pub fn multiply(u: Self, a: f64) -> Self {
+        u * a
+    }
+
+    #[inline]
+    pub fn divide(u: Self, a: f64) -> Self {
+        u / a
+    }
+
+    #[inline]
+    pub fn is_normalized(self) -> bool {
+        MathHelper::is_one(self.modulus_squared())
+    }
 }
 
 impl From<(f64, f64)> for Vector2 {

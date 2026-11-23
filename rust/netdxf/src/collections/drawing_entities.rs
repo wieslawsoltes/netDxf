@@ -173,4 +173,25 @@ impl DrawingEntities {
     pub fn sections(&self) -> impl Iterator<Item = &Section> {
         self.all.iter().filter_map(|e| match e { EntityObject::Section(v) => Some(v.as_ref()), _ => None })
     }
+
+    pub fn stored_tables(&self) -> impl Iterator<Item = &StoredTable> {
+        self.tables()
+    }
+
+    pub fn opaque_entities(&self) -> impl Iterator<Item = &crate::entities::DxfOpaqueEntity> {
+        std::iter::empty()
+    }
+
+    #[inline]
+    pub fn active_layout(&self) -> &'static str {
+        "Model"
+    }
+
+    pub fn remove(&mut self, index: usize) -> Option<EntityObject> {
+        if index < self.all.len() {
+            Some(self.all.remove(index))
+        } else {
+            None
+        }
+    }
 }

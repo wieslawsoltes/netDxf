@@ -38,8 +38,16 @@ pub struct MLeaderNode {
     pub dogleg_vector: Vector3,
     pub leader_branch_index: i32,
     pub dogleg_length: f64,
+    pub attachment_direction: i16,
     pub lines: Vec<MLeaderLine>,
     pub breaks: Vec<MLeaderLineBreaks>,
+}
+
+impl MLeaderNode {
+    #[inline] pub fn index(&self) -> i32 { self.leader_branch_index }
+    #[inline] pub fn has_last_leader_point(&self) -> bool { self.has_set_last_leader_line_point }
+    #[inline] pub fn has_dogleg_vector(&self) -> bool { self.has_set_dogleg_vector }
+    #[inline] pub fn last_leader_point(&self) -> Vector3 { self.last_leader_line_point }
 }
 
 /// MText content payload for a [`MultiLeader`](crate::entities::MultiLeader).
@@ -70,6 +78,19 @@ pub struct MLeaderMTextContent {
     pub column_flow_reversed: bool,
     pub column_heights: Vec<f64>,
     pub word_break: bool,
+}
+
+impl MLeaderMTextContent {
+    #[inline] pub fn position(&self) -> Vector3 { self.location }
+    #[inline] pub fn defined_height(&self) -> f64 { self.height }
+    #[inline] pub fn style(&self) -> Option<&str> { self.style_handle.as_deref() }
+    #[inline] pub fn attachment(&self) -> i16 { self.alignment }
+    #[inline] pub fn auto_height(&self) -> bool { self.text_height_automatic }
+    #[inline] pub fn background_color(&self) -> Option<AciColor> { self.background_fill_color }
+    #[inline] pub fn background_scale(&self) -> f64 { self.background_scale_factor }
+    #[inline] pub fn has_background_fill(&self) -> bool { self.use_background_fill }
+    #[inline] pub fn use_window_background_color(&self) -> bool { self.use_background_mask_fill }
+    #[inline] pub fn use_word_break(&self) -> bool { self.word_break }
 }
 
 impl Default for MLeaderMTextContent {
@@ -259,6 +280,24 @@ pub struct MLeaderStyleProperties {
 
 impl MLeaderStyleProperties {
     #[inline] pub fn arrow_head_size(&self) -> f64 { self.arrow_size }
+    #[inline] pub fn break_gap(&self) -> f64 { self.break_size }
+    #[inline] pub fn description(&self) -> &str { &self.default_text }
+    #[inline] pub fn draw_leader_order(&self) -> i16 { self.draw_leader_order_type }
+    #[inline] pub fn draw_mleader_order(&self) -> i16 { self.draw_mleader_order_type }
+    #[inline] pub fn first_segment_angle(&self) -> f64 { self.first_segment_angle_constraint }
+    #[inline] pub fn second_segment_angle(&self) -> f64 { self.second_segment_angle_constraint }
+    #[inline] pub fn has_block_rotation(&self) -> bool { self.enable_block_rotation }
+    #[inline] pub fn has_block_scaling(&self) -> bool { self.enable_block_scale }
+    #[inline] pub fn has_dogleg(&self) -> bool { self.enable_dogleg }
+    #[inline] pub fn has_landing(&self) -> bool { self.enable_landing }
+    #[inline] pub fn has_text_frame(&self) -> bool { self.enable_frame_text }
+    #[inline] pub fn leader_line_linetype(&self) -> &str { &self.leader_line_type_name }
+    #[inline] pub fn leader_line_lineweight(&self) -> i32 { self.leader_line_weight }
+    #[inline] pub fn max_leader_points(&self) -> i32 { self.max_leader_segment_points }
+    #[inline] pub fn text_always_left(&self) -> bool { self.text_always_left_justify }
+    #[inline] pub fn block_scale(&self) -> Vector3 {
+        Vector3::new(self.block_scale_x, self.block_scale_y, self.block_scale_z)
+    }
 }
 
 impl Default for MLeaderStyleProperties {

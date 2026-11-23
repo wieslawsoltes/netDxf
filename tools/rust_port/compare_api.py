@@ -446,6 +446,13 @@ def scan_rust(
         re.MULTILINE,
     )
 
+    # Collect `impl Trait for Type` mappings so Type inherits Trait's default methods
+    trait_impls: List[Tuple[str, str]] = []
+    trait_impl_re = re.compile(
+        r"^\s*impl(?:<[^>]+>)?\s+(?:[a-z0-9_]+::)*([A-Za-z_][A-Za-z0-9_]*)(?:<[^>]+>)?\s+for\s+([A-Za-z_][A-Za-z0-9_]*)",
+        re.MULTILINE,
+    )
+
     # Track members per type across both type definition and `impl Type` blocks
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = [d for d in dirnames if d not in ("target", ".git", "tests", "examples", "benches")]
@@ -466,6 +473,9 @@ def scan_rust(
 
             for am in alias_re.finditer(text):
                 type_aliases[am.group(1)] = am.group(2)
+
+            for tm in trait_impl_re.finditer(text):
+                trait_impls.append((tm.group(1), tm.group(2)))
 
             for match in RS_TYPE_RE.finditer(text):
                 kind = match.group(1)
@@ -508,6 +518,11 @@ def scan_rust(
                 types[tname].members.update(RS_CONST_RE.findall(body))
                 # Trait impl methods omit `pub`
                 types[tname].members.update(re.findall(r"^\s*(?:async\s+)?fn\s+([a-z_][a-z0-9_]*)", body, re.MULTILINE))
+
+    # Propagate trait default methods to implementing types (`impl Trait for Type`)
+    for trait_name, type_name in trait_impls:
+        if trait_name in types and type_name in types:
+            types[type_name].members.update(types[trait_name].members)
 
     # Propagate target type members to `pub type Alias = Target;` aliases
     for _ in range(3):

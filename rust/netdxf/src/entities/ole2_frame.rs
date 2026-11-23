@@ -70,6 +70,21 @@ impl OleFrame {
             binary_data,
         }
     }
+
+    #[inline] pub fn binary_data_length(&self) -> usize { self.binary_data.len() }
+    #[inline] pub fn get_binary_data(&self) -> &[u8] { &self.binary_data }
+    #[inline] pub fn has_ole_version(&self) -> bool { self.ole_version > 0 }
+
+    pub fn with_ole_version_presence(mut self, present: bool) -> Self {
+        if !present {
+            self.ole_version = 0;
+        } else if self.ole_version <= 0 {
+            self.ole_version = 2;
+        }
+        self
+    }
+
+    pub fn transform_by(&mut self, _transformation: crate::matrix3::Matrix3, _translation: Vector3) {}
 }
 
 /// OLE object relationship type (DXF group 71).
