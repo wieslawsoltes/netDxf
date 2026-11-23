@@ -19,6 +19,12 @@ pub struct DxfRawLineGeometry {
     pub extrusion: Vector3,
 }
 
+impl DxfRawLineGeometry {
+    #[inline] pub fn start_point(&self) -> Vector3 { self.start }
+    #[inline] pub fn end_point(&self) -> Vector3 { self.end }
+    #[inline] pub fn extrusion_direction(&self) -> Vector3 { self.extrusion }
+}
+
 /// Raw DXF `CIRCLE` geometry view.
 #[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub struct DxfRawCircleGeometry {
@@ -50,6 +56,12 @@ pub struct DxfRawEllipseGeometry {
     pub extrusion: Vector3,
 }
 
+impl DxfRawEllipseGeometry {
+    #[inline] pub fn major_axis(&self) -> Vector3 { self.major_axis_endpoint }
+    #[inline] pub fn axis_ratio(&self) -> f64 { self.minor_axis_ratio }
+    #[inline] pub fn extrusion_direction(&self) -> Vector3 { self.extrusion }
+}
+
 /// Raw DXF `RAY` / `XLINE` geometry view.
 #[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub struct DxfRawInfiniteLineGeometry {
@@ -65,6 +77,13 @@ pub struct DxfRawLwPolylineVertex {
     pub start_width: f64,
     pub end_width: f64,
     pub bulge: f64,
+    pub identifier: i32,
+}
+
+impl DxfRawLwPolylineVertex {
+    #[inline] pub fn has_start_width(&self) -> bool { self.start_width != 0.0 }
+    #[inline] pub fn has_end_width(&self) -> bool { self.end_width != 0.0 }
+    #[inline] pub fn has_bulge(&self) -> bool { self.bulge != 0.0 }
 }
 
 /// Raw DXF `LWPOLYLINE` geometry view.
@@ -97,4 +116,12 @@ pub struct DxfRawQuadGeometry {
     pub fourth_vertex: Vector3,
     pub thickness: f64,
     pub extrusion: Vector3,
+}
+
+impl DxfRawQuadGeometry {
+    #[inline] pub fn first_vertex_in_object_coordinates(&self) -> Vector3 { self.first_vertex }
+    #[inline] pub fn second_vertex_in_object_coordinates(&self) -> Vector3 { self.second_vertex }
+    #[inline] pub fn third_vertex_in_object_coordinates(&self) -> Vector3 { self.third_vertex }
+    #[inline] pub fn fourth_vertex_in_object_coordinates(&self) -> Vector3 { self.fourth_vertex }
+    #[inline] pub fn extrusion_direction(&self) -> Vector3 { self.extrusion }
 }

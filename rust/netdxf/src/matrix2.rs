@@ -55,6 +55,45 @@ impl Matrix2 {
             m22: self.m11 * inv,
         })
     }
+
+    #[inline]
+    pub fn is_identity(self) -> bool {
+        self.is_identity_with(MathHelper::DEFAULT_EPSILON)
+    }
+
+    #[inline]
+    pub fn is_identity_with(self, threshold: f64) -> bool {
+        self.equals_with(Self::IDENTITY, threshold)
+    }
+
+    #[inline]
+    pub fn is_identity_exact(self) -> bool {
+        self.m11 == 1.0 && self.m12 == 0.0 && self.m21 == 0.0 && self.m22 == 1.0
+    }
+
+    #[inline]
+    pub fn equals_with(self, b: Self, threshold: f64) -> bool {
+        MathHelper::is_equal_with(self.m11, b.m11, threshold)
+            && MathHelper::is_equal_with(self.m12, b.m12, threshold)
+            && MathHelper::is_equal_with(self.m21, b.m21, threshold)
+            && MathHelper::is_equal_with(self.m22, b.m22, threshold)
+    }
+
+    #[allow(clippy::should_implement_trait)]
+    #[inline]
+    pub fn add(a: Self, b: Self) -> Self {
+        Self::new(a.m11 + b.m11, a.m12 + b.m12, a.m21 + b.m21, a.m22 + b.m22)
+    }
+
+    #[inline]
+    pub fn subtract(a: Self, b: Self) -> Self {
+        Self::new(a.m11 - b.m11, a.m12 - b.m12, a.m21 - b.m21, a.m22 - b.m22)
+    }
+
+    #[inline]
+    pub fn multiply(a: Self, b: Self) -> Self {
+        a * b
+    }
 }
 
 impl Default for Matrix2 {

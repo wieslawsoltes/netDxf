@@ -212,17 +212,17 @@ RS_BITFLAGS_RE = re.compile(
 )
 
 RS_FN_RE = re.compile(
-    r"^\s*pub\s+(?:const\s+)?(?:async\s+)?fn\s+([A-Za-z_][A-Za-z0-9_]*)",
+    r"^\s*(?:\#\[[^\]]*\]\s*)*pub\s+(?:const\s+)?(?:async\s+)?fn\s+([A-Za-z_][A-Za-z0-9_]*)",
     re.MULTILINE,
 )
 
 RS_FIELD_RE = re.compile(
-    r"^\s*pub\s+([a-z_][a-z0-9_]*)\s*:",
+    r"^\s*(?:\#\[[^\]]*\]\s*)*pub\s+(?:r\#)?([a-z_][a-z0-9_]*)\s*:",
     re.MULTILINE,
 )
 
 RS_CONST_RE = re.compile(
-    r"^\s*pub\s+const\s+([A-Z_][A-Z0-9_]*)\s*:",
+    r"^\s*(?:\#\[[^\]]*\]\s*)*pub\s+const\s+([A-Z_][A-Z0-9_]*)\s*:",
     re.MULTILINE,
 )
 

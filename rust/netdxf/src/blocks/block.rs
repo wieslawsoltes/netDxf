@@ -130,6 +130,41 @@ impl Block {
     pub fn is_xref(&self) -> bool {
         self.flags.contains(BlockTypeFlags::XREF)
     }
+
+    pub fn rename_attribute_definitions(&mut self, renames: &[(String, String)]) {
+        for (old_tag, new_tag) in renames {
+            if let Some(mut attdef) = self.attribute_definitions.shift_remove(&old_tag.to_uppercase()) {
+                attdef.tag = new_tag.clone();
+                self.attribute_definitions.insert(new_tag.to_uppercase(), attdef);
+            }
+        }
+    }
+
+    pub fn prepare_attribute_definition_renames(&self, renames: &[(String, String)]) -> Vec<(String, String)> {
+        renames.to_vec()
+    }
+
+    pub fn to_document(&self) -> crate::DxfDocument {
+        let mut doc = crate::DxfDocument::new();
+        for e in &self.entities {
+            doc.entities.add(e.clone());
+        }
+        doc
+    }
+
+    pub fn load(path: impl AsRef<std::path::Path>) -> Result<Self> {
+        let doc = crate::DxfDocument::load(path)?;
+        let mut blk = Self::new("ImportedBlock")?;
+        for e in doc.entities.iter() {
+            blk.add_entity(e.clone());
+        }
+        Ok(blk)
+    }
+
+    pub fn save(&self, path: impl AsRef<std::path::Path>) -> Result<()> {
+        let mut doc = self.to_document();
+        doc.save(path)
+    }
 }
 
 impl TableObject for Block {

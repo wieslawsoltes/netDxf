@@ -24,4 +24,9 @@ impl BlockRecord {
             layout_handle: None,
         }
     }
+
+    pub const DEFAULT_UNITS: DrawingUnits = DrawingUnits::Unitless;
+    #[inline] pub fn is_for_internal_use_only(&self) -> bool { self.name.starts_with('*') }
+    #[inline] pub fn layout(&self) -> Option<&str> { self.layout_handle.as_deref() }
+    #[inline] pub fn owner(&self) -> Option<&str> { self.object.owner_handle.as_deref() }
 }

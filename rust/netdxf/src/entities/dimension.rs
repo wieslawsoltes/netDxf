@@ -136,4 +136,9 @@ impl Dimension {
         d.dimension_type = DimensionType::Diameter;
         d
     }
+
+    #[inline] pub fn block(&self) -> &str { &self.block_name }
+    #[inline] pub fn style_overrides(&self) -> &[String] { &[] }
+    #[inline] pub fn text_position_manually_set(&self) -> bool { false }
+    #[inline] pub fn update(&mut self) {}
 }

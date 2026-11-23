@@ -13,11 +13,15 @@ bitflags! {
         const FILL_ON = 1;
         const DISPLAY_JOINTS = 2;
         const START_SQUARE_END_CAP = 16;
+        const START_SQUARE_CAP = 16;
         const START_INNER_ARCS_CAP = 32;
         const START_ROUND_OUTER_ARCS_CAP = 64;
+        const START_ROUND_CAP = 64;
         const END_SQUARE_END_CAP = 256;
+        const END_SQUARE_CAP = 256;
         const END_INNER_ARCS_CAP = 512;
         const END_ROUND_OUTER_ARCS_CAP = 1024;
+        const END_ROUND_CAP = 1024;
     }
 }
 
@@ -76,6 +80,12 @@ impl MLineStyle {
             end_angle: 90.0,
             elements: vec![MLineStyleElement::new(0.5), MLineStyleElement::new(-0.5)],
         }
+    }
+
+    #[allow(clippy::should_implement_trait)]
+    #[inline]
+    pub fn default() -> Self {
+        Self::default_style()
     }
 }
 

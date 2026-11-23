@@ -308,6 +308,12 @@ impl HatchGradientPattern {
     pub fn color2_aci_index(&self) -> i16 {
         self.color2.index
     }
+
+    #[inline] pub fn shift(&self) -> f64 { if self.centered { 0.0 } else { 1.0 } }
+    #[inline] pub fn is_color1_aci_index_automatic(&self) -> bool { self.color1.use_true_color }
+    #[inline] pub fn is_color2_aci_index_automatic(&self) -> bool { self.color2.use_true_color }
+    #[inline] pub fn reset_color1_aci_index(&mut self) { self.color1.use_true_color = true; }
+    #[inline] pub fn reset_color2_aci_index(&mut self) { self.color2.use_true_color = true; }
 }
 
 /// An edge in a `HatchBoundaryPath`.
@@ -365,6 +371,58 @@ impl HatchBoundaryPath {
             path_type_flags: flags,
             edges,
         }
+    }
+
+    #[inline]
+    pub fn path_type(&self) -> HatchBoundaryPathTypeFlags {
+        self.path_type_flags
+    }
+
+    #[inline]
+    pub fn entities(&self) -> &[HatchBoundaryPathEdge] {
+        &self.edges
+    }
+
+    pub fn from_stored_edges(edges: Vec<HatchBoundaryPathEdge>, flags: HatchBoundaryPathTypeFlags) -> Self {
+        Self {
+            path_type_flags: flags,
+            edges,
+        }
+    }
+
+    pub fn update(&mut self) {}
+
+    pub fn explode(&self) -> Vec<EntityObject> {
+        let mut out = Vec::new();
+        for edge in &self.edges {
+            match edge {
+                HatchBoundaryPathEdge::Line { start, end } => {
+                    out.push(EntityObject::Line(Box::new(crate::entities::Line::new_2d(*start, *end))));
+                }
+                HatchBoundaryPathEdge::Arc {
+                    center,
+                    radius,
+                    start_angle,
+                    end_angle,
+                    ..
+                } => {
+                    out.push(EntityObject::Arc(Box::new(crate::entities::Arc::new(
+                        center.to_vector3(0.0),
+                        *radius,
+                        *start_angle,
+                        *end_angle,
+                    ))));
+                }
+                HatchBoundaryPathEdge::Polyline { vertexes, is_closed } => {
+                    let pts: Vec<Vector2> = vertexes.iter().map(|(p, _)| *p).collect();
+                    out.push(EntityObject::Polyline2D(Box::new(
+                        crate::entities::Polyline2D::from_points(pts, *is_closed),
+                    )));
+                }
+                _ => {}
+            }
+        }
+        out
     }
 }
 

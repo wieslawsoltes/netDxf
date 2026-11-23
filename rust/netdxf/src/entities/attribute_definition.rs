@@ -65,9 +65,31 @@ impl AttributeDefinition {
         }
     }
 
+    pub const MAXIMUM_PROXY_GRAPHICS_BYTES: usize = 16 * 1024 * 1024;
+
     #[inline] pub fn is_visible(&self) -> bool { !self.flags.contains(AttributeFlags::HIDDEN) }
     #[inline] pub fn has_mtext(&self) -> bool { self.mtext.is_some() }
     #[inline] pub fn get_mtext(&self) -> Option<&crate::entities::AttributeMText> { self.mtext.as_ref() }
+    #[inline] pub fn set_mtext(&mut self, mtext: Option<crate::entities::AttributeMText>) { self.mtext = mtext; }
+    #[inline] pub fn width(&self) -> f64 { self.width_factor }
+    #[inline] pub fn linetype_scale(&self) -> f64 { 1.0 }
+    #[inline] pub fn owner(&self) -> Option<&str> { self.object.owner_handle.as_deref() }
+    #[inline] pub fn shadow_mode(&self) -> crate::entities::EntityShadowMode { crate::entities::EntityShadowMode::CastAndReceive }
+    #[inline] pub fn proxy_graphics(&self) -> Option<&[u8]> { None }
+    #[inline] pub fn clear_proxy_graphics(&mut self) {}
+
+    pub fn set_text_data(&mut self, data: &crate::entities::AttributeTextData) {
+        self.value = data.text.clone();
+        self.mtext = data.mtext.clone();
+        self.is_position_locked = data.locked;
+    }
+
+    pub fn transform_by(&mut self, transformation: crate::matrix3::Matrix3, translation: Vector3) {
+        self.position = transformation * self.position + translation;
+        if let Some(n) = Vector3::normalize_finite_direction(transformation * self.normal) {
+            self.normal = n;
+        }
+    }
     pub fn get_text_data(&self) -> crate::entities::AttributeTextData {
         crate::entities::AttributeTextData {
             text: self.value.clone(),

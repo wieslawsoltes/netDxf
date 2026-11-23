@@ -99,6 +99,8 @@ impl Viewport {
     }
 
     #[inline] pub fn snap_base(&self) -> Vector2 { self.snap_base_point }
+    #[inline] pub fn ucs_x_axis(&self) -> Vector3 { Vector3::UNIT_X }
+    #[inline] pub fn ucs_y_axis(&self) -> Vector3 { Vector3::UNIT_Y }
 
     pub fn transform_by(&mut self, transformation: crate::matrix3::Matrix3, translation: Vector3) {
         self.center = transformation * self.center + translation;

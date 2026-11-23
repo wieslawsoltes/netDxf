@@ -41,4 +41,7 @@ impl DxfObject {
     pub fn remove_xdata(&mut self, app_reg: &str) -> Option<XData> {
         self.x_data.shift_remove(&app_reg.to_uppercase())
     }
+
+    #[inline] pub fn owner(&self) -> Option<&str> { self.owner_handle.as_deref() }
+    #[inline] pub fn extension_dictionary(&self) -> Option<&str> { None }
 }

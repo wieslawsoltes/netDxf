@@ -100,6 +100,63 @@ impl Linetype {
     pub fn length(&self) -> f64 {
         self.segments.iter().map(|s| s.length().abs()).sum()
     }
+
+    /// Lists all linetype names defined in an AutoCAD `.lin` file.
+    pub fn names_from_file(path: impl AsRef<std::path::Path>) -> Result<Vec<String>> {
+        let text = std::fs::read_to_string(path)?;
+        let mut names = Vec::new();
+        for line in text.lines() {
+            if let Some(rest) = line.trim().strip_prefix('*') {
+                if let Some(name) = rest.split(',').next() {
+                    let n = name.trim();
+                    if !n.is_empty() {
+                        names.push(n.to_string());
+                    }
+                }
+            }
+        }
+        Ok(names)
+    }
+
+    /// Loads a named linetype from an AutoCAD `.lin` file.
+    pub fn load(path: impl AsRef<std::path::Path>, name: &str) -> Result<Self> {
+        let text = std::fs::read_to_string(path)?;
+        let mut lines = text.lines();
+        while let Some(raw) = lines.next() {
+            let line = raw.split(';').next().unwrap_or("").trim();
+            if let Some(rest) = line.strip_prefix('*') {
+                let mut parts = rest.splitn(2, ',');
+                let lt_name = parts.next().unwrap_or("").trim();
+                let desc = parts.next().unwrap_or("").trim();
+                if lt_name.eq_ignore_ascii_case(name) {
+                    let mut lt = Self::new(lt_name)?;
+                    lt.description = desc.to_string();
+                    if let Some(def_line) = lines.next() {
+                        for tok in def_line.split(',').skip(1) {
+                            if let Ok(len) = tok.trim().parse::<f64>() {
+                                lt.segments.push(LinetypeSegment::Simple { length: len });
+                            }
+                        }
+                    }
+                    return Ok(lt);
+                }
+            }
+        }
+        Err(crate::error::DxfError::InvalidValue(format!(
+            "Linetype '{name}' not found in .lin file"
+        )))
+    }
+
+    /// Saves this linetype to an AutoCAD `.lin` file.
+    pub fn save(&self, path: impl AsRef<std::path::Path>) -> Result<()> {
+        let mut out = format!("*{},{}\nA", self.name(), self.description);
+        for seg in &self.segments {
+            out.push_str(&format!(",{}", seg.length()));
+        }
+        out.push('\n');
+        std::fs::write(path, out)?;
+        Ok(())
+    }
 }
 
 impl TableObject for Linetype {

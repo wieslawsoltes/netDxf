@@ -133,6 +133,35 @@ impl Matrix3 {
             m33: (self.m11 * self.m22 - self.m12 * self.m21) * inv,
         })
     }
+
+    #[allow(clippy::should_implement_trait)]
+    #[inline]
+    pub fn add(a: Self, b: Self) -> Self {
+        a + b
+    }
+
+    #[inline]
+    pub fn subtract(a: Self, b: Self) -> Self {
+        a - b
+    }
+
+    #[inline]
+    pub fn multiply(a: Self, b: Self) -> Self {
+        a * b
+    }
+
+    /// Builds the 3x3 reflection matrix across a plane through the origin with `normal`.
+    pub fn reflection(normal: Vector3) -> Self {
+        let n = Vector3::normalize(normal);
+        let a = n.x;
+        let b = n.y;
+        let c = n.z;
+        Self::new(
+            1.0 - 2.0 * a * a, -2.0 * a * b, -2.0 * a * c,
+            -2.0 * a * b, 1.0 - 2.0 * b * b, -2.0 * b * c,
+            -2.0 * a * c, -2.0 * b * c, 1.0 - 2.0 * c * c,
+        )
+    }
 }
 
 impl Default for Matrix3 {

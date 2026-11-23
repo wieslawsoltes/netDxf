@@ -190,8 +190,16 @@ pub struct DxfTableCellRange {
     pub right_column: usize,
 }
 
+impl DxfTableCellRange {
+    #[inline] pub fn first(&self) -> (usize, usize) { (self.top_row, self.left_column) }
+    #[inline] pub fn last(&self) -> (usize, usize) { (self.bottom_row, self.right_column) }
+    #[inline] pub fn contains(&self, row: usize, column: usize) -> bool {
+        row >= self.top_row && row <= self.bottom_row && column >= self.left_column && column <= self.right_column
+    }
+}
+
 /// Resolved 2D bounding layout for a single table cell.
-#[derive(Debug, Clone, Copy, PartialEq, Default)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub struct DxfTableCellLayout {
     pub row: usize,
     pub column: usize,
@@ -199,6 +207,14 @@ pub struct DxfTableCellLayout {
     pub y: f64,
     pub width: f64,
     pub height: f64,
+    pub text: String,
+    pub style: String,
+    pub range: DxfTableCellRange,
+}
+
+impl DxfTableCellLayout {
+    #[inline] pub fn left(&self) -> f64 { self.x }
+    #[inline] pub fn top(&self) -> f64 { self.y }
 }
 
 /// Row or column band metadata in `TABLECONTENT`.
@@ -310,6 +326,11 @@ pub struct DxfStoredTableCellGeometry {
     pub width: f64,
     pub height: f64,
     pub flags: i32,
+    pub content_width: f64,
+    pub content_height: f64,
+    pub top_left_distance: crate::vector2::Vector2,
+    pub center_distance: crate::vector2::Vector2,
+    pub stored_value95: i32,
 }
 
 /// Stored geometry cell entry in `TABLEGEOMETRY`.
@@ -318,4 +339,8 @@ pub struct DxfStoredTableGeometryCell {
     pub row: usize,
     pub column: usize,
     pub geometry: DxfStoredTableCellGeometry,
+    pub width_with_gap: f64,
+    pub height_with_gap: f64,
+    pub geometry_data_flags: i32,
+    pub geometry_reference: i32,
 }

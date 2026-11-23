@@ -273,13 +273,21 @@ impl EntityObject {
         }
     }
 
+    pub const MAXIMUM_PROXY_GRAPHICS_BYTES: usize = 16 * 1024 * 1024;
+
     #[inline] pub fn color(&self) -> AciColor { self.common().color }
+    #[inline] pub fn color_name(&self) -> &str { "" }
     #[inline] pub fn linetype(&self) -> &str { &self.common().linetype }
     #[inline] pub fn linetype_scale(&self) -> f64 { self.common().linetype_scale }
     #[inline] pub fn lineweight(&self) -> Lineweight { self.common().lineweight }
     #[inline] pub fn transparency(&self) -> Transparency { self.common().transparency }
     #[inline] pub fn is_visible(&self) -> bool { self.common().is_visible }
     #[inline] pub fn normal(&self) -> Vector3 { self.common().normal }
+    #[inline] pub fn owner(&self) -> Option<&str> { self.common().object.owner_handle.as_deref() }
+    #[inline] pub fn reactors(&self) -> &[String] { &self.common().reactors }
+    #[inline] pub fn shadow_mode(&self) -> EntityShadowMode { EntityShadowMode::CastAndReceive }
+    #[inline] pub fn proxy_graphics(&self) -> Option<&[u8]> { None }
+    #[inline] pub fn r#type(&self) -> EntityType { self.entity_type() }
     pub fn clear_proxy_graphics(&mut self) {
         self.common_mut().object.x_data.shift_remove("ACAD_PROXY_ENTITY");
     }

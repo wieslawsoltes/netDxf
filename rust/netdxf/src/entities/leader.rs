@@ -81,4 +81,9 @@ impl Leader {
             self.direction = dir2;
         }
     }
+
+    #[inline] pub fn annotation(&self) -> Option<&str> { self.annotation_handle.as_deref() }
+    #[inline] pub fn hook(&self) -> Vector2 { self.direction }
+    #[inline] pub fn normal(&self) -> Vector3 { self.common.normal }
+    #[inline] pub fn style_overrides(&self) -> &[String] { &[] }
 }

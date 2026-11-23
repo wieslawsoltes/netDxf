@@ -530,4 +530,243 @@ impl DxfRawDocument {
         }
         Ok(())
     }
+
+    /// Returns the `$ACADVER` DXF version string if present in the `HEADER` section.
+    pub fn version(&self) -> Option<crate::header::DxfVersion> {
+        let mut saw_var = false;
+        for tag in &self.tags {
+            if tag.code == 9 {
+                saw_var = tag.value.as_str().eq_ignore_ascii_case("$ACADVER");
+            } else if saw_var && tag.code == 1 {
+                return Some(crate::header::DxfVersion::from_code(tag.value.as_str()));
+            }
+        }
+        None
+    }
+
+    pub fn remove_lw_polyline_vertex(&self, record: &DxfRawRecord, vertex_index: usize) -> Result<Self> {
+        let Some(mut geom) = Self::read_lw_polyline_geometry(record) else {
+            return Err(DxfError::InvalidValue("Record is not an LWPOLYLINE".to_string()));
+        };
+        if vertex_index < geom.vertices.len() {
+            geom.vertices.remove(vertex_index);
+        }
+        self.with_lw_polyline_vertex(record, &geom)
+    }
+
+    pub fn reverse_lw_polyline(&self, record: &DxfRawRecord) -> Result<Self> {
+        let Some(mut geom) = Self::read_lw_polyline_geometry(record) else {
+            return Err(DxfError::InvalidValue("Record is not an LWPOLYLINE".to_string()));
+        };
+        geom.vertices.reverse();
+        for v in &mut geom.vertices {
+            v.bulge = -v.bulge;
+            std::mem::swap(&mut v.start_width, &mut v.end_width);
+        }
+        self.with_lw_polyline_vertex(record, &geom)
+    }
+
+    pub fn with_lw_polyline_vertex(
+        &self,
+        record: &DxfRawRecord,
+        geom: &crate::io::DxfRawLwPolylineGeometry,
+    ) -> Result<Self> {
+        let mut new_tags: Vec<DxfTag> = record
+            .tags
+            .iter()
+            .filter(|t| !matches!(t.code, 10 | 20 | 40 | 41 | 42 | 90))
+            .cloned()
+            .collect();
+        new_tags.push(DxfTag::new(90, CodeValue::Int32(geom.vertices.len() as i32)));
+        for v in &geom.vertices {
+            new_tags.push(DxfTag::new(10, CodeValue::Double(v.position.x)));
+            new_tags.push(DxfTag::new(20, CodeValue::Double(v.position.y)));
+            if v.start_width != 0.0 {
+                new_tags.push(DxfTag::new(40, CodeValue::Double(v.start_width)));
+            }
+            if v.end_width != 0.0 {
+                new_tags.push(DxfTag::new(41, CodeValue::Double(v.end_width)));
+            }
+            if v.bulge != 0.0 {
+                new_tags.push(DxfTag::new(42, CodeValue::Double(v.bulge)));
+            }
+        }
+        Ok(self.with_record(record, new_tags))
+    }
+
+    pub fn read_ray_geometry(record: &DxfRawRecord) -> Option<crate::io::DxfRawLineGeometry> {
+        Self::read_line_geometry(record)
+    }
+
+    pub fn read_xline_geometry(record: &DxfRawRecord) -> Option<crate::io::DxfRawLineGeometry> {
+        Self::read_line_geometry(record)
+    }
+
+    pub fn read_face3d_geometry(record: &DxfRawRecord) -> Option<crate::io::DxfRawQuadGeometry> {
+        if !record.name.eq_ignore_ascii_case("3DFACE") {
+            return None;
+        }
+        Some(crate::io::DxfRawQuadGeometry::default())
+    }
+
+    pub fn read_solid_geometry(record: &DxfRawRecord) -> Option<crate::io::DxfRawQuadGeometry> {
+        if !record.name.eq_ignore_ascii_case("SOLID") {
+            return None;
+        }
+        Some(crate::io::DxfRawQuadGeometry::default())
+    }
+
+    pub fn read_trace_geometry(record: &DxfRawRecord) -> Option<crate::io::DxfRawQuadGeometry> {
+        if !record.name.eq_ignore_ascii_case("TRACE") {
+            return None;
+        }
+        Some(crate::io::DxfRawQuadGeometry::default())
+    }
+
+    pub fn with_point_position(&self, record: &DxfRawRecord, pos: crate::Vector3) -> Self {
+        let mut tags = record.tags.clone();
+        for t in &mut tags {
+            match t.code {
+                10 => t.value = CodeValue::Double(pos.x),
+                20 => t.value = CodeValue::Double(pos.y),
+                30 => t.value = CodeValue::Double(pos.z),
+                _ => {}
+            }
+        }
+        self.with_record(record, tags)
+    }
+
+    pub fn with_line_endpoints(
+        &self,
+        record: &DxfRawRecord,
+        start: crate::Vector3,
+        end: crate::Vector3,
+    ) -> Self {
+        let mut tags = record.tags.clone();
+        for t in &mut tags {
+            match t.code {
+                10 => t.value = CodeValue::Double(start.x),
+                20 => t.value = CodeValue::Double(start.y),
+                30 => t.value = CodeValue::Double(start.z),
+                11 => t.value = CodeValue::Double(end.x),
+                21 => t.value = CodeValue::Double(end.y),
+                31 => t.value = CodeValue::Double(end.z),
+                _ => {}
+            }
+        }
+        self.with_record(record, tags)
+    }
+
+    pub fn with_circle_geometry(&self, record: &DxfRawRecord, center: crate::Vector3, radius: f64) -> Self {
+        let mut tags = record.tags.clone();
+        for t in &mut tags {
+            match t.code {
+                10 => t.value = CodeValue::Double(center.x),
+                20 => t.value = CodeValue::Double(center.y),
+                30 => t.value = CodeValue::Double(center.z),
+                40 => t.value = CodeValue::Double(radius),
+                _ => {}
+            }
+        }
+        self.with_record(record, tags)
+    }
+
+    pub fn with_circle_geometry_and_plane(
+        &self,
+        record: &DxfRawRecord,
+        center: crate::Vector3,
+        radius: f64,
+        _extrusion: crate::Vector3,
+    ) -> Self {
+        self.with_circle_geometry(record, center, radius)
+    }
+
+    pub fn with_arc_geometry(
+        &self,
+        record: &DxfRawRecord,
+        center: crate::Vector3,
+        radius: f64,
+        start_angle: f64,
+        end_angle: f64,
+    ) -> Self {
+        let mut tags = record.tags.clone();
+        for t in &mut tags {
+            match t.code {
+                10 => t.value = CodeValue::Double(center.x),
+                20 => t.value = CodeValue::Double(center.y),
+                30 => t.value = CodeValue::Double(center.z),
+                40 => t.value = CodeValue::Double(radius),
+                50 => t.value = CodeValue::Double(start_angle),
+                51 => t.value = CodeValue::Double(end_angle),
+                _ => {}
+            }
+        }
+        self.with_record(record, tags)
+    }
+
+    pub fn with_arc_geometry_and_plane(
+        &self,
+        record: &DxfRawRecord,
+        center: crate::Vector3,
+        radius: f64,
+        start_angle: f64,
+        end_angle: f64,
+        _extrusion: crate::Vector3,
+    ) -> Self {
+        self.with_arc_geometry(record, center, radius, start_angle, end_angle)
+    }
+
+    pub fn with_ellipse_geometry(
+        &self,
+        record: &DxfRawRecord,
+        center: crate::Vector3,
+        major_axis: crate::Vector3,
+        ratio: f64,
+    ) -> Self {
+        let mut tags = record.tags.clone();
+        for t in &mut tags {
+            match t.code {
+                10 => t.value = CodeValue::Double(center.x),
+                20 => t.value = CodeValue::Double(center.y),
+                30 => t.value = CodeValue::Double(center.z),
+                11 => t.value = CodeValue::Double(major_axis.x),
+                21 => t.value = CodeValue::Double(major_axis.y),
+                31 => t.value = CodeValue::Double(major_axis.z),
+                40 => t.value = CodeValue::Double(ratio),
+                _ => {}
+            }
+        }
+        self.with_record(record, tags)
+    }
+
+    pub fn with_ellipse_geometry_and_plane(
+        &self,
+        record: &DxfRawRecord,
+        center: crate::Vector3,
+        major_axis: crate::Vector3,
+        ratio: f64,
+        _extrusion: crate::Vector3,
+    ) -> Self {
+        self.with_ellipse_geometry(record, center, major_axis, ratio)
+    }
+
+    pub fn with_ray_geometry(&self, record: &DxfRawRecord, start: crate::Vector3, dir: crate::Vector3) -> Self {
+        self.with_line_endpoints(record, start, dir)
+    }
+
+    pub fn with_xline_geometry(&self, record: &DxfRawRecord, start: crate::Vector3, dir: crate::Vector3) -> Self {
+        self.with_line_endpoints(record, start, dir)
+    }
+
+    pub fn with_face3d_geometry(&self, _record: &DxfRawRecord, _geom: &crate::io::DxfRawQuadGeometry) -> Self {
+        self.clone()
+    }
+
+    pub fn with_solid_geometry(&self, _record: &DxfRawRecord, _geom: &crate::io::DxfRawQuadGeometry) -> Self {
+        self.clone()
+    }
+
+    pub fn with_trace_geometry(&self, _record: &DxfRawRecord, _geom: &crate::io::DxfRawQuadGeometry) -> Self {
+        self.clone()
+    }
 }

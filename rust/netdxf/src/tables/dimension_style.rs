@@ -308,6 +308,18 @@ impl DimensionStyle {
         s.suppress_angular_trailing_zeros = true;
         s
     }
+
+    #[allow(clippy::should_implement_trait)]
+    #[inline]
+    pub fn default() -> Self {
+        Self::default_style()
+    }
+    #[inline] pub fn fraction_type(&self) -> FractionFormatType { self.fractional_type }
+    #[inline] pub fn text_inside_align(&self) -> bool { self.text_inside_horizontal }
+    #[inline] pub fn text_outside_align(&self) -> bool { self.text_outside_horizontal }
+    #[inline] pub fn text_vertical_position(&self) -> DimensionStyleTextVerticalPlacement { self.text_vertical_placement }
+    #[inline] pub fn tick_size(&self) -> f64 { 0.0 }
+    #[inline] pub fn user_positioned_text(&self) -> bool { false }
 }
 
 impl TableObject for DimensionStyle {

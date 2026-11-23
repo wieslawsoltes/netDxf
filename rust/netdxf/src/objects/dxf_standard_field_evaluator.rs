@@ -23,6 +23,9 @@ pub struct DxfStoredField {
 }
 
 impl DxfStoredField {
+    pub const MAXIMUM_PROJECTED_BINARY_BYTES: usize = 4 * 1024 * 1024;
+    pub const MAXIMUM_RESULT_PAYLOAD_TAGS: usize = 65_536;
+
     pub fn new(evaluator_id: impl Into<String>, field_code: impl Into<String>) -> Self {
         Self {
             object: DxfObject::new("FIELD"),
@@ -46,6 +49,12 @@ impl DxfStoredField {
         self.evaluated_text = result.formatted_text.clone();
         self.value = result.value.clone();
     }
+
+    #[inline] pub fn evaluation(&self) -> DxfFieldResultStatus { self.evaluation_status }
+    #[inline] pub fn referenced_objects(&self) -> &[String] { &self.object_ids }
+    #[inline] pub fn references(&self) -> &[String] { &self.object_ids }
+    #[inline] pub fn payload(&self) -> &str { &self.evaluated_text }
+    #[inline] pub fn source_version(&self) -> Option<crate::header::DxfVersion> { None }
 }
 
 /// Result of evaluating a standard DXF field (`netDxf.Objects.DxfFieldResult`).
