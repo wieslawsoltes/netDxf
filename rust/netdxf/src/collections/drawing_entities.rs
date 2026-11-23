@@ -1,7 +1,8 @@
 use crate::entities::{
-    Arc, Circle, Dimension, Ellipse, EntityObject, Face3D, Hatch, Helix, Image, Insert, Leader,
-    Line, MLine, MText, Mesh, Point, PolyfaceMesh, PolygonMesh, Polyline2D, Polyline3D, Ray, Shape,
-    Solid, Spline, Text, Tolerance, Trace, Underlay, Viewport, Wipeout, XLine,
+    Arc, Body, Circle, Dimension, Ellipse, EntityObject, Face3D, Hatch, Helix, Image, Insert,
+    Leader, Light, Line, MLine, MText, Mesh, MultiLeader, Ole2Frame, OleFrame, Point, PolyfaceMesh,
+    PolygonMesh, Polyline2D, Polyline3D, Ray, Region, Section, Shape, Solid, Solid3D, Spline,
+    StoredTable, Text, Tolerance, Trace, Underlay, Viewport, Wipeout, XLine,
 };
 
 /// Collection of drawing entities with typed query accessors (`netDxf.Collections.DrawingEntities`).
@@ -140,5 +141,32 @@ impl DrawingEntities {
     }
     pub fn xlines(&self) -> impl Iterator<Item = &XLine> {
         self.all.iter().filter_map(|e| match e { EntityObject::XLine(v) => Some(v.as_ref()), _ => None })
+    }
+    pub fn solids3d(&self) -> impl Iterator<Item = &Solid3D> {
+        self.all.iter().filter_map(|e| match e { EntityObject::Solid3D(v) => Some(v.as_ref()), _ => None })
+    }
+    pub fn bodies(&self) -> impl Iterator<Item = &Body> {
+        self.all.iter().filter_map(|e| match e { EntityObject::Body(v) => Some(v.as_ref()), _ => None })
+    }
+    pub fn regions(&self) -> impl Iterator<Item = &Region> {
+        self.all.iter().filter_map(|e| match e { EntityObject::Region(v) => Some(v.as_ref()), _ => None })
+    }
+    pub fn tables(&self) -> impl Iterator<Item = &StoredTable> {
+        self.all.iter().filter_map(|e| match e { EntityObject::Table(v) => Some(v.as_ref()), _ => None })
+    }
+    pub fn multi_leaders(&self) -> impl Iterator<Item = &MultiLeader> {
+        self.all.iter().filter_map(|e| match e { EntityObject::MultiLeader(v) => Some(v.as_ref()), _ => None })
+    }
+    pub fn lights(&self) -> impl Iterator<Item = &Light> {
+        self.all.iter().filter_map(|e| match e { EntityObject::Light(v) => Some(v.as_ref()), _ => None })
+    }
+    pub fn ole2_frames(&self) -> impl Iterator<Item = &Ole2Frame> {
+        self.all.iter().filter_map(|e| match e { EntityObject::Ole2Frame(v) => Some(v.as_ref()), _ => None })
+    }
+    pub fn ole_frames(&self) -> impl Iterator<Item = &OleFrame> {
+        self.all.iter().filter_map(|e| match e { EntityObject::OleFrame(v) => Some(v.as_ref()), _ => None })
+    }
+    pub fn sections(&self) -> impl Iterator<Item = &Section> {
+        self.all.iter().filter_map(|e| match e { EntityObject::Section(v) => Some(v.as_ref()), _ => None })
     }
 }

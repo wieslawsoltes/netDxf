@@ -18,6 +18,7 @@ pub mod dxf_object;
 pub mod dxf_object_code;
 pub mod entities;
 pub mod error;
+pub mod gte;
 pub mod header;
 pub mod io;
 pub mod lineweight;

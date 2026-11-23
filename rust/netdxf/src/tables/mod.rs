@@ -1,5 +1,8 @@
 pub mod application_registry;
 pub mod dimension_style;
+pub mod dxf_table_calculation;
+pub mod dxf_table_cell_address;
+pub mod dxf_table_formula;
 pub mod font_style;
 pub mod layer;
 pub mod layer_flags;
@@ -19,6 +22,9 @@ pub use dimension_style::{
     DimensionStyleTextVerticalPlacement, DimensionStyleTolerances,
     DimensionStyleTolerancesDisplayMethod, DimensionStyleTolerancesVerticalPlacement,
 };
+pub use dxf_table_calculation::DxfTableCalculation;
+pub use dxf_table_cell_address::DxfTableCellAddress;
+pub use dxf_table_formula::{DxfTableFormula, TableCellValue};
 pub use font_style::FontStyle;
 pub use layer::Layer;
 pub use layer_flags::LayerFlags;

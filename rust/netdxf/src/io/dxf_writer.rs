@@ -1405,6 +1405,177 @@ impl DxfWriter {
                 w.write_i16(280, hx.constrain)?;
                 Self::write_xdata(&hx.common.object, w)?;
             }
+            EntityObject::Solid3D(s) => {
+                w.write_str(0, DxfObjectCode::SOLID_3D)?;
+                Self::write_entity_common(&s.common, owner, w)?;
+                w.write_str(100, SubclassMarker::MODELER_GEOMETRY)?;
+                w.write_i16(70, s.acis.modeler_format_version)?;
+                for chunk in s.acis.encoded_sat_chunks() {
+                    w.write_str(chunk.group_code, &chunk.text)?;
+                }
+                if let Some(h) = &s.history_handle {
+                    w.write_str(100, SubclassMarker::SOLID_3D)?;
+                    w.write_str(350, h)?;
+                }
+                Self::write_xdata(&s.common.object, w)?;
+            }
+            EntityObject::Body(b) => {
+                w.write_str(0, DxfObjectCode::BODY)?;
+                Self::write_entity_common(&b.common, owner, w)?;
+                w.write_str(100, SubclassMarker::MODELER_GEOMETRY)?;
+                w.write_i16(70, b.acis.modeler_format_version)?;
+                for chunk in b.acis.encoded_sat_chunks() {
+                    w.write_str(chunk.group_code, &chunk.text)?;
+                }
+                Self::write_xdata(&b.common.object, w)?;
+            }
+            EntityObject::Region(r) => {
+                w.write_str(0, DxfObjectCode::REGION)?;
+                Self::write_entity_common(&r.common, owner, w)?;
+                w.write_str(100, SubclassMarker::MODELER_GEOMETRY)?;
+                w.write_i16(70, r.acis.modeler_format_version)?;
+                for chunk in r.acis.encoded_sat_chunks() {
+                    w.write_str(chunk.group_code, &chunk.text)?;
+                }
+                Self::write_xdata(&r.common.object, w)?;
+            }
+            EntityObject::Table(t) => {
+                w.write_str(0, DxfObjectCode::ACAD_TABLE)?;
+                Self::write_entity_common(&t.common, owner, w)?;
+                w.write_str(100, SubclassMarker::INSERT)?;
+                if !t.block_name.is_empty() { w.write_str(2, &t.block_name)?; }
+                w.write_f64(10, t.insertion_point.x)?;
+                w.write_f64(20, t.insertion_point.y)?;
+                w.write_f64(30, t.insertion_point.z)?;
+                w.write_str(100, "AcDbTable")?;
+                w.write_i16(280, 0)?;
+                w.write_f64(11, t.horizontal_direction.x)?;
+                w.write_f64(21, t.horizontal_direction.y)?;
+                w.write_f64(31, t.horizontal_direction.z)?;
+                w.write_i32(91, t.row_count as i32)?;
+                w.write_i32(92, t.column_count as i32)?;
+                for &rh in &t.row_heights { w.write_f64(141, rh)?; }
+                for &cw in &t.column_widths { w.write_f64(142, cw)?; }
+                for cell in &t.cells {
+                    w.write_i16(171, cell.cell_type)?;
+                    w.write_str(1, &cell.text)?;
+                }
+                Self::write_xdata(&t.common.object, w)?;
+            }
+            EntityObject::MultiLeader(ml) => {
+                w.write_str(0, DxfObjectCode::MULTILEADER)?;
+                Self::write_entity_common(&ml.common, owner, w)?;
+                w.write_str(100, "AcDbMLeader")?;
+                if let Some(sh) = &ml.style_handle { w.write_str(340, sh)?; }
+                w.write_i16(172, ml.content_type as i16)?;
+                w.write_f64(42, ml.arrowhead_size)?;
+                w.write_str(300, "CONTEXT_DATA{")?;
+                w.write_f64(40, ml.content_scale)?;
+                w.write_f64(10, ml.content_base_point.x)?;
+                w.write_f64(20, ml.content_base_point.y)?;
+                w.write_f64(30, ml.content_base_point.z)?;
+                w.write_f64(41, ml.text_height)?;
+                w.write_str(304, &ml.text)?;
+                w.write_f64(12, ml.text_location.x)?;
+                w.write_f64(22, ml.text_location.y)?;
+                w.write_f64(32, ml.text_location.z)?;
+                for node in &ml.leaders {
+                    w.write_str(302, "LEADER{")?;
+                    w.write_f64(10, node.last_leader_line_point.x)?;
+                    w.write_f64(20, node.last_leader_line_point.y)?;
+                    w.write_f64(30, node.last_leader_line_point.z)?;
+                    w.write_f64(40, node.dogleg_length)?;
+                    for line in &node.leader_lines {
+                        w.write_str(304, "LEADER_LINE{")?;
+                        for pt in &line.points {
+                            w.write_f64(10, pt.x)?;
+                            w.write_f64(20, pt.y)?;
+                            w.write_f64(30, pt.z)?;
+                        }
+                        w.write_str(305, "}")?;
+                    }
+                    w.write_str(303, "}")?;
+                }
+                w.write_str(301, "}")?;
+                Self::write_xdata(&ml.common.object, w)?;
+            }
+            EntityObject::Light(l) => {
+                w.write_str(0, DxfObjectCode::LIGHT)?;
+                Self::write_entity_common(&l.common, owner, w)?;
+                w.write_str(100, SubclassMarker::LIGHT)?;
+                w.write_str(1, &l.name)?;
+                w.write_i16(70, l.light_type as i16)?;
+                w.write_bool(290, l.status)?;
+                w.write_bool(291, l.plot_glyph)?;
+                w.write_f64(40, l.intensity)?;
+                w.write_f64(10, l.position.x)?;
+                w.write_f64(20, l.position.y)?;
+                w.write_f64(30, l.position.z)?;
+                w.write_f64(11, l.target.x)?;
+                w.write_f64(21, l.target.y)?;
+                w.write_f64(31, l.target.z)?;
+                w.write_i16(72, l.attenuation_type)?;
+                w.write_bool(292, l.use_attenuation_limits)?;
+                w.write_f64(41, l.attenuation_start_limit)?;
+                w.write_f64(42, l.attenuation_end_limit)?;
+                w.write_f64(50, l.hotspot_angle)?;
+                w.write_f64(51, l.falloff_angle)?;
+                w.write_bool(293, l.cast_shadows)?;
+                Self::write_xdata(&l.common.object, w)?;
+            }
+            EntityObject::Ole2Frame(f) => {
+                w.write_str(0, DxfObjectCode::OLE2_FRAME)?;
+                Self::write_entity_common(&f.common, owner, w)?;
+                w.write_str(100, SubclassMarker::OLE2_FRAME)?;
+                w.write_i16(70, f.ole_version)?;
+                w.write_str(3, &f.ole_client_type)?;
+                w.write_f64(10, f.upper_left_corner.x)?;
+                w.write_f64(20, f.upper_left_corner.y)?;
+                w.write_f64(30, f.upper_left_corner.z)?;
+                w.write_f64(11, f.lower_right_corner.x)?;
+                w.write_f64(21, f.lower_right_corner.y)?;
+                w.write_f64(31, f.lower_right_corner.z)?;
+                w.write_i16(71, f.ole_object_type)?;
+                w.write_i16(72, f.tile_mode)?;
+                w.write_i32(90, f.binary_data.len() as i32)?;
+                for chunk in f.binary_data.chunks(127) {
+                    w.write_bytes(310, chunk)?;
+                }
+                Self::write_xdata(&f.common.object, w)?;
+            }
+            EntityObject::OleFrame(f) => {
+                w.write_str(0, DxfObjectCode::OLE_FRAME)?;
+                Self::write_entity_common(&f.common, owner, w)?;
+                w.write_str(100, SubclassMarker::OLE_FRAME)?;
+                w.write_i16(70, f.ole_version)?;
+                w.write_i32(90, f.binary_data.len() as i32)?;
+                for chunk in f.binary_data.chunks(127) {
+                    w.write_bytes(310, chunk)?;
+                }
+                Self::write_xdata(&f.common.object, w)?;
+            }
+            EntityObject::Section(s) => {
+                w.write_str(0, DxfObjectCode::BEGIN_SECTION)?;
+                Self::write_entity_common(&s.common, owner, w)?;
+                w.write_str(100, "AcDbSection")?;
+                w.write_i32(90, s.state)?;
+                w.write_i32(91, s.flags)?;
+                w.write_str(1, &s.name)?;
+                w.write_f64(10, s.vertical_direction.x)?;
+                w.write_f64(20, s.vertical_direction.y)?;
+                w.write_f64(30, s.vertical_direction.z)?;
+                w.write_f64(40, s.top_height)?;
+                w.write_f64(41, s.bottom_height)?;
+                w.write_i16(70, s.indicator_transparency)?;
+                w.write_i16(63, s.indicator_color.index)?;
+                w.write_i32(92, s.vertices.len() as i32)?;
+                for v in &s.vertices {
+                    w.write_f64(11, v.x)?;
+                    w.write_f64(21, v.y)?;
+                    w.write_f64(31, v.z)?;
+                }
+                Self::write_xdata(&s.common.object, w)?;
+            }
             EntityObject::Opaque(o) => {
                 w.write_str(0, &o.entity_name)?;
                 for tag in &o.raw_tags {
@@ -1514,6 +1685,113 @@ impl DxfWriter {
         w.write_i16(70, i16::from(doc.raster_variables.display_frame))?;
         w.write_i16(71, doc.raster_variables.display_quality as i16)?;
         w.write_i16(72, doc.raster_variables.units as i16)?;
+
+        // MLeaderStyles
+        for ms in doc.mleader_styles.iter() {
+            w.write_str(0, "MLEADERSTYLE")?;
+            if let Some(h) = ms.handle() { w.write_str(5, h)?; }
+            w.write_str(100, "AcDbMLeaderStyle")?;
+            w.write_str(300, ms.name())?;
+            w.write_i16(170, ms.content_type as i16)?;
+            w.write_i16(173, ms.leader_line_type)?;
+            w.write_bool(290, ms.enable_landing)?;
+            w.write_f64(42, ms.landing_gap)?;
+            w.write_bool(291, ms.enable_dogleg)?;
+            w.write_f64(43, ms.dogleg_length)?;
+            w.write_f64(44, ms.arrow_size)?;
+            w.write_f64(45, ms.text_height)?;
+            w.write_f64(142, ms.scale)?;
+        }
+
+        // TableStyles
+        for ts in doc.table_styles.iter() {
+            w.write_str(0, "TABLESTYLE")?;
+            if let Some(h) = ts.handle() { w.write_str(5, h)?; }
+            w.write_str(100, "AcDbTableStyle")?;
+            w.write_str(3, ts.name())?;
+            w.write_i16(70, ts.flow_direction)?;
+            w.write_f64(40, ts.horizontal_cell_margin)?;
+            w.write_f64(41, ts.vertical_cell_margin)?;
+            w.write_i16(280, i16::from(ts.suppress_title))?;
+            w.write_i16(281, i16::from(ts.suppress_header))?;
+        }
+
+        // GeoData
+        if let Some(geo) = &doc.geo_data {
+            w.write_str(0, "GEODATA")?;
+            if let Some(h) = geo.object.handle.as_deref() { w.write_str(5, h)?; }
+            w.write_str(100, "AcDbGeoData")?;
+            w.write_i32(90, geo.version)?;
+            if let Some(hb) = &geo.host_block_handle { w.write_str(330, hb)?; }
+            w.write_i16(70, geo.design_coordinates_type)?;
+            w.write_f64(10, geo.design_point.x)?;
+            w.write_f64(20, geo.design_point.y)?;
+            w.write_f64(30, geo.design_point.z)?;
+            w.write_f64(11, geo.reference_point.x)?;
+            w.write_f64(21, geo.reference_point.y)?;
+            w.write_f64(31, geo.reference_point.z)?;
+            w.write_f64(40, geo.horizontal_unit_scale)?;
+            w.write_i32(91, geo.horizontal_units)?;
+            w.write_f64(41, geo.vertical_unit_scale)?;
+            w.write_i32(92, geo.vertical_units)?;
+            w.write_f64(210, geo.up_direction.x)?;
+            w.write_f64(220, geo.up_direction.y)?;
+            w.write_f64(230, geo.up_direction.z)?;
+            w.write_f64(12, geo.north_direction.x)?;
+            w.write_f64(22, geo.north_direction.y)?;
+            w.write_i32(95, geo.scale_estimation_method)?;
+            w.write_f64(141, geo.user_scale_factor)?;
+            if !geo.coordinate_system_definition.is_empty() {
+                w.write_str(301, &geo.coordinate_system_definition)?;
+            }
+            if !geo.geo_rss_tag.is_empty() {
+                w.write_str(302, &geo.geo_rss_tag)?;
+            }
+        }
+
+        // Sun
+        if let Some(sun) = &doc.sun {
+            w.write_str(0, "SUN")?;
+            if let Some(h) = sun.object.handle.as_deref() { w.write_str(5, h)?; }
+            w.write_str(100, "AcDbSun")?;
+            w.write_i32(90, sun.version)?;
+            w.write_bool(290, sun.status)?;
+            w.write_i16(63, sun.color.index)?;
+            w.write_f64(40, sun.intensity)?;
+            w.write_bool(291, sun.shadows)?;
+            w.write_i32(91, sun.julian_day)?;
+            w.write_i32(92, sun.time_milliseconds)?;
+            w.write_bool(292, sun.daylight_savings)?;
+            w.write_i16(70, sun.shadow_type as i16)?;
+            w.write_i16(71, sun.shadow_map_size)?;
+            w.write_i16(280, sun.shadow_softness)?;
+        }
+
+        // SunStudies
+        for ss in &doc.sun_studies {
+            w.write_str(0, "SUNSTUDY")?;
+            if let Some(h) = ss.object.handle.as_deref() { w.write_str(5, h)?; }
+            w.write_str(100, "AcDbSunStudy")?;
+            w.write_i32(90, ss.version)?;
+            w.write_str(1, &ss.name)?;
+            w.write_str(2, &ss.description)?;
+            w.write_i16(70, ss.output_type)?;
+            w.write_str(3, &ss.sheet_set_name)?;
+            w.write_bool(290, ss.use_subset)?;
+            w.write_str(4, &ss.sheet_subset_name)?;
+            w.write_bool(291, ss.select_dates_from_calendar)?;
+            for &(day, secs) in &ss.julian_dates {
+                w.write_i32(91, day)?;
+                w.write_i32(91, secs)?;
+            }
+            w.write_i32(93, ss.start_time_seconds)?;
+            w.write_i32(94, ss.end_time_seconds)?;
+            w.write_i32(95, ss.interval_seconds)?;
+            w.write_bool(293, ss.lock_view_viewport)?;
+            w.write_i16(74, ss.shade_plot_type)?;
+            w.write_i16(75, ss.viewports_per_page as i16)?;
+            w.write_f64(40, ss.spacing_between_viewports)?;
+        }
 
         Self::end_section(w)
     }

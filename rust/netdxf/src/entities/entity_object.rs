@@ -2,6 +2,7 @@ use crate::aci_color::AciColor;
 use crate::bounding_rectangle::BoundingRectangle;
 use crate::dxf_object::DxfObject;
 use crate::entities::arc::Arc;
+use crate::entities::body::Body;
 use crate::entities::circle::Circle;
 use crate::entities::dimension::Dimension;
 use crate::entities::dxf_opaque_entity::DxfOpaqueEntity;
@@ -13,19 +14,26 @@ use crate::entities::helix::Helix;
 use crate::entities::image::Image;
 use crate::entities::insert::Insert;
 use crate::entities::leader::Leader;
+use crate::entities::light::Light;
 use crate::entities::line::Line;
 use crate::entities::mesh::Mesh;
 use crate::entities::mline::MLine;
 use crate::entities::mtext::MText;
+use crate::entities::multi_leader::MultiLeader;
+use crate::entities::ole2_frame::{Ole2Frame, OleFrame};
 use crate::entities::point::Point;
 use crate::entities::polyface_mesh::PolyfaceMesh;
 use crate::entities::polygon_mesh::PolygonMesh;
 use crate::entities::polyline2d::Polyline2D;
 use crate::entities::polyline3d::Polyline3D;
 use crate::entities::ray::Ray;
+use crate::entities::region::Region;
+use crate::entities::section::Section;
 use crate::entities::shape::Shape;
 use crate::entities::solid::Solid;
+use crate::entities::solid3d::Solid3D;
 use crate::entities::spline::Spline;
+use crate::entities::stored_table::StoredTable;
 use crate::entities::text::Text;
 use crate::entities::tolerance::Tolerance;
 use crate::entities::trace::Trace;
@@ -84,6 +92,7 @@ impl EntityCommon {
 #[derive(Clone, Debug, PartialEq)]
 pub enum EntityObject {
     Arc(Box<Arc>),
+    Body(Box<Body>),
     Circle(Box<Circle>),
     Dimension(Box<Dimension>),
     Ellipse(Box<Ellipse>),
@@ -93,19 +102,27 @@ pub enum EntityObject {
     Image(Box<Image>),
     Insert(Box<Insert>),
     Leader(Box<Leader>),
+    Light(Box<Light>),
     Line(Box<Line>),
     Mesh(Box<Mesh>),
     MLine(Box<MLine>),
     MText(Box<MText>),
+    MultiLeader(Box<MultiLeader>),
+    Ole2Frame(Box<Ole2Frame>),
+    OleFrame(Box<OleFrame>),
     Point(Box<Point>),
     PolyfaceMesh(Box<PolyfaceMesh>),
     PolygonMesh(Box<PolygonMesh>),
     Polyline2D(Box<Polyline2D>),
     Polyline3D(Box<Polyline3D>),
     Ray(Box<Ray>),
+    Region(Box<Region>),
+    Section(Box<Section>),
     Shape(Box<Shape>),
     Solid(Box<Solid>),
+    Solid3D(Box<Solid3D>),
     Spline(Box<Spline>),
+    Table(Box<StoredTable>),
     Text(Box<Text>),
     Tolerance(Box<Tolerance>),
     Trace(Box<Trace>),
@@ -120,6 +137,7 @@ impl EntityObject {
     pub fn common(&self) -> &EntityCommon {
         match self {
             Self::Arc(e) => &e.common,
+            Self::Body(e) => &e.common,
             Self::Circle(e) => &e.common,
             Self::Dimension(e) => &e.common,
             Self::Ellipse(e) => &e.common,
@@ -129,19 +147,27 @@ impl EntityObject {
             Self::Image(e) => &e.common,
             Self::Insert(e) => &e.common,
             Self::Leader(e) => &e.common,
+            Self::Light(e) => &e.common,
             Self::Line(e) => &e.common,
             Self::Mesh(e) => &e.common,
             Self::MLine(e) => &e.common,
             Self::MText(e) => &e.common,
+            Self::MultiLeader(e) => &e.common,
+            Self::Ole2Frame(e) => &e.common,
+            Self::OleFrame(e) => &e.common,
             Self::Point(e) => &e.common,
             Self::PolyfaceMesh(e) => &e.common,
             Self::PolygonMesh(e) => &e.common,
             Self::Polyline2D(e) => &e.common,
             Self::Polyline3D(e) => &e.common,
             Self::Ray(e) => &e.common,
+            Self::Region(e) => &e.common,
+            Self::Section(e) => &e.common,
             Self::Shape(e) => &e.common,
             Self::Solid(e) => &e.common,
+            Self::Solid3D(e) => &e.common,
             Self::Spline(e) => &e.common,
+            Self::Table(e) => &e.common,
             Self::Text(e) => &e.common,
             Self::Tolerance(e) => &e.common,
             Self::Trace(e) => &e.common,
@@ -156,6 +182,7 @@ impl EntityObject {
     pub fn common_mut(&mut self) -> &mut EntityCommon {
         match self {
             Self::Arc(e) => &mut e.common,
+            Self::Body(e) => &mut e.common,
             Self::Circle(e) => &mut e.common,
             Self::Dimension(e) => &mut e.common,
             Self::Ellipse(e) => &mut e.common,
@@ -165,19 +192,27 @@ impl EntityObject {
             Self::Image(e) => &mut e.common,
             Self::Insert(e) => &mut e.common,
             Self::Leader(e) => &mut e.common,
+            Self::Light(e) => &mut e.common,
             Self::Line(e) => &mut e.common,
             Self::Mesh(e) => &mut e.common,
             Self::MLine(e) => &mut e.common,
             Self::MText(e) => &mut e.common,
+            Self::MultiLeader(e) => &mut e.common,
+            Self::Ole2Frame(e) => &mut e.common,
+            Self::OleFrame(e) => &mut e.common,
             Self::Point(e) => &mut e.common,
             Self::PolyfaceMesh(e) => &mut e.common,
             Self::PolygonMesh(e) => &mut e.common,
             Self::Polyline2D(e) => &mut e.common,
             Self::Polyline3D(e) => &mut e.common,
             Self::Ray(e) => &mut e.common,
+            Self::Region(e) => &mut e.common,
+            Self::Section(e) => &mut e.common,
             Self::Shape(e) => &mut e.common,
             Self::Solid(e) => &mut e.common,
+            Self::Solid3D(e) => &mut e.common,
             Self::Spline(e) => &mut e.common,
+            Self::Table(e) => &mut e.common,
             Self::Text(e) => &mut e.common,
             Self::Tolerance(e) => &mut e.common,
             Self::Trace(e) => &mut e.common,
@@ -271,6 +306,7 @@ macro_rules! impl_from_entity {
 
 impl_from_entity! {
     Arc => Arc,
+    Body => Body,
     Circle => Circle,
     Dimension => Dimension,
     Ellipse => Ellipse,
@@ -280,19 +316,27 @@ impl_from_entity! {
     Image => Image,
     Insert => Insert,
     Leader => Leader,
+    Light => Light,
     Line => Line,
     Mesh => Mesh,
     MLine => MLine,
     MText => MText,
+    MultiLeader => MultiLeader,
+    Ole2Frame => Ole2Frame,
+    OleFrame => OleFrame,
     Point => Point,
     PolyfaceMesh => PolyfaceMesh,
     PolygonMesh => PolygonMesh,
     Polyline2D => Polyline2D,
     Polyline3D => Polyline3D,
     Ray => Ray,
+    Region => Region,
+    Section => Section,
     Shape => Shape,
     Solid => Solid,
+    Solid3D => Solid3D,
     Spline => Spline,
+    Table => StoredTable,
     Text => Text,
     Tolerance => Tolerance,
     Trace => Trace,

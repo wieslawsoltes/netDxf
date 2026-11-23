@@ -7,12 +7,13 @@ use crate::collections::{DrawingEntities, SupportFolders, TableObjects};
 use crate::dxf_class::DxfClass;
 use crate::dxf_object::DxfObject;
 use crate::dxf_object_code::DxfObjectCode;
-use crate::entities::EntityObject;
+use crate::entities::{DimensionBlock, EntityObject};
 use crate::error::{DxfError, Result};
 use crate::header::{DxfVersion, HeaderVariables};
 use crate::io::{DxfReader, DxfWriter};
 use crate::objects::{
-    Group, ImageDefinition, LayerState, Layout, MLineStyle, RasterVariables, UnderlayDefinition,
+    DxfGeoData, DxfMLeaderStyle, DxfStoredSunStudy, DxfSun, DxfTableStyle, Group, ImageDefinition,
+    LayerState, Layout, MLineStyle, RasterVariables, UnderlayDefinition,
 };
 use crate::tables::{
     ApplicationRegistry, DimensionStyle, Layer, Linetype, ShapeStyle, TableObject, TextStyle, View,
@@ -48,6 +49,8 @@ pub struct DxfDocument {
 
     // Objects
     pub mline_styles: TableObjects<MLineStyle>,
+    pub mleader_styles: TableObjects<DxfMLeaderStyle>,
+    pub table_styles: TableObjects<DxfTableStyle>,
     pub image_definitions: TableObjects<ImageDefinition>,
     pub underlay_dgn_definitions: TableObjects<UnderlayDefinition>,
     pub underlay_dwf_definitions: TableObjects<UnderlayDefinition>,
@@ -56,6 +59,9 @@ pub struct DxfDocument {
     pub layouts: TableObjects<Layout>,
     pub layer_states: TableObjects<LayerState>,
     pub raster_variables: RasterVariables,
+    pub geo_data: Option<DxfGeoData>,
+    pub sun: Option<DxfSun>,
+    pub sun_studies: Vec<DxfStoredSunStudy>,
 
     // Entities (Model Space)
     pub entities: DrawingEntities,
@@ -94,6 +100,8 @@ impl DxfDocument {
             views: TableObjects::new("View"),
             vports: TableObjects::new("VPort"),
             mline_styles: TableObjects::new("MLineStyle"),
+            mleader_styles: TableObjects::new("MLeaderStyle"),
+            table_styles: TableObjects::new("TableStyle"),
             image_definitions: TableObjects::new("ImageDefinition"),
             underlay_dgn_definitions: TableObjects::new("UnderlayDgnDefinition"),
             underlay_dwf_definitions: TableObjects::new("UnderlayDwfDefinition"),
@@ -102,6 +110,9 @@ impl DxfDocument {
             layouts: TableObjects::new("Layout"),
             layer_states: TableObjects::new("LayerState"),
             raster_variables: RasterVariables::default(),
+            geo_data: None,
+            sun: None,
+            sun_studies: Vec::new(),
             entities: DrawingEntities::new(),
         };
         doc.add_default_objects();
@@ -119,6 +130,8 @@ impl DxfDocument {
         self.dimension_styles.add(DimensionStyle::default_style());
         self.vports.add(VPort::active());
         self.mline_styles.add(MLineStyle::default_style());
+        self.mleader_styles.add(DxfMLeaderStyle::default_style());
+        self.table_styles.add(DxfTableStyle::default_style());
         self.blocks.add(Block::model_space());
         self.blocks.add(Block::paper_space());
         self.layouts.add(Layout::model_space());
@@ -276,8 +289,36 @@ impl DxfDocument {
         self.save_to_writer(BufWriter::with_capacity(64 * 1024, file), is_binary)
     }
 
+    /// Builds anonymous `*D<n>` geometry blocks for all dimensions missing one.
+    pub fn build_all_dimension_blocks(&mut self) {
+        let mut next_idx = 1usize;
+        let mut new_blocks = Vec::new();
+        for ent in self.entities.all_mut() {
+            if let EntityObject::Dimension(dim) = ent {
+                if dim.block_name.is_empty() {
+                    let bname = format!("*D{next_idx}");
+                    next_idx += 1;
+                    let style = self
+                        .dimension_styles
+                        .get(&dim.style)
+                        .cloned()
+                        .unwrap_or_else(DimensionStyle::default_style);
+                    let blk = DimensionBlock::build(dim, &style, &bname);
+                    dim.block_name = bname;
+                    new_blocks.push(blk);
+                }
+            }
+        }
+        for blk in new_blocks {
+            self.blocks.insert(blk);
+        }
+    }
+
     /// Writes the DXF document to any `Write` sink in ASCII or Binary format.
     pub fn save_to_writer<W: Write>(&mut self, writer: W, is_binary: bool) -> Result<()> {
+        if self.build_dimension_blocks {
+            self.build_all_dimension_blocks();
+        }
         self.assign_all_handles();
         DxfWriter::write(self, writer, is_binary)
     }

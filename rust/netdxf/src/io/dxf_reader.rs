@@ -1178,6 +1178,154 @@ impl DxfReader {
                         }
                         continue;
                     }
+                    "GEODATA" => {
+                        let mut geo = DxfGeoData::default();
+                        while reader.next()? {
+                            if reader.code() == 0 { break; }
+                            match reader.code() {
+                                5 => geo.object.handle = Some(reader.value().as_str().to_string()),
+                                90 => geo.version = reader.value().as_i32(),
+                                330 => geo.host_block_handle = Some(reader.value().as_str().to_string()),
+                                70 => geo.design_coordinates_type = reader.value().as_i16(),
+                                10 => geo.design_point.x = reader.value().as_f64(),
+                                20 => geo.design_point.y = reader.value().as_f64(),
+                                30 => geo.design_point.z = reader.value().as_f64(),
+                                11 => geo.reference_point.x = reader.value().as_f64(),
+                                21 => geo.reference_point.y = reader.value().as_f64(),
+                                31 => geo.reference_point.z = reader.value().as_f64(),
+                                40 => geo.horizontal_unit_scale = reader.value().as_f64(),
+                                91 => geo.horizontal_units = reader.value().as_i32(),
+                                41 => geo.vertical_unit_scale = reader.value().as_f64(),
+                                92 => geo.vertical_units = reader.value().as_i32(),
+                                210 => geo.up_direction.x = reader.value().as_f64(),
+                                220 => geo.up_direction.y = reader.value().as_f64(),
+                                230 => geo.up_direction.z = reader.value().as_f64(),
+                                12 => geo.north_direction.x = reader.value().as_f64(),
+                                22 => geo.north_direction.y = reader.value().as_f64(),
+                                95 => geo.scale_estimation_method = reader.value().as_i32(),
+                                141 => geo.user_scale_factor = reader.value().as_f64(),
+                                301 | 303 => geo.coordinate_system_definition.push_str(reader.value().as_str()),
+                                302 => geo.geo_rss_tag = reader.value().as_str().to_string(),
+                                _ => {}
+                            }
+                        }
+                        doc.geo_data = Some(geo);
+                        continue;
+                    }
+                    "SUN" => {
+                        let mut sun = DxfSun::default();
+                        while reader.next()? {
+                            if reader.code() == 0 { break; }
+                            match reader.code() {
+                                5 => sun.object.handle = Some(reader.value().as_str().to_string()),
+                                90 => sun.version = reader.value().as_i32(),
+                                290 => sun.status = reader.value().as_bool(),
+                                63 => sun.color = AciColor::from_cad_index(reader.value().as_i16()),
+                                40 => sun.intensity = reader.value().as_f64(),
+                                291 => sun.shadows = reader.value().as_bool(),
+                                91 => sun.julian_day = reader.value().as_i32(),
+                                92 => sun.time_milliseconds = reader.value().as_i32(),
+                                292 => sun.daylight_savings = reader.value().as_bool(),
+                                70 => sun.shadow_type = reader.value().as_i16() as i32,
+                                71 => sun.shadow_map_size = reader.value().as_i16(),
+                                280 => sun.shadow_softness = reader.value().as_i16(),
+                                _ => {}
+                            }
+                        }
+                        doc.sun = Some(sun);
+                        continue;
+                    }
+                    "SUNSTUDY" => {
+                        let mut ss = DxfStoredSunStudy::default();
+                        let mut pending_jd: Option<i32> = None;
+                        while reader.next()? {
+                            if reader.code() == 0 { break; }
+                            match reader.code() {
+                                5 => ss.object.handle = Some(reader.value().as_str().to_string()),
+                                90 => ss.version = reader.value().as_i32(),
+                                1 => ss.name = reader.value().as_str().to_string(),
+                                2 => ss.description = reader.value().as_str().to_string(),
+                                70 => ss.output_type = reader.value().as_i16(),
+                                3 => ss.sheet_set_name = reader.value().as_str().to_string(),
+                                290 => ss.use_subset = reader.value().as_bool(),
+                                4 => ss.sheet_subset_name = reader.value().as_str().to_string(),
+                                291 => ss.select_dates_from_calendar = reader.value().as_bool(),
+                                91 => {
+                                    if let Some(day) = pending_jd.take() {
+                                        ss.julian_dates.push((day, reader.value().as_i32()));
+                                    } else {
+                                        pending_jd = Some(reader.value().as_i32());
+                                    }
+                                }
+                                93 => ss.start_time_seconds = reader.value().as_i32(),
+                                94 => ss.end_time_seconds = reader.value().as_i32(),
+                                95 => ss.interval_seconds = reader.value().as_i32(),
+                                293 => ss.lock_view_viewport = reader.value().as_bool(),
+                                74 => ss.shade_plot_type = reader.value().as_i16(),
+                                75 => ss.viewports_per_page = reader.value().as_i16() as i32,
+                                40 => ss.spacing_between_viewports = reader.value().as_f64(),
+                                _ => {}
+                            }
+                        }
+                        doc.sun_studies.push(ss);
+                        continue;
+                    }
+                    "MLEADERSTYLE" => {
+                        let mut style = DxfMLeaderStyle::default_style();
+                        style.table.is_reserved = false;
+                        let mut name = String::new();
+                        while reader.next()? {
+                            if reader.code() == 0 { break; }
+                            match reader.code() {
+                                5 => style.table.object.handle = Some(reader.value().as_str().to_string()),
+                                300 => name = reader.value().as_str().to_string(),
+                                170 => {
+                                    if let Some(ct) = MLeaderContentType::from_i16(reader.value().as_i16()) {
+                                        style.content_type = ct;
+                                    }
+                                }
+                                173 => style.leader_line_type = reader.value().as_i16(),
+                                290 => style.enable_landing = reader.value().as_bool(),
+                                42 => style.landing_gap = reader.value().as_f64(),
+                                291 => style.enable_dogleg = reader.value().as_bool(),
+                                43 => style.dogleg_length = reader.value().as_f64(),
+                                44 => style.arrow_size = reader.value().as_f64(),
+                                45 => style.text_height = reader.value().as_f64(),
+                                142 => style.scale = reader.value().as_f64(),
+                                _ => {}
+                            }
+                        }
+                        if !name.is_empty() {
+                            style.table.name = name.clone();
+                            style.table.is_reserved = name.eq_ignore_ascii_case(DxfMLeaderStyle::DEFAULT_NAME);
+                            doc.mleader_styles.insert(style);
+                        }
+                        continue;
+                    }
+                    "TABLESTYLE" => {
+                        let mut style = DxfTableStyle::default_style();
+                        style.table.is_reserved = false;
+                        let mut name = String::new();
+                        while reader.next()? {
+                            if reader.code() == 0 { break; }
+                            match reader.code() {
+                                5 => style.table.object.handle = Some(reader.value().as_str().to_string()),
+                                3 => name = reader.value().as_str().to_string(),
+                                70 => style.flow_direction = reader.value().as_i16(),
+                                40 => style.horizontal_cell_margin = reader.value().as_f64(),
+                                41 => style.vertical_cell_margin = reader.value().as_f64(),
+                                280 => style.suppress_title = reader.value().as_i16() != 0,
+                                281 => style.suppress_header = reader.value().as_i16() != 0,
+                                _ => {}
+                            }
+                        }
+                        if !name.is_empty() {
+                            style.table.name = name.clone();
+                            style.table.is_reserved = name.eq_ignore_ascii_case(DxfTableStyle::DEFAULT_NAME);
+                            doc.table_styles.insert(style);
+                        }
+                        continue;
+                    }
                     _ => {
                         while reader.next()? {
                             if reader.code() == 0 {
@@ -1316,6 +1464,15 @@ impl DxfReader {
             DxfObjectCode::UNDERLAY_PDF
             | DxfObjectCode::UNDERLAY_DWF
             | DxfObjectCode::UNDERLAY_DGN => Self::read_underlay(reader, &entity_code)?.into(),
+            DxfObjectCode::SOLID_3D | DxfObjectCode::BODY | DxfObjectCode::REGION => {
+                Self::read_acis_entity(reader, &entity_code)?
+            }
+            DxfObjectCode::ACAD_TABLE => Self::read_stored_table(reader)?.into(),
+            DxfObjectCode::MULTILEADER => Self::read_multileader(reader)?.into(),
+            DxfObjectCode::LIGHT => Self::read_light(reader)?.into(),
+            DxfObjectCode::OLE2_FRAME => Self::read_ole2_frame(reader)?.into(),
+            DxfObjectCode::OLE_FRAME => Self::read_ole_frame(reader)?.into(),
+            DxfObjectCode::BEGIN_SECTION => Self::read_section_entity(reader)?.into(),
             DxfObjectCode::END_SEQUENCE | DxfObjectCode::VERTEX | DxfObjectCode::ATTRIBUTE => {
                 while reader.next()? {
                     if reader.code() == 0 {
@@ -2428,6 +2585,303 @@ impl DxfReader {
             }
         }
         Ok(u)
+    }
+
+    fn read_acis_entity(reader: &mut dyn ICodeValueReader, code: &str) -> Result<EntityObject> {
+        let mut common = EntityCommon::new(
+            match code {
+                DxfObjectCode::BODY => EntityType::Body,
+                DxfObjectCode::REGION => EntityType::Region,
+                _ => EntityType::Solid3D,
+            },
+            match code {
+                DxfObjectCode::BODY => DxfObjectCode::BODY,
+                DxfObjectCode::REGION => DxfObjectCode::REGION,
+                _ => DxfObjectCode::SOLID_3D,
+            },
+        );
+        let mut acis = AcisEntityData::new();
+        let mut chunks = Vec::new();
+        let mut history_handle = None;
+        while reader.next()? {
+            if reader.code() == 0 { break; }
+            if Self::apply_common_code(reader, &mut common)? { if reader.code() == 0 { break; } continue; }
+            match reader.code() {
+                70 => acis.modeler_format_version = reader.value().as_i16(),
+                1 | 3 => {
+                    if let Ok(chunk) = AcisSatChunk::new(reader.code(), reader.value().as_str()) {
+                        chunks.push(chunk);
+                    }
+                }
+                350 => history_handle = Some(reader.value().as_str().to_string()),
+                _ => {}
+            }
+        }
+        if !chunks.is_empty() {
+            let _ = acis.set_encoded_sat_chunks(chunks);
+        }
+        Ok(match code {
+            DxfObjectCode::BODY => Body { common, acis }.into(),
+            DxfObjectCode::REGION => Region { common, acis }.into(),
+            _ => Solid3D {
+                common,
+                acis,
+                history_handle,
+            }
+            .into(),
+        })
+    }
+
+    fn read_stored_table(reader: &mut dyn ICodeValueReader) -> Result<StoredTable> {
+        let mut t = StoredTable::new(0, 0);
+        let mut cell_texts = Vec::new();
+        let mut row_heights = Vec::new();
+        let mut col_widths = Vec::new();
+        while reader.next()? {
+            if reader.code() == 0 { break; }
+            if Self::apply_common_code(reader, &mut t.common)? { if reader.code() == 0 { break; } continue; }
+            match reader.code() {
+                2 => t.block_name = reader.value().as_str().to_string(),
+                10 => t.insertion_point.x = reader.value().as_f64(),
+                20 => t.insertion_point.y = reader.value().as_f64(),
+                30 => t.insertion_point.z = reader.value().as_f64(),
+                11 => t.horizontal_direction.x = reader.value().as_f64(),
+                21 => t.horizontal_direction.y = reader.value().as_f64(),
+                31 => t.horizontal_direction.z = reader.value().as_f64(),
+                91 => t.row_count = reader.value().as_i32().max(0) as usize,
+                92 => t.column_count = reader.value().as_i32().max(0) as usize,
+                141 => row_heights.push(reader.value().as_f64()),
+                142 => col_widths.push(reader.value().as_f64()),
+                1 => cell_texts.push(reader.value().as_str().to_string()),
+                _ => {}
+            }
+        }
+        if !row_heights.is_empty() { t.row_heights = row_heights; }
+        if !col_widths.is_empty() { t.column_widths = col_widths; }
+        let total = t.row_count * t.column_count;
+        t.cells.clear();
+        for idx in 0..total {
+            let r = idx / t.column_count.max(1);
+            let c = idx % t.column_count.max(1);
+            let txt = cell_texts.get(idx).cloned().unwrap_or_default();
+            t.cells.push(StoredTableCell::text(r, c, txt));
+        }
+        Ok(t)
+    }
+
+    fn read_multileader(reader: &mut dyn ICodeValueReader) -> Result<MultiLeader> {
+        let mut ml = MultiLeader::with_mtext("", Vector3::ZERO, Vec::new());
+        ml.leaders.clear();
+        let mut in_leader = false;
+        let mut in_leader_line = false;
+        let mut cur_node: Option<MLeaderLeaderNode> = None;
+        let mut cur_line: Option<MLeaderLeaderLine> = None;
+        let mut cur_pt: Option<Vector3> = None;
+
+        while reader.next()? {
+            if reader.code() == 0 { break; }
+            if Self::apply_common_code(reader, &mut ml.common)? { if reader.code() == 0 { break; } continue; }
+            match reader.code() {
+                302 => {
+                    if reader.value().as_str().eq_ignore_ascii_case("LEADER{") {
+                        in_leader = true;
+                        cur_node = Some(MLeaderLeaderNode::default());
+                    }
+                }
+                303 => {
+                    if in_leader {
+                        if let Some(n) = cur_node.take() { ml.leaders.push(n); }
+                        in_leader = false;
+                    }
+                }
+                304 => {
+                    if reader.value().as_str().eq_ignore_ascii_case("LEADER_LINE{") {
+                        in_leader_line = true;
+                        cur_line = Some(MLeaderLeaderLine { points: Vec::new(), index: 0 });
+                    } else if !in_leader_line {
+                        ml.text = reader.value().as_str().to_string();
+                    }
+                }
+                305 => {
+                    if in_leader_line {
+                        if let Some(pt) = cur_pt.take() {
+                            if let Some(l) = &mut cur_line { l.points.push(pt); }
+                        }
+                        if let Some(l) = cur_line.take() {
+                            if let Some(n) = &mut cur_node { n.leader_lines.push(l); }
+                        }
+                        in_leader_line = false;
+                    }
+                }
+                340 => ml.style_handle = Some(reader.value().as_str().to_string()),
+                172 => {
+                    if let Some(ct) = MLeaderContentType::from_i16(reader.value().as_i16()) {
+                        ml.content_type = ct;
+                    }
+                }
+                40 => {
+                    if in_leader {
+                        if let Some(n) = &mut cur_node { n.dogleg_length = reader.value().as_f64(); }
+                    } else {
+                        ml.content_scale = reader.value().as_f64();
+                    }
+                }
+                41 => ml.text_height = reader.value().as_f64(),
+                42 => {
+                    if !in_leader { ml.arrowhead_size = reader.value().as_f64(); }
+                }
+                10 => {
+                    if in_leader_line {
+                        if let Some(pt) = cur_pt.take() {
+                            if let Some(l) = &mut cur_line { l.points.push(pt); }
+                        }
+                        cur_pt = Some(Vector3::new(reader.value().as_f64(), 0.0, 0.0));
+                    } else if in_leader {
+                        if let Some(n) = &mut cur_node { n.last_leader_line_point.x = reader.value().as_f64(); }
+                    } else {
+                        ml.content_base_point.x = reader.value().as_f64();
+                    }
+                }
+                20 => {
+                    if in_leader_line {
+                        if let Some(pt) = &mut cur_pt { pt.y = reader.value().as_f64(); }
+                    } else if in_leader {
+                        if let Some(n) = &mut cur_node { n.last_leader_line_point.y = reader.value().as_f64(); }
+                    } else {
+                        ml.content_base_point.y = reader.value().as_f64();
+                    }
+                }
+                30 => {
+                    if in_leader_line {
+                        if let Some(pt) = &mut cur_pt { pt.z = reader.value().as_f64(); }
+                    } else if in_leader {
+                        if let Some(n) = &mut cur_node { n.last_leader_line_point.z = reader.value().as_f64(); }
+                    } else {
+                        ml.content_base_point.z = reader.value().as_f64();
+                    }
+                }
+                12 => ml.text_location.x = reader.value().as_f64(),
+                22 => ml.text_location.y = reader.value().as_f64(),
+                32 => ml.text_location.z = reader.value().as_f64(),
+                _ => {}
+            }
+        }
+        Ok(ml)
+    }
+
+    fn read_light(reader: &mut dyn ICodeValueReader) -> Result<Light> {
+        let mut l = Light::new("", LightType::Point, Vector3::ZERO);
+        while reader.next()? {
+            if reader.code() == 0 { break; }
+            if Self::apply_common_code(reader, &mut l.common)? { if reader.code() == 0 { break; } continue; }
+            match reader.code() {
+                1 => l.name = reader.value().as_str().to_string(),
+                70 => {
+                    if let Some(lt) = LightType::from_i16(reader.value().as_i16()) {
+                        l.light_type = lt;
+                    }
+                }
+                290 => l.status = reader.value().as_bool(),
+                291 => l.plot_glyph = reader.value().as_bool(),
+                40 => l.intensity = reader.value().as_f64(),
+                10 => l.position.x = reader.value().as_f64(),
+                20 => l.position.y = reader.value().as_f64(),
+                30 => l.position.z = reader.value().as_f64(),
+                11 => l.target.x = reader.value().as_f64(),
+                21 => l.target.y = reader.value().as_f64(),
+                31 => l.target.z = reader.value().as_f64(),
+                72 => l.attenuation_type = reader.value().as_i16(),
+                292 => l.use_attenuation_limits = reader.value().as_bool(),
+                41 => l.attenuation_start_limit = reader.value().as_f64(),
+                42 => l.attenuation_end_limit = reader.value().as_f64(),
+                50 => l.hotspot_angle = reader.value().as_f64(),
+                51 => l.falloff_angle = reader.value().as_f64(),
+                293 => l.cast_shadows = reader.value().as_bool(),
+                _ => {}
+            }
+        }
+        Ok(l)
+    }
+
+    fn read_ole2_frame(reader: &mut dyn ICodeValueReader) -> Result<Ole2Frame> {
+        let mut f = Ole2Frame::new(Vector3::ZERO, Vector3::ZERO, Vec::new());
+        while reader.next()? {
+            if reader.code() == 0 { break; }
+            if Self::apply_common_code(reader, &mut f.common)? { if reader.code() == 0 { break; } continue; }
+            match reader.code() {
+                70 => f.ole_version = reader.value().as_i16(),
+                3 => f.ole_client_type = reader.value().as_str().to_string(),
+                10 => f.upper_left_corner.x = reader.value().as_f64(),
+                20 => f.upper_left_corner.y = reader.value().as_f64(),
+                30 => f.upper_left_corner.z = reader.value().as_f64(),
+                11 => f.lower_right_corner.x = reader.value().as_f64(),
+                21 => f.lower_right_corner.y = reader.value().as_f64(),
+                31 => f.lower_right_corner.z = reader.value().as_f64(),
+                71 => f.ole_object_type = reader.value().as_i16(),
+                72 => f.tile_mode = reader.value().as_i16(),
+                310 => {
+                    let b = reader.value().as_bytes();
+                    if !b.is_empty() {
+                        f.binary_data.extend_from_slice(b);
+                    } else if let Some(dec) = decode_hex(reader.value().as_str()) {
+                        f.binary_data.extend_from_slice(&dec);
+                    }
+                }
+                _ => {}
+            }
+        }
+        Ok(f)
+    }
+
+    fn read_ole_frame(reader: &mut dyn ICodeValueReader) -> Result<OleFrame> {
+        let mut f = OleFrame::new(Vec::new());
+        while reader.next()? {
+            if reader.code() == 0 { break; }
+            if Self::apply_common_code(reader, &mut f.common)? { if reader.code() == 0 { break; } continue; }
+            match reader.code() {
+                70 => f.ole_version = reader.value().as_i16(),
+                310 => {
+                    let b = reader.value().as_bytes();
+                    if !b.is_empty() {
+                        f.binary_data.extend_from_slice(b);
+                    } else if let Some(dec) = decode_hex(reader.value().as_str()) {
+                        f.binary_data.extend_from_slice(&dec);
+                    }
+                }
+                _ => {}
+            }
+        }
+        Ok(f)
+    }
+
+    fn read_section_entity(reader: &mut dyn ICodeValueReader) -> Result<Section> {
+        let mut s = Section::new("", Vec::new());
+        let mut cur_v: Option<Vector3> = None;
+        while reader.next()? {
+            if reader.code() == 0 { break; }
+            if Self::apply_common_code(reader, &mut s.common)? { if reader.code() == 0 { break; } continue; }
+            match reader.code() {
+                90 => s.state = reader.value().as_i32(),
+                91 => s.flags = reader.value().as_i32(),
+                1 => s.name = reader.value().as_str().to_string(),
+                10 => s.vertical_direction.x = reader.value().as_f64(),
+                20 => s.vertical_direction.y = reader.value().as_f64(),
+                30 => s.vertical_direction.z = reader.value().as_f64(),
+                40 => s.top_height = reader.value().as_f64(),
+                41 => s.bottom_height = reader.value().as_f64(),
+                70 => s.indicator_transparency = reader.value().as_i16(),
+                63 => s.indicator_color = AciColor::from_cad_index(reader.value().as_i16()),
+                11 => {
+                    if let Some(v) = cur_v.take() { s.vertices.push(v); }
+                    cur_v = Some(Vector3::new(reader.value().as_f64(), 0.0, 0.0));
+                }
+                21 => { if let Some(v) = &mut cur_v { v.y = reader.value().as_f64(); } }
+                31 => { if let Some(v) = &mut cur_v { v.z = reader.value().as_f64(); } }
+                _ => {}
+            }
+        }
+        if let Some(v) = cur_v { s.vertices.push(v); }
+        Ok(s)
     }
 
     fn read_opaque(reader: &mut dyn ICodeValueReader, entity_name: &str) -> Result<DxfOpaqueEntity> {

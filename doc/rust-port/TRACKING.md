@@ -51,31 +51,33 @@ This document tracks the idiomatic, high-performance Rust port of the `netDxf` c
 | `rust/netdxf/src/x_data.rs`, `x_data_code.rs`, `x_data_record.rs` | `XData.cs`, `XDataCode.cs`, `XDataRecord.cs` | Complete |
 | `rust/netdxf/src/dxf_document.rs` | `DxfDocument.cs` | Complete (Core API, Load/Save ASCII & Binary) |
 | `rust/netdxf/src/units/*.rs` | `Units/*.cs` | Complete (DrawingUnits, DrawingTime, UnitHelper, unit enums) |
+| `rust/netdxf/src/gte/*.rs` | `GTE/*.cs` | Complete (GVector, GMatrix, BandedMatrix, GaussianElimination, Integration, RootBisection, BasisFunction, BSplineCurve/Surface, NURBSCurve/Surface, BSplineCurveFit, BSplineSurfaceFit) |
 | `rust/netdxf/src/header/*.rs` | `Header/*.cs` | Complete (DxfVersion, AttMode, PointShape, HeaderVariables) |
-| `rust/netdxf/src/tables/*.rs` | `Tables/*.cs` | Complete (ApplicationRegistry, Layer, Linetype, TextStyle, ShapeStyle, UCS, View, VPort, DimensionStyle) |
+| `rust/netdxf/src/tables/*.rs` | `Tables/*.cs` | Complete (ApplicationRegistry, Layer, Linetype, TextStyle, ShapeStyle, UCS, View, VPort, DimensionStyle, DxfTableCellAddress, DxfTableFormula, DxfTableCalculation) |
 | `rust/netdxf/src/blocks/*.rs` | `Blocks/*.cs` | Complete (Block, BlockRecord, BlockTypeFlags, EndBlock) |
 | `rust/netdxf/src/collections/*.rs` | `Collections/*.cs` | Complete (TableObjects, DrawingEntities, SupportFolders) |
-| `rust/netdxf/src/objects/*.rs` | `Objects/*.cs` | Complete (Group, Layout, PlotSettings, MLineStyle, ImageDefinition, UnderlayDefinition, RasterVariables, DictionaryObject, XRecord, LayerState) |
-| `rust/netdxf/src/entities/*.rs` | `Entities/*.cs` | Complete (31 entity types including Arc, Circle, Dimension, Ellipse, Face3D, Hatch, Helix, Image, Insert, Leader, Line, Mesh, MLine, MText, Point, PolyfaceMesh, PolygonMesh, Polyline2D, Polyline3D, Ray, Shape, Solid, Spline, Text, Tolerance, Trace, Underlay, Viewport, Wipeout, XLine, DxfOpaqueEntity) |
-| `rust/netdxf/src/io/*.rs` | `IO/*.cs` | Complete (DxfGroupCode, ICodeValueReader/Writer, TextCodeValueReader/Writer, BinaryCodeValueReader/Writer, DxfReader, DxfWriter) |
+| `rust/netdxf/src/objects/*.rs` | `Objects/*.cs` | Complete (Group, Layout, PlotSettings, MLineStyle, ImageDefinition, UnderlayDefinition, RasterVariables, DictionaryObject, XRecord, LayerState, DxfTableStyle, DxfMLeaderStyle, DxfGeoData, DxfSun, DxfStoredSunStudy, DxfStoredField, DxfStandardFieldEvaluator) |
+| `rust/netdxf/src/entities/*.rs` | `Entities/*.cs` | Complete (40 entity types including ACIS `Solid3D`/`Body`/`Region` + SAT codec, `StoredTable`, `MultiLeader`, `Light`, `Ole2Frame`, `OleFrame`, `Section`, `DimensionBlock` synthesis, advanced `Spline` knot-insertion/split/trim/degree-elevation/reverse, plus all 2D/3D/annotation/mesh primitives) |
+| `rust/netdxf/src/io/*.rs` | `IO/*.cs` | Complete (DxfGroupCode, ICodeValueReader/Writer, TextCodeValueReader/Writer, BinaryCodeValueReader/Writer, DxfReader, DxfWriter for all entities & objects) |
 
-## Deferred / Future Follow-up Items
+## Previously Deferred Items — All Ported
 
-The following advanced specialized subsystems from upstream `netDxf` are intentionally deferred to subsequent PRs (never stubbed with `todo!()`):
-- Full GTE surface fitting (`BSplineSurfaceFit`, `NURBSSurface`) and advanced spline knot-insertion/degree-elevation/trimming algorithms (`GTE/`).
-- ACIS SAT solid/body/region chunk parsing (`AcisEntity`, `Solid3D`, `Body`, `Region`).
-- Stored `ACAD_TABLE` formula/layout engine (`StoredTable`, `DxfTableCalculation`) and field evaluator (`DxfStandardFieldEvaluator`).
-- `MultiLeader` (`MULTILEADER` / `MLEADERSTYLE`) and `DxfGeoData` / `DxfSunStudy` specialized objects.
-- Automatic dimension block geometry synthesis (`DimensionBlock.Build`).
+All 5 previously deferred subsystems have been implemented and verified:
+- **GTE & Advanced Spline**: `gte/` (`BSplineCurveFit`, `BSplineSurfaceFit`, `BSplineCurve`, `NURBSCurve`, `BSplineSurface`, `NURBSSurface`, `BasisFunction`, `BandedMatrix`, `GaussianElimination`, `Integration`, `RootBisection`) + `Spline::insert_knot`, `split`, `trim`, `elevate_degree`, `reverse`, `evaluate_derivative`.
+- **ACIS SAT Entities & Codec**: `AcisSatChunk`, `AcisEntityData` (exact SAT substitution codec + <=255-char chunking), `Solid3D`, `Body`, `Region` with full ASCII & Binary I/O and `tests/fixtures/acis-sat` verification.
+- **StoredTable, Formula Engine & Standard Fields**: `StoredTable`, `DxfTableStyle`, `DxfTableCellAddress`, `DxfTableFormula` (bounded arithmetic + `SUM`/`AVERAGE`/`COUNT`/`MIN`/`MAX` + cycle detection + overflow-safe mean), `DxfTableCalculation`, `DxfStoredField`, `DxfStandardFieldEvaluator`.
+- **MultiLeader, GeoData, Sun, Light, OLE & Section**: `MultiLeader`, `DxfMLeaderStyle`, `DxfGeoData`, `DxfSun`, `DxfStoredSunStudy`, `Light`, `Ole2Frame`, `OleFrame`, `Section` with full ASCII & Binary I/O.
+- **DimensionBlock Geometry Synthesis**: `DimensionBlock::build` generating anonymous `*D<n>` blocks (defpoints, extension lines, dimension lines, filled arrowheads, center marks, formatted MText) wired into `DxfDocument::build_dimension_blocks`.
 
 ## Verification & Benchmark Results
 
 - **Lints**: `cargo clippy --all-targets -- -D warnings` — **0 warnings, 0 errors**, `unsafe_code = "forbid"`.
-- **Tests**: `cargo test` — **17/17 tests passing**:
+- **Tests**: `cargo test` — **23/23 tests passing**:
   - `math_and_color_tests` (6 tests): vectors, matrices, Arbitrary Axis OCS/WCS round-trip, Bezier curves, ACI/TrueColor/Transparency/Lineweight, units & Julian date.
   - `document_roundtrip_tests` (3 tests): full rich document round-trip in ASCII (R2000/R2007/R2018) and Binary (R2000/R2018), entity affine transforms.
   - `edge_cases_and_conformance_tests` (5 tests): table name validation & reserved protection, NURBS spline vs cubic Bezier equivalence, Polyline2D reverse, all 15 TextAlignment variants, corrupt/truncated input error handling.
   - `fixture_conformance_tests` (3 tests): `TestDxfDocument/sample.dxf` (load + ASCII & Binary round-trip), `TestDxfDocument/sample binary.dxf`, and full scan of all `.dxf` fixtures under `tests/fixtures/`.
+  - `advanced_subsystems_tests` (6 tests): GTE linear algebra/integration/roots, B-spline curve & surface fitting, NURBS knot-insertion/split/trim/degree-elevation/reverse, ACIS SAT codec + `acis-sat` fixtures, table formulas/calculation/fields, and `MultiLeader`/`GeoData`/`Sun`/`SunStudy`/`Light`/`Ole2Frame`/`OleFrame`/`Section`/`DimensionBlock` ASCII & Binary round-trips.
 - **Release Benchmark** (`cargo run --release --example benchmark`, 20,000 entities):
   - Build: **10.67 ms**
   - Write ASCII (2.60 MB): **12.92 ms** (~201 MB/s)

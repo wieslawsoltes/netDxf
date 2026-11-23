@@ -232,4 +232,208 @@ impl Spline {
         };
         BoundingRectangle::from_points(pts.iter().map(|v| v.to_vector2()))
     }
+
+    /// Evaluates the first derivative (tangent vector) at parameter `u`.
+    pub fn evaluate_derivative(&self, u: f64) -> Option<Vector3> {
+        let p = self.degree as usize;
+        let n = self.control_points.len();
+        if n == 0 || self.knots.len() < n + p + 1 {
+            return None;
+        }
+        let weights = if self.weights.len() == n {
+            self.weights.clone()
+        } else {
+            vec![1.0; n]
+        };
+        let curve = crate::gte::NURBSCurve::from_knots(
+            p,
+            self.knots.clone(),
+            self.control_points.clone(),
+            weights,
+        );
+        Some(curve.evaluate(u, 1)[1])
+    }
+
+    /// Reverses the spline direction in place (control points, weights, knots, fit points, tangents).
+    pub fn reverse(&mut self) {
+        self.control_points.reverse();
+        self.weights.reverse();
+        self.fit_points.reverse();
+        if let (Some(&first), Some(&last)) = (self.knots.first(), self.knots.last()) {
+            let sum = first + last;
+            self.knots.reverse();
+            for k in &mut self.knots {
+                *k = sum - *k;
+            }
+        }
+        let old_start = self.start_tangent.map(|t| -t);
+        let old_end = self.end_tangent.map(|t| -t);
+        self.start_tangent = old_end;
+        self.end_tangent = old_start;
+    }
+
+    /// Inserts knot `u` `times` times using Boehm's algorithm in homogeneous coordinates.
+    pub fn insert_knot(&mut self, u: f64, times: usize) -> bool {
+        let p = self.degree as usize;
+        let n = self.control_points.len();
+        if times == 0 || n == 0 || self.knots.len() < n + p + 1 {
+            return false;
+        }
+        let u_min = self.knots[p];
+        let u_max = self.knots[n];
+        if u <= u_min || u >= u_max {
+            return false;
+        }
+        if self.weights.len() != n {
+            self.weights = vec![1.0; n];
+        }
+
+        for _ in 0..times {
+            let cur_n = self.control_points.len();
+            // Find knot span k such that knots[k] <= u < knots[k + 1]
+            let mut k = p;
+            while k + 1 < cur_n && self.knots[k + 1] <= u {
+                k += 1;
+            }
+            let mut new_pts = Vec::with_capacity(cur_n + 1);
+            let mut new_wts = Vec::with_capacity(cur_n + 1);
+
+            for i in 0..=cur_n {
+                if i <= k - p {
+                    new_pts.push(self.control_points[i]);
+                    new_wts.push(self.weights[i]);
+                } else if i <= k {
+                    let denom = self.knots[i + p] - self.knots[i];
+                    let alpha = if denom.abs() > 0.0 {
+                        (u - self.knots[i]) / denom
+                    } else {
+                        0.0
+                    };
+                    let w0 = self.weights[i - 1];
+                    let w1 = self.weights[i];
+                    let p0 = self.control_points[i - 1] * w0;
+                    let p1 = self.control_points[i] * w1;
+                    let w = (1.0 - alpha) * w0 + alpha * w1;
+                    let pt = (p0 * (1.0 - alpha) + p1 * alpha) / w;
+                    new_pts.push(pt);
+                    new_wts.push(w);
+                } else {
+                    new_pts.push(self.control_points[i - 1]);
+                    new_wts.push(self.weights[i - 1]);
+                }
+            }
+            self.knots.insert(k + 1, u);
+            self.control_points = new_pts;
+            self.weights = new_wts;
+        }
+        true
+    }
+
+    /// Splits an open clamped NURBS spline at parameter `u` into `(left, right)` sub-splines.
+    pub fn split(&self, u: f64) -> Option<(Spline, Spline)> {
+        let p = self.degree as usize;
+        let n = self.control_points.len();
+        if n == 0 || self.knots.len() < n + p + 1 {
+            return None;
+        }
+        let u_min = self.knots[p];
+        let u_max = self.knots[n];
+        if u <= u_min || u >= u_max {
+            return None;
+        }
+
+        let mut refined = self.clone();
+        let existing_mult = refined
+            .knots
+            .iter()
+            .filter(|&&k| (k - u).abs() <= refined.knot_tolerance)
+            .count();
+        if existing_mult < p {
+            refined.insert_knot(u, p - existing_mult);
+        }
+
+        let first_idx = refined
+            .knots
+            .iter()
+            .position(|&k| (k - u).abs() <= refined.knot_tolerance)?;
+        let last_idx = refined
+            .knots
+            .iter()
+            .rposition(|&k| (k - u).abs() <= refined.knot_tolerance)?;
+
+        let left_cp_count = first_idx;
+        let mut left_knots = refined.knots[..=last_idx].to_vec();
+        left_knots.push(u);
+        let left_cps = refined.control_points[..left_cp_count].to_vec();
+        let left_wts = refined.weights[..left_cp_count].to_vec();
+
+        let mut right_knots = vec![u];
+        right_knots.extend_from_slice(&refined.knots[first_idx..]);
+        let right_cps = refined.control_points[(first_idx - 1)..].to_vec();
+        let right_wts = refined.weights[(first_idx - 1)..].to_vec();
+
+        let mut left = self.clone();
+        left.knots = left_knots;
+        left.control_points = left_cps;
+        left.weights = left_wts;
+        left.fit_points.clear();
+
+        let mut right = self.clone();
+        right.knots = right_knots;
+        right.control_points = right_cps;
+        right.weights = right_wts;
+        right.fit_points.clear();
+
+        Some((left, right))
+    }
+
+    /// Trims an open clamped NURBS spline to `[u_start, u_end]`.
+    pub fn trim(&self, u_start: f64, u_end: f64) -> Option<Spline> {
+        if u_start >= u_end {
+            return None;
+        }
+        let (_, after_start) = self.split(u_start)?;
+        let (trimmed, _) = after_start.split(u_end)?;
+        Some(trimmed)
+    }
+
+    /// Elevates the degree of a single-segment Bezier/clamped NURBS spline by 1.
+    pub fn elevate_degree(&mut self) -> bool {
+        let p = self.degree as usize;
+        let n = self.control_points.len();
+        if n != p + 1 || self.knots.len() != 2 * (p + 1) {
+            return false;
+        }
+        if self.weights.len() != n {
+            self.weights = vec![1.0; n];
+        }
+        let mut new_pts = Vec::with_capacity(n + 1);
+        let mut new_wts = Vec::with_capacity(n + 1);
+        new_pts.push(self.control_points[0]);
+        new_wts.push(self.weights[0]);
+        for i in 1..=p {
+            let alpha = i as f64 / (p + 1) as f64;
+            let w0 = self.weights[i - 1];
+            let w1 = self.weights[i];
+            let w = alpha * w0 + (1.0 - alpha) * w1;
+            let pt = (self.control_points[i - 1] * (alpha * w0)
+                + self.control_points[i] * ((1.0 - alpha) * w1))
+                / w;
+            new_pts.push(pt);
+            new_wts.push(w);
+        }
+        new_pts.push(self.control_points[p]);
+        new_wts.push(self.weights[p]);
+
+        let u0 = self.knots[0];
+        let u1 = *self.knots.last().unwrap();
+        let mut new_knots = vec![u0; p + 2];
+        new_knots.resize(2 * (p + 2), u1);
+
+        self.degree += 1;
+        self.control_points = new_pts;
+        self.weights = new_wts;
+        self.knots = new_knots;
+        true
+    }
 }
