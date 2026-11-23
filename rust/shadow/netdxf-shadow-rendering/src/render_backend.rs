@@ -130,8 +130,24 @@ impl RenderHost {
         Self { backend }
     }
 
+    pub fn backend(&self) -> &dyn IRenderBackend {
+        self.backend.as_ref()
+    }
+
+    pub fn backends(&self) -> Vec<&'static str> {
+        vec!["skia", "svg"]
+    }
+
+    pub fn swap(&mut self, backend: Box<dyn IRenderBackend>) {
+        self.backend = backend;
+    }
+
     pub fn render(&self, scene: &RenderScene, frame: &RenderFrame) -> Result<RenderImage, String> {
         self.backend.render(scene, frame)
+    }
+
+    pub fn render_pixels(&self, scene: &RenderScene, frame: &RenderFrame) -> Result<Vec<u8>, String> {
+        Ok(self.backend.render(scene, frame)?.bytes)
     }
 }
 

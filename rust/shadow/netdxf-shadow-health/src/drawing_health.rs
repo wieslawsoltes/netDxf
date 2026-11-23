@@ -9,6 +9,11 @@ pub struct DrawingHealthOptions {
     pub gap_tolerance: f64,
     pub maximum_issues: usize,
     pub maximum_work: i64,
+    pub maximum_objects: usize,
+    pub maximum_value_depth: usize,
+    pub find_duplicates: bool,
+    pub find_tiny_gaps: bool,
+    pub find_unused_resources: bool,
 }
 
 impl Default for DrawingHealthOptions {
@@ -18,6 +23,11 @@ impl Default for DrawingHealthOptions {
             gap_tolerance: 0.01,
             maximum_issues: 10_000,
             maximum_work: 5_000_000,
+            maximum_objects: 250_000,
+            maximum_value_depth: 64,
+            find_duplicates: true,
+            find_tiny_gaps: true,
+            find_unused_resources: true,
         }
     }
 }

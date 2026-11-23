@@ -9,12 +9,16 @@ use serde_json::Value;
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct CadModuleField {
+    pub id: String,
     pub name: String,
     pub field_type: String,
+    pub r#type: String,
     pub required: bool,
     pub description: String,
+    pub default: Option<String>,
+    pub choices: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -38,11 +42,15 @@ pub struct CadModuleDescriptor {
     pub commands: Vec<CadModuleCommand>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModulePort {
+    pub id: String,
     pub name: String,
+    pub kind: String,
     pub direction: String,
+    pub nominal_size: Option<String>,
     pub offset: Vec3,
+    pub position: Vec3,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -63,6 +71,10 @@ pub struct CadModuleSymbol {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleCatalog {
     pub symbols: Vec<CadModuleSymbol>,
+    pub items: Vec<CadModuleSymbol>,
+    pub limit: usize,
+    pub offset: usize,
+    pub total: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -93,9 +105,13 @@ pub struct CadModuleAnalysis {
     pub issues: Vec<CadModuleIssue>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleAnalysisOptions {
     pub include_connectivity: bool,
+    pub connection_tolerance: f64,
+    pub entities: Vec<ObjectId>,
+    pub maximum_issues: usize,
+    pub maximum_objects: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

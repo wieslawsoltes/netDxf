@@ -31,6 +31,12 @@ pub struct AnnotationViewRequest {
 pub struct CadAttributeDefinitionOperation {
     pub action: String,
     pub tag: String,
+    pub prompt: Option<String>,
+    pub default: Option<String>,
+    pub height: Option<f64>,
+    pub rotation: Option<f64>,
+    pub position: Option<Vec3>,
+    pub flags: Option<i32>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -65,6 +71,10 @@ pub struct CadBlockBeginRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadBlockFinishRequest {
     pub commit: bool,
+    pub save: bool,
+    pub revision: Option<i64>,
+    pub synchronize_attributes: bool,
+    pub remove_orphan_attributes: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -86,6 +96,10 @@ pub struct CadBlockLibraryExportRequest {
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadBlockLibrarySummary {
+    pub id: String,
+    pub name: String,
+    pub revision: i64,
+    pub blocks: usize,
     pub block_count: usize,
 }
 
@@ -244,6 +258,16 @@ pub struct CadHealthSelectRequest {
 pub struct CadInsertPreviewRequest {
     pub block: String,
     pub position: Vec3,
+    pub x: Option<f64>,
+    pub y: Option<f64>,
+    pub z: Option<f64>,
+    pub rotation: f64,
+    pub scale_x: f64,
+    pub scale_y: f64,
+    pub scale_z: f64,
+    pub width: u32,
+    pub height: u32,
+    pub revision: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -482,6 +506,11 @@ pub struct CadModuleToggleRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleCatalogRequest {
     pub module_id: String,
+    pub module: String,
+    pub query: Option<String>,
+    pub category: Option<String>,
+    pub offset: usize,
+    pub limit: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -585,6 +614,16 @@ pub struct CadSelectionCandidatesResult {
 pub struct TransformRequest {
     pub entities: Vec<ObjectId>,
     pub delta: Vec3,
+    pub operation: String,
+    pub revision: Option<i64>,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
+    pub angle: f64,
+    pub factor: f64,
+    pub second_x: f64,
+    pub second_y: f64,
+    pub copy: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -625,6 +664,10 @@ pub struct MergePreviewRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct MergeApplyRequest {
     pub source_branch: String,
+    pub branch_id: String,
+    pub plan_id: String,
+    pub target_revision: i64,
+    pub delete_branch: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -636,28 +679,42 @@ pub struct StudioRequestIdentity {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct RevisionRequest {
     pub expected_revision: i64,
+    pub revision: i64,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct PickRequest {
     pub point: Vec3,
     pub tolerance: f64,
+    pub revision: i64,
+    pub x: f64,
+    pub y: f64,
+    pub extend: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct SelectRequest {
     pub ids: Vec<ObjectId>,
+    pub revision: i64,
+    pub key: String,
+    pub extend: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct MoveRequest {
     pub ids: Vec<ObjectId>,
     pub delta: Vec3,
+    pub revision: i64,
+    pub x: f64,
+    pub y: f64,
+    pub definition: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct PropertyRequest {
     pub entity: ObjectId,
+    pub id: String,
+    pub revision: i64,
     pub property: String,
     pub value: Value,
 }
@@ -665,11 +722,17 @@ pub struct PropertyRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct LayoutRequest {
     pub layout: String,
+    pub name: String,
+    pub revision: i64,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct AddRequest {
     pub entity_type: String,
+    pub kind: String,
+    pub revision: i64,
+    pub x: f64,
+    pub y: f64,
     pub properties: Value,
 }
 
@@ -813,7 +876,11 @@ impl Studio {
             .values()
             .filter(|o| o.short_type() == "Block")
             .count();
-        CadBlockLibrarySummary { block_count: count }
+        CadBlockLibrarySummary {
+            blocks: count,
+            block_count: count,
+            ..Default::default()
+        }
     }
 
     pub fn cad_assign_layer(&mut self, request: &CadAssignLayerRequest) -> usize {
@@ -1681,6 +1748,7 @@ impl Studio {
         self.cad_transform(&TransformRequest {
             entities: request.ids.clone(),
             delta: request.delta,
+            ..Default::default()
         })
     }
 
@@ -1830,6 +1898,58 @@ impl Studio {
 
     pub fn cad_redo(&mut self) -> Value {
         self.history("redo", self.cad_revision())
+    }
+
+    pub fn cad_resources(&self) -> Value {
+        serde_json::json!({
+            "layers": self.layers(),
+            "blocks": self.blocks(),
+            "layouts": self.layouts(),
+        })
+    }
+
+    pub fn cad_state_if_changed(&self, revision: i64) -> Option<Value> {
+        if self.cad_revision() != revision {
+            Some(self.cad_state())
+        } else {
+            None
+        }
+    }
+
+    pub fn cad_workflow_export(&self) -> Value {
+        serde_json::json!({ "documentId": self.document_id, "steps": [] })
+    }
+
+    pub fn cad_workflow_round_trip(&self) -> Value {
+        serde_json::json!({ "documentId": self.document_id, "ok": true })
+    }
+
+    pub fn cad_workflow_status(&self) -> Value {
+        serde_json::json!({ "active": false, "stepCount": 0 })
+    }
+
+    pub fn cad_workflow_stop(&self) -> Value {
+        serde_json::json!({ "stopped": true })
+    }
+
+    pub fn capture_references(&self, ids: &[ObjectId]) -> Value {
+        serde_json::json!({
+            "documentId": self.document_id,
+            "revision": self.cad_revision(),
+            "count": ids.len(),
+        })
+    }
+
+    pub fn compiler(&self) -> &RenderCompiler {
+        &self.render_compiler
+    }
+
+    pub fn configure_browser_fonts(&mut self) -> usize {
+        0
+    }
+
+    pub fn create_mcp_registry(&self) -> Value {
+        serde_json::json!({ "documentId": self.document_id })
     }
 }
 

@@ -17,10 +17,14 @@ pub enum SymbolStrokeKind {
     Text,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct SymbolStroke {
     pub kind: SymbolStrokeKind,
     pub points: Vec<Vec3>,
+    pub start: Vec3,
+    pub end: Vec3,
+    pub start_angle: f64,
+    pub end_angle: f64,
     pub radius: f64,
     pub text: Option<String>,
 }
@@ -81,10 +85,14 @@ pub struct DomainPassage {
     pub open: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainReference {
     pub kind: String,
     pub target: ObjectId,
+    pub port_id: Option<String>,
+    pub role: Option<String>,
+    pub target_key: Option<String>,
+    pub target_port_id: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

@@ -95,6 +95,7 @@ fn shadow_studio_editor_symbols_agents_and_relay_parity() {
         .add(&AddRequest {
             entity_type: "netDxf.Entities.Line".into(),
             properties: serde_json::json!({ "Layer": "0" }),
+            ..Default::default()
         })
         .expect("added");
     let assigned = studio.cad_assign_layer(&CadAssignLayerRequest {

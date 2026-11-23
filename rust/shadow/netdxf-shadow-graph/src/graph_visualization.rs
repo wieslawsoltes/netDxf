@@ -40,7 +40,7 @@ impl Default for GraphVisualizationOptions {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct GraphVisualizationNode {
     pub id: usize,
     pub x: f64,
@@ -48,6 +48,10 @@ pub struct GraphVisualizationNode {
     pub z: f64,
     pub degree: usize,
     pub component: usize,
+    pub articulation_point: bool,
+    pub dead_end: bool,
+    pub isolated: bool,
+    pub junction: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

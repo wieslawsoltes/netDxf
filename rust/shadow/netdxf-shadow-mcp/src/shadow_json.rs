@@ -13,11 +13,15 @@ use std::sync::Arc;
 
 pub struct ShadowJson;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct Location {
     pub x: f64,
     pub y: f64,
     pub z: f64,
+    pub object: Option<ObjectId>,
+    pub property: Option<String>,
+    pub nested: Option<String>,
+    pub value: Option<Value>,
 }
 
 impl ShadowJson {
@@ -54,7 +58,12 @@ impl ShadowJson {
     }
 
     pub fn location(x: f64, y: f64, z: f64) -> Location {
-        Location { x, y, z }
+        Location {
+            x,
+            y,
+            z,
+            ..Default::default()
+        }
     }
 
     pub fn replace(root: &mut Value, pointer: &str, replacement: Value) -> bool {

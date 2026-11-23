@@ -54,10 +54,14 @@ pub struct DrawingReferenceValidationRequest {
     pub reference_set: DrawingReferenceSet,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DrawingReferenceResolution {
     pub id: ObjectId,
     pub exists: bool,
+    pub current: bool,
+    pub message: Option<String>,
+    pub reference: Option<DrawingObjectReference>,
+    pub status: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -69,10 +73,14 @@ pub struct DrawingReferenceValidation {
 pub struct DrawingReferences;
 
 impl DrawingReferences {
+    pub const MAXIMUM_COUNT: usize = 512;
+    pub const VALIDATION_TOOL: &'static str = "shadow.references.validate";
+
     pub fn capture(snapshot: &ShadowSnapshot, request: &DrawingReferenceCaptureRequest) -> DrawingReferenceSet {
         let objects = request
             .ids
             .iter()
+            .take(if request.maximum > 0 { request.maximum } else { Self::MAXIMUM_COUNT })
             .filter_map(|id| {
                 snapshot.objects.get(id).map(|obj| DrawingObjectReference {
                     document_id: snapshot.document_id.clone(),
@@ -102,13 +110,49 @@ impl DrawingReferences {
             .reference_set
             .objects
             .iter()
-            .map(|r| DrawingReferenceResolution {
-                id: r.id.clone(),
-                exists: snapshot.objects.contains_key(&r.id),
+            .map(|r| {
+                let exists = snapshot.objects.contains_key(&r.id);
+                let current = exists && r.revision == snapshot.revision;
+                DrawingReferenceResolution {
+                    id: r.id.clone(),
+                    exists,
+                    current,
+                    message: if !exists {
+                        Some(format!("Object {} not found", r.id))
+                    } else if !current {
+                        Some("Revision mismatch".to_string())
+                    } else {
+                        None
+                    },
+                    reference: Some(r.clone()),
+                    status: if current {
+                        "current".to_string()
+                    } else if exists {
+                        "stale".to_string()
+                    } else {
+                        "missing".to_string()
+                    },
+                }
             })
             .collect();
         let valid = resolutions.iter().all(|r| r.exists);
         DrawingReferenceValidation { valid, resolutions }
+    }
+
+    pub fn validate_current(
+        snapshot: &ShadowSnapshot,
+        request: &DrawingReferenceValidationRequest,
+    ) -> DrawingReferenceValidation {
+        let mut validation = Self::validate(snapshot, request);
+        validation.valid = validation.resolutions.iter().all(|r| r.exists && r.current);
+        validation
+    }
+
+    pub fn validate_shape(reference: &DrawingObjectReference) -> Result<(), String> {
+        if reference.id.0.is_empty() && reference.object_id.0.is_empty() {
+            return Err("Reference must specify an object id".to_string());
+        }
+        Ok(())
     }
 }
 

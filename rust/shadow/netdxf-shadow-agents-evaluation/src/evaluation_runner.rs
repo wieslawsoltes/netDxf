@@ -14,23 +14,43 @@ impl EvaluationRunner {
     ) -> Vec<EvaluationResult> {
         cases
             .iter()
-            .map(|c| {
-                let ctx = EvaluationFixture::context(c);
-                let exec = target.evaluate(c, &ctx);
-                let passed = !exec.output.is_empty();
-                EvaluationResult {
-                    case_id: c.id.clone(),
-                    passed,
-                    checks: vec![EvaluationCheck {
-                        name: "non-empty-output".into(),
-                        passed,
-                        message: String::new(),
-                    }],
-                    execution: exec,
-                    ..Default::default()
-                }
-            })
+            .map(|c| Self::execute(c, target))
             .collect()
+    }
+
+    pub fn run(
+        cases: &[EvaluationCase],
+        target: &dyn IAgentEvaluationTarget,
+    ) -> Vec<EvaluationResult> {
+        Self::run_all(cases, target)
+    }
+
+    pub fn execute(
+        case: &EvaluationCase,
+        target: &dyn IAgentEvaluationTarget,
+    ) -> EvaluationResult {
+        let ctx = EvaluationFixture::context(case);
+        let exec = target.evaluate(case, &ctx);
+        let passed = !exec.output.is_empty();
+        EvaluationResult {
+            case_id: case.id.clone(),
+            passed,
+            checks: vec![EvaluationCheck {
+                name: "non-empty-output".into(),
+                passed,
+                message: String::new(),
+            }],
+            execution: exec,
+            ..Default::default()
+        }
+    }
+
+    pub fn snapshot(case: &EvaluationCase) -> String {
+        EvaluationFixture::freeze(case)
+    }
+
+    pub fn tools() -> Vec<&'static str> {
+        vec!["cad.read", "cad.edit", "cad.render", "cad.topology"]
     }
 }
 

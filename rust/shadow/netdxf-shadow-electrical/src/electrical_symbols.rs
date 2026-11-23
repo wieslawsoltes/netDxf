@@ -24,6 +24,7 @@ impl ElectricalSymbols {
                     points: vec![Vec3::xy(-5.0, 0.0), Vec3::xy(5.0, 0.0)],
                     radius: 0.0,
                     text: None,
+                    ..Default::default()
                 }],
                 ports: vec![
                     SymbolPort {
@@ -52,6 +53,7 @@ impl ElectricalSymbols {
                     points: vec![Vec3::xy(-4.0, 0.0), Vec3::xy(4.0, 2.0)],
                     radius: 0.0,
                     text: None,
+                    ..Default::default()
                 }],
                 ports: vec![
                     SymbolPort {

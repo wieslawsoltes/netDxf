@@ -21,10 +21,14 @@ pub struct ChatGptSignInOptions {
     pub login_hint: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ChatGptAuthorizationAttempt {
     pub state: String,
     pub authorize_url: String,
+    pub authorization_uri: String,
+    pub callback_uri: String,
+    pub registered_client_id: String,
+    pub expires_at: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -52,13 +56,38 @@ pub struct ChatGptAuthenticationException {
 
 impl ChatGptSignInClient {
     pub fn build_authorize_url(options: &ChatGptSignInOptions, state: &str) -> ChatGptAuthorizationAttempt {
+        let url = format!(
+            "https://auth.openai.com/oauth/authorize?client_id={}&redirect_uri={}&state={state}",
+            options.client_id, options.redirect_uri
+        );
         ChatGptAuthorizationAttempt {
             state: state.to_string(),
-            authorize_url: format!(
-                "https://auth.openai.com/oauth/authorize?client_id={}&redirect_uri={}&state={state}",
-                options.client_id, options.redirect_uri
-            ),
+            authorize_url: url.clone(),
+            authorization_uri: url,
+            callback_uri: options.redirect_uri.clone(),
+            registered_client_id: options.client_id.clone(),
+            expires_at: None,
         }
+    }
+
+    pub fn begin(options: &ChatGptSignInOptions, state: &str) -> ChatGptAuthorizationAttempt {
+        Self::build_authorize_url(options, state)
+    }
+
+    pub fn complete(options: &ChatGptSignInOptions, code: &str) -> ChatGptCredential {
+        ChatGptCredential {
+            access_token: format!("tok_{code}"),
+            client_id: options.client_id.clone(),
+            ..Default::default()
+        }
+    }
+
+    pub fn refresh(credential: &ChatGptCredential) -> ChatGptCredential {
+        credential.clone()
+    }
+
+    pub fn revoke(_credential: &ChatGptCredential) -> bool {
+        true
     }
 }
 

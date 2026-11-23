@@ -13,6 +13,10 @@ use std::collections::BTreeMap;
 pub struct ShxExecutionOptions {
     pub maximum_steps: usize,
     pub maximum_recursion: usize,
+    pub maximum_call_depth: usize,
+    pub maximum_curves: usize,
+    pub maximum_instructions: usize,
+    pub maximum_stack_depth: usize,
 }
 
 impl Default for ShxExecutionOptions {
@@ -20,6 +24,10 @@ impl Default for ShxExecutionOptions {
         Self {
             maximum_steps: 100_000,
             maximum_recursion: 32,
+            maximum_call_depth: 32,
+            maximum_curves: 100_000,
+            maximum_instructions: 100_000,
+            maximum_stack_depth: 64,
         }
     }
 }

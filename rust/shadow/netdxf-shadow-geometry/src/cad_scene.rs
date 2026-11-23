@@ -67,10 +67,14 @@ pub struct CadText {
     pub x_axis: Vec3,
     pub y_axis: Vec3,
     pub height: f64,
+    pub width: f64,
     pub width_factor: f64,
     pub oblique_angle: f64,
     pub font: String,
+    pub font_family: String,
+    pub alignment: String,
     pub is_mtext: bool,
+    pub multiline: bool,
     pub line_spacing: CadLineSpacing,
 }
 
@@ -157,9 +161,13 @@ pub struct CadScene {
     pub bounds: Bounds2,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct SceneOptions {
     pub layout: String,
+    pub root_block: Option<String>,
+    pub root_entities: Vec<ObjectId>,
+    pub linetype_scale: f64,
+    pub linetype_alignment: CadLinetypeAlignment,
     pub maximum_depth: usize,
     pub maximum_occurrences: usize,
     pub include_invisible: bool,
@@ -169,6 +177,10 @@ impl Default for SceneOptions {
     fn default() -> Self {
         Self {
             layout: "Model".into(),
+            root_block: None,
+            root_entities: Vec::new(),
+            linetype_scale: 1.0,
+            linetype_alignment: CadLinetypeAlignment::Continuous,
             maximum_depth: 64,
             maximum_occurrences: 1_000_000,
             include_invisible: false,

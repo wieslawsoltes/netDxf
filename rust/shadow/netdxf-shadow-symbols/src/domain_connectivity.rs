@@ -10,14 +10,22 @@ use std::collections::BTreeMap;
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub struct DomainConnectivityOptions {
     pub tolerance: f64,
+    pub connection_tolerance: f64,
     pub maximum_nodes: usize,
+    pub maximum_edges: usize,
+    pub maximum_issues: usize,
+    pub maximum_objects: usize,
 }
 
 impl Default for DomainConnectivityOptions {
     fn default() -> Self {
         Self {
             tolerance: 0.05,
+            connection_tolerance: 0.05,
             maximum_nodes: 50_000,
+            maximum_edges: 100_000,
+            maximum_issues: 1_000,
+            maximum_objects: 100_000,
         }
     }
 }
@@ -61,10 +69,14 @@ pub struct DomainConnectivityIssue {
     pub entity: Option<ObjectId>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainNetworkComponent {
     pub id: usize,
     pub nodes: Vec<usize>,
+    pub edge_count: usize,
+    pub entity_count: usize,
+    pub node_count: usize,
+    pub open_port_count: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -221,9 +233,12 @@ impl DomainConnectivity {
                 }
             }
             nodes.sort_unstable();
+            let node_count = nodes.len();
             components.push(DomainNetworkComponent {
                 id: components.len(),
                 nodes,
+                node_count,
+                ..Default::default()
             });
         }
         (connections, components)
@@ -258,7 +273,11 @@ pub struct DomainIsolationTraversalSummary {
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainIsolationAssessment {
+    pub id: usize,
+    pub status: String,
     pub isolated: bool,
+    pub before: DomainIsolationTraversalSummary,
+    pub after: DomainIsolationTraversalSummary,
     pub exclusions: Vec<DomainIsolationExclusion>,
     pub summary: DomainIsolationTraversalSummary,
 }
@@ -294,8 +313,12 @@ pub struct DomainPortStructure {
     pub component: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainCondensationLink {
+    pub id: usize,
+    pub source: usize,
+    pub target: usize,
+    pub connection_count: usize,
     pub source_component: usize,
     pub target_component: usize,
 }
@@ -446,18 +469,24 @@ impl DomainConnectivityIsolation {
                 visited += 1;
             }
         }
+        let summary = DomainIsolationTraversalSummary {
+            visited_nodes: visited,
+            visited_count: visited,
+            blocked_nodes: blocked.len(),
+            examined_edges: filtered.len(),
+            complete: true,
+            scope_complete: true,
+            ..Default::default()
+        };
+        let isolated = visited < node_count;
         DomainIsolationAssessment {
-            isolated: visited < node_count,
+            id: start,
+            status: if isolated { "isolated".to_string() } else { "connected".to_string() },
+            isolated,
+            before: summary.clone(),
+            after: summary.clone(),
             exclusions: Vec::new(),
-            summary: DomainIsolationTraversalSummary {
-                visited_nodes: visited,
-                visited_count: visited,
-                blocked_nodes: blocked.len(),
-                examined_edges: filtered.len(),
-                complete: true,
-                scope_complete: true,
-                ..Default::default()
-            },
+            summary,
         }
     }
 }

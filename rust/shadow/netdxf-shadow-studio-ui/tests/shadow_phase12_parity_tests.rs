@@ -190,6 +190,7 @@ fn shadow_studio_hub_agents_acp_hosting_mcp_and_symbols() {
         provider: "openai".into(),
         model: "gpt-5".into(),
         base_url: None,
+        ..Default::default()
     })
     .expect("provider");
     assert_eq!(ShadowAgentProviders::get_service(&prov, "model"), Some("gpt-5"));

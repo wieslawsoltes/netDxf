@@ -2,10 +2,14 @@ use netdxf_shadow::{ObjectId, ShadowSnapshot};
 use netdxf_shadow_geometry::{CadGeometry, ICacheableEntityProjector, IEntityProjector};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DimensionProjectionOptions {
     pub maximum_source_objects: usize,
     pub maximum_source_values: usize,
+    pub maximum_depth: usize,
+    pub maximum_generated_occurrences: usize,
+    pub maximum_text_length: usize,
+    pub culture_name: String,
     pub regenerate_missing_blocks: bool,
 }
 
@@ -14,6 +18,10 @@ impl Default for DimensionProjectionOptions {
         Self {
             maximum_source_objects: 4_096,
             maximum_source_values: 131_072,
+            maximum_depth: 16,
+            maximum_generated_occurrences: 16_384,
+            maximum_text_length: 1_024,
+            culture_name: "en-US".into(),
             regenerate_missing_blocks: true,
         }
     }

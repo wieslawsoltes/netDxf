@@ -28,6 +28,26 @@ impl Curve3 {
         }
     }
 
+    #[inline]
+    pub fn at(&self, t: f64) -> Vec3 {
+        self.evaluate(t)
+    }
+
+    #[inline]
+    pub fn start(&self) -> Vec3 {
+        self.evaluate(0.0)
+    }
+
+    #[inline]
+    pub fn end(&self) -> Vec3 {
+        self.evaluate(1.0)
+    }
+
+    #[inline]
+    pub fn closed(&self) -> bool {
+        Vec3::distance(self.start(), self.end()) <= 1e-6
+    }
+
     pub fn transform(&self, m: Affine3) -> Self {
         match self {
             Self::Line(c) => Self::Line(LineCurve {

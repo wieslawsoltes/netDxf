@@ -37,6 +37,9 @@ pub struct McpToolRegistry {
 }
 
 impl McpToolRegistry {
+    pub const MAXIMUM_ARGUMENT_CHARACTERS: usize = 262_144;
+    pub const MAXIMUM_RESULT_CHARACTERS: usize = 524_288;
+
     pub fn new() -> Self {
         Self::default()
     }
@@ -50,6 +53,10 @@ impl McpToolRegistry {
         self.tools.values().map(|t| t.definition()).collect()
     }
 
+    pub fn tools(&self) -> Vec<McpToolDefinition> {
+        self.list()
+    }
+
     pub fn call(&self, name: &str, arguments: &Value) -> McpToolResult {
         match self.tools.get(name) {
             Some(tool) => tool.execute(arguments),
@@ -59,9 +66,29 @@ impl McpToolRegistry {
             },
         }
     }
+
+    pub fn execute(&self, name: &str, arguments: &Value) -> McpToolResult {
+        self.call(name, arguments)
+    }
 }
 
 impl McpJson {
+    pub fn options() -> Value {
+        serde_json::json!({ "camelCase": true, "indented": false })
+    }
+
+    pub fn empty_object() -> Value {
+        serde_json::json!({})
+    }
+
+    pub fn parse(input: &str) -> Result<Value, serde_json::Error> {
+        serde_json::from_str(input)
+    }
+
+    pub fn element(value: &Value) -> Value {
+        value.clone()
+    }
+
     pub fn to_string_pretty<T: Serialize>(value: &T) -> Result<String, serde_json::Error> {
         serde_json::to_string_pretty(value)
     }

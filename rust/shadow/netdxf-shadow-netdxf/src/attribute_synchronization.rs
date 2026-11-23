@@ -1,4 +1,4 @@
-use netdxf_shadow::ObjectId;
+use netdxf_shadow::{ObjectId, ShadowGraphPatch};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -27,8 +27,12 @@ pub struct AttributeSynchronizationReference {
     pub text_conversions: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub struct AttributeSynchronizationPlan {
+    pub block: Option<ObjectId>,
+    pub block_name: String,
+    pub patch: Option<ShadowGraphPatch>,
+    pub references: Vec<AttributeSynchronizationReference>,
     pub additions: Vec<AttributeSynchronizationReference>,
     pub removals: Vec<AttributeSynchronizationRemoval>,
 }

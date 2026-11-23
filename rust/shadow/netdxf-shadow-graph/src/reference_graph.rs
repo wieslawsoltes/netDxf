@@ -25,19 +25,27 @@ pub enum ReferencePathStatus {
     LimitReached,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ReferenceGraphOptions {
+    pub roots: Vec<ObjectId>,
     pub direction: ReferenceGraphDirection,
     pub max_depth: usize,
+    pub maximum_depth: usize,
     pub max_nodes: usize,
+    pub maximum_nodes: usize,
+    pub maximum_edges: usize,
 }
 
 impl Default for ReferenceGraphOptions {
     fn default() -> Self {
         Self {
+            roots: Vec::new(),
             direction: ReferenceGraphDirection::Outgoing,
             max_depth: 16,
+            maximum_depth: 16,
             max_nodes: 10_000,
+            maximum_nodes: 10_000,
+            maximum_edges: 50_000,
         }
     }
 }
@@ -424,6 +432,31 @@ impl ReferenceGraphIndex {
             components,
             condensation_edges: Vec::new(),
         }
+    }
+
+    pub fn explore(&self, roots: &[ObjectId], options: &ReferenceGraphOptions) -> ReferenceGraph {
+        self.subgraph(roots, options)
+    }
+
+    pub fn impact(&self, roots: &[ObjectId], options: &ReferenceGraphOptions) -> ReferenceImpactResult {
+        self.impact_analysis(roots, options)
+    }
+
+    pub fn shortest_path(
+        &self,
+        start: &ObjectId,
+        target: &ObjectId,
+        options: &ReferencePathOptions,
+    ) -> ReferencePathResult {
+        self.find_path(start, target, options)
+    }
+
+    pub fn strongly_connected_components(
+        &self,
+        roots: &[ObjectId],
+        options: &ReferenceGraphOptions,
+    ) -> ReferenceComponentAnalysis {
+        self.component_analysis(roots, options)
     }
 }
 

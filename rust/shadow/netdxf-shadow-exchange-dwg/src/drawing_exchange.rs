@@ -35,10 +35,14 @@ pub struct DrawingExchangeDiagnostic {
     pub message: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct DrawingExchangeResult {
     pub content: Vec<u8>,
     pub encoding: DrawingEncoding,
+    pub source_version: Option<DxfVersion>,
+    pub output_version: Option<DxfVersion>,
+    pub entity_count: usize,
+    pub named_block_count: usize,
     pub diagnostics: Vec<DrawingExchangeDiagnostic>,
 }
 
@@ -181,6 +185,10 @@ impl DrawingExchange {
         Ok(DrawingExchangeResult {
             content: buf,
             encoding,
+            source_version: Some(doc.drawing_variables.acad_ver),
+            output_version: Some(doc.drawing_variables.acad_ver),
+            entity_count: doc.entities.len(),
+            named_block_count: doc.blocks.len(),
             diagnostics: Vec::new(),
         })
     }

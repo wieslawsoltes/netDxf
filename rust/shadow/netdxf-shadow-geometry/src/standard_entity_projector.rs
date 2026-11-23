@@ -210,8 +210,11 @@ impl IEntityProjector for StandardEntityProjector {
                         width_factor: 1.0,
                         oblique_angle: 0.0,
                         font: "Arial".into(),
+                        font_family: "Arial".into(),
                         is_mtext: entity_type == "MText",
+                        multiline: entity_type == "MText",
                         line_spacing: CadLineSpacing::default(),
+                        ..Default::default()
                     }],
                     points: vec![origin],
                     ..Default::default()

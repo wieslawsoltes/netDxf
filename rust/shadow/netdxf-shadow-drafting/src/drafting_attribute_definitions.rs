@@ -16,12 +16,16 @@ pub struct DraftingAttributeDefinition {
     pub position: Vec3,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct AttributeDefinitionEdit {
     pub id: ObjectId,
+    pub definition: Option<ObjectId>,
     pub tag: Option<String>,
     pub prompt: Option<String>,
     pub default_value: Option<String>,
+    pub appearance: Option<String>,
+    pub preset: Option<bool>,
+    pub verify: Option<bool>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

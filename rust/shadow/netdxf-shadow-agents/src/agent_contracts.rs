@@ -148,10 +148,14 @@ pub struct AgentPinnedContext {
     pub content: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentApproval {
     pub id: String,
+    pub request_id: String,
+    pub tool: String,
+    pub arguments: String,
     pub description: String,
+    pub expires_at: Option<String>,
     pub approved: Option<bool>,
 }
 
@@ -167,6 +171,9 @@ pub struct AgentRunState {
     pub mode: AgentRunMode,
     pub phase: String,
     pub turn: usize,
+    pub turn_count: usize,
+    pub total_turns: usize,
+    pub turn_limit: usize,
     pub continuation_count: usize,
     pub no_progress_count: usize,
     pub output_limit_count: usize,
@@ -175,6 +182,7 @@ pub struct AgentRunState {
     pub detail: Option<String>,
     pub completion_summary: Option<String>,
     pub success_criteria: Option<String>,
+    pub verification: Option<String>,
     pub usage: AgentUsage,
     pub plan: Vec<AgentPlanStep>,
 }
@@ -193,15 +201,22 @@ pub struct AgentContentRecord {
     pub anthropic_redacted_thinking: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentMessageRecord {
+    pub message_id: String,
     pub role: String,
+    pub display_text: String,
     pub content: Vec<AgentContentRecord>,
+    pub contents: Vec<AgentContentRecord>,
+    pub references: Vec<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct AgentCallReceipt {
+    pub call_id: String,
     pub tool: String,
+    pub signature: String,
+    pub is_error: bool,
     pub arguments: Value,
     pub result: Value,
 }

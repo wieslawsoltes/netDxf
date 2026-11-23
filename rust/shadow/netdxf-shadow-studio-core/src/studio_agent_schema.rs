@@ -23,14 +23,33 @@ use std::sync::Arc;
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct Route {
+    pub name: String,
     pub method: String,
     pub path: String,
     pub description: String,
+    pub mutates: bool,
+    pub schema: Value,
 }
 
 pub struct StudioAgentSchema;
 
 impl StudioAgentSchema {
+    pub fn routes() -> Vec<Route> {
+        StudioAgentRouteTools::routes()
+    }
+
+    pub fn find(name: &str) -> Option<Route> {
+        Self::routes().into_iter().find(|r| r.name == name || r.path == name)
+    }
+
+    pub fn parse_object(input: &str) -> Result<Value, String> {
+        serde_json::from_str(input).map_err(|e| e.to_string())
+    }
+
+    pub fn tool_schema() -> Value {
+        Self::route_schema()
+    }
+
     pub fn route_schema() -> Value {
         serde_json::json!({
             "type": "object",

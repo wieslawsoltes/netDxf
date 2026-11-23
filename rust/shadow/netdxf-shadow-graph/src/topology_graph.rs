@@ -241,6 +241,10 @@ impl TopologyGraph {
                 z: n.position.z,
                 degree: n.edges.len(),
                 component: 0,
+                dead_end: n.edges.len() == 1,
+                isolated: n.edges.is_empty(),
+                junction: n.edges.len() >= 3,
+                ..Default::default()
             })
             .collect();
         let edge_items: Vec<GraphVisualizationEdge> = self

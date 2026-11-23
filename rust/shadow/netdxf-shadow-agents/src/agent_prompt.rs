@@ -134,6 +134,7 @@ impl AgentSession {
                 text: prompt.text,
                 ..Default::default()
             }],
+            ..Default::default()
         });
         self.state.running = false;
         self.state.clone()
@@ -194,6 +195,7 @@ impl AgentSession {
                 text: summary_text,
                 ..Default::default()
             }],
+            ..Default::default()
         });
     }
 

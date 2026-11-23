@@ -54,12 +54,16 @@ pub struct EvaluationContext {
     pub tools: Vec<String>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct EvaluationCost {
     pub total_usd: f64,
+    pub estimated_usd: f64,
+    pub reserved_usd: f64,
+    pub basis: String,
+    pub rate_source: String,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct EvaluationTelemetry {
     pub duration_ms: u64,
     pub inference_milliseconds: u64,

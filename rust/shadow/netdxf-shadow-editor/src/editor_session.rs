@@ -74,10 +74,14 @@ impl ShadowEditPreview {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct EditHistoryEntry {
     pub label: String,
+    pub description: String,
     pub revision: i64,
+    pub before: i64,
+    pub after: i64,
+    pub changes: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -130,11 +134,17 @@ impl EditorSession {
     ) -> ShadowResult<Arc<ShadowSnapshot>> {
         let before = self.store.current();
         let after = self.store.apply(batch)?;
+        let before_rev = before.revision;
+        let label_str = label.into();
         self.undo_stack.push(before);
         self.redo_stack.clear();
         self.history.push(EditHistoryEntry {
-            label: label.into(),
+            label: label_str.clone(),
+            description: label_str,
             revision: after.revision,
+            before: before_rev,
+            after: after.revision,
+            changes: batch.edits.len(),
         });
         Ok(after)
     }
@@ -145,12 +155,18 @@ impl EditorSession {
         patch: &ShadowGraphPatch,
     ) -> ShadowResult<Arc<ShadowSnapshot>> {
         let before = self.store.current();
+        let before_rev = before.revision;
         let after = self.store.apply_patch(patch)?;
+        let label_str = label.into();
         self.undo_stack.push(before);
         self.redo_stack.clear();
         self.history.push(EditHistoryEntry {
-            label: label.into(),
+            label: label_str.clone(),
+            description: label_str,
             revision: after.revision,
+            before: before_rev,
+            after: after.revision,
+            changes: patch.changes.len(),
         });
         Ok(after)
     }

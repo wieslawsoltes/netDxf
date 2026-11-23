@@ -13,10 +13,14 @@ use thiserror::Error;
 pub struct ShadowAgentBridgeRequest {
     pub name: String,
     pub description: String,
+    pub provider: String,
     pub endpoint: Option<String>,
     pub api_key: Option<String>,
     pub model: String,
     pub prompt: String,
+    pub prompt_cache_key: Option<String>,
+    pub optimize_prompt_caching: bool,
+    pub options: Value,
     pub messages: Vec<Value>,
     pub tools: Vec<ShadowAgentBridgeTool>,
     pub json_schema: Option<Value>,
@@ -39,6 +43,14 @@ impl ShadowAgentBridgeRequest {
             "endpoint": self.endpoint,
             "toolCount": self.tools.len(),
         })
+    }
+
+    pub fn validate(&self) -> Result<(), String> {
+        if self.model.trim().is_empty() {
+            Err("Model is required.".into())
+        } else {
+            Ok(())
+        }
     }
 }
 

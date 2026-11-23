@@ -21,6 +21,11 @@ pub struct AgentCommandResult {
     pub exit_code: i32,
     pub stdout: String,
     pub stderr: String,
+    pub standard_output: String,
+    pub standard_error: String,
+    pub elapsed_milliseconds: u64,
+    pub timed_out: bool,
+    pub truncated: bool,
 }
 
 pub trait IAgentCommandRunner: Send + Sync {
@@ -34,10 +39,16 @@ pub struct AgentCommandTools;
 
 impl IAgentCommandRunner for LocalAgentCommandRunner {
     fn run(&self, command: &AgentCommand) -> AgentCommandResult {
+        let out = format!("dry-run: {} {:?}", command.program, command.args);
         AgentCommandResult {
             exit_code: 0,
-            stdout: format!("dry-run: {} {:?}", command.program, command.args),
+            stdout: out.clone(),
             stderr: String::new(),
+            standard_output: out,
+            standard_error: String::new(),
+            elapsed_milliseconds: 0,
+            timed_out: false,
+            truncated: false,
         }
     }
 }

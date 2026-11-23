@@ -27,14 +27,20 @@ impl StudioAgentRouteTools {
     pub fn routes() -> Vec<Route> {
         vec![
             Route {
+                name: "studio.cad.snapshot".into(),
                 method: "GET".into(),
                 path: "/api/cad/snapshot".into(),
                 description: "Read current shadow snapshot summary".into(),
+                mutates: false,
+                schema: Value::Null,
             },
             Route {
+                name: "studio.cad.pick".into(),
                 method: "POST".into(),
                 path: "/api/cad/pick".into(),
                 description: "Hit-test entities near a world point".into(),
+                mutates: true,
+                schema: Value::Null,
             },
         ]
     }

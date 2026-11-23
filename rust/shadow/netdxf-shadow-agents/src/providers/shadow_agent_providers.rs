@@ -16,6 +16,10 @@ pub struct ShadowAgentProviderOptions {
     pub provider: String,
     pub model: String,
     pub base_url: Option<String>,
+    pub endpoint: Option<String>,
+    pub api_key: Option<String>,
+    pub prompt_cache_key: Option<String>,
+    pub optimize_prompt_caching: bool,
 }
 
 #[derive(Debug, Clone, Error, PartialEq, Eq)]
@@ -42,7 +46,7 @@ impl ShadowAgentProviders {
         ShadowAgentProviderOptions {
             provider: "browser".into(),
             model: model.into(),
-            base_url: None,
+            ..Default::default()
         }
     }
 
@@ -51,6 +55,7 @@ impl ShadowAgentProviders {
             provider: "browser-bridge".into(),
             model: model.into(),
             base_url: Some(base_url.into()),
+            ..Default::default()
         }
     }
 

@@ -20,6 +20,10 @@ pub struct HatchIslandOptions {
     pub boundary_tolerance: f64,
     pub contact_tolerance: f64,
     pub maximum_boundaries: usize,
+    pub maximum_contours: usize,
+    pub maximum_boundary_points: usize,
+    pub maximum_segment_comparisons: usize,
+    pub maximum_containment_edge_visits: usize,
 }
 
 impl Default for HatchIslandOptions {
@@ -28,6 +32,10 @@ impl Default for HatchIslandOptions {
             boundary_tolerance: 0.01,
             contact_tolerance: 1e-9,
             maximum_boundaries: 16_384,
+            maximum_contours: 16_384,
+            maximum_boundary_points: 262_144,
+            maximum_segment_comparisons: 1_000_000,
+            maximum_containment_edge_visits: 1_000_000,
         }
     }
 }

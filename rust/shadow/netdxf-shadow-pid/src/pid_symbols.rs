@@ -24,6 +24,7 @@ impl PidSymbols {
                     points: vec![Vec3::ZERO],
                     radius: 5.0,
                     text: None,
+                    ..Default::default()
                 }],
                 ports: vec![
                     SymbolPort {
@@ -57,6 +58,7 @@ impl PidSymbols {
                     ],
                     radius: 0.0,
                     text: None,
+                    ..Default::default()
                 }],
                 ports: vec![
                     SymbolPort {

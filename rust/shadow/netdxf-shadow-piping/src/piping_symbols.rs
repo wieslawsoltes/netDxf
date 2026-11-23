@@ -24,6 +24,7 @@ impl PipingSymbols {
                     points: vec![Vec3::xy(-3.0, 0.0), Vec3::xy(0.0, 3.0)],
                     radius: 3.0,
                     text: None,
+                    ..Default::default()
                 }],
                 ports: vec![
                     SymbolPort {
@@ -52,6 +53,7 @@ impl PipingSymbols {
                     points: vec![Vec3::xy(0.0, -3.0), Vec3::xy(0.0, 3.0)],
                     radius: 0.0,
                     text: None,
+                    ..Default::default()
                 }],
                 ports: vec![
                     SymbolPort {
