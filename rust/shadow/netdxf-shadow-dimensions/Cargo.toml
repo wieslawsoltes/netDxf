@@ -9,6 +9,7 @@ authors.workspace = true
 description = "Dimension entity projector for netDxf.Shadow"
 
 [dependencies]
+netdxf.workspace = true
 netdxf-shadow.workspace = true
 netdxf-shadow-geometry.workspace = true
 netdxf-shadow-netdxf.workspace = true

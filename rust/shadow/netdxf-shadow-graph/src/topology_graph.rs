@@ -115,43 +115,7 @@ impl TopologyGraph {
     }
 
     pub fn spanning_forest(&self) -> GraphSpanningForest {
-        let n = self.nodes.len();
-        let mut visited = vec![false; n];
-        let mut forest_edges = Vec::new();
-        let mut total_len = 0.0;
-        let mut components = 0usize;
-
-        for start in 0..n {
-            if visited[start] {
-                continue;
-            }
-            components += 1;
-            visited[start] = true;
-            let mut queue = VecDeque::new();
-            queue.push_back(start);
-            while let Some(u) = queue.pop_front() {
-                for &ei in &self.nodes[u].edges {
-                    let e = &self.edges[ei];
-                    let v = if e.a == u { e.b } else { e.a };
-                    if !visited[v] {
-                        visited[v] = true;
-                        forest_edges.push(ei);
-                        total_len += e.length;
-                        queue.push_back(v);
-                    }
-                }
-            }
-        }
-
-        GraphSpanningForest {
-            edges: forest_edges,
-            component_count: components,
-            length: total_len,
-        }
-    }
-
-    pub fn minimum_spanning_forest(&self) -> GraphSpanningForest {
-        self.spanning_forest()
+        self.minimum_spanning_forest()
     }
 
     pub fn traverse(&self, start: usize, max_depth: usize, max_nodes: usize) -> GraphTraversal {
@@ -219,28 +183,6 @@ impl TopologyGraph {
             edges,
             length: dist[goal],
         })
-    }
-
-    /// Computes a fundamental cycle basis from non-tree edges of the spanning forest.
-    pub fn cycle_basis(&self) -> GraphCycleBasis {
-        let forest = self.spanning_forest();
-        let mut in_tree = vec![false; self.edges.len()];
-        for &ei in &forest.edges {
-            in_tree[ei] = true;
-        }
-        let mut cycles = Vec::new();
-        for e in &self.edges {
-            if !in_tree[e.id] {
-                cycles.push(GraphCycle {
-                    id: cycles.len(),
-                    closing_edge: e.id,
-                    start: e.a,
-                    ancestor: e.b,
-                    edge_count: 1,
-                });
-            }
-        }
-        GraphCycleBasis { cycles }
     }
 
     /// Produces a paginated [`GraphVisualization`] snapshot.
