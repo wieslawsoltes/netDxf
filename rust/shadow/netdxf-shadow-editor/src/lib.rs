@@ -82,8 +82,68 @@ pub struct AffineEntityEdit {
 }
 
 pub struct AffineEditOperations;
+
+impl AffineEditOperations {
+    /// Builds a property edit batch transforming `StartPoint`/`EndPoint`/`Center`/`Position` by `edit.transform`.
+    pub fn transform_entities(
+        snapshot: &ShadowSnapshot,
+        edits: &[AffineEntityEdit],
+        _options: &AffineEditOptions,
+    ) -> ShadowEditBatch {
+        let mut prop_edits = Vec::new();
+        for edit in edits {
+            let reader = snapshot.read(edit.entity.clone());
+            for prop in ["StartPoint", "EndPoint", "Center", "Position"] {
+                let f = reader.field(prop);
+                if f.exists() {
+                    let before_v = f.vector(Vec3::ZERO);
+                    let after_v = edit.transform.point(before_v);
+                    prop_edits.push(netdxf_shadow::ShadowPropertyEdit {
+                        object: edit.entity.clone(),
+                        property: prop.to_string(),
+                        before: f.value.clone(),
+                        after: ShadowValue::from_vec3(after_v, false),
+                    });
+                }
+            }
+        }
+        ShadowEditBatch::create(snapshot, prop_edits)
+    }
+}
+
 pub struct CustomHeaderEdits;
+
+impl CustomHeaderEdits {
+    pub fn set_property(
+        snapshot: &ShadowSnapshot,
+        name: impl Into<String>,
+        value: impl Into<String>,
+    ) -> ShadowGraphPatch {
+        let mut edit = netdxf_shadow::ShadowGraphEdit::new(snapshot.clone());
+        let _ = edit.set(&snapshot.root, name, ShadowValue::from_string(value));
+        edit.build()
+    }
+}
+
 pub struct EditOperations;
+
+impl EditOperations {
+    pub fn move_entities(
+        snapshot: &ShadowSnapshot,
+        entities: &[ObjectId],
+        delta: Vec3,
+    ) -> ShadowEditBatch {
+        let affine = Affine3::move_by(delta);
+        let edits: Vec<AffineEntityEdit> = entities
+            .iter()
+            .map(|id| AffineEntityEdit {
+                entity: id.clone(),
+                transform: affine,
+            })
+            .collect();
+        AffineEditOperations::transform_entities(snapshot, &edits, &AffineEditOptions::default())
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ShadowPreviewOptions {

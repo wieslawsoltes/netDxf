@@ -192,3 +192,70 @@ impl ShadowMcpServer {
 }
 
 pub struct ShadowMcpTools;
+
+impl DrawingReferences {
+    pub fn capture(snapshot: &ShadowSnapshot, request: &DrawingReferenceCaptureRequest) -> DrawingReferenceSet {
+        let objects = request
+            .ids
+            .iter()
+            .filter_map(|id| {
+                snapshot.objects.get(id).map(|obj| DrawingObjectReference {
+                    id: id.clone(),
+                    type_name: obj.type_name.clone(),
+                })
+            })
+            .collect();
+        DrawingReferenceSet {
+            identity: DrawingReferenceIdentity {
+                document_id: snapshot.document_id.clone(),
+                revision: snapshot.revision,
+            },
+            objects,
+        }
+    }
+
+    pub fn validate(
+        snapshot: &ShadowSnapshot,
+        request: &DrawingReferenceValidationRequest,
+    ) -> DrawingReferenceValidation {
+        let resolutions: Vec<DrawingReferenceResolution> = request
+            .reference_set
+            .objects
+            .iter()
+            .map(|r| DrawingReferenceResolution {
+                id: r.id.clone(),
+                exists: snapshot.objects.contains_key(&r.id),
+            })
+            .collect();
+        let valid = resolutions.iter().all(|r| r.exists);
+        DrawingReferenceValidation { valid, resolutions }
+    }
+}
+
+impl McpJson {
+    pub fn to_string_pretty<T: Serialize>(value: &T) -> Result<String, serde_json::Error> {
+        serde_json::to_string_pretty(value)
+    }
+}
+
+impl ShadowJson {
+    pub fn snapshot_summary(snapshot: &ShadowSnapshot) -> Value {
+        serde_json::json!({
+            "documentId": snapshot.document_id,
+            "revision": snapshot.revision,
+            "objectCount": snapshot.objects.len(),
+            "entityCount": snapshot.entity_ids.len(),
+        })
+    }
+}
+
+impl ShadowMcpTools {
+    pub fn standard_tool_names() -> &'static [&'static str] {
+        &[
+            "shadow.document.summary",
+            "shadow.entities.list",
+            "shadow.references.capture",
+            "shadow.references.validate",
+        ]
+    }
+}

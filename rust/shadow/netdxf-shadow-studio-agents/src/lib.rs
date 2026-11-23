@@ -23,3 +23,9 @@ pub struct StudioAgentController {
 }
 
 pub struct StudioAgentUiRelay;
+
+impl StudioAgentUiRelay {
+    pub fn format_prompt(req: &Request) -> String {
+        req.prompt.trim().to_string()
+    }
+}

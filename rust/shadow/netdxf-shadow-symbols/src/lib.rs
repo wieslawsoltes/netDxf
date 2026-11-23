@@ -391,3 +391,151 @@ pub struct DomainSchedule {
     pub groups: Vec<DomainScheduleGroup>,
     pub issues: Vec<DomainScheduleIssue>,
 }
+
+impl DrawingBlockLibrary {
+    pub fn summarize(names: &[String]) -> Vec<DrawingBlockEntry> {
+        names
+            .iter()
+            .map(|n| DrawingBlockEntry {
+                name: n.clone(),
+                entity_count: 0,
+            })
+            .collect()
+    }
+}
+
+impl SymbolAuthoring {
+    pub fn create_simple(
+        id: impl Into<String>,
+        name: impl Into<String>,
+        domain: impl Into<String>,
+    ) -> SymbolDefinition {
+        SymbolDefinition {
+            id: id.into(),
+            name: name.into(),
+            domain: domain.into(),
+            category: "Custom".into(),
+            strokes: Vec::new(),
+            ports: Vec::new(),
+            attributes: Vec::new(),
+        }
+    }
+}
+
+impl SymbolCatalog {
+    pub fn paginate(items: &[SymbolDefinition], offset: usize, limit: usize) -> SymbolCatalogPage {
+        SymbolCatalogPage {
+            total: items.len(),
+            offset,
+            items: items.iter().skip(offset).take(limit).cloned().collect(),
+        }
+    }
+}
+
+impl SymbolNative {
+    pub fn block_name(symbol: &SymbolDefinition) -> String {
+        format!("SYM_{}", symbol.id.replace('.', "_").to_ascii_uppercase())
+    }
+}
+
+impl DomainAnalysis {
+    pub fn scan(entities: Vec<DomainEntity>) -> DomainScan {
+        let mut issues = Vec::new();
+        for e in &entities {
+            if e.record.tag.trim().is_empty() {
+                issues.push(DomainIssue {
+                    code: "MISSING_TAG".into(),
+                    severity: DiagnosticSeverity::Warning,
+                    entity: Some(e.entity.clone()),
+                    message: format!("Domain entity '{}' has an empty tag.", e.record.symbol_id),
+                });
+            }
+        }
+        DomainScan { entities, issues }
+    }
+}
+
+impl DomainMetadata {
+    pub fn property<'a>(record: &'a DomainRecord, key: &str) -> Option<&'a str> {
+        record.properties.get(key).map(String::as_str)
+    }
+}
+
+impl DomainPlans {
+    pub fn schedule(scan: &DomainScan, options: &DomainScheduleOptions) -> DomainSchedule {
+        let mut by_group: BTreeMap<String, Vec<DomainScheduleRow>> = BTreeMap::new();
+        for e in &scan.entities {
+            let group_key = options
+                .group_by
+                .as_deref()
+                .and_then(|k| e.record.properties.get(k).cloned())
+                .unwrap_or_else(|| e.record.domain.clone());
+            by_group.entry(group_key).or_default().push(DomainScheduleRow {
+                entity: e.entity.clone(),
+                tag: e.record.tag.clone(),
+                columns: e.record.properties.clone(),
+            });
+        }
+        let groups = by_group
+            .into_iter()
+            .map(|(key, rows)| DomainScheduleGroup { key, rows })
+            .collect();
+        DomainSchedule {
+            groups,
+            issues: Vec::new(),
+        }
+    }
+}
+
+impl DomainConnectivityIsolation {
+    pub fn assess(
+        node_count: usize,
+        connections: &[DomainConnection],
+        start: usize,
+        blocked_nodes: &[usize],
+        _options: &DomainIsolationOptions,
+    ) -> DomainIsolationAssessment {
+        let blocked: std::collections::BTreeSet<usize> = blocked_nodes.iter().copied().collect();
+        let filtered: Vec<DomainConnection> = connections
+            .iter()
+            .filter(|c| !blocked.contains(&c.a) && !blocked.contains(&c.b))
+            .cloned()
+            .collect();
+        let mut visited = 0usize;
+        for target in 0..node_count {
+            if DomainConnectivityWalk::prove_connection(node_count, &filtered, start, target)
+                .connected
+            {
+                visited += 1;
+            }
+        }
+        DomainIsolationAssessment {
+            isolated: visited < node_count,
+            exclusions: Vec::new(),
+            summary: DomainIsolationTraversalSummary {
+                visited_nodes: visited,
+                blocked_nodes: blocked.len(),
+            },
+        }
+    }
+}
+
+impl DomainConnectivityStructure {
+    pub fn critical_connections(
+        node_count: usize,
+        connections: &[DomainConnection],
+    ) -> Vec<DomainCriticalConnection> {
+        let edges: Vec<netdxf_shadow_graph::IndexedGraphConnection> = connections
+            .iter()
+            .map(|c| netdxf_shadow_graph::IndexedGraphConnection { a: c.a, b: c.b })
+            .collect();
+        let ll = netdxf_shadow_graph::IndexedGraphAnalysis::low_links(node_count, &edges);
+        ll.bridges
+            .into_iter()
+            .map(|id| DomainCriticalConnection {
+                connection_id: id,
+                is_bridge: true,
+            })
+            .collect()
+    }
+}

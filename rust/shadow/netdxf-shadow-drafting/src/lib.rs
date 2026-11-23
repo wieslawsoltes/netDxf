@@ -452,3 +452,211 @@ impl PlanarGeometry {
         0.5 * sum
     }
 }
+
+impl DraftingAttributeDefinitions {
+    pub fn list(snapshot: &netdxf_shadow::ShadowSnapshot) -> Vec<DraftingAttributeDefinition> {
+        snapshot
+            .objects
+            .values()
+            .filter(|o| o.short_type() == "AttributeDefinition")
+            .map(|o| {
+                let r = snapshot.read(o.id.clone());
+                DraftingAttributeDefinition {
+                    id: o.id.clone(),
+                    tag: r.field("Tag").text().to_string(),
+                    prompt: r.field("Prompt").text().to_string(),
+                    default_value: r.field("Value").text().to_string(),
+                    position: r.field("Position").vector(Vec3::ZERO),
+                }
+            })
+            .collect()
+    }
+}
+
+impl DraftingAttributes {
+    pub fn list(snapshot: &netdxf_shadow::ShadowSnapshot) -> Vec<DraftingAttribute> {
+        snapshot
+            .objects
+            .values()
+            .filter(|o| o.short_type() == "Attribute")
+            .map(|o| {
+                let r = snapshot.read(o.id.clone());
+                DraftingAttribute {
+                    id: o.id.clone(),
+                    tag: r.field("Tag").text().to_string(),
+                    value: r.field("Value").text().to_string(),
+                    position: r.field("Position").vector(Vec3::ZERO),
+                }
+            })
+            .collect()
+    }
+}
+
+impl DraftingBlockLibrary {
+    pub fn plan_import(request: &BlockLibraryImport, limits: &BlockLibraryLimits) -> BlockLibraryPlan {
+        let imported_blocks = request
+            .block_names
+            .iter()
+            .take(limits.maximum_blocks)
+            .cloned()
+            .collect();
+        BlockLibraryPlan {
+            imported_blocks,
+            resources: Vec::new(),
+        }
+    }
+}
+
+impl DraftingGuard {
+    pub fn validate_limits(entity_count: usize, limits: &DraftingLimits) -> Result<(), String> {
+        if entity_count > limits.maximum_entities {
+            Err("Entity count exceeds drafting limits.".into())
+        } else {
+            Ok(())
+        }
+    }
+}
+
+impl DraftingGrips {
+    pub fn extract(snapshot: &netdxf_shadow::ShadowSnapshot, entity: &ObjectId) -> Vec<DraftingGrip> {
+        let r = snapshot.read(entity.clone());
+        let mut grips = Vec::new();
+        for key in ["StartPoint", "EndPoint", "Center", "Position"] {
+            let f = r.field(key);
+            if f.exists() {
+                grips.push(DraftingGrip {
+                    entity: entity.clone(),
+                    key: key.to_string(),
+                    position: f.vector(Vec3::ZERO),
+                });
+            }
+        }
+        grips
+    }
+}
+
+impl DraftingHatches {
+    pub fn solid_pattern() -> DraftingHatchPattern {
+        DraftingHatchPattern {
+            name: "SOLID".into(),
+            pattern_type: DraftingHatchPatternType::Solid,
+            scale: 1.0,
+            angle: 0.0,
+            lines: Vec::new(),
+        }
+    }
+}
+
+impl DraftingLayerIsolation {
+    pub fn isolate(edit: &LayerIsolationEdit) -> LayerIsolationStatus {
+        LayerIsolationStatus {
+            isolated: !edit.keep_layers.is_empty(),
+            active_layers: edit.keep_layers.clone(),
+        }
+    }
+}
+
+impl DraftingLayerStates {
+    pub fn capture(snapshot: &netdxf_shadow::ShadowSnapshot, name: impl Into<String>) -> DraftingLayerStateDetails {
+        let mut layers = BTreeMap::new();
+        for l in DraftingLayers::list(snapshot) {
+            layers.insert(
+                l.name,
+                SavedLayerProperties {
+                    hidden: !l.is_visible,
+                    frozen: l.is_frozen,
+                    locked: l.is_locked,
+                    plot: true,
+                },
+            );
+        }
+        DraftingLayerStateDetails {
+            name: name.into(),
+            description: String::new(),
+            layers,
+        }
+    }
+}
+
+impl DraftingLayers {
+    pub fn list(snapshot: &netdxf_shadow::ShadowSnapshot) -> Vec<DraftingLayer> {
+        snapshot
+            .objects
+            .values()
+            .filter(|o| o.short_type() == "Layer")
+            .map(|o| {
+                let r = snapshot.read(o.id.clone());
+                DraftingLayer {
+                    id: o.id.clone(),
+                    name: r.field("Name").text().to_string(),
+                    is_visible: r.field("IsVisible").boolean(true),
+                    is_frozen: r.field("IsFrozen").boolean(false),
+                    is_locked: r.field("IsLocked").boolean(false),
+                }
+            })
+            .collect()
+    }
+}
+
+impl DraftingBlocks {
+    pub fn list_names(snapshot: &netdxf_shadow::ShadowSnapshot) -> Vec<String> {
+        snapshot
+            .objects
+            .values()
+            .filter(|o| o.short_type() == "Block")
+            .map(|o| snapshot.read(o.id.clone()).field("Name").text().to_string())
+            .collect()
+    }
+}
+
+impl DraftingPlanner {
+    pub fn empty_plan(snapshot: &netdxf_shadow::ShadowSnapshot, name: impl Into<String>) -> DraftingPlan {
+        DraftingPlan {
+            command: DraftingCommand {
+                name: name.into(),
+                summary: String::new(),
+            },
+            patch: ShadowGraphPatch::new(snapshot.document_id.clone(), snapshot.revision, Vec::new()),
+        }
+    }
+}
+
+impl DraftingQueries {
+    pub fn select_in_bounds(
+        scene: &netdxf_shadow_geometry::CadScene,
+        region: netdxf_shadow::Bounds2,
+        mode: DraftingSelectionMode,
+    ) -> Vec<ObjectId> {
+        scene
+            .occurrences
+            .iter()
+            .filter(|occ| match mode {
+                DraftingSelectionMode::Window => {
+                    !occ.bounds.is_empty()
+                        && occ.bounds.min_x >= region.min_x
+                        && occ.bounds.max_x <= region.max_x
+                        && occ.bounds.min_y >= region.min_y
+                        && occ.bounds.max_y <= region.max_y
+                }
+                DraftingSelectionMode::Crossing | DraftingSelectionMode::Point => {
+                    occ.bounds.intersects(region)
+                }
+            })
+            .map(|occ| occ.entity.clone())
+            .collect()
+    }
+}
+
+impl DraftingResources {
+    pub fn linetype_statuses(snapshot: &netdxf_shadow::ShadowSnapshot) -> Vec<DraftingResourceStatus> {
+        snapshot
+            .objects
+            .values()
+            .filter(|o| o.short_type() == "Linetype")
+            .map(|o| DraftingResourceStatus {
+                name: snapshot.read(o.id.clone()).field("Name").text().to_string(),
+                in_use: true,
+            })
+            .collect()
+    }
+}

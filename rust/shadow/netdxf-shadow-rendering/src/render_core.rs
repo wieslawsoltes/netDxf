@@ -539,6 +539,27 @@ impl LinetypePlanner {
 
 pub struct LinetypeTransport;
 
+impl LinetypeTransport {
+    /// Computes orthonormal tangent/normal/binormal frames along a polyline.
+    pub fn compute_frames(points: &[Vec3], normal_hint: Vec3) -> Vec<(Vec3, Vec3, Vec3)> {
+        if points.len() < 2 {
+            return Vec::new();
+        }
+        let n = normal_hint.normalized();
+        let mut frames = Vec::with_capacity(points.len());
+        for i in 0..points.len() {
+            let t = if i + 1 < points.len() {
+                (points[i + 1] - points[i]).normalized()
+            } else {
+                (points[i] - points[i - 1]).normalized()
+            };
+            let b = Vec3::cross(n, t).normalized();
+            frames.push((t, b, n));
+        }
+        frames
+    }
+}
+
 pub trait ILinetypeDecorationProvider: Send + Sync {
     fn resolve_decoration(&self, name: &str) -> Option<Vec<RenderContour>>;
 }

@@ -223,4 +223,169 @@ impl ReferenceGraphIndex {
             edges: out_edges,
         }
     }
+
+    pub fn find_path(
+        &self,
+        start: &ObjectId,
+        target: &ObjectId,
+        options: &ReferencePathOptions,
+    ) -> ReferencePathResult {
+        let s = start.as_str().to_string();
+        let t = target.as_str().to_string();
+        if s == t {
+            return ReferencePathResult {
+                status: ReferencePathStatus::Found,
+                direction: options.direction,
+                nodes: vec![s],
+                edges: Vec::new(),
+            };
+        }
+        let mut visited = BTreeSet::new();
+        let mut prev: BTreeMap<String, (String, ReferenceGraphEdge)> = BTreeMap::new();
+        let mut queue = VecDeque::new();
+        visited.insert(s.clone());
+        queue.push_back((s.clone(), 0usize));
+
+        while let Some((cur, depth)) = queue.pop_front() {
+            if visited.len() > options.max_visited {
+                return ReferencePathResult {
+                    status: ReferencePathStatus::LimitReached,
+                    direction: options.direction,
+                    nodes: Vec::new(),
+                    edges: Vec::new(),
+                };
+            }
+            if depth >= options.max_depth {
+                continue;
+            }
+            let mut edges = Vec::new();
+            if matches!(
+                options.direction,
+                ReferenceGraphDirection::Outgoing | ReferenceGraphDirection::Both
+            ) {
+                if let Some(es) = self.outgoing.get(&cur) {
+                    edges.extend(es.iter().cloned());
+                }
+            }
+            if matches!(
+                options.direction,
+                ReferenceGraphDirection::Incoming | ReferenceGraphDirection::Both
+            ) {
+                if let Some(es) = self.incoming.get(&cur) {
+                    edges.extend(es.iter().cloned());
+                }
+            }
+            for e in edges {
+                let next = if e.source == cur {
+                    e.target.clone()
+                } else {
+                    e.source.clone()
+                };
+                if visited.insert(next.clone()) {
+                    prev.insert(next.clone(), (cur.clone(), e));
+                    if next == t {
+                        let mut nodes = vec![t.clone()];
+                        let mut path_edges = Vec::new();
+                        let mut walk = t;
+                        while let Some((p, pe)) = prev.get(&walk) {
+                            nodes.push(p.clone());
+                            path_edges.push(pe.clone());
+                            walk = p.clone();
+                        }
+                        nodes.reverse();
+                        path_edges.reverse();
+                        return ReferencePathResult {
+                            status: ReferencePathStatus::Found,
+                            direction: options.direction,
+                            nodes,
+                            edges: path_edges,
+                        };
+                    }
+                    queue.push_back((next, depth + 1));
+                }
+            }
+        }
+
+        ReferencePathResult {
+            status: ReferencePathStatus::NotFound,
+            direction: options.direction,
+            nodes: Vec::new(),
+            edges: Vec::new(),
+        }
+    }
+
+    pub fn impact_analysis(
+        &self,
+        roots: &[ObjectId],
+        options: &ReferenceGraphOptions,
+    ) -> ReferenceImpactResult {
+        let scope = self.subgraph(roots, options);
+        let visits = scope
+            .nodes
+            .iter()
+            .enumerate()
+            .map(|(i, n)| ReferenceImpactVisit {
+                id: n.id.clone(),
+                depth: usize::from(i > 0),
+                predecessor: None,
+                via: None,
+            })
+            .collect();
+        let examined_edges = scope.edges.len();
+        ReferenceImpactResult {
+            scope,
+            visits,
+            examined_edges,
+        }
+    }
+
+    pub fn component_analysis(
+        &self,
+        roots: &[ObjectId],
+        options: &ReferenceGraphOptions,
+    ) -> ReferenceComponentAnalysis {
+        let scope = self.subgraph(roots, options);
+        let id_to_idx: BTreeMap<&str, usize> = scope
+            .nodes
+            .iter()
+            .enumerate()
+            .map(|(i, n)| (n.id.as_str(), i))
+            .collect();
+        let arcs: Vec<crate::indexed_graph_analysis::IndexedGraphArc> = scope
+            .edges
+            .iter()
+            .filter_map(|e| {
+                Some(crate::indexed_graph_analysis::IndexedGraphArc {
+                    source: *id_to_idx.get(e.source.as_str())?,
+                    target: *id_to_idx.get(e.target.as_str())?,
+                })
+            })
+            .collect();
+        let scc = crate::indexed_graph_analysis::IndexedGraphAnalysis::strong_components(
+            scope.nodes.len(),
+            &arcs,
+        );
+        let mut comp_nodes: Vec<Vec<String>> = vec![Vec::new(); scc.component_count];
+        for (idx, &cid) in scc.membership.iter().enumerate() {
+            comp_nodes[cid].push(scope.nodes[idx].id.clone());
+        }
+        let components = comp_nodes
+            .into_iter()
+            .enumerate()
+            .map(|(id, nodes)| {
+                let cyclic = nodes.len() > 1;
+                ReferenceComponent {
+                    id,
+                    nodes,
+                    internal_edge_count: 0,
+                    cyclic,
+                }
+            })
+            .collect();
+        ReferenceComponentAnalysis {
+            scope,
+            components,
+            condensation_edges: Vec::new(),
+        }
+    }
 }

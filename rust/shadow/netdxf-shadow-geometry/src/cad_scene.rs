@@ -1,7 +1,6 @@
 use crate::curves::Curve3;
 use netdxf_shadow::{Affine3, Bounds2, ObjectId, ShadowSnapshot, Vec3};
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub enum CadFillRule {
@@ -554,46 +553,21 @@ impl CadSceneBuilder {
     pub fn build(&mut self, snapshot: &ShadowSnapshot, options: &SceneOptions) -> CadScene {
         let mut occurrences = Vec::new();
         let mut scene_bounds = Bounds2::EMPTY;
-        let mut seen: BTreeMap<String, usize> = BTreeMap::new();
 
         for entity_id in &snapshot.entity_ids {
             if occurrences.len() >= options.maximum_occurrences {
                 break;
             }
-            for projector in self.projectors.iter().rev() {
-                if let Some(geom) = projector.project(snapshot, entity_id) {
-                    let mut bounds = Bounds2::EMPTY;
-                    for pt in &geom.points {
-                        bounds = bounds.include(*pt);
-                    }
-                    for c in &geom.contours {
-                        for curve in &c.curves {
-                            for p in crate::curves::CurveSampler::sample(
-                                curve,
-                                &crate::curves::SamplingOptions::default(),
-                            ) {
-                                bounds = bounds.include(p);
-                            }
-                        }
-                    }
-                    scene_bounds = scene_bounds.union(bounds);
-                    let key = entity_id.as_str().to_string();
-                    seen.insert(key.clone(), occurrences.len());
-                    occurrences.push(CadOccurrence {
-                        key,
-                        entity: entity_id.clone(),
-                        insert_path: Vec::new(),
-                        transform: Affine3::IDENTITY,
-                        style: CadStyle::default(),
-                        geometry: geom,
-                        bounds,
-                        components: Vec::new(),
-                    });
-                    self.cache_stats.projections += 1;
-                    self.build_stats.roots_projected += 1;
-                    break;
-                }
-            }
+            self.emit_entity(
+                snapshot,
+                entity_id,
+                Affine3::IDENTITY,
+                &[],
+                0,
+                options,
+                &mut occurrences,
+                &mut scene_bounds,
+            );
         }
 
         CadScene {
@@ -602,6 +576,113 @@ impl CadSceneBuilder {
             layout: options.layout.clone(),
             occurrences,
             bounds: scene_bounds,
+        }
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn emit_entity(
+        &mut self,
+        snapshot: &ShadowSnapshot,
+        entity_id: &ObjectId,
+        transform: Affine3,
+        insert_path: &[ObjectId],
+        depth: usize,
+        options: &SceneOptions,
+        occurrences: &mut Vec<CadOccurrence>,
+        scene_bounds: &mut Bounds2,
+    ) {
+        if occurrences.len() >= options.maximum_occurrences || depth > options.maximum_depth {
+            return;
+        }
+        let reader = snapshot.read(entity_id.clone());
+        let is_visible = reader.field("IsVisible").boolean(true);
+        if !is_visible && !options.include_invisible {
+            return;
+        }
+
+        if reader.type_name() == "Insert" {
+            let pos = reader.field("Position").vector(Vec3::ZERO);
+            let scale = reader.field("Scale").vector(Vec3::new(1.0, 1.0, 1.0));
+            let rot = reader.field("Rotation").number(0.0).to_radians();
+            let local = Affine3::move_by(pos) * Affine3::rotate_z(rot) * Affine3::scale(scale);
+            let combined = transform * local;
+            let mut next_path = insert_path.to_vec();
+            next_path.push(entity_id.clone());
+            for child in reader.field("Block").field("Entities").items() {
+                if let Some(child_id) = child.id() {
+                    self.emit_entity(
+                        snapshot,
+                        child_id,
+                        combined,
+                        &next_path,
+                        depth + 1,
+                        options,
+                        occurrences,
+                        scene_bounds,
+                    );
+                }
+            }
+            return;
+        }
+
+        let layer = {
+            let l = reader.field("Layer").text().to_string();
+            if l.is_empty() { "0".to_string() } else { l }
+        };
+        let argb = reader.field("ColorArgb").number(0xFFFF_FFFFu32 as f64) as u32;
+
+        for projector in self.projectors.iter().rev() {
+            if let Some(mut geom) = projector.project(snapshot, entity_id) {
+                if transform != Affine3::IDENTITY {
+                    for c in &mut geom.contours {
+                        for curve in &mut c.curves {
+                            *curve = curve.transform(transform);
+                        }
+                    }
+                    for pt in &mut geom.points {
+                        *pt = transform.point(*pt);
+                    }
+                }
+                let mut bounds = Bounds2::EMPTY;
+                for pt in &geom.points {
+                    bounds = bounds.include(*pt);
+                }
+                for c in &geom.contours {
+                    for curve in &c.curves {
+                        for p in crate::curves::CurveSampler::sample(
+                            curve,
+                            &crate::curves::SamplingOptions::default(),
+                        ) {
+                            bounds = bounds.include(p);
+                        }
+                    }
+                }
+                *scene_bounds = scene_bounds.union(bounds);
+                let key = if insert_path.is_empty() {
+                    entity_id.as_str().to_string()
+                } else {
+                    let prefix: Vec<&str> = insert_path.iter().map(|i| i.as_str()).collect();
+                    format!("{}/{}", prefix.join("/"), entity_id.as_str())
+                };
+                occurrences.push(CadOccurrence {
+                    key,
+                    entity: entity_id.clone(),
+                    insert_path: insert_path.to_vec(),
+                    transform,
+                    style: CadStyle {
+                        argb,
+                        layer,
+                        visible: is_visible,
+                        ..Default::default()
+                    },
+                    geometry: geom,
+                    bounds,
+                    components: Vec::new(),
+                });
+                self.cache_stats.projections += 1;
+                self.build_stats.roots_projected += 1;
+                break;
+            }
         }
     }
 }

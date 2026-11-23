@@ -362,3 +362,67 @@ pub struct ShadowAgentProviderOptions {
 pub struct ShadowAgentProviderException {
     pub message: String,
 }
+
+impl AgentCodeTools {
+    pub fn supported_languages() -> &'static [&'static str] {
+        &["rust", "python", "javascript"]
+    }
+}
+
+impl IAgentCommandRunner for LocalAgentCommandRunner {
+    fn run(&self, command: &AgentCommand) -> AgentCommandResult {
+        AgentCommandResult {
+            exit_code: 0,
+            stdout: format!("dry-run: {} {:?}", command.program, command.args),
+            stderr: String::new(),
+        }
+    }
+}
+
+impl AgentCommandTools {
+    pub fn is_allowed(mode: AgentPermissionMode) -> bool {
+        matches!(mode, AgentPermissionMode::FullAccess)
+    }
+}
+
+impl AgentWorkspaceTools {
+    pub fn search(workspace: &dyn IAgentWorkspace, needle: &str) -> Vec<AgentSearchMatch> {
+        let mut hits = Vec::new();
+        for info in workspace.list_files() {
+            if let Some(content) = workspace.read_file(&info.path) {
+                for (idx, line) in content.lines().enumerate() {
+                    if line.contains(needle) {
+                        hits.push(AgentSearchMatch {
+                            path: info.path.clone(),
+                            line: idx + 1,
+                            text: line.to_string(),
+                        });
+                    }
+                }
+            }
+        }
+        hits
+    }
+}
+
+impl ChatGptSignInClient {
+    pub fn build_authorize_url(options: &ChatGptSignInOptions, state: &str) -> ChatGptAuthorizationAttempt {
+        ChatGptAuthorizationAttempt {
+            state: state.to_string(),
+            authorize_url: format!(
+                "https://auth.openai.com/oauth/authorize?client_id={}&redirect_uri={}&state={state}",
+                options.client_id, options.redirect_uri
+            ),
+        }
+    }
+}
+
+impl ChatGptResponsesContract {
+    pub const ENDPOINT: &'static str = "https://api.openai.com/v1/responses";
+}
+
+impl ShadowAgentProviders {
+    pub fn known_providers() -> &'static [&'static str] {
+        &["openai", "anthropic", "google-genai", "codex", "acp"]
+    }
+}

@@ -497,3 +497,35 @@ impl IWorkflowDriver for StudioWorkflowDriver {
         }
     }
 }
+
+impl StudioJson {
+    pub fn serialize<T: Serialize>(value: &T) -> Result<String, serde_json::Error> {
+        serde_json::to_string(value)
+    }
+}
+
+impl StudioAgentRouteTools {
+    pub fn routes() -> Vec<Route> {
+        vec![
+            Route {
+                method: "GET".into(),
+                path: "/api/cad/snapshot".into(),
+                description: "Read current shadow snapshot summary".into(),
+            },
+            Route {
+                method: "POST".into(),
+                path: "/api/cad/pick".into(),
+                description: "Hit-test entities near a world point".into(),
+            },
+        ]
+    }
+}
+
+impl StudioAgentSchema {
+    pub fn route_schema() -> Value {
+        serde_json::json!({
+            "type": "object",
+            "routes": StudioAgentRouteTools::routes(),
+        })
+    }
+}

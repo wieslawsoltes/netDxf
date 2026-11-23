@@ -35,4 +35,21 @@ impl ICadModule for DomainCadModule {
 }
 
 pub struct DomainValidation;
+
+impl DomainValidation {
+    pub fn validate_non_empty_tag(tag: &str) -> Result<(), String> {
+        if tag.trim().is_empty() {
+            Err("Domain tag cannot be empty.".into())
+        } else {
+            Ok(())
+        }
+    }
+}
+
 pub struct DomainCommands;
+
+impl DomainCommands {
+    pub fn standard_command_names() -> &'static [&'static str] {
+        &["place-symbol", "connect-ports", "analyze-connectivity", "generate-schedule"]
+    }
+}

@@ -99,3 +99,67 @@ pub trait IAgentEvaluationTarget: Send + Sync {
 
 pub struct AgentSessionEvaluationTarget;
 pub struct EvaluationRunner;
+
+impl BudgetChatClient {
+    pub fn charge(ledger: &mut BudgetLedger, req: &BudgetRequest, limits: &EvaluationBudgetOptions) -> Result<(), String> {
+        if ledger.requests >= limits.max_requests || ledger.used_tokens + req.tokens > limits.max_tokens {
+            return Err("Evaluation budget exceeded.".into());
+        }
+        ledger.requests += 1;
+        ledger.used_tokens += req.tokens;
+        Ok(())
+    }
+}
+
+impl EvaluationCases {
+    pub fn default_suite() -> Vec<EvaluationCase> {
+        vec![EvaluationCase {
+            id: "smoke-document-summary".into(),
+            prompt: "Summarize the active CAD document.".into(),
+        }]
+    }
+}
+
+impl EvaluationFixture {
+    pub fn context(case: &EvaluationCase) -> EvaluationContext {
+        EvaluationContext {
+            case_id: case.id.clone(),
+        }
+    }
+}
+
+impl IAgentEvaluationTarget for AgentSessionEvaluationTarget {
+    fn evaluate(&self, case: &EvaluationCase, _ctx: &EvaluationContext) -> EvaluationExecution {
+        EvaluationExecution {
+            output: format!("evaluated: {}", case.id),
+            tool_calls: Vec::new(),
+            telemetry: EvaluationTelemetry::default(),
+        }
+    }
+}
+
+impl EvaluationRunner {
+    pub fn run_all(
+        cases: &[EvaluationCase],
+        target: &dyn IAgentEvaluationTarget,
+    ) -> Vec<EvaluationResult> {
+        cases
+            .iter()
+            .map(|c| {
+                let ctx = EvaluationFixture::context(c);
+                let exec = target.evaluate(c, &ctx);
+                let passed = !exec.output.is_empty();
+                EvaluationResult {
+                    case_id: c.id.clone(),
+                    passed,
+                    checks: vec![EvaluationCheck {
+                        name: "non-empty-output".into(),
+                        passed,
+                        message: String::new(),
+                    }],
+                    execution: exec,
+                }
+            })
+            .collect()
+    }
+}

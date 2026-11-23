@@ -76,3 +76,37 @@ pub struct StartRequest {
 
 pub struct ExternalAgentHost;
 pub struct ExternalAgentHttp;
+
+impl BrowserStudioRelay {
+    pub fn route_prefix() -> &'static str {
+        "/api/studio/relay"
+    }
+}
+
+impl ChatGptHostSession {
+    pub fn status() -> ChatGptHostStatus {
+        ChatGptHostStatus::default()
+    }
+}
+
+impl CompanionWorkspace {
+    pub fn default_dir() -> &'static str {
+        ".shadow-companion"
+    }
+}
+
+impl ExternalAgentHost {
+    pub fn ok_reply(id: impl Into<String>, result: Value) -> ExternalAgentReply {
+        ExternalAgentReply {
+            id: id.into(),
+            ok: true,
+            result,
+        }
+    }
+}
+
+impl ExternalAgentHttp {
+    pub fn health_payload() -> Value {
+        serde_json::json!({ "status": "ok" })
+    }
+}

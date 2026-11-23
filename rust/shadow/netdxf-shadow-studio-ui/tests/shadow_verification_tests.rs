@@ -288,3 +288,110 @@ fn editor_undo_redo_planar_geometry_symbols_mcp_and_ferroui() {
     let hits = app.pick("Model", app.viewport.width * 0.5, app.viewport.height * 0.5, 50.0);
     assert!(!hits.is_empty());
 }
+
+#[test]
+fn remaining_shadow_services_end_to_end_verification() {
+    use netdxf::blocks::Block;
+    use netdxf::entities::Insert;
+    use netdxf_shadow_drafting::{DraftingGrips, DraftingLayers, DraftingQueries, DraftingSelectionMode};
+    use netdxf_shadow_editor::EditOperations;
+    use netdxf_shadow_graph::{
+        ReferenceGraphDirection, ReferenceGraphIndex, ReferenceGraphOptions, ReferencePathOptions,
+        ReferencePathStatus,
+    };
+    use netdxf_shadow_mcp::{
+        DrawingReferenceCaptureRequest, DrawingReferenceValidationRequest, DrawingReferences,
+    };
+    use netdxf_shadow_rendering::{
+        LinetypeTransport, MTextParagraphControl, ParagraphAlignment, TextLayout,
+    };
+    use netdxf_shadow_rendering_shx::{ShxBigFontMapFile, ShxBigFontMapReadOptions};
+    use netdxf_shadow_symbols::{
+        DomainConnection, DomainConnectivityIsolation, DomainConnectivityStructure,
+        DomainIsolationOptions,
+    };
+
+    // 1. Insert block recursive expansion
+    let mut doc = DxfDocument::new();
+    let mut blk = Block::new("WIDGET").unwrap();
+    blk.entities.push(EntityObject::Line(Box::new(DxfLine::new(
+        Vector3::new(0.0, 0.0, 0.0),
+        Vector3::new(5.0, 0.0, 0.0),
+    ))));
+    doc.blocks.add(blk);
+    let mut ins = Insert::new("WIDGET");
+    ins.position = Vector3::new(10.0, 20.0, 0.0);
+    ins.rotation = 0.0;
+    doc.entities.add(EntityObject::Insert(Box::new(ins)));
+
+    let session = ShadowSession::from_document(&doc, "doc-ins", ShadowCaptureOptions::default());
+    let snap = session.current();
+    let mut builder = CadSceneBuilder::new();
+    let scene = builder.build(&snap, &SceneOptions::default());
+    assert_eq!(scene.occurrences.len(), 1);
+    assert!((scene.bounds.min_x - 10.0).abs() < 1e-6);
+    assert!((scene.bounds.max_x - 15.0).abs() < 1e-6);
+
+    // 2. ReferenceGraph path & SCC analysis
+    let ref_idx = ReferenceGraphIndex::build(&snap);
+    let path = ref_idx.find_path(
+        &snap.root,
+        &ObjectId::new("O:Layout:Model"),
+        &ReferencePathOptions {
+            direction: ReferenceGraphDirection::Outgoing,
+            ..Default::default()
+        },
+    );
+    assert_eq!(path.status, ReferencePathStatus::Found);
+    let comp = ref_idx.component_analysis(std::slice::from_ref(&snap.root), &ReferenceGraphOptions::default());
+    assert!(!comp.components.is_empty());
+
+    // 3. LinetypeTransport, MTextParagraphControl, TextLayout, ShxBigFontMapFile
+    let frames = LinetypeTransport::compute_frames(&[Vec3::ZERO, Vec3::xy(10.0, 0.0)], Vec3::UNIT_Z);
+    assert_eq!(frames.len(), 2);
+    let para = MTextParagraphControl::parse_paragraph_code("\\pxqc,i1.5,l2.0;");
+    assert_eq!(para.alignment, ParagraphAlignment::Center);
+    assert!((para.first_line_indent - 1.5).abs() < 1e-9);
+    let wrapped = TextLayout::wrap_lines(
+        "hello world from rust shadow",
+        &RichTextStyle::default(),
+        12.0,
+        &ApproximateTextLayoutEngine,
+    );
+    assert!(wrapped.len() >= 2);
+    let bf_map = ShxBigFontMapFile::parse("0x8140=U+3000\n0x8141=U+3001\n", &ShxBigFontMapReadOptions::default());
+    assert_eq!(bf_map.unicode_to_code.len(), 2);
+
+    // 4. EditOperations, DraftingLayers, DraftingGrips, DraftingQueries, DrawingReferences
+    let moved = EditOperations::move_entities(&snap, &[ObjectId::new("O:Entity:0")], Vec3::xy(1.0, 2.0));
+    assert!(!moved.edits.is_empty());
+    assert!(!DraftingLayers::list(&snap).is_empty());
+    assert!(!DraftingGrips::extract(&snap, &ObjectId::new("O:Entity:0")).is_empty());
+    assert_eq!(
+        DraftingQueries::select_in_bounds(&scene, scene.bounds, DraftingSelectionMode::Crossing).len(),
+        1
+    );
+    let ref_set = DrawingReferences::capture(
+        &snap,
+        &DrawingReferenceCaptureRequest {
+            ids: vec![ObjectId::new("O:Entity:0")],
+        },
+    );
+    let val = DrawingReferences::validate(
+        &snap,
+        &DrawingReferenceValidationRequest {
+            reference_set: ref_set,
+        },
+    );
+    assert!(val.valid);
+
+    // 5. DomainConnectivityIsolation & DomainConnectivityStructure
+    let conns = vec![
+        DomainConnection { id: 0, a: 0, b: 1, distance: 0.0 },
+        DomainConnection { id: 1, a: 1, b: 2, distance: 0.0 },
+    ];
+    let iso = DomainConnectivityIsolation::assess(3, &conns, 0, &[1], &DomainIsolationOptions::default());
+    assert!(iso.isolated);
+    let bridges = DomainConnectivityStructure::critical_connections(3, &conns);
+    assert_eq!(bridges.len(), 2);
+}

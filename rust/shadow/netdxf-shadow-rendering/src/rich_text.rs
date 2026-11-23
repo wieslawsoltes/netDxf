@@ -52,6 +52,38 @@ pub struct RichTextParagraphStyle {
 
 pub struct MTextParagraphControl;
 
+impl MTextParagraphControl {
+    /// Parses an MText `\px...;` paragraph control directive into [`RichTextParagraphStyle`].
+    pub fn parse_paragraph_code(code: &str) -> RichTextParagraphStyle {
+        let mut style = RichTextParagraphStyle::default();
+        let body = code.trim_start_matches("\\px").trim_end_matches(';');
+        for token in body.split(',') {
+            if let Some(rest) = token.strip_prefix('q') {
+                style.alignment = match rest {
+                    "c" => ParagraphAlignment::Center,
+                    "r" => ParagraphAlignment::Right,
+                    "j" => ParagraphAlignment::Justified,
+                    "d" => ParagraphAlignment::Distributed,
+                    _ => ParagraphAlignment::Left,
+                };
+            } else if let Some(rest) = token.strip_prefix('i') {
+                if let Ok(v) = rest.parse::<f64>() {
+                    style.first_line_indent = v;
+                }
+            } else if let Some(rest) = token.strip_prefix('l') {
+                if let Ok(v) = rest.parse::<f64>() {
+                    style.left_indent = v;
+                }
+            } else if let Some(rest) = token.strip_prefix('r') {
+                if let Ok(v) = rest.parse::<f64>() {
+                    style.right_indent = v;
+                }
+            }
+        }
+        style
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RichTextStyle {
     pub font: String,
@@ -315,6 +347,53 @@ pub struct TextLine {
 }
 
 pub struct TextLayout;
+
+impl TextLayout {
+    /// Wraps plain text into lines fitting within `max_width` using `engine`.
+    pub fn wrap_lines(
+        text: &str,
+        style: &RichTextStyle,
+        max_width: f64,
+        engine: &dyn ITextLayoutEngine,
+    ) -> Vec<TextLine> {
+        let mut out = Vec::new();
+        for paragraph in text.split('\n') {
+            if max_width <= 0.0 {
+                let w = engine.measure_run(paragraph, style).width;
+                out.push(TextLine {
+                    text: paragraph.to_string(),
+                    width: w,
+                });
+                continue;
+            }
+            let mut current = String::new();
+            for word in paragraph.split_whitespace() {
+                let candidate = if current.is_empty() {
+                    word.to_string()
+                } else {
+                    format!("{current} {word}")
+                };
+                if engine.measure_run(&candidate, style).width <= max_width || current.is_empty() {
+                    current = candidate;
+                } else {
+                    let w = engine.measure_run(&current, style).width;
+                    out.push(TextLine {
+                        text: current,
+                        width: w,
+                    });
+                    current = word.to_string();
+                }
+            }
+            let w = engine.measure_run(&current, style).width;
+            out.push(TextLine {
+                text: current,
+                width: w,
+            });
+        }
+        out
+    }
+}
+
 pub struct RichTextLayout;
 
 impl RichTextLayout {
