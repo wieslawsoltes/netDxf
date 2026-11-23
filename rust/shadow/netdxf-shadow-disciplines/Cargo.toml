@@ -1,0 +1,17 @@
+[package]
+name = "netdxf-shadow-disciplines"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Shared engineering discipline module helpers for netDxf.Shadow"
+
+[dependencies]
+netdxf-shadow.workspace = true
+netdxf-shadow-modules.workspace = true
+netdxf-shadow-symbols.workspace = true
+
+[lints]
+workspace = true

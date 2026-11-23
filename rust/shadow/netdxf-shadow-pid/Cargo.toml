@@ -1,0 +1,18 @@
+[package]
+name = "netdxf-shadow-pid"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "P&ID engineering CAD discipline module and symbol library for netDxf.Shadow"
+
+[dependencies]
+netdxf-shadow.workspace = true
+netdxf-shadow-disciplines.workspace = true
+netdxf-shadow-modules.workspace = true
+netdxf-shadow-symbols.workspace = true
+
+[lints]
+workspace = true

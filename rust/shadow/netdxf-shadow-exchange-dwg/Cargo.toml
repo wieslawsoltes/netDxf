@@ -1,0 +1,17 @@
+[package]
+name = "netdxf-shadow-exchange-dwg"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "DXF/DWG drawing exchange pipeline for netDxf.Shadow"
+
+[dependencies]
+netdxf.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

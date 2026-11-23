@@ -1,0 +1,18 @@
+[package]
+name = "netdxf-shadow"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Immutable reactive CAD object-graph foundation for netDxf.Shadow"
+
+[dependencies]
+bitflags.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

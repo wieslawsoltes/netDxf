@@ -1,0 +1,99 @@
+#[allow(unused_imports)]
+use crate::*;
+#[allow(unused_imports)]
+use netdxf_shadow::{ObjectId, ShadowSnapshot};
+#[allow(unused_imports)]
+use netdxf_shadow_geometry::{CadContour, CadGeometry, ICacheableEntityProjector, IEntityProjector};
+#[allow(unused_imports)]
+use serde::{Deserialize, Serialize};
+#[allow(unused_imports)]
+use std::collections::BTreeMap;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+pub struct ShxLeadByteRange {
+    pub start: u8,
+    pub end: u8,
+}
+
+impl ShxLeadByteRange {
+    pub fn first(&self) -> u8 {
+        self.start
+    }
+
+    pub fn last(&self) -> u8 {
+        self.end
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+pub struct ShxEncodedCharacter {
+    pub code: u32,
+    pub number: u32,
+    pub byte_offset: usize,
+    pub byte_length: u8,
+    pub big_font: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
+pub struct ShxBigFontInfo {
+    pub lead_ranges: Vec<ShxLeadByteRange>,
+    pub lead_byte_ranges: Vec<ShxLeadByteRange>,
+    pub height: u8,
+    pub width: u8,
+    pub character_width: u8,
+    pub approximate_characters: bool,
+}
+
+impl ShxBigFontInfo {
+    pub fn is_lead_byte(&self, byte: u8) -> bool {
+        self.lead_ranges
+            .iter()
+            .chain(self.lead_byte_ranges.iter())
+            .any(|r| byte >= r.start && byte <= r.end)
+    }
+
+    pub fn decode(&self, bytes: &[u8]) -> Vec<ShxEncodedCharacter> {
+        let mut out = Vec::new();
+        let mut i = 0;
+        while i < bytes.len() {
+            let b = bytes[i];
+            if self.is_lead_byte(b) && i + 1 < bytes.len() {
+                let code = ((b as u32) << 8) | (bytes[i + 1] as u32);
+                out.push(ShxEncodedCharacter {
+                    code,
+                    number: code,
+                    byte_offset: i,
+                    byte_length: 2,
+                    big_font: true,
+                });
+                i += 2;
+            } else {
+                out.push(ShxEncodedCharacter {
+                    code: b as u32,
+                    number: b as u32,
+                    byte_offset: i,
+                    byte_length: 1,
+                    big_font: false,
+                });
+                i += 1;
+            }
+        }
+        out
+    }
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ShxBigFontMap {
+    pub unicode_to_code: BTreeMap<char, u32>,
+}
+
+impl ShxBigFontMap {
+    pub fn characters(&self) -> &BTreeMap<char, u32> {
+        &self.unicode_to_code
+    }
+
+    pub fn from_encoding(_encoding: &str) -> Self {
+        Self::default()
+    }
+}
+

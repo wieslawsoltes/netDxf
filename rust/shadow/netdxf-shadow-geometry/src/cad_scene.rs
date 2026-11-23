@@ -1,0 +1,228 @@
+#[allow(unused_imports)]
+use crate::*;
+#[allow(unused_imports)]
+use netdxf_shadow::{Affine3, Bounds2, ObjectId, ShadowSnapshot, Vec3};
+#[allow(unused_imports)]
+use serde::{Deserialize, Serialize};
+#[allow(unused_imports)]
+use std::f64::consts::TAU;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+pub enum CadLinetypeAlignment {
+    #[default]
+    Continuous,
+    PerSegment,
+    Periodic,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct CadStyle {
+    pub argb: u32,
+    pub lineweight: f64,
+    pub dashes: Vec<f64>,
+    pub visible: bool,
+    pub layer: String,
+    pub linetype: Option<CadLinetype>,
+    pub alignment: CadLinetypeAlignment,
+}
+
+impl CadStyle {
+    pub fn linetype_alignment(&self) -> CadLinetypeAlignment {
+        self.alignment
+    }
+}
+
+impl Default for CadStyle {
+    fn default() -> Self {
+        Self {
+            argb: 0xFFFF_FFFF,
+            lineweight: 0.25,
+            dashes: Vec::new(),
+            visible: true,
+            layer: "0".into(),
+            linetype: None,
+            alignment: CadLinetypeAlignment::Continuous,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub struct CadContour {
+    pub curves: Vec<Curve3>,
+    pub closed: bool,
+}
+
+impl CadContour {
+    pub fn restart_linetype_at_curves(&self) -> bool {
+        false
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+pub struct CadLineSpacing {
+    pub factor: f64,
+    pub exact: bool,
+}
+
+impl Default for CadLineSpacing {
+    fn default() -> Self {
+        Self {
+            factor: 1.0,
+            exact: false,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub struct CadText {
+    pub content: String,
+    pub origin: Vec3,
+    pub x_axis: Vec3,
+    pub y_axis: Vec3,
+    pub height: f64,
+    pub width: f64,
+    pub width_factor: f64,
+    pub oblique_angle: f64,
+    pub font: String,
+    pub font_family: String,
+    pub alignment: String,
+    pub is_mtext: bool,
+    pub multiline: bool,
+    pub line_spacing: CadLineSpacing,
+}
+
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub struct CadImage {
+    pub file_name: String,
+    pub corners: Vec<Vec3>,
+    pub clip_polygon: Vec<Vec3>,
+    pub clip_outside: bool,
+    pub brightness: i16,
+    pub contrast: i16,
+    pub fade: i16,
+    pub visible: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub struct CadGeometry {
+    pub contours: Vec<CadContour>,
+    pub filled: bool,
+    pub regions: Vec<CadRegion>,
+    pub stroke_groups: Vec<CadStrokeGroup>,
+    pub texts: Vec<CadText>,
+    pub images: Vec<CadImage>,
+    pub points: Vec<Vec3>,
+    pub components: Vec<CadComponent>,
+}
+
+impl CadGeometry {
+    pub fn empty() -> Self {
+        Self::default()
+    }
+
+    pub fn display_contours(&self) -> &[CadContour] {
+        &self.contours
+    }
+
+    pub fn strokes(&self) -> &[CadStrokeGroup] {
+        &self.stroke_groups
+    }
+
+    pub fn text(&self) -> Option<&CadText> {
+        self.texts.first()
+    }
+
+    pub fn image(&self) -> Option<&CadImage> {
+        self.images.first()
+    }
+
+    pub fn transform(&self, affine: &Affine3) -> Self {
+        let mut out = self.clone();
+        for p in &mut out.points {
+            *p = affine.point(*p);
+        }
+        for t in &mut out.texts {
+            t.origin = affine.point(t.origin);
+        }
+        for img in &mut out.images {
+            for c in &mut img.corners {
+                *c = affine.point(*c);
+            }
+        }
+        out
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct CadOccurrence {
+    pub key: String,
+    pub entity: ObjectId,
+    pub insert_path: Vec<ObjectId>,
+    pub transform: Affine3,
+    pub style: CadStyle,
+    pub geometry: CadGeometry,
+    pub bounds: Bounds2,
+    pub components: Vec<CadComponent>,
+}
+
+impl CadOccurrence {
+    pub fn source_to_world(&self) -> Affine3 {
+        self.transform
+    }
+
+    pub fn is_presentation_only(&self) -> bool {
+        false
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct CadScene {
+    pub document_id: String,
+    pub revision: i64,
+    pub layout: String,
+    pub occurrences: Vec<CadOccurrence>,
+    pub bounds: Bounds2,
+}
+
+impl CadScene {
+    pub fn diagnostics(&self) -> &[String] {
+        &[]
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct SceneOptions {
+    pub layout: String,
+    pub root_block: Option<String>,
+    pub root_entities: Vec<ObjectId>,
+    pub linetype_scale: f64,
+    pub linetype_alignment: CadLinetypeAlignment,
+    pub maximum_depth: usize,
+    pub maximum_occurrences: usize,
+    pub include_invisible: bool,
+}
+
+impl Default for SceneOptions {
+    fn default() -> Self {
+        Self {
+            layout: "Model".into(),
+            root_block: None,
+            root_entities: Vec::new(),
+            linetype_scale: 1.0,
+            linetype_alignment: CadLinetypeAlignment::Continuous,
+            maximum_depth: 64,
+            maximum_occurrences: 1_000_000,
+            include_invisible: false,
+        }
+    }
+}
+
+/// Projects a single shadow entity into [`CadGeometry`].
+pub trait IEntityProjector: Send + Sync {
+    fn project(&self, snapshot: &ShadowSnapshot, entity_id: &ObjectId) -> Option<CadGeometry>;
+
+    fn try_project(&self, snapshot: &ShadowSnapshot, entity_id: &ObjectId) -> Option<CadGeometry> {
+        self.project(snapshot, entity_id)
+    }
+}
+

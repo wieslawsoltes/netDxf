@@ -1,0 +1,98 @@
+[workspace]
+resolver = "2"
+members = [
+    "netdxf",
+    "shadow/netdxf-shadow",
+    "shadow/netdxf-shadow-markdown",
+    "shadow/netdxf-shadow-workflows",
+    "shadow/netdxf-shadow-agents-acp",
+    "shadow/netdxf-shadow-agents-codex",
+    "shadow/netdxf-shadow-exchange-dwg",
+    "shadow/netdxf-shadow-geometry",
+    "shadow/netdxf-shadow-netdxf",
+    "shadow/netdxf-shadow-graph",
+    "shadow/netdxf-shadow-health",
+    "shadow/netdxf-shadow-dimensions",
+    "shadow/netdxf-shadow-rendering",
+    "shadow/netdxf-shadow-rendering-shx",
+    "shadow/netdxf-shadow-rendering-skia",
+    "shadow/netdxf-shadow-editor",
+    "shadow/netdxf-shadow-drafting",
+    "shadow/netdxf-shadow-modules",
+    "shadow/netdxf-shadow-symbols",
+    "shadow/netdxf-shadow-disciplines",
+    "shadow/netdxf-shadow-electrical",
+    "shadow/netdxf-shadow-pid",
+    "shadow/netdxf-shadow-piping",
+    "shadow/netdxf-shadow-samples",
+    "shadow/netdxf-shadow-mcp",
+    "shadow/netdxf-shadow-agents",
+    "shadow/netdxf-shadow-agents-evaluation",
+    "shadow/netdxf-shadow-agents-hosting",
+    "shadow/netdxf-shadow-studio-core",
+    "shadow/netdxf-shadow-studio-agents",
+    "shadow/netdxf-shadow-studio-hosting",
+    "shadow/netdxf-shadow-studio-ui",
+    "shadow/netdxf-shadow-studio-wasm",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.80"
+license = "MIT"
+repository = "https://github.com/wieslawsoltes/netDxf"
+authors = ["Daniel Carvajal (upstream netDxf)", "Wieslaw Soltes"]
+
+[workspace.dependencies]
+bitflags = { version = "2", features = ["serde"] }
+indexmap = "2"
+rustc-hash = "2"
+thiserror = "2"
+encoding_rs = "0.8"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+netdxf = { path = "netdxf" }
+netdxf-shadow = { path = "shadow/netdxf-shadow" }
+netdxf-shadow-markdown = { path = "shadow/netdxf-shadow-markdown" }
+netdxf-shadow-workflows = { path = "shadow/netdxf-shadow-workflows" }
+netdxf-shadow-agents-acp = { path = "shadow/netdxf-shadow-agents-acp" }
+netdxf-shadow-agents-codex = { path = "shadow/netdxf-shadow-agents-codex" }
+netdxf-shadow-exchange-dwg = { path = "shadow/netdxf-shadow-exchange-dwg" }
+netdxf-shadow-geometry = { path = "shadow/netdxf-shadow-geometry" }
+netdxf-shadow-netdxf = { path = "shadow/netdxf-shadow-netdxf" }
+netdxf-shadow-graph = { path = "shadow/netdxf-shadow-graph" }
+netdxf-shadow-health = { path = "shadow/netdxf-shadow-health" }
+netdxf-shadow-dimensions = { path = "shadow/netdxf-shadow-dimensions" }
+netdxf-shadow-rendering = { path = "shadow/netdxf-shadow-rendering" }
+netdxf-shadow-rendering-shx = { path = "shadow/netdxf-shadow-rendering-shx" }
+netdxf-shadow-rendering-skia = { path = "shadow/netdxf-shadow-rendering-skia" }
+netdxf-shadow-editor = { path = "shadow/netdxf-shadow-editor" }
+netdxf-shadow-drafting = { path = "shadow/netdxf-shadow-drafting" }
+netdxf-shadow-modules = { path = "shadow/netdxf-shadow-modules" }
+netdxf-shadow-symbols = { path = "shadow/netdxf-shadow-symbols" }
+netdxf-shadow-disciplines = { path = "shadow/netdxf-shadow-disciplines" }
+netdxf-shadow-electrical = { path = "shadow/netdxf-shadow-electrical" }
+netdxf-shadow-pid = { path = "shadow/netdxf-shadow-pid" }
+netdxf-shadow-piping = { path = "shadow/netdxf-shadow-piping" }
+netdxf-shadow-samples = { path = "shadow/netdxf-shadow-samples" }
+netdxf-shadow-mcp = { path = "shadow/netdxf-shadow-mcp" }
+netdxf-shadow-agents = { path = "shadow/netdxf-shadow-agents" }
+netdxf-shadow-agents-evaluation = { path = "shadow/netdxf-shadow-agents-evaluation" }
+netdxf-shadow-agents-hosting = { path = "shadow/netdxf-shadow-agents-hosting" }
+netdxf-shadow-studio-core = { path = "shadow/netdxf-shadow-studio-core" }
+netdxf-shadow-studio-agents = { path = "shadow/netdxf-shadow-studio-agents" }
+netdxf-shadow-studio-hosting = { path = "shadow/netdxf-shadow-studio-hosting" }
+netdxf-shadow-studio-ui = { path = "shadow/netdxf-shadow-studio-ui" }
+netdxf-shadow-studio-wasm = { path = "shadow/netdxf-shadow-studio-wasm" }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+opt-level = 3
