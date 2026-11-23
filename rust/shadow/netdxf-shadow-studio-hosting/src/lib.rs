@@ -2,56 +2,14 @@
 
 #![forbid(unsafe_code)]
 
-use serde::{Deserialize, Serialize};
-use serde_json::Value;
+pub mod studio_agent_http;
+pub mod studio_cad_http;
+pub mod studio_document_hub;
+pub mod studio_http;
+pub mod studio_legacy_http;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Envelope {
-    pub ok: bool,
-    pub payload: Value,
-    pub error: Option<String>,
-}
-
-pub struct StudioAgentHttp;
-pub struct StudioCadHttp;
-pub struct StudioDocumentHubHttp;
-pub struct StudioHttp;
-pub struct StudioLegacyHttp;
-
-impl StudioAgentHttp {
-    pub fn ok(payload: Value) -> Envelope {
-        Envelope {
-            ok: true,
-            payload,
-            error: None,
-        }
-    }
-}
-
-impl StudioCadHttp {
-    pub fn routes() -> &'static [&'static str] {
-        &["/api/cad/snapshot", "/api/cad/render", "/api/cad/pick"]
-    }
-}
-
-impl StudioDocumentHubHttp {
-    pub fn routes() -> &'static [&'static str] {
-        &["/api/documents", "/api/documents/new", "/api/documents/close"]
-    }
-}
-
-impl StudioHttp {
-    pub fn error(message: impl Into<String>) -> Envelope {
-        Envelope {
-            ok: false,
-            payload: Value::Null,
-            error: Some(message.into()),
-        }
-    }
-}
-
-impl StudioLegacyHttp {
-    pub fn is_deprecated() -> bool {
-        true
-    }
-}
+pub use studio_agent_http::*;
+pub use studio_cad_http::*;
+pub use studio_document_hub::*;
+pub use studio_http::*;
+pub use studio_legacy_http::*;

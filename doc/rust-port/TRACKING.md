@@ -166,3 +166,5 @@ Completed a full file-by-file audit against upstream `netDxf/` and ported all re
   - `python3 tools/rust_port/compare_api.py --cs-root shadow/src --rs-root rust/shadow --report doc/rust-port/SHADOW-API-PARITY-REPORT.md --fail-on-missing` → **100.0% API coverage** (`625/625` direct 1:1 matches, **`0` missing**).
   - `cargo clippy --manifest-path rust/Cargo.toml --workspace --all-targets -- -D warnings` → **0 warnings** across all 33 crates.
   - `cargo test --manifest-path rust/Cargo.toml --workspace` → **73/73 passing**.
+
+- **1:1 On-Disk Folder/File Layout**: Refactored all 32 Shadow crates under `rust/shadow/` into **150+ individual `snake_case` modules** and matching subdirectories (`auth/`, `providers/`, `piping/`) mirroring `shadow/src/` 1:1, with crate-root re-exports in each `lib.rs` and `mod.rs`.

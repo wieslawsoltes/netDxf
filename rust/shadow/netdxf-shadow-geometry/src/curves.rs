@@ -1,5 +1,10 @@
-use netdxf_shadow::{Affine3, Vec3};
+#[allow(unused_imports)]
+use crate::*;
+#[allow(unused_imports)]
+use netdxf_shadow::{Affine3, Bounds2, ObjectId, ShadowSnapshot, Vec3};
+#[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[allow(unused_imports)]
 use std::f64::consts::TAU;
 
 /// 3D curve algebra (Line, Ellipse/Arc, NURBS, WidthBoundary, Reversed).
@@ -110,19 +115,6 @@ impl NurbsCurve {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct WidthBoundaryCurve {
-    pub centerline: Curve3,
-    pub start_width: f64,
-    pub end_width: f64,
-    pub side: f64,
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ReversedCurve {
-    pub curve: Curve3,
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub struct SamplingOptions {
     pub tolerance: f64,
@@ -188,3 +180,4 @@ impl CurveSampler {
         })
     }
 }
+

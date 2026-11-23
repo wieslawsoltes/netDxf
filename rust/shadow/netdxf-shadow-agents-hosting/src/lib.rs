@@ -2,111 +2,18 @@
 
 #![forbid(unsafe_code)]
 
-use serde::{Deserialize, Serialize};
-use serde_json::Value;
+pub mod agent_host_application;
+pub mod agent_host_options;
+pub mod browser_studio_relay;
+pub mod chat_gpt_host_session;
+pub mod companion_workspace;
+pub mod external_agent_host;
+pub mod external_agent_http;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct AgentHostOptions {
-    pub bind_address: String,
-    pub port: u16,
-}
-
-impl Default for AgentHostOptions {
-    fn default() -> Self {
-        Self {
-            bind_address: "127.0.0.1".into(),
-            port: 8787,
-        }
-    }
-}
-
-pub struct AgentHostApplication {
-    pub options: AgentHostOptions,
-}
-
-pub struct BrowserStudioRelay;
-
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
-pub struct ChatGptHostStatus {
-    pub signed_in: bool,
-    pub account_id: Option<String>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ChatGptHostLease {
-    pub lease_id: String,
-    pub expires_at_unix: u64,
-}
-
-pub struct ChatGptHostSession;
-pub struct CompanionWorkspace;
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ExternalAgentEvent {
-    pub seq: u64,
-    pub kind: String,
-    pub data: Value,
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ExternalAgentCall {
-    pub id: String,
-    pub method: String,
-    pub params: Value,
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ExternalAgentReply {
-    pub id: String,
-    pub ok: bool,
-    pub result: Value,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
-pub struct ExternalAgentHostSettings {
-    pub provider: String,
-    pub working_directory: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct StartRequest {
-    pub session_id: String,
-    pub prompt: String,
-}
-
-pub struct ExternalAgentHost;
-pub struct ExternalAgentHttp;
-
-impl BrowserStudioRelay {
-    pub fn route_prefix() -> &'static str {
-        "/api/studio/relay"
-    }
-}
-
-impl ChatGptHostSession {
-    pub fn status() -> ChatGptHostStatus {
-        ChatGptHostStatus::default()
-    }
-}
-
-impl CompanionWorkspace {
-    pub fn default_dir() -> &'static str {
-        ".shadow-companion"
-    }
-}
-
-impl ExternalAgentHost {
-    pub fn ok_reply(id: impl Into<String>, result: Value) -> ExternalAgentReply {
-        ExternalAgentReply {
-            id: id.into(),
-            ok: true,
-            result,
-        }
-    }
-}
-
-impl ExternalAgentHttp {
-    pub fn health_payload() -> Value {
-        serde_json::json!({ "status": "ok" })
-    }
-}
+pub use agent_host_application::*;
+pub use agent_host_options::*;
+pub use browser_studio_relay::*;
+pub use chat_gpt_host_session::*;
+pub use companion_workspace::*;
+pub use external_agent_host::*;
+pub use external_agent_http::*;

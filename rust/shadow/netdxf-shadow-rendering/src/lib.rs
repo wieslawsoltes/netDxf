@@ -2,25 +2,48 @@
 
 #![forbid(unsafe_code)]
 
-pub mod render_core;
+pub mod gradient_plan;
+pub mod i_text_layout_engine;
+pub mod linetype_coordinates;
+pub mod linetype_planner;
+pub mod linetype_render_compiler;
+pub mod linetype_transport;
+pub mod model_annotation_context;
+pub mod paper_viewport;
+pub mod perspective_camera;
+pub mod perspective_item_projection;
+pub mod render_backend;
+pub mod render_compiler;
+pub mod render_hit_testing;
+pub mod render_paint;
+pub mod render_scene;
 pub mod rich_text;
+pub mod rich_text_layout;
+pub mod rich_text_paragraph_style;
+pub mod stroke_pattern;
+pub mod svg_render_backend;
+pub mod text_layout;
+pub mod viewport_layer_overrides;
 
-pub use render_core::{
-    AnnotationScale, GradientPlan, ILinetypeDecorationProvider, IRasterRenderBackend,
-    IRenderBackend, ISvgImageResolver, ITextOutlineProvider, LinetypeFrameMode,
-    LinetypeMetricSpace, LinetypePlanOptions, LinetypePlacement, LinetypePlanner,
-    LinetypeTextRotationPivot, LinetypeTransport, ModelAnnotationContext, ModelAnnotationMode,
-    ModelAnnotationResolution, PaperSpaceOptions, PaperViewportProjection, PerspectiveCamera,
-    PerspectiveFieldOfView, PerspectiveOptions, PickingRay, RenderClip, RenderCompileOptions,
-    RenderCompiler, RenderCompilerStatistics, RenderContour, RenderFrame, RenderHitTesting,
-    RenderHost, RenderImage, RenderItem, RenderPaint, RenderRegion, RenderScene, RenderStrokeGroup,
-    StrokePattern, SvgImageData, SvgRenderBackend, Viewport, ViewportLayerOverride,
-    ViewportLayerProfile, ViewportOverrideCatalog, ViewportOverrideLimits,
-};
-pub use rich_text::{
-    ApproximateTextLayoutEngine, ITextLayoutEngine, MTextParagraphControl, ParagraphAlignment,
-    ParagraphLineSpacing, ParagraphTabAlignment, ParagraphTabStop, PositionedTextRun, RichText,
-    RichTextDocument, RichTextInline, RichTextLayout, RichTextLayoutResult, RichTextLine,
-    RichTextParagraphStyle, RichTextParseOptions, RichTextStyle, TextDecoration,
-    TextFormatDiagnostic, TextLayout, TextLine, TextRule, TextRunMetrics,
-};
+pub use gradient_plan::*;
+pub use i_text_layout_engine::*;
+pub use linetype_coordinates::*;
+pub use linetype_planner::*;
+pub use linetype_render_compiler::*;
+pub use linetype_transport::*;
+pub use model_annotation_context::*;
+pub use paper_viewport::*;
+pub use perspective_camera::*;
+pub use perspective_item_projection::*;
+pub use render_backend::*;
+pub use render_compiler::*;
+pub use render_hit_testing::*;
+pub use render_paint::*;
+pub use render_scene::*;
+pub use rich_text::*;
+pub use rich_text_layout::*;
+pub use rich_text_paragraph_style::*;
+pub use stroke_pattern::*;
+pub use svg_render_backend::*;
+pub use text_layout::*;
+pub use viewport_layer_overrides::*;
