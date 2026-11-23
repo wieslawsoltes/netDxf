@@ -6,6 +6,11 @@ pub struct DxfLightListEntry {
     pub light_handle: String,
 }
 
+impl DxfLightListEntry {
+    #[inline] pub fn light(&self) -> &str { &self.light_handle }
+    #[inline] pub fn name(&self) -> &str { &self.light_handle }
+}
+
 /// First-class DXF `LIGHTLIST` database object.
 #[derive(Debug, Clone, PartialEq)]
 pub struct DxfLightList {

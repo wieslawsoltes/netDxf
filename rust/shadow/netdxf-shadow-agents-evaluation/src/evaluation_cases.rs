@@ -15,5 +15,13 @@ impl EvaluationCases {
             ..Default::default()
         }]
     }
+
+    pub fn all() -> Vec<EvaluationCase> {
+        Self::default_suite()
+    }
+
+    pub fn self_test() -> Vec<EvaluationCase> {
+        Self::default_suite()
+    }
 }
 

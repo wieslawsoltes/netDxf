@@ -76,6 +76,12 @@ pub struct DxfDateTimeFormat {
 
 impl DxfDateTimeFormat {
     pub const MAXIMUM_MASK_LENGTH: usize = 4096;
+    pub const MAXIMUM_LENGTH: usize = 4096;
+
+    #[inline]
+    pub fn expression(&self) -> &str {
+        &self.mask
+    }
 
     pub fn parse(mask: &str) -> Result<Self> {
         if mask.len() > Self::MAXIMUM_MASK_LENGTH || mask.contains('\0') {

@@ -23,12 +23,15 @@ pub struct WorkflowScenario {
     pub steps: Vec<WorkflowStep>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub struct WorkflowLimits {
     pub maximum_steps: usize,
     pub maximum_json_bytes: usize,
+    pub maximum_argument_bytes: usize,
+    pub maximum_seconds: u64,
     pub maximum_differences: usize,
     pub numeric_tolerance: u64,
+    pub number_tolerance: f64,
 }
 
 impl Default for WorkflowLimits {
@@ -36,8 +39,11 @@ impl Default for WorkflowLimits {
         Self {
             maximum_steps: 1_000,
             maximum_json_bytes: 32 * 1024 * 1024,
+            maximum_argument_bytes: 16 * 1024 * 1024,
+            maximum_seconds: 120,
             maximum_differences: 100,
             numeric_tolerance: 0,
+            number_tolerance: 1e-6,
         }
     }
 }

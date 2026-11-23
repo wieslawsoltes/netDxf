@@ -68,4 +68,34 @@ impl DxfTag {
             value: CodeValue::Bytes(value),
         }
     }
+
+    #[inline]
+    pub fn create_dimension_style_arrow_name(code: i16, name: impl Into<String>) -> Self {
+        Self::string(code, name)
+    }
+
+    #[inline]
+    pub fn create_opaque_object_code5(handle: impl Into<String>) -> Self {
+        Self::string(5, handle)
+    }
+
+    #[inline]
+    pub fn handle_kind(&self) -> i16 {
+        self.code
+    }
+
+    #[inline]
+    pub fn value_type(&self) -> &'static str {
+        match self.value {
+            CodeValue::String(_) => "String",
+            CodeValue::Double(_) => "Double",
+            CodeValue::Int16(_) => "Int16",
+            CodeValue::Int32(_) => "Int32",
+            CodeValue::Int64(_) => "Int64",
+            CodeValue::Bool(_) => "Bool",
+            CodeValue::Byte(_) => "Byte",
+            CodeValue::Bytes(_) => "Bytes",
+            CodeValue::None => "None",
+        }
+    }
 }

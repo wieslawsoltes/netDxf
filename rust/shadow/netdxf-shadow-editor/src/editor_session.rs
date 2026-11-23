@@ -10,12 +10,17 @@ use std::sync::Arc;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ShadowPreviewOptions {
     pub maximum_changes: usize,
+    pub maximum_details: usize,
+    pub maximum_objects: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ShadowPreviewChange {
     pub object: ObjectId,
     pub property: String,
+    pub kind: String,
+    pub r#type: String,
+    pub properties: Vec<String>,
     pub before: ShadowValue,
     pub after: ShadowValue,
 }
@@ -24,7 +29,10 @@ pub struct ShadowPreviewChange {
 pub struct ShadowPreviewSummary {
     pub added: usize,
     pub modified: usize,
+    pub changed: usize,
     pub removed: usize,
+    pub details_truncated: bool,
+    pub details: Vec<ShadowPreviewChange>,
     pub changes: Vec<ShadowPreviewChange>,
 }
 
@@ -61,6 +69,9 @@ impl ShadowEditPreview {
                             summary.changes.push(ShadowPreviewChange {
                                 object: change.id.clone(),
                                 property: k.clone(),
+                                kind: "modified".into(),
+                                r#type: after.type_name.clone(),
+                                properties: vec![k.clone()],
                                 before: bv,
                                 after: av.clone(),
                             });

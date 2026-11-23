@@ -7,6 +7,11 @@ pub struct DxfSortOrderEntry {
     pub sort_handle: String,
 }
 
+impl DxfSortOrderEntry {
+    #[inline] pub fn entity(&self) -> &str { &self.entity_handle }
+    #[inline] pub fn target(&self) -> &str { &self.sort_handle }
+}
+
 /// First-class DXF `SORTENTSTABLE` draw-order object.
 #[derive(Debug, Clone, PartialEq)]
 pub struct DxfSortentsTable {

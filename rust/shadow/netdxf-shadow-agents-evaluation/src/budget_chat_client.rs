@@ -55,12 +55,18 @@ pub struct BudgetRequest {
 
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct BudgetLedger {
+    pub schema_version: u32,
     pub used_tokens: u64,
     pub used_usd: f64,
+    pub charged_usd: f64,
+    pub maximum_usd: f64,
     pub requests: usize,
 }
 
-pub struct BudgetChatClient;
+#[derive(Debug, Clone, Default)]
+pub struct BudgetChatClient {
+    pub observed_cost: f64,
+}
 
 impl BudgetChatClient {
     pub fn charge(
@@ -78,6 +84,15 @@ impl BudgetChatClient {
         ledger.requests += 1;
         ledger.used_tokens += req.tokens;
         ledger.used_usd += cost;
+        ledger.charged_usd += cost;
         Ok(())
+    }
+
+    pub fn get_response(&mut self, prompt: &str) -> Value {
+        serde_json::json!({ "prompt": prompt, "cost": self.observed_cost })
+    }
+
+    pub fn get_streaming_response(&mut self, prompt: &str) -> Vec<Value> {
+        vec![self.get_response(prompt)]
     }
 }

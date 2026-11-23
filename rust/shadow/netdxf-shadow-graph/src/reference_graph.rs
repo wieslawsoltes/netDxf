@@ -110,7 +110,10 @@ pub struct ReferenceComponentAnalysis {
 pub struct ReferencePathOptions {
     pub direction: ReferenceGraphDirection,
     pub max_depth: usize,
+    pub maximum_depth: usize,
     pub max_visited: usize,
+    pub maximum_nodes: usize,
+    pub maximum_edges: usize,
 }
 
 impl Default for ReferencePathOptions {
@@ -118,7 +121,10 @@ impl Default for ReferencePathOptions {
         Self {
             direction: ReferenceGraphDirection::Outgoing,
             max_depth: 32,
+            maximum_depth: 32,
             max_visited: 10_000,
+            maximum_nodes: 10_000,
+            maximum_edges: 50_000,
         }
     }
 }

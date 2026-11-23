@@ -18,6 +18,10 @@ impl XRecord {
             entries: Vec::new(),
         }
     }
+
+    #[inline] pub fn cloning(&self) -> i16 { self.cloning_flags }
+    #[inline] pub fn data(&self) -> &[DxfTag] { &self.entries }
+    #[inline] pub fn is_schema_managed(&self) -> bool { false }
 }
 
 impl Default for XRecord {

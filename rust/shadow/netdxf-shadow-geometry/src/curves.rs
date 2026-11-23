@@ -72,6 +72,7 @@ impl Curve3 {
                 start_width: c.start_width,
                 end_width: c.end_width,
                 side: c.side,
+                frame: m * c.frame,
             })),
             Self::Reversed(c) => Self::Reversed(Box::new(ReversedCurve {
                 curve: c.curve.transform(m),
@@ -90,6 +91,19 @@ impl LineCurve {
     pub fn evaluate(self, t: f64) -> Vec3 {
         self.a + (self.b - self.a) * t
     }
+
+    #[inline]
+    pub fn at(&self, t: f64) -> Vec3 {
+        self.evaluate(t)
+    }
+
+    #[inline]
+    pub fn transform(&self, m: Affine3) -> Self {
+        Self {
+            a: m.point(self.a),
+            b: m.point(self.b),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -106,6 +120,27 @@ impl EllipseCurve {
         let angle = self.start_angle + self.sweep * t;
         let (s, c) = angle.sin_cos();
         self.center + self.u * c + self.v * s
+    }
+
+    #[inline]
+    pub fn at(&self, t: f64) -> Vec3 {
+        self.evaluate(t)
+    }
+
+    #[inline]
+    pub fn closed(&self) -> bool {
+        (self.sweep.abs() - TAU).abs() <= 1e-6
+    }
+
+    #[inline]
+    pub fn transform(&self, m: Affine3) -> Self {
+        Self {
+            center: m.point(self.center),
+            u: m.direction(self.u),
+            v: m.direction(self.v),
+            start_angle: self.start_angle,
+            sweep: self.sweep,
+        }
     }
 }
 

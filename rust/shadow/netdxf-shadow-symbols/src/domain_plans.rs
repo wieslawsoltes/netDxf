@@ -10,6 +10,31 @@ use std::collections::BTreeMap;
 pub struct DomainPlans;
 
 impl DomainPlans {
+    pub fn connect(
+        snapshot: &netdxf_shadow::ShadowSnapshot,
+        source: &ObjectId,
+        target: &ObjectId,
+    ) -> netdxf_shadow_drafting::DraftingPlan {
+        let _ = (source, target);
+        netdxf_shadow_drafting::DraftingPlanner::empty_plan(snapshot, "DOMAIN CONNECT")
+    }
+
+    pub fn route(
+        snapshot: &netdxf_shadow::ShadowSnapshot,
+        points: &[Vec3],
+    ) -> netdxf_shadow_drafting::DraftingPlan {
+        let _ = points;
+        netdxf_shadow_drafting::DraftingPlanner::empty_plan(snapshot, "DOMAIN ROUTE")
+    }
+
+    pub fn update(
+        snapshot: &netdxf_shadow::ShadowSnapshot,
+        record: &DomainRecord,
+    ) -> netdxf_shadow_drafting::DraftingPlan {
+        let _ = record;
+        netdxf_shadow_drafting::DraftingPlanner::empty_plan(snapshot, "DOMAIN UPDATE")
+    }
+
     pub fn schedule(scan: &DomainScan, options: &DomainScheduleOptions) -> DomainSchedule {
         let mut by_group: BTreeMap<String, Vec<DomainScheduleRow>> = BTreeMap::new();
         for e in &scan.entities {

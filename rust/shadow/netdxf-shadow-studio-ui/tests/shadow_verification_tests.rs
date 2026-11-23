@@ -176,6 +176,7 @@ fn rich_text_camera_linetype_and_shx_bytecode_verification() {
             code: 65,
             name: "A".into(),
             data: vec![1, 8, 4, 0, 2, 8, 2, 0, 0],
+            ..Default::default()
         },
     );
     let glyph = ShxGlyphCompiler::compile(&font, 65, &ShxExecutionOptions::default()).unwrap();

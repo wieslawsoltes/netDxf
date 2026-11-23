@@ -37,6 +37,9 @@ pub struct ShxGlyph {
     pub code: u32,
     pub contours: Vec<CadContour>,
     pub advance: f64,
+    pub bounds: netdxf_shadow::Bounds2,
+    pub executed_instructions: usize,
+    pub exit_scale: f64,
 }
 
 pub struct ShxGlyphCompiler;
@@ -147,6 +150,9 @@ impl ShxGlyphCompiler {
             code,
             contours,
             advance: x.max(font.above as f64),
+            bounds: netdxf_shadow::Bounds2::default(),
+            executed_instructions: steps,
+            exit_scale: scale,
         })
     }
 }

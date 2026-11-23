@@ -39,4 +39,19 @@ impl Polyline2DVertex {
             bulge: 0.0,
         }
     }
+
+    #[inline]
+    pub fn start_width_override(&self) -> Option<f64> {
+        (self.start_width > 0.0).then_some(self.start_width)
+    }
+
+    #[inline]
+    pub fn end_width_override(&self) -> Option<f64> {
+        (self.end_width > 0.0).then_some(self.end_width)
+    }
+
+    #[inline]
+    pub fn vertex_identifier(&self) -> i32 {
+        0
+    }
 }

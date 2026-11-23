@@ -18,9 +18,11 @@ pub enum SnapMode {
     Nearest,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct SnapResult {
     pub point: Vec3,
+    pub position: Vec3,
+    pub occurrence: Option<String>,
     pub mode: SnapMode,
     pub distance: f64,
 }
@@ -37,6 +39,8 @@ impl Snapping {
         );
         SnapResult {
             point: snapped,
+            position: snapped,
+            occurrence: None,
             mode: SnapMode::Grid,
             distance: Vec3::distance(point, snapped),
         }
@@ -46,9 +50,11 @@ impl Snapping {
         let mut best: Option<SnapResult> = None;
         for &c in candidates {
             let d = Vec3::distance(point, c);
-            if d <= tolerance && best.map_or(true, |b| d < b.distance) {
+            if d <= tolerance && best.as_ref().map_or(true, |b| d < b.distance) {
                 best = Some(SnapResult {
                     point: c,
+                    position: c,
+                    occurrence: None,
                     mode: SnapMode::Endpoint,
                     distance: d,
                 });

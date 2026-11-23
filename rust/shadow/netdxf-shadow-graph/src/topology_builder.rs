@@ -13,6 +13,10 @@ use std::collections::{BTreeMap, BTreeSet, VecDeque};
 pub struct TopologyOptions {
     pub endpoint_tolerance: f64,
     pub curve_tolerance: f64,
+    pub maximum_candidate_pairs: usize,
+    pub maximum_segments: usize,
+    pub respect_elevation: bool,
+    pub split_intersections: bool,
 }
 
 impl Default for TopologyOptions {
@@ -20,6 +24,10 @@ impl Default for TopologyOptions {
         Self {
             endpoint_tolerance: 0.01,
             curve_tolerance: 0.05,
+            maximum_candidate_pairs: 100_000,
+            maximum_segments: 100_000,
+            respect_elevation: false,
+            split_intersections: false,
         }
     }
 }

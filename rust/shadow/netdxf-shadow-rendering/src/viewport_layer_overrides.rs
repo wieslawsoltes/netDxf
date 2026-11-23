@@ -27,23 +27,45 @@ pub struct ViewportLayerProfile {
     pub overrides: BTreeMap<String, ViewportLayerOverride>,
 }
 
+impl ViewportLayerProfile {
+    pub fn empty() -> Self {
+        Self::default()
+    }
+
+    pub fn layers(&self) -> &BTreeMap<String, ViewportLayerOverride> {
+        &self.overrides
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ViewportOverrideLimits {
     pub maximum_viewports: usize,
+    pub maximum_profiles: usize,
     pub maximum_overrides_per_viewport: usize,
+    pub maximum_layer_entries: usize,
 }
 
 impl Default for ViewportOverrideLimits {
     fn default() -> Self {
         Self {
             maximum_viewports: 1_024,
+            maximum_profiles: 1_024,
             maximum_overrides_per_viewport: 8_192,
+            maximum_layer_entries: 8_192,
         }
     }
 }
 
 #[derive(Debug, Clone, Default)]
 pub struct ViewportOverrideCatalog {
+    pub document_id: String,
+    pub limits: ViewportOverrideLimits,
     pub profiles: BTreeMap<ObjectId, ViewportLayerProfile>,
+}
+
+impl ViewportOverrideCatalog {
+    pub fn for_plot(&self, viewport: &ObjectId) -> Option<&ViewportLayerProfile> {
+        self.profiles.get(viewport)
+    }
 }
 

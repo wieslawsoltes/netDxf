@@ -12,6 +12,9 @@ bitflags! {
         const NONE = 0;
         const SHAPE = 1;
         const VERTICAL = 4;
+        const EXTERNALLY_DEPENDENT = 16;
+        const EXTERNAL_REFERENCE_RESOLVED = 32;
+        const REFERENCED = 64;
     }
 }
 

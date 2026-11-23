@@ -41,3 +41,8 @@ pub struct DxfLayerIndexEntry {
     pub id_buffer_handle: String,
     pub entity_count: i32,
 }
+
+impl DxfLayerIndexEntry {
+    #[inline] pub fn buffer(&self) -> &str { &self.id_buffer_handle }
+    #[inline] pub fn count(&self) -> i32 { self.entity_count }
+}

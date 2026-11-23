@@ -16,6 +16,9 @@ pub struct DrawingExchangeLimits {
     pub maximum_input_bytes: usize,
     pub maximum_output_bytes: usize,
     pub maximum_diagnostics: usize,
+    pub maximum_blocks: usize,
+    pub maximum_entities: usize,
+    pub maximum_hatch_seed_points: usize,
 }
 
 impl Default for DrawingExchangeLimits {
@@ -24,6 +27,9 @@ impl Default for DrawingExchangeLimits {
             maximum_input_bytes: 20 * 1024 * 1024,
             maximum_output_bytes: 64 * 1024 * 1024,
             maximum_diagnostics: 2_048,
+            maximum_blocks: 16_384,
+            maximum_entities: 500_000,
+            maximum_hatch_seed_points: 100_000,
         }
     }
 }

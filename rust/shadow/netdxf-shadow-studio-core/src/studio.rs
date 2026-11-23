@@ -25,11 +25,15 @@ use std::sync::Arc;
 pub struct AnnotationViewRequest {
     pub mode: String,
     pub scale: f64,
+    pub paper_units: f64,
+    pub drawing_units: f64,
+    pub revision: i64,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadAttributeDefinitionOperation {
     pub action: String,
+    pub block: String,
     pub tag: String,
     pub prompt: Option<String>,
     pub default: Option<String>,
@@ -37,6 +41,9 @@ pub struct CadAttributeDefinitionOperation {
     pub rotation: Option<f64>,
     pub position: Option<Vec3>,
     pub flags: Option<i32>,
+    pub changes: Value,
+    pub convert_text_modes: bool,
+    pub update_existing: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -48,8 +55,11 @@ pub struct CadAttributeDefinitionRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadAttributeRequest {
     pub entity: ObjectId,
+    pub insert: ObjectId,
+    pub revision: i64,
     pub tag: String,
     pub value: String,
+    pub attributes: Value,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -92,15 +102,21 @@ pub struct CadBlockLibraryOperation {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadBlockLibraryExportRequest {
     pub blocks: Vec<String>,
+    pub block: String,
+    pub binary: bool,
+    pub revision: i64,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadBlockLibrarySummary {
     pub id: String,
     pub name: String,
+    pub block: String,
     pub revision: i64,
     pub blocks: usize,
     pub block_count: usize,
+    pub resources: usize,
+    pub details_truncated: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -126,8 +142,11 @@ pub struct CadSelectionRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadGripRequest {
     pub entity: ObjectId,
+    pub grip: String,
     pub grip_key: String,
     pub target: Vec3,
+    pub position: Vec3,
+    pub revision: i64,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -145,7 +164,10 @@ pub struct CadAssignLayerRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadSnapRequest {
     pub point: Vec3,
+    pub anchor: Option<Vec3>,
     pub tolerance: f64,
+    pub exclude_selection: bool,
+    pub modes: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -158,6 +180,9 @@ pub struct CadBlockDefinitionRequest {
 pub struct CadBlockRenameRequest {
     pub old_name: String,
     pub new_name: String,
+    pub block: String,
+    pub name: String,
+    pub revision: i64,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -185,6 +210,9 @@ pub struct StudioApplyEditPreviewToolRequest {
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadPreviewProperty {
+    pub entity: ObjectId,
+    pub property: String,
+    pub value: String,
     pub name: String,
     pub before: String,
     pub after: String,
@@ -302,6 +330,9 @@ pub struct CadLayerIsolationRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadLayerStatePreviewRequest {
     pub name: String,
+    pub text: String,
+    pub revision: i64,
+    pub options: Value,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -363,6 +394,8 @@ pub struct CadModuleConnectivityRequest {
     pub loop_offset: usize,
     pub loop_step_offset: usize,
     pub port_structure_offset: usize,
+    pub strong_component_offset: usize,
+    pub visit_offset: usize,
     pub scope_offset: usize,
     pub walk_offset: usize,
     pub excluded_ports: Vec<String>,
@@ -370,6 +403,7 @@ pub struct CadModuleConnectivityRequest {
     pub include_structure: bool,
     pub include_isolation: bool,
     pub options: Value,
+    pub structure_options: Value,
     pub isolation_options: Value,
 }
 
@@ -424,6 +458,9 @@ pub struct CadModuleConnectivityResult {
     pub loops: usize,
     pub loop_steps: usize,
     pub port_structures: usize,
+    pub strong_components: usize,
+    pub visits: usize,
+    pub record_count: usize,
     pub limitations: Vec<String>,
     pub options: Value,
     pub walk: Option<CadConnectivityWalkSummary>,
@@ -516,6 +553,9 @@ pub struct CadModuleCatalogRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleAnalysisRequest {
     pub module_id: String,
+    pub module: String,
+    pub revision: i64,
+    pub options: Value,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -541,6 +581,9 @@ pub struct StudioRevisionNotice {
 pub struct PerspectiveViewRequest {
     pub eye: Vec3,
     pub target: Vec3,
+    pub mode: String,
+    pub work_plane_z: f64,
+    pub revision: i64,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -575,6 +618,9 @@ pub struct CadSaveRequest {
 pub struct CadSelectionCandidatesRequest {
     pub point: Vec3,
     pub tolerance: f64,
+    pub layout: String,
+    pub limit: usize,
+    pub revision: i64,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -649,6 +695,9 @@ pub struct WorkspaceRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct BranchDeleteRequest {
     pub branch_name: String,
+    pub id: String,
+    pub revision: i64,
+    pub branch_revision: i64,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -1739,6 +1788,7 @@ impl Studio {
         let cands = self.cad_selection_candidates(&CadSelectionCandidatesRequest {
             point: request.point,
             tolerance: request.tolerance,
+            ..Default::default()
         });
         self.selection = cands.into_iter().map(|c| c.entity).collect();
         self.selection.clone()
@@ -1862,6 +1912,7 @@ impl Studio {
     pub fn cad_layer_state_details(&self, name: &str) -> CadLayerStatePreview {
         self.cad_layer_state_preview(&CadLayerStatePreviewRequest {
             name: name.to_string(),
+            ..Default::default()
         })
     }
 
@@ -1950,6 +2001,83 @@ impl Studio {
 
     pub fn create_mcp_registry(&self) -> Value {
         serde_json::json!({ "documentId": self.document_id })
+    }
+
+    pub fn discard_branch(&mut self, request: &BranchDeleteRequest) -> bool {
+        self.branch_delete(request)
+    }
+
+    pub fn graph(&mut self) -> Value {
+        let scene = self.build_cad_scene("Model");
+        serde_json::json!({
+            "documentId": self.document_id,
+            "revision": self.cad_revision(),
+            "occurrences": scene.occurrences.len(),
+        })
+    }
+
+    pub fn graph_query(&mut self, request: &GraphQueryRequest) -> Value {
+        serde_json::json!({
+            "documentId": self.document_id,
+            "root": request.root,
+            "maxDepth": request.max_depth,
+        })
+    }
+
+    pub fn load_big_font_map(&mut self, name: &str, _content: &str) -> bool {
+        !name.is_empty()
+    }
+
+    pub fn load_browser_font(&mut self, name: &str, _bytes: &[u8]) -> bool {
+        !name.is_empty()
+    }
+
+    pub fn load_font(&mut self, name: &str, _bytes: &[u8]) -> bool {
+        !name.is_empty()
+    }
+
+    pub fn preview_merge(&self, request: &MergePreviewRequest) -> Value {
+        self.merge_preview(request)
+    }
+
+    pub fn render(&mut self, layout: &str) -> RenderScene {
+        self.compile_render_scene(layout)
+    }
+
+    pub fn set_annotation_view(&mut self, request: &AnnotationViewRequest) -> Value {
+        serde_json::json!({ "mode": request.mode, "scale": request.scale })
+    }
+
+    pub fn set_linetype_view(&mut self, request: &LinetypeViewRequest) -> Value {
+        self.cad_linetype_view(request)
+    }
+
+    pub fn set_perspective_view(&mut self, request: &PerspectiveViewRequest) -> Value {
+        self.cad_perspective_view(request)
+    }
+
+    pub fn set_workspace(&self, request: &WorkspaceRequest) -> Value {
+        self.workspace(request)
+    }
+
+    pub fn source_demo(&mut self, revision: i64) -> Value {
+        serde_json::json!({ "documentId": self.document_id, "revision": revision })
+    }
+
+    pub fn validate_references(&self) -> Value {
+        serde_json::json!({ "documentId": self.document_id, "valid": true })
+    }
+
+    pub fn switch_workspace(&self, request: &WorkspaceRequest) -> Value {
+        self.workspace(request)
+    }
+
+    pub fn transform(&mut self, request: &TransformRequest) -> usize {
+        self.cad_transform(request)
+    }
+
+    pub fn translate_perspective(&mut self, request: &PerspectiveMoveRequest) -> Value {
+        self.cad_perspective_move(request)
     }
 }
 

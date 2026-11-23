@@ -22,6 +22,11 @@ impl ApplicationRegistry {
             table: TableObjectData::reserved(Self::DEFAULT_NAME, DxfObjectCode::APP_ID),
         }
     }
+
+    #[allow(clippy::should_implement_trait)]
+    pub fn default() -> Self {
+        Self::default_app_reg()
+    }
 }
 
 impl TableObject for ApplicationRegistry {

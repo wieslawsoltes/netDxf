@@ -11,6 +11,7 @@ use std::f64::consts::TAU;
 #[derive(Debug, Clone, Default)]
 pub struct SpatialIndex {
     items: Vec<(Bounds2, usize)>,
+    pub refit_count: usize,
 }
 
 impl SpatialIndex {
@@ -21,7 +22,25 @@ impl SpatialIndex {
             .filter(|(_, o)| !o.bounds.is_empty())
             .map(|(i, o)| (o.bounds, i))
             .collect();
-        Self { items }
+        Self { items, refit_count: 0 }
+    }
+
+    pub fn bounds(&self) -> Bounds2 {
+        let mut b = Bounds2::EMPTY;
+        for (ib, _) in &self.items {
+            b = b.union(*ib);
+        }
+        b
+    }
+
+    pub fn refit(&mut self, occurrences: &[CadOccurrence]) {
+        self.items = occurrences
+            .iter()
+            .enumerate()
+            .filter(|(_, o)| !o.bounds.is_empty())
+            .map(|(i, o)| (o.bounds, i))
+            .collect();
+        self.refit_count += 1;
     }
 
     pub fn query(&self, region: Bounds2) -> Vec<usize> {

@@ -80,6 +80,27 @@ impl ShapeStyle {
         }
         None
     }
+
+    /// Looks up the shape number for `shape_name` in this shape style's `.shp` file.
+    pub fn shape_number(&self, shape_name: &str) -> Option<i16> {
+        let shp = Path::new(&self.file).with_extension("shp");
+        let text = fs::read_to_string(shp).ok()?;
+        for line in text.lines() {
+            let trimmed = line.trim();
+            if let Some(rest) = trimmed.strip_prefix('*') {
+                let parts: Vec<&str> = rest.splitn(3, ',').collect();
+                if parts.len() == 3 && parts[2].trim().eq_ignore_ascii_case(shape_name) {
+                    return parts[0].trim().parse::<i16>().ok();
+                }
+            }
+        }
+        None
+    }
+
+    #[inline]
+    pub fn text_generation_flags(&self) -> i16 {
+        0
+    }
 }
 
 impl TableObject for ShapeStyle {

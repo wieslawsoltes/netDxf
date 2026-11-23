@@ -12,11 +12,13 @@ pub struct ExternalAgentEvent {
     pub data: Value,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct ExternalAgentCall {
     pub id: String,
     pub method: String,
     pub params: Value,
+    pub parameters: Value,
+    pub references: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

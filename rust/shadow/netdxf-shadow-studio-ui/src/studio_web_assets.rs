@@ -18,5 +18,7 @@ impl StudioWebAssets {
     pub const APP_TITLE: &'static str = "netDxf Shadow Studio (FerroUI + Skia)";
     pub const UI_FRAMEWORK: &'static str = "FerroUI";
     pub const RENDER_BACKEND: &'static str = "Skia";
+    pub const SHELL: &'static str = "studio-shell.html";
+    pub const DIAGNOSTICS: &'static str = "diagnostics-shell.html";
 }
 

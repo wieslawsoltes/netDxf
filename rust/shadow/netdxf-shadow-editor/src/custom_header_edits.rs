@@ -19,5 +19,19 @@ impl CustomHeaderEdits {
         let _ = edit.set(&snapshot.root, name, ShadowValue::from_string(value));
         edit.build()
     }
+
+    pub fn set(
+        snapshot: &ShadowSnapshot,
+        name: impl Into<String>,
+        value: impl Into<String>,
+    ) -> ShadowGraphPatch {
+        Self::set_property(snapshot, name, value)
+    }
+
+    pub fn remove(snapshot: &ShadowSnapshot, name: impl Into<String>) -> ShadowGraphPatch {
+        let mut edit = netdxf_shadow::ShadowGraphEdit::new(snapshot.clone());
+        let _ = edit.set(&snapshot.root, name, ShadowValue::null());
+        edit.build()
+    }
 }
 

@@ -140,6 +140,14 @@ impl TopologyGraph {
         }
     }
 
+    pub fn minimum_spanning_forest(&self) -> GraphSpanningForest {
+        self.spanning_forest()
+    }
+
+    pub fn traverse(&self, start: usize, max_depth: usize, max_nodes: usize) -> GraphTraversal {
+        self.bfs(start, max_depth, max_nodes)
+    }
+
     /// Dijkstra shortest path between `start` and `goal` weighted by edge length.
     pub fn shortest_path(&self, start: usize, goal: usize) -> Option<GraphPath> {
         let n = self.nodes.len();

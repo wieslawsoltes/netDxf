@@ -10,6 +10,11 @@ pub struct DxfRawPointGeometry {
     pub angle: f64,
 }
 
+impl DxfRawPointGeometry {
+    #[inline] pub fn extrusion_direction(&self) -> Vector3 { self.extrusion }
+    #[inline] pub fn ucs_x_axis_angle(&self) -> f64 { self.angle }
+}
+
 /// Raw DXF `LINE` geometry view.
 #[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub struct DxfRawLineGeometry {
@@ -34,6 +39,11 @@ pub struct DxfRawCircleGeometry {
     pub extrusion: Vector3,
 }
 
+impl DxfRawCircleGeometry {
+    #[inline] pub fn center_in_object_coordinates(&self) -> Vector3 { self.center }
+    #[inline] pub fn extrusion_direction(&self) -> Vector3 { self.extrusion }
+}
+
 /// Raw DXF `ARC` geometry view.
 #[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub struct DxfRawArcGeometry {
@@ -43,6 +53,11 @@ pub struct DxfRawArcGeometry {
     pub end_angle: f64,
     pub thickness: f64,
     pub extrusion: Vector3,
+}
+
+impl DxfRawArcGeometry {
+    #[inline] pub fn center_in_object_coordinates(&self) -> Vector3 { self.center }
+    #[inline] pub fn extrusion_direction(&self) -> Vector3 { self.extrusion }
 }
 
 /// Raw DXF `ELLIPSE` geometry view.
@@ -95,6 +110,11 @@ pub struct DxfRawLwPolylineGeometry {
     pub elevation: f64,
     pub thickness: f64,
     pub extrusion: Vector3,
+}
+
+impl DxfRawLwPolylineGeometry {
+    #[inline] pub fn extrusion_direction(&self) -> Vector3 { self.extrusion }
+    #[inline] pub fn flags(&self) -> i16 { i16::from(self.is_closed) }
 }
 
 /// Raw DXF `3DFACE` geometry view.

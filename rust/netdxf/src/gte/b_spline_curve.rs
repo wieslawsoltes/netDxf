@@ -43,6 +43,16 @@ impl BSplineCurve {
     pub fn position(&self, t: f64) -> Vector3 {
         self.evaluate(t, 0)[0]
     }
+
+    #[inline]
+    pub fn basis_function(&self) -> &BasisFunction {
+        &self.basis
+    }
+
+    #[inline]
+    pub fn num_controls(&self) -> usize {
+        self.controls.len()
+    }
 }
 
 impl crate::gte::ParametricCurve for BSplineCurve {

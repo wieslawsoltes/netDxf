@@ -71,4 +71,23 @@ impl DraftingLayers {
             })
             .collect()
     }
+
+    pub fn read(snapshot: &netdxf_shadow::ShadowSnapshot) -> Vec<DraftingLayer> {
+        Self::list(snapshot)
+    }
+
+    pub fn plan(
+        snapshot: &netdxf_shadow::ShadowSnapshot,
+        _edit: &LayerEdit,
+    ) -> DraftingPlan {
+        DraftingPlanner::empty_plan(snapshot, "EDIT LAYER")
+    }
+
+    pub fn assign(
+        snapshot: &netdxf_shadow::ShadowSnapshot,
+        _entities: &[ObjectId],
+        _layer: &str,
+    ) -> DraftingPlan {
+        DraftingPlanner::empty_plan(snapshot, "ASSIGN LAYER")
+    }
 }

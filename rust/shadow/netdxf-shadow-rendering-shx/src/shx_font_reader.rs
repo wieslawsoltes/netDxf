@@ -89,8 +89,10 @@ impl ShxFontReader {
                             code,
                             ShxSymbol {
                                 code,
+                                number: code,
                                 name: std::mem::take(&mut current_name),
                                 data: std::mem::take(&mut current_bytes),
+                                ..Default::default()
                             },
                         );
                     }
@@ -131,8 +133,10 @@ impl ShxFontReader {
                     code,
                     ShxSymbol {
                         code,
+                        number: code,
                         name: current_name,
                         data: current_bytes,
+                        ..Default::default()
                     },
                 );
             }
@@ -201,8 +205,11 @@ impl ShxFontReader {
                         code,
                         ShxSymbol {
                             code,
+                            number: code,
+                            declared_bytes: len,
                             name: String::new(),
                             data,
+                            ..Default::default()
                         },
                     );
                 }

@@ -150,4 +150,14 @@ impl BSplineSurfaceFit {
     pub fn control_data(&self) -> &[Vector3] {
         &self.surface.controls
     }
+
+    #[inline]
+    pub fn num_samples(&self, dim: usize) -> usize {
+        self.num_controls(dim)
+    }
+
+    #[inline]
+    pub fn sample_data(&self) -> &[Vector3] {
+        &self.surface.controls
+    }
 }

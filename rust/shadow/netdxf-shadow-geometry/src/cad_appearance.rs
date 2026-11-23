@@ -43,10 +43,46 @@ pub struct WidthBoundaryCurve {
     pub start_width: f64,
     pub end_width: f64,
     pub side: f64,
+    pub frame: Affine3,
+}
+
+impl WidthBoundaryCurve {
+    #[inline]
+    pub fn at(&self, t: f64) -> Vec3 {
+        self.centerline.evaluate(t)
+    }
+
+    pub fn transform(&self, m: Affine3) -> Self {
+        Self {
+            centerline: self.centerline.transform(m),
+            start_width: self.start_width,
+            end_width: self.end_width,
+            side: self.side,
+            frame: m * self.frame,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ReversedCurve {
     pub curve: Curve3,
+}
+
+impl ReversedCurve {
+    #[inline]
+    pub fn at(&self, t: f64) -> Vec3 {
+        self.curve.evaluate(1.0 - t)
+    }
+
+    #[inline]
+    pub fn closed(&self) -> bool {
+        self.curve.closed()
+    }
+
+    pub fn transform(&self, m: Affine3) -> Self {
+        Self {
+            curve: self.curve.transform(m),
+        }
+    }
 }
 

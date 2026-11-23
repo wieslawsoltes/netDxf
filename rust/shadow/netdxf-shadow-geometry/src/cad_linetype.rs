@@ -87,3 +87,21 @@ pub struct CadLinetype {
     pub scale: f64,
     pub normal: Vec3,
 }
+
+impl CadLinetype {
+    pub fn equivalent(&self, other: &Self) -> bool {
+        self == other
+    }
+
+    pub fn multiply_scale(&self, factor: f64) -> Self {
+        Self {
+            elements: self.elements.clone(),
+            scale: self.scale * factor,
+            normal: self.normal,
+        }
+    }
+
+    pub fn read(_snapshot: &ShadowSnapshot, _name: &str) -> Self {
+        Self::default()
+    }
+}

@@ -15,5 +15,21 @@ impl StudioHttp {
             error: Some(message.into()),
         }
     }
+
+    pub fn identity(document_id: &str) -> Value {
+        serde_json::json!({ "documentId": document_id })
+    }
+
+    pub fn map_studio_workspaces() -> &'static [&'static str] {
+        &["/api/studio/workspace", "/api/studio/fork", "/api/studio/merge"]
+    }
+
+    pub fn presentation(payload: Value) -> Envelope {
+        Envelope {
+            ok: true,
+            payload,
+            error: None,
+        }
+    }
 }
 

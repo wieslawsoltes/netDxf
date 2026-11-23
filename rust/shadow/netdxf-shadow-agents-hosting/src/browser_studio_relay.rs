@@ -58,4 +58,13 @@ impl BrowserStudioRelay {
     pub fn cancel(&mut self, request_id: &str) -> bool {
         self.pending.remove(request_id).is_some()
     }
+
+    pub fn tools(&self) -> &[String] {
+        &self.names
+    }
+
+    pub fn execute(&mut self, tool: &str, args: Value) -> Result<Value, String> {
+        self.enqueue(tool, args.clone())?;
+        Ok(serde_json::json!({ "tool": tool, "args": args }))
+    }
 }

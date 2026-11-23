@@ -32,12 +32,14 @@ impl ElectricalSymbols {
                         position: Vec3::xy(-5.0, 0.0),
                         direction: Vec3::xy(-1.0, 0.0),
                         medium: "electrical".into(),
+                        ..Default::default()
                     },
                     SymbolPort {
                         name: "OUT".into(),
                         position: Vec3::xy(5.0, 0.0),
                         direction: Vec3::xy(1.0, 0.0),
                         medium: "electrical".into(),
+                        ..Default::default()
                     },
                 ],
                 attributes: Vec::new(),
@@ -61,12 +63,14 @@ impl ElectricalSymbols {
                         position: Vec3::xy(-4.0, 0.0),
                         direction: Vec3::xy(-1.0, 0.0),
                         medium: "electrical".into(),
+                        ..Default::default()
                     },
                     SymbolPort {
                         name: "LOAD".into(),
                         position: Vec3::xy(4.0, 0.0),
                         direction: Vec3::xy(1.0, 0.0),
                         medium: "electrical".into(),
+                        ..Default::default()
                     },
                 ],
                 attributes: Vec::new(),

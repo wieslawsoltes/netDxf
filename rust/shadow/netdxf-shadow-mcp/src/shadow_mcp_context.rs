@@ -15,6 +15,9 @@ use std::sync::Arc;
 pub struct ShadowMcpIdentity {
     pub name: String,
     pub version: String,
+    pub document_id: String,
+    pub workspace_id: Option<String>,
+    pub view_version: i64,
 }
 
 impl Default for ShadowMcpIdentity {
@@ -22,6 +25,9 @@ impl Default for ShadowMcpIdentity {
         Self {
             name: "netdxf-shadow-mcp".into(),
             version: "0.1.0".into(),
+            document_id: String::new(),
+            workspace_id: None,
+            view_version: 0,
         }
     }
 }

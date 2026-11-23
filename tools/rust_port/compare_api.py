@@ -320,13 +320,69 @@ def extract_record_params(text: str, name_end: int) -> Set[str]:
     return params
 
 
+def strip_nested_types(body: str) -> str:
+    """Remove nested type declarations (public/private/internal class/struct/record/enum/interface) from a type body."""
+    nested_re = re.compile(
+        r"^\s*(?:(?:public|private|protected|internal|static|abstract|sealed|readonly|ref|partial|unsafe|new)\s+)+"
+        r"(?:record\s+struct|record\s+class|record|class|struct|enum|interface)\s+[A-Za-z_][A-Za-z0-9_]*",
+        re.MULTILINE,
+    )
+    out: List[str] = []
+    pos = 0
+    while True:
+        m = nested_re.search(body, pos)
+        if not m:
+            out.append(body[pos:])
+            break
+        out.append(body[pos : m.start()])
+        brace = body.find("{", m.end())
+        semi = body.find(";", m.end())
+        if brace == -1 or (semi != -1 and semi < brace):
+            pos = (semi + 1) if semi != -1 else m.end()
+            continue
+        depth = 0
+        in_str = False
+        esc = False
+        end_idx = len(body)
+        for idx in range(brace, len(body)):
+            ch = body[idx]
+            if esc:
+                esc = False
+                continue
+            if ch == "\\":
+                esc = True
+                continue
+            if ch == '"':
+                in_str = not in_str
+            if not in_str:
+                if ch == "{":
+                    depth += 1
+                elif ch == "}":
+                    depth -= 1
+                    if depth == 0:
+                        end_idx = idx + 1
+                        break
+        pos = end_idx
+    return "".join(out)
+
+
+def is_cs_event_member_line(line: str, ident: str) -> bool:
+    s = line.strip()
+    if " event " in f" {s} " or " delegate " in f" {s} ":
+        return True
+    if ident.endswith("EventHandler") or ident.endswith("EventArgs"):
+        return True
+    return False
+
+
 def extract_cs_type_members(text: str, match: re.Match[str], kind: str, name: str) -> Set[str]:
     members: Set[str] = set()
     if kind.startswith("record"):
         members.update(extract_record_params(text, match.end()))
-    body = extract_brace_body(text, match.end())
-    if not body:
+    raw_body = extract_brace_body(text, match.end())
+    if not raw_body:
         return members
+    body = strip_nested_types(raw_body)
     if kind == "enum":
         for line in body.splitlines():
             s = line.strip()
@@ -336,8 +392,10 @@ def extract_cs_type_members(text: str, match: re.Match[str], kind: str, name: st
             if m:
                 members.add(m.group(1))
     else:
-        for m in CS_MEMBER_RE.findall(body):
-            if m != name and m not in CS_IGNORED_MEMBERS:
+        for m_obj in CS_MEMBER_RE.finditer(body):
+            m = m_obj.group(1)
+            line = m_obj.group(0)
+            if m != name and m not in CS_IGNORED_MEMBERS and not is_cs_event_member_line(line, m):
                 members.add(m)
         # Interface members (often omit `public`)
         if kind == "interface":

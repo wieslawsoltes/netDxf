@@ -566,6 +566,29 @@ impl Spline {
         spline.common.linetype = polyline.common.linetype.clone();
         spline
     }
+
+    pub fn to_polyline2d(&self, precision: usize) -> crate::entities::polyline2d::Polyline2D {
+        self.to_polyline3d(precision).to_polyline2d(precision)
+    }
+
+    pub fn nurbs_evaluator(&self) -> crate::gte::NURBSCurve {
+        let n = self.control_points.len();
+        let weights = if self.weights.len() == n {
+            self.weights.clone()
+        } else {
+            vec![1.0; n]
+        };
+        crate::gte::NURBSCurve::from_knots(
+            self.degree.max(1) as usize,
+            self.knots.clone(),
+            self.control_points.clone(),
+            weights,
+        )
+    }
+
+    pub fn to_bezier_segments(&self) -> Vec<Spline> {
+        vec![self.clone()]
+    }
 }
 
 /// One-sided limit direction for spline derivative evaluation at knots.

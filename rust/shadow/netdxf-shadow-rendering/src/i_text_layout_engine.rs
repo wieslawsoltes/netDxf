@@ -13,8 +13,21 @@ pub trait ITextLayoutEngine: Send + Sync {
     fn measure_run(&self, text: &str, style: &RichTextStyle) -> TextRunMetrics;
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct ApproximateTextLayoutEngine;
+
+impl ApproximateTextLayoutEngine {
+    pub const INSTANCE: Self = Self;
+
+    #[inline]
+    pub fn revision(&self) -> i64 {
+        0
+    }
+
+    pub fn layout(&self, doc: &RichTextDocument, line_spacing: f64) -> RichTextLayoutResult {
+        RichTextLayout::layout(doc, self, line_spacing)
+    }
+}
 
 impl ITextLayoutEngine for ApproximateTextLayoutEngine {
     fn measure_run(&self, text: &str, style: &RichTextStyle) -> TextRunMetrics {

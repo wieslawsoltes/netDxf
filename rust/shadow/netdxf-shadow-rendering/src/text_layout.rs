@@ -9,15 +9,29 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct TextLine {
     pub text: String,
     pub width: f64,
+    pub x: f64,
+    pub y: f64,
 }
 
 pub struct TextLayout;
 
 impl TextLayout {
+    pub fn plain_text(text: &str) -> String {
+        text.to_string()
+    }
+
+    pub fn layout(
+        text: &str,
+        style: &RichTextStyle,
+        max_width: f64,
+        engine: &dyn ITextLayoutEngine,
+    ) -> Vec<TextLine> {
+        Self::wrap_lines(text, style, max_width, engine)
+    }
     /// Wraps plain text into lines fitting within `max_width` using `engine`.
     pub fn wrap_lines(
         text: &str,
@@ -32,6 +46,7 @@ impl TextLayout {
                 out.push(TextLine {
                     text: paragraph.to_string(),
                     width: w,
+                    ..Default::default()
                 });
                 continue;
             }
@@ -49,6 +64,7 @@ impl TextLayout {
                     out.push(TextLine {
                         text: current,
                         width: w,
+                        ..Default::default()
                     });
                     current = word.to_string();
                 }
@@ -57,6 +73,7 @@ impl TextLayout {
             out.push(TextLine {
                 text: current,
                 width: w,
+                ..Default::default()
             });
         }
         out

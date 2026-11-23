@@ -38,6 +38,9 @@ pub struct BlockLibraryImport {
 pub struct BlockLibraryLimits {
     pub maximum_blocks: usize,
     pub maximum_entities: usize,
+    pub maximum_objects: usize,
+    pub maximum_value_depth: usize,
+    pub maximum_values: usize,
 }
 
 impl Default for BlockLibraryLimits {
@@ -45,6 +48,9 @@ impl Default for BlockLibraryLimits {
         Self {
             maximum_blocks: 4_096,
             maximum_entities: 200_000,
+            maximum_objects: 200_000,
+            maximum_value_depth: 64,
+            maximum_values: 1_000_000,
         }
     }
 }
@@ -63,6 +69,9 @@ pub struct BlockLibraryResource {
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct BlockLibraryPlan {
+    pub block: Option<ObjectId>,
+    pub edit: Option<String>,
+    pub identities: Vec<ObjectId>,
     pub imported_blocks: Vec<String>,
     pub resources: Vec<BlockLibraryResource>,
 }
@@ -80,6 +89,7 @@ impl DraftingBlockLibrary {
         BlockLibraryPlan {
             imported_blocks,
             resources: Vec::new(),
+            ..Default::default()
         }
     }
 }

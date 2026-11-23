@@ -9,14 +9,19 @@ use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use thiserror::Error;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentModelDiscoveryRequest {
     pub provider: String,
+    pub endpoint: Option<String>,
+    pub api_key: Option<String>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentModelDiscoveryLimits {
     pub maximum_models: usize,
+    pub maximum_pages: usize,
+    pub maximum_response_bytes: usize,
+    pub timeout: u64,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]

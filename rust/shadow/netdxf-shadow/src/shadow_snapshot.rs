@@ -293,6 +293,15 @@ impl<'a> ShadowReader<'a> {
         self.resolved
     }
 
+    pub fn observe(&self, observer: &mut dyn IShadowReadObserver) -> Option<&'a Arc<ShadowObject>> {
+        self.object_observed(observer)
+    }
+
+    #[inline]
+    pub fn r#type(&self) -> &str {
+        self.type_name()
+    }
+
     pub fn exists(&self) -> bool {
         !matches!(self.value, ShadowValue::Null(_))
     }

@@ -9,10 +9,13 @@ use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use thiserror::Error;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentCommand {
     pub program: String,
+    pub executable: String,
     pub args: Vec<String>,
+    pub arguments: Vec<String>,
+    pub timeout_seconds: u64,
     pub working_directory: Option<String>,
 }
 

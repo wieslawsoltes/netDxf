@@ -7,6 +7,9 @@ use thiserror::Error;
 pub struct CodexProcessOptions {
     pub executable: String,
     pub working_directory: String,
+    pub codex_home: Option<String>,
+    pub maximum_message_bytes: usize,
+    pub request_timeout: u64,
     pub arguments: Vec<String>,
     pub environment: BTreeMap<String, String>,
 }

@@ -15,10 +15,13 @@ pub struct ShxLeadByteRange {
     pub end: u8,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ShxEncodedCharacter {
     pub code: u32,
+    pub number: u32,
+    pub byte_offset: usize,
     pub byte_length: u8,
+    pub big_font: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -48,13 +51,19 @@ impl ShxBigFontInfo {
                 let code = ((b as u32) << 8) | (bytes[i + 1] as u32);
                 out.push(ShxEncodedCharacter {
                     code,
+                    number: code,
+                    byte_offset: i,
                     byte_length: 2,
+                    big_font: true,
                 });
                 i += 2;
             } else {
                 out.push(ShxEncodedCharacter {
                     code: b as u32,
+                    number: b as u32,
+                    byte_offset: i,
                     byte_length: 1,
+                    big_font: false,
                 });
                 i += 1;
             }

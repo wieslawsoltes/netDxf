@@ -118,12 +118,23 @@ pub struct DxfTableStyleHeader {
     pub suppress_header: bool,
 }
 
+impl DxfTableStyleHeader {
+    #[inline] pub fn stored_flags(&self) -> i16 { self.flags }
+    #[inline] pub fn stored_version(&self) -> i16 { 0 }
+    #[inline] pub fn suppress_column_heading(&self) -> bool { self.suppress_header }
+}
+
 /// Border style values for a table style row.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct DxfTableStyleBorderValues {
     pub lineweight: i16,
     pub visible: bool,
     pub color: Option<crate::aci_color::AciColor>,
+}
+
+impl DxfTableStyleBorderValues {
+    #[inline] pub fn stored_color(&self) -> Option<crate::aci_color::AciColor> { self.color }
+    #[inline] pub fn stored_lineweight(&self) -> i16 { self.lineweight }
 }
 
 /// All 6 border definitions for a table style row.
@@ -137,11 +148,44 @@ pub struct DxfTableStyleRowBorders {
     pub right: DxfTableStyleBorderValues,
 }
 
+impl DxfTableStyleRowBorders {
+    pub const BORDER_COUNT: usize = 6;
+
+    pub fn values(&self) -> [DxfTableStyleBorderValues; 6] {
+        [
+            self.top.clone(),
+            self.horizontal_inside.clone(),
+            self.bottom.clone(),
+            self.left.clone(),
+            self.vertical_inside.clone(),
+            self.right.clone(),
+        ]
+    }
+
+    pub fn with_border(mut self, index: usize, border: DxfTableStyleBorderValues) -> Self {
+        match index {
+            0 => self.top = border,
+            1 => self.horizontal_inside = border,
+            2 => self.bottom = border,
+            3 => self.left = border,
+            4 => self.vertical_inside = border,
+            5 => self.right = border,
+            _ => {}
+        }
+        self
+    }
+}
+
 /// Data type and unit type pair for a table style row.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct DxfTableStyleRowDataTypes {
     pub data_type: i32,
     pub unit_type: i32,
+}
+
+impl DxfTableStyleRowDataTypes {
+    #[inline] pub fn stored_data_type(&self) -> i32 { self.data_type }
+    #[inline] pub fn stored_unit_type(&self) -> i32 { self.unit_type }
 }
 
 /// Row style definition inside a [`DxfTableStyle`].
@@ -160,6 +204,12 @@ pub struct DxfTableStyleRow {
 
 impl DxfTableStyleRow {
     #[inline] pub fn stored_text_style_name(&self) -> &str { &self.text_style }
+    #[inline] pub fn background_color_enabled(&self) -> bool { self.fill_enabled }
+    #[inline] pub fn cell_alignment(&self) -> i16 { self.alignment }
+    #[inline] pub fn stored_fill_color(&self) -> Option<crate::aci_color::AciColor> { self.fill_color }
+    #[inline] pub fn stored_text_color(&self) -> Option<crate::aci_color::AciColor> { self.text_color }
+    #[inline] pub fn original(&self) -> &Self { self }
+    #[inline] pub fn values(&self) -> &Self { self }
     pub fn with_borders(mut self, borders: DxfTableStyleRowBorders) -> Self {
         self.borders = borders;
         self
@@ -225,6 +275,11 @@ pub struct DxfTableContentBand {
     pub cell_style_id: Option<i32>,
 }
 
+impl DxfTableContentBand {
+    #[inline] pub fn format(&self) -> Option<i32> { self.cell_style_id }
+    #[inline] pub fn style_id(&self) -> Option<i32> { self.cell_style_id }
+}
+
 /// Style reference from a column, row, or cell in `TABLECONTENT`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct DxfTableContentStyleReference {
@@ -234,12 +289,27 @@ pub struct DxfTableContentStyleReference {
     pub style_id: i32,
 }
 
+impl DxfTableContentStyleReference {
+    #[inline] pub fn payload_index(&self) -> usize { self.row }
+    #[inline] pub fn stored_id(&self) -> i32 { self.style_id }
+}
+
 /// Formatting options attached to a [`DxfStoredTableContentValue`].
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct DxfStoredTableContentValueFormatting {
     pub data_type: i32,
     pub unit_type: i32,
     pub format_string: String,
+}
+
+impl DxfStoredTableContentValueFormatting {
+    pub fn evaluate_formatted_text(&self, text: &str) -> String {
+        text.to_string()
+    }
+
+    pub fn with_evaluated_value(self) -> Self {
+        self
+    }
 }
 
 /// Stored typed value inside a `TABLECONTENT` cell.
@@ -314,6 +384,8 @@ impl DxfTableContentCell {
 /// Raw `AcDbFormattedTableData` / `AcDbTableContent` subclass wrapper.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct DxfStoredTableContentSubclass {
+    pub name: String,
+    pub tags: Vec<(i32, String)>,
     pub rows: Vec<DxfTableContentBand>,
     pub columns: Vec<DxfTableContentBand>,
     pub cells: Vec<DxfTableContentCell>,

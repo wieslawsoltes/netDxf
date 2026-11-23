@@ -115,6 +115,8 @@ impl VPort {
     #[inline] pub fn view_twist(&self) -> f64 { self.view_twist_angle }
     #[inline] pub fn show_ucs_icon(&self) -> bool { (self.ucs_icon & 1) != 0 }
     #[inline] pub fn ucs_at_origin(&self) -> bool { (self.ucs_icon & 2) != 0 }
+    #[inline] pub fn ucs_per_viewport(&self) -> bool { true }
+    #[inline] pub fn view_mode(&self) -> i16 { self.flags }
 }
 
 impl TableObject for VPort {

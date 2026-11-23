@@ -7,17 +7,20 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DraftingAttribute {
     pub id: ObjectId,
     pub tag: String,
+    pub prompt: String,
     pub value: String,
     pub position: Vec3,
     pub layer: String,
     pub color: Option<i16>,
     pub linetype: String,
+    pub lineweight: i16,
     pub text_style: String,
     pub height: f64,
+    pub width: f64,
     pub width_factor: f64,
     pub oblique_angle: f64,
     pub rotation: f64,
@@ -44,8 +47,10 @@ pub struct AttributeEdit {
     pub layer: Option<String>,
     pub color: Option<i16>,
     pub linetype: Option<String>,
+    pub lineweight: Option<i16>,
     pub text_style: Option<String>,
     pub height: Option<f64>,
+    pub width: Option<f64>,
     pub width_factor: Option<f64>,
     pub oblique_angle: Option<f64>,
     pub rotation: Option<f64>,
@@ -54,6 +59,7 @@ pub struct AttributeEdit {
     pub upside_down: Option<bool>,
     pub invisible: Option<bool>,
     pub multiline: Option<bool>,
+    pub position_locked: Option<bool>,
     pub line_spacing: Option<f64>,
     pub exact_spacing: Option<bool>,
 }
@@ -86,13 +92,16 @@ impl DraftingAttributes {
                 DraftingAttribute {
                     id: o.id.clone(),
                     tag,
+                    prompt: r.field("Prompt").text().to_string(),
                     value: r.field("Value").text().to_string(),
                     position: r.field("Position").vector(Vec3::ZERO),
                     layer: r.field("Layer").text().to_string(),
                     color: Some(r.field("Color").number(256.0) as i16),
                     linetype: r.field("Linetype").text().to_string(),
+                    lineweight: r.field("Lineweight").number(-3.0) as i16,
                     text_style: r.field("Style").text().to_string(),
                     height: r.field("Height").number(1.0),
+                    width: r.field("Width").number(1.0),
                     width_factor: r.field("WidthFactor").number(1.0),
                     oblique_angle: r.field("ObliqueAngle").number(0.0),
                     rotation: r.field("Rotation").number(0.0),
@@ -111,5 +120,20 @@ impl DraftingAttributes {
                 }
             })
             .collect()
+    }
+
+    pub fn read(snapshot: &netdxf_shadow::ShadowSnapshot) -> Vec<DraftingAttribute> {
+        Self::list(snapshot)
+    }
+
+    pub fn alignments() -> &'static [&'static str] {
+        &["BaselineLeft", "BaselineCenter", "BaselineRight", "MiddleCenter"]
+    }
+
+    pub fn plan(
+        snapshot: &netdxf_shadow::ShadowSnapshot,
+        _edits: &[AttributeEdit],
+    ) -> DraftingPlan {
+        DraftingPlanner::empty_plan(snapshot, "EDIT ATTRIBUTES")
     }
 }

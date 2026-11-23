@@ -23,6 +23,11 @@ pub struct DxfDataTableColumn {
     pub cells: Vec<DxfDataTableCell>,
 }
 
+impl DxfDataTableColumn {
+    #[inline] pub fn r#type(&self) -> i32 { self.column_type }
+    #[inline] pub fn values(&self) -> &[DxfDataTableCell] { &self.cells }
+}
+
 /// Represents a DXF `DATATABLE` object (`netDxf.Objects.DxfDataTable`).
 #[derive(Clone, Debug, PartialEq)]
 pub struct DxfDataTable {
@@ -31,6 +36,20 @@ pub struct DxfDataTable {
     pub version: i16,
     pub row_count: usize,
     pub columns: Vec<DxfDataTableColumn>,
+}
+
+impl DxfDataTable {
+    pub const MAXIMUM_CELLS: usize = 1_000_000;
+
+    #[inline]
+    pub fn stored_version(&self) -> i16 {
+        self.version
+    }
+
+    pub fn set_columns(&mut self, columns: Vec<DxfDataTableColumn>) {
+        self.row_count = columns.first().map_or(0, |c| c.cells.len());
+        self.columns = columns;
+    }
 }
 
 impl Default for DxfDataTable {

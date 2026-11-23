@@ -16,5 +16,17 @@ impl StudioSamples {
         let _ = name;
         ProcessDiagramFactory::create_basic_diagram()
     }
+
+    pub fn create_document() -> DxfDocument {
+        ProcessDiagramFactory::create_basic_diagram()
+    }
+
+    pub fn checker_reference() -> &'static str {
+        "checker.png"
+    }
+
+    pub fn demo_font() -> &'static str {
+        "shadow-demo.shx"
+    }
 }
 

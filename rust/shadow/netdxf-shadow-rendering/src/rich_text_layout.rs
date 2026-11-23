@@ -16,10 +16,13 @@ pub struct TextRunMetrics {
     pub descent: f64,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct PositionedTextRun {
     pub text: String,
     pub origin: Vec3,
+    pub x: f64,
+    pub y: f64,
+    pub advance: f64,
     pub style: RichTextStyle,
     pub metrics: TextRunMetrics,
 }
@@ -110,6 +113,9 @@ impl RichTextLayout {
                 line.runs.push(PositionedTextRun {
                     text: segment.to_string(),
                     origin: Vec3::xy(cur_x, cur_y),
+                    x: cur_x,
+                    y: cur_y,
+                    advance: metrics.width,
                     style: inline.style.clone(),
                     metrics,
                 });

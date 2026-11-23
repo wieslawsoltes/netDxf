@@ -64,6 +64,24 @@ impl Polyline3D {
         }
     }
 
+    #[inline]
+    pub fn end_sequence_record(&self) -> Option<&str> {
+        None
+    }
+
+    #[inline]
+    pub fn vertex_records(&self) -> &[Vector3] {
+        &self.vertexes
+    }
+
+    pub fn to_polyline2d(&self, precision: usize) -> crate::entities::polyline2d::Polyline2D {
+        let pts = self
+            .polygonal_vertexes(precision)
+            .into_iter()
+            .map(|v| v.to_vector2());
+        crate::entities::polyline2d::Polyline2D::from_points(pts, self.is_closed)
+    }
+
     /// Computes polygonal vertices, applying quadratic/cubic/bezier smoothing when `smooth_type` is set.
     pub fn polygonal_vertexes(&self, precision: usize) -> Vec<Vector3> {
         if self.vertexes.len() < 2 || self.smooth_type == PolylineSmoothType::NoSmooth {

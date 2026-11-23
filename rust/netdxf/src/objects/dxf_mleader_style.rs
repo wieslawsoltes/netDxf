@@ -49,6 +49,31 @@ impl DxfMLeaderStyle {
             scale: 1.0,
         }
     }
+
+    #[inline]
+    pub fn properties(&self) -> crate::entities::mleader_context::MLeaderStyleProperties {
+        crate::entities::mleader_context::MLeaderStyleProperties {
+            content_type: self.content_type,
+            leader_line_type: self.leader_line_type,
+            leader_line_color: self.leader_line_color,
+            leader_line_type_name: self.leader_linetype.clone(),
+            enable_landing: self.enable_landing,
+            landing_gap: self.landing_gap,
+            enable_dogleg: self.enable_dogleg,
+            dogleg_length: self.dogleg_length,
+            arrow_size: self.arrow_size,
+            text_style: self.text_style.clone(),
+            text_height: self.text_height,
+            text_color: self.text_color,
+            scale: self.scale,
+            ..Default::default()
+        }
+    }
+
+    #[inline]
+    pub fn stored_envelope_value(&self) -> i16 {
+        2
+    }
 }
 
 impl TableObject for DxfMLeaderStyle {

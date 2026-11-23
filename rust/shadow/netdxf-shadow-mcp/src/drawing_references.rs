@@ -64,9 +64,12 @@ pub struct DrawingReferenceResolution {
     pub status: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DrawingReferenceValidation {
     pub valid: bool,
+    pub can_send: bool,
+    pub identity: Option<DrawingReferenceIdentity>,
+    pub items: Vec<DrawingReferenceResolution>,
     pub resolutions: Vec<DrawingReferenceResolution>,
 }
 
@@ -136,7 +139,13 @@ impl DrawingReferences {
             })
             .collect();
         let valid = resolutions.iter().all(|r| r.exists);
-        DrawingReferenceValidation { valid, resolutions }
+        DrawingReferenceValidation {
+            valid,
+            can_send: valid,
+            identity: Some(request.reference_set.identity.clone()),
+            items: resolutions.clone(),
+            resolutions,
+        }
     }
 
     pub fn validate_current(

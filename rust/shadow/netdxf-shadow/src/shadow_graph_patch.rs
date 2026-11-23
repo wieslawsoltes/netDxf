@@ -315,6 +315,55 @@ impl ShadowGraphEdit {
         Ok(())
     }
 
+    pub fn add_entity(
+        &mut self,
+        type_name: impl Into<String>,
+        properties: BTreeMap<String, ShadowValue>,
+    ) -> ShadowResult<ObjectId> {
+        self.create(type_name, ShadowObjectKind::ENTITY, properties, None)
+    }
+
+    pub fn remove_entities(&mut self, ids: &[ObjectId]) -> ShadowResult<usize> {
+        let mut count = 0;
+        for id in ids {
+            if self.nodes.contains_key(id) {
+                self.remove(id)?;
+                count += 1;
+            }
+        }
+        Ok(count)
+    }
+
+    pub fn replace_sequence(
+        &mut self,
+        id: &ObjectId,
+        property: impl Into<String>,
+        items: Vec<ShadowValue>,
+    ) -> ShadowResult<()> {
+        self.set(id, property, ShadowValue::sequence(items))
+    }
+
+    pub fn prune_unreachable(&mut self) -> usize {
+        let mut reachable = BTreeSet::new();
+        let mut stack = vec![self.baseline.root.clone()];
+        reachable.insert(self.baseline.root.clone());
+        while let Some(cur) = stack.pop() {
+            if let Some(node) = self.nodes.get(&cur) {
+                for val in node.properties.values() {
+                    for r in val.references() {
+                        if reachable.insert(r.clone()) {
+                            stack.push(r);
+                        }
+                    }
+                }
+            }
+        }
+        let before = self.nodes.len();
+        self.nodes
+            .retain(|id, obj| reachable.contains(id) || obj.kind.contains(ShadowObjectKind::ENTITY));
+        before.saturating_sub(self.nodes.len())
+    }
+
     pub fn build(&self) -> ShadowGraphPatch {
         let mut changes = Vec::new();
         for (id, before_node) in &self.baseline.objects {

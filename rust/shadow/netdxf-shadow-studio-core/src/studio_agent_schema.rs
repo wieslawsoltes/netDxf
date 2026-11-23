@@ -56,5 +56,17 @@ impl StudioAgentSchema {
             "routes": StudioAgentRouteTools::routes(),
         })
     }
+
+    pub fn describe_requests() -> Vec<Route> {
+        Self::routes()
+    }
+
+    pub fn register() -> Value {
+        Self::route_schema()
+    }
+
+    pub fn register_routes() -> Vec<Route> {
+        Self::routes()
+    }
 }
 

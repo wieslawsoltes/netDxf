@@ -135,6 +135,31 @@ impl Polyline2D {
         }
     }
 
+    pub fn set_vertex_widths(&mut self, index: usize, start_width: f64, end_width: f64) -> bool {
+        if let Some(slot) = self.vertexes.get_mut(index) {
+            slot.start_width = start_width.max(0.0);
+            slot.end_width = end_width.max(0.0);
+            true
+        } else {
+            false
+        }
+    }
+
+    #[inline]
+    pub fn smooth_type(&self) -> PolylineSmoothType {
+        PolylineSmoothType::NoSmooth
+    }
+
+    #[inline]
+    pub fn vertex_records(&self) -> &[Polyline2DVertex] {
+        &self.vertexes
+    }
+
+    #[inline]
+    pub fn end_sequence_record(&self) -> Option<&str> {
+        None
+    }
+
     /// Computes a polygonal approximation of the 2D polyline in OCS, tessellating bulge arcs
     /// with `precision` segments per arc.
     pub fn polygonal_vertexes(&self, precision: usize) -> Vec<Vector2> {

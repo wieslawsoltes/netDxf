@@ -32,12 +32,14 @@ impl PipingSymbols {
                         position: Vec3::xy(-3.0, 0.0),
                         direction: Vec3::xy(-1.0, 0.0),
                         medium: "pipe".into(),
+                        ..Default::default()
                     },
                     SymbolPort {
                         name: "P2".into(),
                         position: Vec3::xy(0.0, 3.0),
                         direction: Vec3::xy(0.0, 1.0),
                         medium: "pipe".into(),
+                        ..Default::default()
                     },
                 ],
                 attributes: Vec::new(),
@@ -61,6 +63,7 @@ impl PipingSymbols {
                         position: Vec3::ZERO,
                         direction: Vec3::xy(1.0, 0.0),
                         medium: "pipe".into(),
+                        ..Default::default()
                     },
                 ],
                 attributes: Vec::new(),

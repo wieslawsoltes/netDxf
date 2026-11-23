@@ -31,11 +31,14 @@ pub struct ShxInstruction {
     pub dy: i8,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ShxSymbol {
     pub code: u32,
+    pub number: u32,
+    pub declared_bytes: usize,
     pub name: String,
     pub data: Vec<u8>,
+    pub instructions: Vec<ShxInstruction>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

@@ -77,6 +77,19 @@ pub trait TableObject {
     }
 
     #[inline]
+    fn owner(&self) -> Option<&str> {
+        self.table_data().object.owner_handle.as_deref()
+    }
+
+    #[inline]
+    fn invalid_characters() -> &'static [char]
+    where
+        Self: Sized,
+    {
+        INVALID_CHARACTERS
+    }
+
+    #[inline]
     fn has_references(&self) -> bool {
         false
     }

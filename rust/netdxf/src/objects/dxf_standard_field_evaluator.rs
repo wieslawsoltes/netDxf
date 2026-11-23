@@ -147,8 +147,14 @@ pub struct DxfStandardFieldEvaluator {
 }
 
 impl DxfStandardFieldEvaluator {
+    pub const MAXIMUM_VARIABLES: usize = 4_096;
+
     pub fn new() -> Self {
         Self::default()
+    }
+
+    pub fn evaluate_or_throw(&self, field_code: &str) -> Result<DxfFieldResult> {
+        self.evaluate(field_code)
     }
 
     pub fn set_variable(&mut self, name: impl Into<String>, value: impl Into<String>) {
@@ -218,12 +224,50 @@ pub enum DxfFieldDataValue {
     Point3D(crate::vector3::Vector3),
 }
 
+impl DxfFieldDataValue {
+    #[inline]
+    pub fn name(&self) -> &'static str {
+        match self {
+            Self::Empty => "Empty",
+            Self::Integer(_) => "Integer",
+            Self::Double(_) => "Double",
+            Self::String(_) => "String",
+            Self::Point3D(_) => "Point3D",
+        }
+    }
+
+    #[inline]
+    pub fn tags(&self) -> Vec<(i32, String)> {
+        Vec::new()
+    }
+
+    #[inline]
+    pub fn value(&self) -> String {
+        match self {
+            Self::Empty => String::new(),
+            Self::Integer(v) => v.to_string(),
+            Self::Double(v) => v.to_string(),
+            Self::String(s) => s.clone(),
+            Self::Point3D(p) => format!("{},{},{}", p.x, p.y, p.z),
+        }
+    }
+}
+
 /// Input parameters passed to a field evaluator.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct DxfFieldEvaluationInput {
     pub field_code: String,
     pub format_string: String,
     pub evaluator_id: String,
+    pub children: Vec<String>,
+    pub field: Option<String>,
+    pub evaluation: DxfFieldResultStatus,
+}
+
+impl DxfFieldEvaluationInput {
+    pub fn compose_text(&self) -> String {
+        self.field_code.clone()
+    }
 }
 
 /// Mutable edit payload for updating a stored `FIELD` result.
@@ -232,4 +276,9 @@ pub struct DxfFieldResultEdit {
     pub status: DxfFieldResultStatus,
     pub formatted_text: String,
     pub value: DxfFieldDataValue,
+}
+
+impl DxfFieldResultEdit {
+    #[inline] pub fn original(&self) -> &Self { self }
+    #[inline] pub fn result(&self) -> &Self { self }
 }

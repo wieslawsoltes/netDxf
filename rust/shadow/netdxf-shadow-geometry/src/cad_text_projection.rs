@@ -8,12 +8,15 @@ use serde::{Deserialize, Serialize};
 use std::f64::consts::TAU;
 
 /// Source descriptor for text projection.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadTextSource {
     pub text: CadText,
     pub normal: Vec3,
     pub rotation: f64,
     pub style_name: String,
+    pub style: String,
+    pub drawing_direction: i16,
+    pub has_background: bool,
 }
 
 /// Text projection utility helpers.
@@ -24,6 +27,14 @@ impl CadTextProjection {
         Affine3::move_by(origin)
             * Affine3::object_coordinates(normal)
             * Affine3::rotate_z(rotation_radians)
+    }
+
+    pub fn read(_snapshot: &ShadowSnapshot, _id: &ObjectId) -> Option<CadTextSource> {
+        None
+    }
+
+    pub fn read_display(_snapshot: &ShadowSnapshot, _id: &ObjectId) -> Option<String> {
+        None
     }
 }
 

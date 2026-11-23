@@ -19,6 +19,15 @@ pub struct DxfValueFormat {
 
 impl DxfValueFormat {
     pub const MAXIMUM_EXPRESSION_LENGTH: usize = 4096;
+    pub const MAXIMUM_LENGTH: usize = 4096;
+
+    pub fn try_parse(expression: &str) -> Option<Self> {
+        Self::parse(expression).ok()
+    }
+
+    pub fn format(&self, value: f64) -> Result<String> {
+        self.format_f64(value)
+    }
 
     pub fn parse(expression: &str) -> Result<Self> {
         if expression.len() > Self::MAXIMUM_EXPRESSION_LENGTH || expression.contains('\0') {

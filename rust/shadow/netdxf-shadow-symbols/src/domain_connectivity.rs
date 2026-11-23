@@ -62,11 +62,14 @@ pub struct DomainConnection {
     pub reciprocal: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainConnectivityIssue {
     pub code: String,
+    pub severity: DiagnosticSeverity,
     pub message: String,
     pub entity: Option<ObjectId>,
+    pub entities: Vec<ObjectId>,
+    pub nodes: Vec<usize>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -82,6 +85,7 @@ pub struct DomainNetworkComponent {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DomainConnectivity {
     pub document_id: String,
+    pub revision: i64,
     pub module: String,
     pub layout: String,
     pub record_count: usize,
@@ -104,6 +108,19 @@ impl DomainConnectivity {
 
     pub fn port_id(entity: &ObjectId, port_name: &str) -> String {
         format!("{}:{port_name}", entity.as_str())
+    }
+
+    pub fn trace(&self, start: usize) -> DomainConnectivityWalk {
+        DomainConnectivityWalk {
+            source: start,
+            complete: true,
+            scope_complete: true,
+            ..Default::default()
+        }
+    }
+
+    pub fn shortest_path(&self, start: usize, goal: usize) -> DomainConnectionProof {
+        DomainConnectivityWalk::prove_connection(self.nodes.len(), &self.edges, start, goal)
     }
     pub fn build(
         document_id: impl Into<String>,
@@ -248,10 +265,16 @@ impl DomainConnectivity {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainIsolationOptions {
     pub respect_closed_valves: bool,
+    pub maximum_depth: usize,
+    pub maximum_examined_edges: usize,
+    pub maximum_visits: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainIsolationExclusion {
+    pub id: String,
+    pub kind: String,
+    pub value: String,
     pub entity: ObjectId,
     pub reason: String,
 }
@@ -301,16 +324,22 @@ pub struct DomainStructureOptions {
     pub maximum_loops: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainStrongComponent {
     pub id: usize,
     pub nodes: Vec<usize>,
+    pub port_count: usize,
+    pub connection_count: usize,
+    pub loop_status: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainPortStructure {
+    pub id: usize,
     pub node: usize,
     pub component: usize,
+    pub strong_component: usize,
+    pub articulation_point: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -323,8 +352,11 @@ pub struct DomainCondensationLink {
     pub target_component: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainCriticalConnection {
+    pub id: usize,
+    pub source: usize,
+    pub target: usize,
     pub connection_id: usize,
     pub is_bridge: bool,
 }
@@ -340,14 +372,18 @@ pub struct DomainLoopStep {
     pub connection: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainLoop {
+    pub id: usize,
+    pub strong_component: usize,
+    pub step_count: usize,
     pub steps: Vec<DomainLoopStep>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainConnectivityStructure {
     pub options: DomainStructureOptions,
+    pub strong_components: Vec<DomainStrongComponent>,
     pub port_structures: Vec<DomainPortStructure>,
     pub condensation: Vec<DomainCondensationLink>,
     pub loops: Vec<DomainLoop>,
@@ -356,13 +392,18 @@ pub struct DomainConnectivityStructure {
     pub loop_limit_reached: bool,
     pub loop_proof: Option<DomainConnectionProof>,
     pub proof_limit_reached: bool,
+    pub search_limit_reached: bool,
+    pub search_work: usize,
     pub scope_complete: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainPortVisit {
+    pub id: usize,
     pub node: usize,
     pub depth: usize,
+    pub predecessor: Option<usize>,
+    pub connection: Option<usize>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -424,7 +465,12 @@ impl DomainConnectivityWalk {
                 let path = chain
                     .into_iter()
                     .enumerate()
-                    .map(|(depth, node)| DomainPortVisit { node, depth })
+                    .map(|(depth, node)| DomainPortVisit {
+                        id: node,
+                        node,
+                        depth,
+                        ..Default::default()
+                    })
                     .collect();
                 return DomainConnectionProof {
                     connected: true,
@@ -504,8 +550,10 @@ impl DomainConnectivityStructure {
         ll.bridges
             .into_iter()
             .map(|id| DomainCriticalConnection {
+                id,
                 connection_id: id,
                 is_bridge: true,
+                ..Default::default()
             })
             .collect()
     }

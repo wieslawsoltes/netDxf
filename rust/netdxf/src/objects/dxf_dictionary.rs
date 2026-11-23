@@ -9,6 +9,33 @@ pub struct DxfDictionaryEntry {
     pub target_handle: String,
 }
 
+impl DxfDictionaryEntry {
+    pub fn create_unresolved_soft_reference(
+        name: impl Into<String>,
+        target_handle: impl Into<String>,
+    ) -> Self {
+        Self {
+            name: name.into(),
+            target_handle: target_handle.into(),
+        }
+    }
+
+    #[inline]
+    pub fn is_hard_owner(&self) -> bool {
+        false
+    }
+
+    #[inline]
+    pub fn is_resolved(&self) -> bool {
+        !self.target_handle.is_empty()
+    }
+
+    #[inline]
+    pub fn target(&self) -> &str {
+        &self.target_handle
+    }
+}
+
 /// First-class DXF `DICTIONARY` database object.
 #[derive(Debug, Clone, PartialEq)]
 pub struct DxfDictionary {

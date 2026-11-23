@@ -37,6 +37,10 @@ pub struct IndexedLowLinks {
 pub struct IndexedGraphAnalysis;
 
 impl IndexedGraphAnalysis {
+    pub const MAXIMUM_ARCS: usize = 500_000;
+    pub const MAXIMUM_CONNECTIONS: usize = 500_000;
+    pub const MAXIMUM_NODES: usize = 100_000;
+
     /// Computes Tarjan strongly connected components for a directed graph with `node_count` vertices.
     pub fn strong_components(
         node_count: usize,

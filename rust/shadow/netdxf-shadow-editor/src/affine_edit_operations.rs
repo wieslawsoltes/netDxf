@@ -11,6 +11,9 @@ use std::sync::Arc;
 pub struct AffineEditOptions {
     pub preserve_non_uniform_scale: bool,
     pub tolerance: f64,
+    pub relative_tolerance: f64,
+    pub maximum_coordinates: usize,
+    pub maximum_entities: usize,
 }
 
 impl Default for AffineEditOptions {
@@ -18,6 +21,9 @@ impl Default for AffineEditOptions {
         Self {
             preserve_non_uniform_scale: true,
             tolerance: 1e-9,
+            relative_tolerance: 1e-6,
+            maximum_coordinates: 1_000_000,
+            maximum_entities: 100_000,
         }
     }
 }
@@ -55,6 +61,28 @@ impl AffineEditOperations {
             }
         }
         ShadowEditBatch::create(snapshot, prop_edits)
+    }
+
+    pub fn plan(
+        snapshot: &ShadowSnapshot,
+        edits: &[AffineEntityEdit],
+        options: &AffineEditOptions,
+    ) -> ShadowEditBatch {
+        Self::transform_entities(snapshot, edits, options)
+    }
+
+    pub fn plan_selection(
+        snapshot: &ShadowSnapshot,
+        entities: &[ObjectId],
+        transform: Affine3,
+        options: &AffineEditOptions,
+    ) -> ShadowEditBatch {
+        let edits: Vec<AffineEntityEdit> = entities
+            .iter()
+            .cloned()
+            .map(|entity| AffineEntityEdit { entity, transform })
+            .collect();
+        Self::transform_entities(snapshot, &edits, options)
     }
 }
 

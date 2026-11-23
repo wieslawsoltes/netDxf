@@ -63,6 +63,11 @@ impl DxfCellStyleFormat {
         self.text_style.is_some()
     }
 
+    #[inline] pub fn stored_background_color(&self) -> Option<AciColor> { self.background_color }
+    #[inline] pub fn stored_content_layout(&self) -> i32 { self.stored_data_flags }
+    #[inline] pub fn stored_merge_flags(&self) -> i32 { self.stored_margin_flags }
+    #[inline] pub fn stored_property_overrides(&self) -> i32 { self.stored_data_flags }
+
     pub fn remap_resources<F>(&mut self, mut map_text_style: F)
     where
         F: FnMut(&str) -> String,
@@ -177,6 +182,8 @@ impl DxfCellContentFormat {
     #[inline] pub fn stored_property_flags(&self) -> i32 { self.property_flags }
     #[inline] pub fn stored_property_overrides(&self) -> i32 { self.property_overrides }
     #[inline] pub fn stored_unit_type(&self) -> i32 { self.unit_type }
+    #[inline] pub fn stored_text_style_handle(&self) -> Option<&str> { self.text_style.as_deref() }
+    #[inline] pub fn values(&self) -> &Self { self }
 }
 
 /// Immutable snapshot of [`DxfCellContentFormat`] values.
@@ -195,6 +202,9 @@ pub struct DxfCellGridFormat {
 }
 
 impl DxfCellGridFormat {
+    #[inline] pub fn edit(&self) -> Self { self.clone() }
+    #[inline] pub fn stored_index_mask(&self) -> i32 { self.border_type }
+    #[inline] pub fn stored_linetype_handle(&self) -> Option<&str> { self.linetype.as_deref() }
     #[inline] pub fn changes_linetype(&self) -> bool { self.linetype.is_some() }
     #[inline] pub fn original(&self) -> &Self { self }
     #[inline] pub fn values(&self) -> &Self { self }

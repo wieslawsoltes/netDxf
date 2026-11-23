@@ -16,4 +16,19 @@ impl DxfRawRecord {
             .find(|t| t.code == 5 || t.code == 105)
             .map(|t| t.value.as_str())
     }
+
+    #[inline]
+    pub fn content(&self) -> &[DxfTag] {
+        &self.tags
+    }
+
+    #[inline]
+    pub fn marker_code(&self) -> i16 {
+        self.tags.first().map_or(0, |t| t.code)
+    }
+
+    #[inline]
+    pub fn section_name(&self) -> &str {
+        &self.name
+    }
 }

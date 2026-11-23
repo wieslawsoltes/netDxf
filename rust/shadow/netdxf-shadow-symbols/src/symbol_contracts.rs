@@ -43,9 +43,12 @@ pub struct SymbolAttribute {
     pub visible: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct SymbolPort {
+    pub id: String,
     pub name: String,
+    pub kind: String,
+    pub nominal_size: Option<String>,
     pub position: Vec3,
     pub direction: Vec3,
     pub medium: String,

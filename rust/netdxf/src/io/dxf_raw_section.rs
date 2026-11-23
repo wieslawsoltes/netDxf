@@ -8,3 +8,20 @@ pub struct DxfRawSection {
     pub end_tag_index: usize,
     pub records: Vec<DxfRawRecord>,
 }
+
+impl DxfRawSection {
+    #[inline]
+    pub fn content(&self) -> &[DxfRawRecord] {
+        &self.records
+    }
+
+    #[inline]
+    pub fn content_start_tag_index(&self) -> usize {
+        self.start_tag_index + 2
+    }
+
+    #[inline]
+    pub fn preamble(&self) -> usize {
+        self.start_tag_index
+    }
+}

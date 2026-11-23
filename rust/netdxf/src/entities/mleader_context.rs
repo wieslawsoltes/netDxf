@@ -137,6 +137,12 @@ pub struct MLeaderBlockContent {
     pub transform: [f64; 16],
 }
 
+impl MLeaderBlockContent {
+    #[inline] pub fn block(&self) -> Option<&str> { self.block_handle.as_deref() }
+    #[inline] pub fn position(&self) -> Vector3 { self.location }
+    #[inline] pub fn transformation_matrix(&self) -> &[f64; 16] { &self.transform }
+}
+
 impl Default for MLeaderBlockContent {
     fn default() -> Self {
         Self {
@@ -294,6 +300,11 @@ impl MLeaderStyleProperties {
     #[inline] pub fn leader_line_linetype(&self) -> &str { &self.leader_line_type_name }
     #[inline] pub fn leader_line_lineweight(&self) -> i32 { self.leader_line_weight }
     #[inline] pub fn max_leader_points(&self) -> i32 { self.max_leader_segment_points }
+    #[inline] pub fn maximum_leader_points(&self) -> i32 { self.max_leader_segment_points }
+    #[inline] pub fn leader_type(&self) -> i16 { self.leader_line_type }
+    #[inline] pub fn overwrite_property_value(&self) -> bool { false }
+    #[inline] pub fn text_align_always_left(&self) -> bool { self.text_always_left_justify }
+    #[inline] pub fn text_alignment_type(&self) -> i16 { self.text_alignment }
     #[inline] pub fn text_always_left(&self) -> bool { self.text_always_left_justify }
     #[inline] pub fn block_scale(&self) -> Vector3 {
         Vector3::new(self.block_scale_x, self.block_scale_y, self.block_scale_z)
@@ -391,6 +402,22 @@ impl MLeaderProperties {
     #[inline] pub fn text_color(&self) -> AciColor { self.style_properties.text_color }
     #[inline] pub fn text_height(&self) -> f64 { self.style_properties.text_height }
     #[inline] pub fn text_style(&self) -> &str { &self.style_properties.text_style }
+    #[inline] pub fn has_dogleg(&self) -> bool { self.style_properties.enable_dogleg }
+    #[inline] pub fn has_landing(&self) -> bool { self.style_properties.enable_landing }
+    #[inline] pub fn has_text_frame(&self) -> bool { self.enable_frame_text }
+    #[inline] pub fn is_text_direction_negative(&self) -> bool { false }
+    #[inline] pub fn leader_extend_to_text(&self) -> bool { self.style_properties.extend_leader_to_text }
+    #[inline] pub fn leader_type(&self) -> i16 { self.style_properties.leader_line_type }
+    #[inline] pub fn property_override_flags(&self) -> i32 { self.property_override_flag }
+    #[inline] pub fn style(&self) -> &str { &self.style_properties.text_style }
+    #[inline] pub fn text_attachment_direction(&self) -> i16 { self.style_properties.text_attachment_direction }
+    #[inline] pub fn text_attachment_point(&self) -> i16 { self.text_left_attachment_type }
+    #[inline] pub fn text_bottom_attachment(&self) -> i16 { self.style_properties.text_bottom_attachment }
+    #[inline] pub fn text_left_attachment(&self) -> i16 { self.text_left_attachment_type }
+    #[inline] pub fn text_right_attachment(&self) -> i16 { self.text_right_attachment_type }
+    #[inline] pub fn text_top_attachment(&self) -> i16 { self.style_properties.text_top_attachment }
+    #[inline] pub fn leader_line_linetype(&self) -> &str { &self.style_properties.leader_line_type_name }
+    #[inline] pub fn leader_line_lineweight(&self) -> i32 { self.style_properties.leader_line_weight }
 }
 
 /// Complete structured data container for a [`MultiLeader`](crate::entities::MultiLeader).

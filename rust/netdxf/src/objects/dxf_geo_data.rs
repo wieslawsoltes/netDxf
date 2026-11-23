@@ -120,10 +120,21 @@ pub struct DxfGeoMeshPoint {
     pub target_y: f64,
 }
 
+impl DxfGeoMeshPoint {
+    #[inline] pub fn source(&self) -> Vector2 { Vector2::new(self.source_x, self.source_y) }
+    #[inline] pub fn target(&self) -> Vector2 { Vector2::new(self.target_x, self.target_y) }
+}
+
 /// Triangular face index triple in [`DxfGeoData`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct DxfGeoMeshFace {
     pub index1: i32,
     pub index2: i32,
     pub index3: i32,
+}
+
+impl DxfGeoMeshFace {
+    #[inline] pub fn first(&self) -> i32 { self.index1 }
+    #[inline] pub fn second(&self) -> i32 { self.index2 }
+    #[inline] pub fn third(&self) -> i32 { self.index3 }
 }

@@ -7,13 +7,16 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DraftingAttributeDefinition {
     pub id: ObjectId,
     pub tag: String,
     pub prompt: String,
     pub default_value: String,
     pub position: Vec3,
+    pub appearance: Option<String>,
+    pub preset: bool,
+    pub verify: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -49,8 +52,11 @@ pub struct AttributeDefinitionCreation {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct AttributeDefinitionChanges {
     pub additions: Vec<AttributeDefinitionCreation>,
+    pub add: Vec<AttributeDefinitionCreation>,
     pub edits: Vec<AttributeDefinitionEdit>,
     pub removals: Vec<ObjectId>,
+    pub remove: Vec<ObjectId>,
+    pub order: Vec<ObjectId>,
 }
 
 pub struct DraftingAttributeDefinitions;
@@ -69,9 +75,27 @@ impl DraftingAttributeDefinitions {
                     prompt: r.field("Prompt").text().to_string(),
                     default_value: r.field("Value").text().to_string(),
                     position: r.field("Position").vector(Vec3::ZERO),
+                    appearance: None,
+                    preset: r.field("Preset").boolean(false),
+                    verify: r.field("Verify").boolean(false),
                 }
             })
             .collect()
+    }
+
+    pub fn read(snapshot: &netdxf_shadow::ShadowSnapshot) -> Vec<DraftingAttributeDefinition> {
+        Self::list(snapshot)
+    }
+
+    pub fn owner(_snapshot: &netdxf_shadow::ShadowSnapshot, block_name: &str) -> ObjectId {
+        ObjectId::new(format!("O:Block:{block_name}"))
+    }
+
+    pub fn plan(
+        snapshot: &netdxf_shadow::ShadowSnapshot,
+        _changes: &AttributeDefinitionChanges,
+    ) -> DraftingPlan {
+        DraftingPlanner::empty_plan(snapshot, "EDIT ATTRIBUTE DEFINITIONS")
     }
 }
 

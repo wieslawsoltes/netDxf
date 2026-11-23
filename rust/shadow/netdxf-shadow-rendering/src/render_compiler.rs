@@ -13,6 +13,8 @@ use std::collections::BTreeMap;
 pub struct RenderCompilerStatistics {
     pub items_compiled: usize,
     pub items_reused: usize,
+    pub geometry_compilations: usize,
+    pub item_hits: usize,
 }
 
 /// Compiles a [`CadScene`] into a flat backend-agnostic [`RenderScene`].
@@ -24,6 +26,15 @@ pub struct RenderCompiler {
 impl RenderCompiler {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    #[inline]
+    pub fn cache_statistics(&self) -> RenderCompilerStatistics {
+        self.statistics
+    }
+
+    pub fn hit_test(scene: &RenderScene, point: Vec3, tolerance: f64) -> Vec<ObjectId> {
+        RenderHitTesting::hit_test(scene, point, tolerance)
     }
 
     pub fn compile(&mut self, scene: &CadScene, options: &RenderCompileOptions) -> RenderScene {
@@ -79,6 +90,7 @@ impl RenderCompiler {
             revision: scene.revision,
             layout: scene.layout.clone(),
             items,
+            diagnostics: Vec::new(),
             bounds: scene.bounds,
         }
     }

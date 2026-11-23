@@ -5,13 +5,19 @@ use serde::{Deserialize, Serialize};
 pub struct AttributeSynchronizationOptions {
     pub remove_orphan_attributes: bool,
     pub preserve_existing_values: bool,
+    pub convert_text_modes: bool,
+    pub maximum_attributes: usize,
+    pub maximum_references: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AttributeSynchronizationRemoval {
     pub insert_id: ObjectId,
     pub attribute_id: ObjectId,
+    pub attribute: ObjectId,
     pub tag: String,
+    pub fallback_value: Option<String>,
+    pub multiline_value: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]

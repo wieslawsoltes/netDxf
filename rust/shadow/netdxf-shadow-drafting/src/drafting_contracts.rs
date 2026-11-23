@@ -67,6 +67,30 @@ pub struct DraftingPlan {
     pub patch: ShadowGraphPatch,
 }
 
+impl DraftingPlan {
+    #[inline]
+    pub fn description(&self) -> &str {
+        &self.command.name
+    }
+
+    #[inline]
+    pub fn created(&self) -> Vec<ObjectId> {
+        self.patch
+            .changes
+            .iter()
+            .filter(|c| c.before.is_none() && c.after.is_some())
+            .map(|c| c.id.clone())
+            .collect()
+    }
+
+    pub fn execute(
+        &self,
+        snapshot: &netdxf_shadow::ShadowSnapshot,
+    ) -> netdxf_shadow::ShadowResult<netdxf_shadow::ShadowSnapshot> {
+        self.patch.apply(snapshot)
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DraftingGrip {
     pub id: String,

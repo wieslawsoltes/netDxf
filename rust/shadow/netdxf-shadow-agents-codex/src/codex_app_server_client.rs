@@ -121,6 +121,26 @@ impl CodexAppServerClient {
         Ok(self.build_interrupt_turn_request(thread_id, turn_id))
     }
 
+    pub fn read_account(&mut self) -> Result<Value, CodexRpcException> {
+        Ok(self.build_rpc_request("account/read", json!({})))
+    }
+
+    pub fn resume_thread(&mut self, thread_id: &str) -> Result<Value, CodexRpcException> {
+        Ok(self.build_rpc_request("thread/resume", json!({ "threadId": thread_id })))
+    }
+
+    pub fn steer_turn(&mut self, thread_id: &str, turn_id: &str, input: Value) -> Result<Value, CodexRpcException> {
+        Ok(self.build_rpc_request(
+            "turn/steer",
+            json!({ "threadId": thread_id, "turnId": turn_id, "input": input }),
+        ))
+    }
+
+    #[inline]
+    pub fn request_handler(&self) -> Option<&str> {
+        None
+    }
+
     pub fn respond(&self, id: u64, result: Value) -> Value {
         json!({ "jsonrpc": "2.0", "id": id, "result": result })
     }

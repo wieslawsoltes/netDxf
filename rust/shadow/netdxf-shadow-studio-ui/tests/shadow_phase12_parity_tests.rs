@@ -207,6 +207,7 @@ fn shadow_studio_hub_agents_acp_hosting_mcp_and_symbols() {
         id: "c1".into(),
         method: "ping".into(),
         params: serde_json::Value::Null,
+        ..Default::default()
     });
     assert!(reply.ok);
 

@@ -32,12 +32,14 @@ impl PidSymbols {
                         position: Vec3::xy(-5.0, 0.0),
                         direction: Vec3::xy(-1.0, 0.0),
                         medium: "process".into(),
+                        ..Default::default()
                     },
                     SymbolPort {
                         name: "DISCHARGE".into(),
                         position: Vec3::xy(5.0, 0.0),
                         direction: Vec3::xy(1.0, 0.0),
                         medium: "process".into(),
+                        ..Default::default()
                     },
                 ],
                 attributes: Vec::new(),
@@ -66,12 +68,14 @@ impl PidSymbols {
                         position: Vec3::xy(-4.0, 0.0),
                         direction: Vec3::xy(-1.0, 0.0),
                         medium: "process".into(),
+                        ..Default::default()
                     },
                     SymbolPort {
                         name: "OUT".into(),
                         position: Vec3::xy(4.0, 0.0),
                         direction: Vec3::xy(1.0, 0.0),
                         medium: "process".into(),
+                        ..Default::default()
                     },
                 ],
                 attributes: Vec::new(),

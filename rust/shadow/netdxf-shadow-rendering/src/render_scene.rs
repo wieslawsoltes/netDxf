@@ -56,13 +56,20 @@ pub struct RenderItem {
     pub projection: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct RenderScene {
     pub document_id: String,
     pub revision: i64,
     pub layout: String,
     pub items: Vec<RenderItem>,
+    pub diagnostics: Vec<String>,
     pub bounds: Bounds2,
+}
+
+impl RenderScene {
+    pub fn index(&self) -> usize {
+        self.items.len()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

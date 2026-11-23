@@ -75,9 +75,12 @@ pub struct LayerStateImportOptions {
     pub linetypes: BTreeMap<String, String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct LayerStateImportConflict {
     pub name: String,
+    pub kind: String,
+    pub source: String,
+    pub message: String,
     pub reason: String,
 }
 
@@ -241,6 +244,9 @@ impl DraftingLayerStates {
         if exists && !options.overwrite_existing {
             conflicts.push(LayerStateImportConflict {
                 name: source.name.clone(),
+                kind: "name".into(),
+                source: source.name.clone(),
+                message: "A state with this name exists. Choose a new name or explicitly replace it.".to_string(),
                 reason: "A state with this name exists. Choose a new name or explicitly replace it.".to_string(),
             });
         }
@@ -252,6 +258,9 @@ impl DraftingLayerStates {
             if !existing_layers.contains(&layer_name.to_ascii_lowercase()) {
                 conflicts.push(LayerStateImportConflict {
                     name: layer_name.clone(),
+                    kind: "layer".into(),
+                    source: layer_name.clone(),
+                    message: format!("Missing layer '{layer_name}'."),
                     reason: format!("Missing layer '{layer_name}'."),
                 });
             }

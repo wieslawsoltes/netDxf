@@ -22,10 +22,13 @@ pub struct ShadowAgentProviderOptions {
     pub optimize_prompt_caching: bool,
 }
 
-#[derive(Debug, Clone, Error, PartialEq, Eq)]
+#[derive(Debug, Clone, Error, PartialEq, Eq, Default)]
 #[error("{message}")]
 pub struct ShadowAgentProviderException {
+    pub code: String,
     pub message: String,
+    pub is_transient: bool,
+    pub retry_after: Option<u64>,
 }
 
 impl ShadowAgentProviders {
@@ -37,6 +40,7 @@ impl ShadowAgentProviders {
         if options.provider.trim().is_empty() {
             return Err(ShadowAgentProviderException {
                 message: "Provider name is required.".into(),
+                ..Default::default()
             });
         }
         Ok(options)

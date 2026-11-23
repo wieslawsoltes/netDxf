@@ -77,11 +77,14 @@ pub struct CadModuleCatalog {
     pub total: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleRecord {
     pub entity: ObjectId,
     pub module_id: String,
     pub symbol_id: String,
+    pub class: String,
+    pub tag: String,
+    pub ports: Vec<CadModulePort>,
     pub properties: BTreeMap<String, String>,
 }
 

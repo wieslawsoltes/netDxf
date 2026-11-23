@@ -7,10 +7,14 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use serde_json::Value;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct BrowserRequest {
     pub id: String,
     pub route: String,
+    pub method: String,
+    pub path: String,
+    pub headers: std::collections::BTreeMap<String, String>,
+    pub body: Option<String>,
     pub payload: Value,
 }
 

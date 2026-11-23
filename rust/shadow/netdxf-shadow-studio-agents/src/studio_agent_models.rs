@@ -219,4 +219,16 @@ impl StudioAgentController {
     pub fn status(&self) -> Value {
         self.poll(0)
     }
+
+    pub fn get_streaming_response(&self, prompt: &str) -> Vec<Value> {
+        vec![self.get_response(prompt)]
+    }
+
+    pub fn start_prompt(&mut self, prompt: &str) -> Value {
+        self.start(prompt)
+    }
+
+    pub fn tools(&self) -> Vec<&'static str> {
+        self.capabilities()
+    }
 }

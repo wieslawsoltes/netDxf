@@ -69,6 +69,37 @@ impl Insert {
     #[inline]
     pub fn ensure_attribute_sequence_end(&mut self) {}
 
+    #[inline]
+    pub fn instance_count(&self) -> usize {
+        (self.row_count.max(1) as usize) * (self.column_count.max(1) as usize)
+    }
+
+    #[inline]
+    pub fn is_multiple(&self) -> bool {
+        self.instance_count() > 1
+    }
+
+    #[inline]
+    pub fn prepare_attribute_replacement(&mut self) {}
+
+    pub fn replace_attributes(&mut self, attributes: Vec<Attribute>) {
+        self.attributes = attributes;
+    }
+
+    #[inline]
+    pub fn set_attribute_sequence_end(&mut self) {}
+
+    pub fn sync(&mut self, block: &Block) {
+        self.sync_attributes(block);
+    }
+
+    pub fn transform_attributes(&mut self) {
+        let lin = self.get_transformation();
+        for attr in &mut self.attributes {
+            attr.transform_by(lin, self.position);
+        }
+    }
+
     pub fn get_transformation(&self) -> Matrix3 {
         let ocs_to_wcs = MathHelper::arbitrary_axis(self.common.normal);
         let rot = Matrix3::rotation_z(self.rotation * MathHelper::DEG_TO_RAD);

@@ -37,6 +37,15 @@ impl DimensionEntityProjector {
     pub fn new(options: DimensionProjectionOptions) -> Self {
         Self { options }
     }
+
+    #[inline]
+    pub fn revision(&self) -> i64 {
+        0
+    }
+
+    pub fn try_project(&self, snapshot: &ShadowSnapshot, entity_id: &ObjectId) -> Option<CadGeometry> {
+        self.project(snapshot, entity_id)
+    }
 }
 
 impl IEntityProjector for DimensionEntityProjector {

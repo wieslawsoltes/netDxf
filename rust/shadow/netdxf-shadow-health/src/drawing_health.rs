@@ -38,21 +38,26 @@ pub struct DrawingHealthResources {
     pub available_images: BTreeSet<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DrawingHealthIssue {
     pub id: String,
     pub code: String,
     pub severity: DiagnosticSeverity,
     pub object: Option<ObjectId>,
+    pub path: Option<String>,
+    pub position: Option<netdxf_shadow::Vec3>,
+    pub related_objects: Vec<ObjectId>,
     pub message: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DrawingHealthReport {
     pub document_id: String,
     pub revision: i64,
     pub complete: bool,
     pub work: i64,
+    pub coverage: Option<String>,
+    pub limitations: Vec<String>,
     pub issues: Vec<DrawingHealthIssue>,
 }
 
@@ -78,6 +83,7 @@ impl DrawingHealth {
                     complete: false,
                     work,
                     issues,
+                    ..Default::default()
                 };
             }
             if !occ.bounds.is_empty()
@@ -91,6 +97,7 @@ impl DrawingHealth {
                     severity: DiagnosticSeverity::Warning,
                     object: Some(occ.entity.clone()),
                     message: "Entity has degenerate near-zero bounds.".into(),
+                    ..Default::default()
                 });
             }
             for img in &occ.geometry.images {
@@ -103,6 +110,7 @@ impl DrawingHealth {
                         severity: DiagnosticSeverity::Warning,
                         object: Some(occ.entity.clone()),
                         message: format!("Referenced image '{}' not found.", img.file_name),
+                        ..Default::default()
                     });
                 }
             }
@@ -114,6 +122,7 @@ impl DrawingHealth {
             complete: true,
             work,
             issues,
+            ..Default::default()
         }
     }
 }

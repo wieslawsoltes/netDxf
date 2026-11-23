@@ -25,6 +25,19 @@ impl SkiaRenderBackend {
         Self::default()
     }
 
+    #[inline]
+    pub fn id(&self) -> &'static str {
+        "skia"
+    }
+
+    pub fn draw(&self, scene: &RenderScene, frame: &RenderFrame) -> Vec<u8> {
+        self.rasterize_rgba8(scene, frame)
+    }
+
+    pub fn render_pixels(&self, scene: &RenderScene, frame: &RenderFrame) -> Vec<u8> {
+        self.rasterize_rgba8(scene, frame)
+    }
+
     pub fn with_image_resolver(mut self, resolver: Box<dyn ISkiaImageResolver>) -> Self {
         self.image_resolver = Some(resolver);
         self

@@ -79,10 +79,13 @@ pub struct EvaluationTelemetry {
     pub cost: EvaluationCost,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct EvaluationToolCall {
     pub tool: String,
+    pub name: String,
     pub arguments: Value,
+    pub is_error: bool,
+    pub milliseconds: u64,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

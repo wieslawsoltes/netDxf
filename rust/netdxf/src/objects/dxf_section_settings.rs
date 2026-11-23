@@ -45,6 +45,19 @@ pub struct DxfStoredSectionManager {
     pub object: DxfObject,
     pub requires_full_update: bool,
     pub section_handles: Vec<String>,
+    pub source_version: Option<crate::header::DxfVersion>,
+    pub tags: Vec<(i32, String)>,
+}
+
+impl DxfStoredSectionManager {
+    #[inline]
+    pub fn sections(&self) -> &[String] {
+        &self.section_handles
+    }
+
+    pub fn replace_sections(&mut self, handles: Vec<String>) {
+        self.section_handles = handles;
+    }
 }
 
 impl Default for DxfStoredSectionManager {
@@ -53,6 +66,8 @@ impl Default for DxfStoredSectionManager {
             object: DxfObject::new("SECTIONMANAGER"),
             requires_full_update: false,
             section_handles: Vec::new(),
+            source_version: None,
+            tags: Vec::new(),
         }
     }
 }
@@ -114,4 +129,13 @@ pub struct DxfSectionTypeSettings {
     pub destination_block_handle: Option<String>,
     pub destination_file_name: String,
     pub geometry_settings: Vec<DxfSectionGeometrySettings>,
+    pub generation_options: i32,
+    pub repeat_geometry_markers: bool,
+}
+
+impl DxfSectionTypeSettings {
+    #[inline]
+    pub fn destination_block(&self) -> Option<&str> {
+        self.destination_block_handle.as_deref()
+    }
 }
