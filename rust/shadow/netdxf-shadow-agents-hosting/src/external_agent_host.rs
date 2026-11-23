@@ -30,6 +30,11 @@ pub struct ExternalAgentReply {
 pub struct ExternalAgentHostSettings {
     pub provider: String,
     pub working_directory: String,
+    pub request_timeout: u64,
+    pub approval_timeout: u64,
+    pub maximum_request_bytes: usize,
+    pub maximum_event_bytes: usize,
+    pub maximum_buffered_event_bytes: usize,
 }
 
 #[derive(Debug, Clone, Default)]

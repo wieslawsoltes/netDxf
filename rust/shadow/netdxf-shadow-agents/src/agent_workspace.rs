@@ -15,16 +15,26 @@ pub struct AgentFile {
     pub content: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentFileInfo {
     pub path: String,
     pub size: usize,
+    pub bytes: usize,
+    pub characters: usize,
+    pub is_binary: bool,
+    pub modified_at: Option<String>,
+    pub version: u64,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentFileSlice {
     pub path: String,
     pub start_line: usize,
+    pub offset: usize,
+    pub total_characters: usize,
+    pub has_more: bool,
+    pub version: u64,
+    pub content: String,
     pub lines: Vec<String>,
 }
 
@@ -180,6 +190,9 @@ impl IAgentWorkspace for MemoryAgentWorkspace {
             .map(|(p, c)| AgentFileInfo {
                 path: p.clone(),
                 size: c.len(),
+                bytes: c.len(),
+                characters: c.chars().count(),
+                ..Default::default()
             })
             .collect()
     }

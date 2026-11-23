@@ -9,11 +9,16 @@ use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use thiserror::Error;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentCodeRequest {
+    pub id: String,
     pub language: String,
     pub code: String,
+    pub arguments: Vec<String>,
+    pub files: Vec<AgentFile>,
     pub timeout_ms: u64,
+    pub timeout_seconds: u64,
+    pub maximum_output_characters: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

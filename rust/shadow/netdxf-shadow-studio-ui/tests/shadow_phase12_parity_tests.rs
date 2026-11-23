@@ -181,7 +181,7 @@ fn shadow_studio_hub_agents_acp_hosting_mcp_and_symbols() {
     let mut session = AgentSession::new(AgentOptions::default());
     session.run(AgentPrompt {
         text: "Inspect drawing".into(),
-        pinned: Vec::new(),
+        ..Default::default()
     });
     session.execute_tool("workspace.write", &serde_json::json!({ "path": "a.txt", "content": "hi" }));
     assert_eq!(session.workspace.read("a.txt").as_deref(), Some("hi"));
@@ -211,6 +211,7 @@ fn shadow_studio_hub_agents_acp_hosting_mcp_and_symbols() {
     let case = EvaluationCase {
         id: "eval-1".into(),
         prompt: "draw line".into(),
+        ..Default::default()
     };
     assert_eq!(EvaluationFixture::freeze(&case).len(), 16);
 

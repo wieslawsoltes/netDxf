@@ -12,10 +12,23 @@ pub struct EvaluationCheck {
     pub message: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct EvaluationCase {
     pub id: String,
+    pub description: String,
     pub prompt: String,
+    pub expected: String,
+    pub seed: String,
+    pub grader_version: String,
+}
+
+impl EvaluationCase {
+    pub fn validate(&self) -> Result<(), String> {
+        if self.id.trim().is_empty() || self.prompt.trim().is_empty() {
+            return Err("EvaluationCase requires non-empty id and prompt.".into());
+        }
+        Ok(())
+    }
 }
 
 pub struct EvaluationFixture;
@@ -31,9 +44,14 @@ pub struct EvaluationTarget {
     pub settings: Value,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct EvaluationContext {
     pub case_id: String,
+    pub document: String,
+    pub editor: String,
+    pub fixture: String,
+    pub workspace: String,
+    pub tools: Vec<String>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
@@ -65,8 +83,13 @@ pub struct EvaluationToolCall {
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct EvaluationExecution {
+    pub status: String,
     pub output: String,
     pub tool_calls: Vec<EvaluationToolCall>,
+    pub tool_catalog_hash: String,
+    pub checkpoint: Option<String>,
+    pub cost: EvaluationCost,
+    pub events: Vec<Value>,
     pub telemetry: EvaluationTelemetry,
 }
 
@@ -105,6 +128,7 @@ impl EvaluationFixture {
     pub fn context(case: &EvaluationCase) -> EvaluationContext {
         EvaluationContext {
             case_id: case.id.clone(),
+            ..Default::default()
         }
     }
 

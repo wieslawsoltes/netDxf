@@ -12,6 +12,7 @@ impl EvaluationCases {
         vec![EvaluationCase {
             id: "smoke-document-summary".into(),
             prompt: "Summarize the active CAD document.".into(),
+            ..Default::default()
         }]
     }
 }

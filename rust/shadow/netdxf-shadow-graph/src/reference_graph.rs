@@ -69,6 +69,11 @@ pub struct ReferenceGraph {
     pub direction: ReferenceGraphDirection,
     pub nodes: Vec<ReferenceGraphNode>,
     pub edges: Vec<ReferenceGraphEdge>,
+    pub objects_indexed: usize,
+    pub depth_limit_reached: bool,
+    pub node_limit_reached: bool,
+    pub edge_limit_reached: bool,
+    pub truncated: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -110,12 +115,17 @@ impl Default for ReferencePathOptions {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ReferencePathResult {
     pub status: ReferencePathStatus,
     pub direction: ReferenceGraphDirection,
     pub nodes: Vec<String>,
     pub edges: Vec<ReferenceGraphEdge>,
+    pub visited_nodes: usize,
+    pub examined_edges: usize,
+    pub depth_limit_reached: bool,
+    pub node_limit_reached: bool,
+    pub edge_limit_reached: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -237,6 +247,8 @@ impl ReferenceGraphIndex {
             direction: options.direction,
             nodes: out_nodes,
             edges: out_edges,
+            objects_indexed: self.nodes.len(),
+            ..Default::default()
         }
     }
 
@@ -254,6 +266,8 @@ impl ReferenceGraphIndex {
                 direction: options.direction,
                 nodes: vec![s],
                 edges: Vec::new(),
+                visited_nodes: 1,
+                ..Default::default()
             };
         }
         let mut visited = BTreeSet::new();
@@ -269,6 +283,9 @@ impl ReferenceGraphIndex {
                     direction: options.direction,
                     nodes: Vec::new(),
                     edges: Vec::new(),
+                    visited_nodes: visited.len(),
+                    node_limit_reached: true,
+                    ..Default::default()
                 };
             }
             if depth >= options.max_depth {
@@ -315,6 +332,8 @@ impl ReferenceGraphIndex {
                             direction: options.direction,
                             nodes,
                             edges: path_edges,
+                            visited_nodes: visited.len(),
+                            ..Default::default()
                         };
                     }
                     queue.push_back((next, depth + 1));
@@ -327,6 +346,8 @@ impl ReferenceGraphIndex {
             direction: options.direction,
             nodes: Vec::new(),
             edges: Vec::new(),
+            visited_nodes: visited.len(),
+            ..Default::default()
         }
     }
 

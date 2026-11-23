@@ -9,10 +9,31 @@ use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use thiserror::Error;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentPrompt {
     pub text: String,
     pub pinned: Vec<AgentPinnedContext>,
+    pub references: Vec<String>,
+    pub reference_start: Option<usize>,
+    pub reference_end: Option<usize>,
+}
+
+impl AgentPrompt {
+    pub fn validate(&self) -> Result<(), String> {
+        if self.text.trim().is_empty() {
+            return Err("Prompt text cannot be empty.".into());
+        }
+        Ok(())
+    }
+
+    pub fn to_context_text(&self) -> String {
+        let mut out = String::new();
+        for pin in &self.pinned {
+            out.push_str(&format!("[{}] {}\n", pin.key, pin.content));
+        }
+        out.push_str(&self.text);
+        out
+    }
 }
 
 #[derive(Debug, Default)]

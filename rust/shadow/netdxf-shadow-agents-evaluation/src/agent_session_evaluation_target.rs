@@ -13,6 +13,7 @@ impl IAgentEvaluationTarget for AgentSessionEvaluationTarget {
             output: format!("evaluated: {}", case.id),
             tool_calls: Vec::new(),
             telemetry: EvaluationTelemetry::default(),
+            ..Default::default()
         }
     }
 }

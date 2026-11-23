@@ -78,11 +78,16 @@ impl Default for AgentOptions {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct AgentEvent {
     pub seq: u64,
+    pub sequence: u64,
     pub kind: String,
+    pub r#type: String,
+    pub message: String,
+    pub time: String,
     pub payload: Value,
+    pub data: Value,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -105,9 +110,14 @@ pub struct AgentUsage {
     pub input_tokens: u64,
     pub output_tokens: u64,
     pub cached_input_tokens: u64,
+    pub cached_tokens: u64,
+    pub cache_write_tokens: u64,
     pub reasoning_tokens: u64,
     pub total_tokens: u64,
     pub requests: u64,
+    pub inferences: u64,
+    pub inference_milliseconds: u64,
+    pub first_token_milliseconds: u64,
     pub turns: u64,
     pub tool_calls: u64,
 }
@@ -118,9 +128,14 @@ impl AgentUsage {
             input_tokens: self.input_tokens + other.input_tokens,
             output_tokens: self.output_tokens + other.output_tokens,
             cached_input_tokens: self.cached_input_tokens + other.cached_input_tokens,
+            cached_tokens: self.cached_tokens + other.cached_tokens,
+            cache_write_tokens: self.cache_write_tokens + other.cache_write_tokens,
             reasoning_tokens: self.reasoning_tokens + other.reasoning_tokens,
             total_tokens: self.total_tokens + other.total_tokens,
             requests: self.requests + other.requests,
+            inferences: self.inferences + other.inferences,
+            inference_milliseconds: self.inference_milliseconds + other.inference_milliseconds,
+            first_token_milliseconds: self.first_token_milliseconds.max(other.first_token_milliseconds),
             turns: self.turns + other.turns,
             tool_calls: self.tool_calls + other.tool_calls,
         }
