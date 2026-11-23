@@ -16,25 +16,31 @@ impl DxfTableCellAddress {
         Self { row, column }
     }
 
-    /// Parses an A1-style cell address (e.g. `"A1"` -> `(0, 0)`, `"AA10"` -> `(9, 26)`).
+    /// Parses an A1-style cell address (e.g. `"A1"` -> `(0, 0)`, `"$AA$10"` -> `(9, 26)`).
     pub fn parse_a1(text: &str) -> Result<Self> {
         let s = text.trim();
-        let mut col_end = 0;
-        for (idx, b) in s.bytes().enumerate() {
-            if b.is_ascii_alphabetic() {
-                col_end = idx + 1;
-            } else {
-                break;
-            }
+        let bytes = s.as_bytes();
+        let mut idx = 0;
+        if bytes.get(idx) == Some(&b'$') {
+            idx += 1;
         }
-        if col_end == 0 || col_end == s.len() {
+        let col_start = idx;
+        while idx < bytes.len() && bytes[idx].is_ascii_alphabetic() {
+            idx += 1;
+        }
+        let col_end = idx;
+        if bytes.get(idx) == Some(&b'$') {
+            idx += 1;
+        }
+        let row_start = idx;
+        if col_end == col_start || row_start == bytes.len() {
             return Err(DxfError::InvalidValue(format!(
                 "Invalid A1 cell address '{text}'"
             )));
         }
-        let col_str = &s[..col_end];
-        let row_str = &s[col_end..];
-        if !row_str.bytes().all(|b| b.is_ascii_digit()) {
+        let col_str = &s[col_start..col_end];
+        let row_str = &s[row_start..];
+        if !row_str.bytes().all(|b| b.is_ascii_digit()) || row_str.starts_with('0') {
             return Err(DxfError::InvalidValue(format!(
                 "Invalid row in A1 cell address '{text}'"
             )));

@@ -281,7 +281,7 @@ impl Spline {
         }
         let u_min = self.knots[p];
         let u_max = self.knots[n];
-        if u <= u_min || u >= u_max {
+        if !u.is_finite() || u <= u_min || u >= u_max {
             return false;
         }
         if self.weights.len() != n {
@@ -338,7 +338,7 @@ impl Spline {
         }
         let u_min = self.knots[p];
         let u_max = self.knots[n];
-        if u <= u_min || u >= u_max {
+        if !u.is_finite() || u <= u_min || u >= u_max {
             return None;
         }
 
@@ -389,12 +389,31 @@ impl Spline {
 
     /// Trims an open clamped NURBS spline to `[u_start, u_end]`.
     pub fn trim(&self, u_start: f64, u_end: f64) -> Option<Spline> {
-        if u_start >= u_end {
+        let p = self.degree as usize;
+        let n = self.control_points.len();
+        if n == 0 || self.knots.len() < n + p + 1 {
             return None;
         }
-        let (_, after_start) = self.split(u_start)?;
-        let (trimmed, _) = after_start.split(u_end)?;
-        Some(trimmed)
+        let u_min = self.knots[p];
+        let u_max = self.knots[n];
+        if !u_start.is_finite()
+            || !u_end.is_finite()
+            || u_start >= u_end
+            || u_start < u_min
+            || u_end > u_max
+        {
+            return None;
+        }
+        let after_start = if u_start == u_min {
+            self.clone()
+        } else {
+            self.split(u_start)?.1
+        };
+        if u_end == u_max {
+            Some(after_start)
+        } else {
+            Some(after_start.split(u_end)?.0)
+        }
     }
 
     /// Elevates the degree of a single-segment Bezier/clamped NURBS spline by 1.

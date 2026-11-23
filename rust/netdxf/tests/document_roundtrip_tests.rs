@@ -240,9 +240,13 @@ fn assert_roundtrip(version: DxfVersion, is_binary: bool) {
     assert_eq!(xd.x_data_record[0].value, XDataValue::String("beam-1".into()));
     assert_eq!(xd.x_data_record[4].value, XDataValue::Binary(vec![0xDE, 0xAD, 0xBE, 0xEF]));
 
-    // Check layer TrueColor + transparency
+    // Check layer TrueColor (R2004+) or nearest ACI fallback (R2000) + lineweight
     let geo_layer = loaded.layers.get("geometry").expect("case-insensitive layer lookup");
-    assert_eq!(geo_layer.color.to_rgb(), [30, 144, 255]);
+    if loaded.drawing_variables.acad_ver >= DxfVersion::AutoCad2004 {
+        assert_eq!(geo_layer.color.to_rgb(), [30, 144, 255]);
+    } else {
+        assert!(!geo_layer.color.use_true_color);
+    }
     assert_eq!(geo_layer.lineweight, Lineweight::W35);
 
     // Check block + ATTDEF + INSERT ATTRIB

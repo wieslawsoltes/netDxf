@@ -32,6 +32,7 @@ pub struct DxfReader;
 
 impl DxfReader {
     /// Checks whether a stream is binary DXF and extracts `$ACADVER`.
+    /// Always restores the stream position to its original offset.
     pub fn check_version<R: Read + Seek>(mut stream: R) -> Result<(DxfVersion, bool)> {
         let start_pos = stream.stream_position()?;
         let mut sentinel = [0u8; 22];
@@ -41,45 +42,74 @@ impl DxfReader {
         };
         stream.seek(SeekFrom::Start(start_pos))?;
 
-        let version = {
+        let version_res = {
             let buf = BufReader::new(&mut stream);
             if is_binary {
-                let mut reader = BinaryCodeValueReader::new(buf, WINDOWS_1252, false)?;
-                Self::scan_version(&mut reader)?
+                match BinaryCodeValueReader::new(buf, WINDOWS_1252, false) {
+                    Ok(mut reader) => {
+                        reader.set_skip_comments(true);
+                        Self::scan_version(&mut reader)
+                    }
+                    Err(_) => Ok(DxfVersion::Unknown),
+                }
             } else {
                 let mut reader = TextCodeValueReader::new(buf, WINDOWS_1252);
-                Self::scan_version(&mut reader)?
+                reader.set_skip_comments(true);
+                Self::scan_version(&mut reader)
             }
         };
 
         stream.seek(SeekFrom::Start(start_pos))?;
-        Ok((version, is_binary))
+        match version_res {
+            Ok(version) => Ok((version, is_binary)),
+            Err(_) => Ok((DxfVersion::Unknown, false)),
+        }
     }
 
     fn scan_version(reader: &mut dyn ICodeValueReader) -> Result<DxfVersion> {
         let mut version = DxfVersion::Unknown;
+        let mut in_section = false;
         let mut in_header = false;
+        let mut expect_section_name = false;
         while reader.next()? {
             let code = reader.code();
+            if expect_section_name {
+                expect_section_name = false;
+                if code == 2 {
+                    in_section = true;
+                    in_header = reader
+                        .value()
+                        .as_str()
+                        .eq_ignore_ascii_case(DxfObjectCode::HEADER_SECTION);
+                } else {
+                    in_section = false;
+                    in_header = false;
+                }
+                continue;
+            }
             if code == 0 {
                 let s = reader.value().as_str();
-                if s.eq_ignore_ascii_case(DxfObjectCode::END_SECTION) && in_header {
+                if s.eq_ignore_ascii_case(DxfObjectCode::BEGIN_SECTION) && !in_section {
+                    expect_section_name = true;
+                } else if s.eq_ignore_ascii_case(DxfObjectCode::END_SECTION) {
+                    if in_header {
+                        break;
+                    }
+                    in_section = false;
+                    in_header = false;
+                } else if s.eq_ignore_ascii_case(DxfObjectCode::END_OF_FILE) {
                     break;
                 }
-                if s.eq_ignore_ascii_case(DxfObjectCode::END_OF_FILE) {
-                    break;
-                }
-            } else if code == 2 && reader.value().as_str().eq_ignore_ascii_case(DxfObjectCode::HEADER_SECTION) {
-                in_header = true;
             } else if in_header
                 && code == 9
                 && reader
                     .value()
                     .as_str()
                     .eq_ignore_ascii_case(HeaderVariableCode::ACAD_VER)
-                && reader.next()?
             {
-                version = DxfVersion::from_code(reader.value().as_str());
+                if reader.next()? && reader.code() == 1 {
+                    version = DxfVersion::from_code(reader.value().as_str());
+                }
                 break;
             }
         }
@@ -337,6 +367,36 @@ impl DxfReader {
                     _ => {
                         // Store unrecognized header variable as custom variable
                         let code = reader.code();
+                        if code == 10 {
+                            let mut v = Vector3::new(reader.value().as_f64(), 0.0, 0.0);
+                            let mut has_y = false;
+                            let mut has_z = false;
+                            while reader.next()? {
+                                match reader.code() {
+                                    20 => {
+                                        v.y = reader.value().as_f64();
+                                        has_y = true;
+                                    }
+                                    30 => {
+                                        v.z = reader.value().as_f64();
+                                        has_z = true;
+                                    }
+                                    _ => break,
+                                }
+                            }
+                            let (group_code, val) = if has_z {
+                                (30, HeaderVariableValue::Vector3(v))
+                            } else if has_y {
+                                (20, HeaderVariableValue::Vector3(v))
+                            } else {
+                                (10, HeaderVariableValue::Float(v.x))
+                            };
+                            hv.custom_variables.insert(
+                                var_name.clone(),
+                                HeaderVariable::new(var_name, group_code, val),
+                            );
+                            continue;
+                        }
                         let val = match reader.value() {
                             crate::io::CodeValue::Double(d) => HeaderVariableValue::Float(*d),
                             crate::io::CodeValue::Int16(n) => HeaderVariableValue::Int16(*n),
@@ -1206,6 +1266,9 @@ impl DxfReader {
                                 141 => geo.user_scale_factor = reader.value().as_f64(),
                                 301 | 303 => geo.coordinate_system_definition.push_str(reader.value().as_str()),
                                 302 => geo.geo_rss_tag = reader.value().as_str().to_string(),
+                                305 => geo.observation_from_tag = reader.value().as_str().to_string(),
+                                306 => geo.observation_to_tag = reader.value().as_str().to_string(),
+                                307 => geo.observation_coverage_tag = reader.value().as_str().to_string(),
                                 _ => {}
                             }
                         }

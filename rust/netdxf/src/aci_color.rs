@@ -113,9 +113,16 @@ impl AciColor {
         Self::from_rgb(r, g, b)
     }
 
+    /// Returns the untagged 24-bit RGB value written to DXF group code 420.
     #[inline]
     pub const fn to_true_color(self) -> i32 {
         ((self.r as i32) << 16) | ((self.g as i32) << 8) | (self.b as i32)
+    }
+
+    /// Returns the packed TrueColor integer (`0xC2_RR_GG_BB`) matching C# `AciColor.ToTrueColor`.
+    #[inline]
+    pub const fn to_packed_true_color(self) -> i32 {
+        (0xC200_0000_u32 as i32) | self.to_true_color()
     }
 
     #[inline]

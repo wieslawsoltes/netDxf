@@ -219,12 +219,32 @@ impl DxfDocument {
             }
         }
         assign_table!(self.mline_styles);
+        assign_table!(self.mleader_styles);
+        assign_table!(self.table_styles);
         assign_table!(self.groups);
         assign_table!(self.layouts);
         assign_table!(self.image_definitions);
         assign_table!(self.underlay_dgn_definitions);
         assign_table!(self.underlay_dwf_definitions);
         assign_table!(self.underlay_pdf_definitions);
+        if self.raster_variables.object.handle.is_none() {
+            seed = self.raster_variables.object.assign_handle(seed);
+        }
+        if let Some(geo) = &mut self.geo_data {
+            if geo.object.handle.is_none() {
+                seed = geo.object.assign_handle(seed);
+            }
+        }
+        if let Some(sun) = &mut self.sun {
+            if sun.object.handle.is_none() {
+                seed = sun.object.assign_handle(seed);
+            }
+        }
+        for study in &mut self.sun_studies {
+            if study.object.handle.is_none() {
+                seed = study.object.assign_handle(seed);
+            }
+        }
         for e in self.entities.all_mut() {
             if e.common().object.handle.is_none() {
                 seed = e.common_mut().object.assign_handle(seed);

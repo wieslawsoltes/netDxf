@@ -51,15 +51,32 @@ impl<R: BufRead> BinaryCodeValueReader<R> {
     fn read_null_terminated_string(&mut self) -> Result<String> {
         self.str_buf.clear();
         let n = self.reader.read_until(0, &mut self.str_buf)?;
-        if n == 0 {
+        if n == 0 || self.str_buf.last() != Some(&0) {
             return Err(DxfError::UnexpectedEof);
         }
         self.bytes_read += n;
-        if self.str_buf.last() == Some(&0) {
-            self.str_buf.pop();
-        }
+        self.str_buf.pop();
         let (cow, _, _) = self.encoding.decode(&self.str_buf);
         Ok(cow.into_owned())
+    }
+
+    fn parse_handle(&self, code: i16, s: &str) -> Result<String> {
+        let trimmed = s.trim_matches(|c| c == ' ' || c == '\t');
+        if trimmed.is_empty()
+            || trimmed.len() > 16
+            || !trimmed.bytes().all(|b| b.is_ascii_hexdigit())
+        {
+            return Err(DxfError::InvalidBinary(format!(
+                "invalid handle '{s}' for group code {code} at byte offset {}",
+                self.bytes_read
+            )));
+        }
+        let stripped = trimmed.trim_start_matches('0');
+        if stripped.is_empty() {
+            Ok("0".to_string())
+        } else {
+            Ok(stripped.to_ascii_uppercase())
+        }
     }
 
     fn read_u8(&mut self) -> Result<u8> {
@@ -166,21 +183,27 @@ impl<R: BufRead> ICodeValueReader for BinaryCodeValueReader<R> {
                 self.value = CodeValue::String(s);
             } else {
                 self.value = match DxfGroupCode::try_get_value_type(code) {
-                    Some(DxfTagValueType::String) | Some(DxfTagValueType::Handle) | None => {
+                    Some(DxfTagValueType::String) | None => {
                         CodeValue::String(self.read_null_terminated_string()?)
                     }
-                    Some(DxfTagValueType::Double) => CodeValue::Double(self.read_f64()?),
-                    Some(DxfTagValueType::Int16) => {
-                        // In modern binary DXF, codes 280..=289 are single bytes in AutoCAD
-                        if (280..=289).contains(&code) {
-                            CodeValue::Int16(self.read_u8()? as i16)
-                        } else {
-                            CodeValue::Int16(self.read_i16()?)
-                        }
+                    Some(DxfTagValueType::Handle) => {
+                        let raw = self.read_null_terminated_string()?;
+                        CodeValue::String(self.parse_handle(code, &raw)?)
                     }
+                    Some(DxfTagValueType::Double) => CodeValue::Double(self.read_f64()?),
+                    Some(DxfTagValueType::Int16) => CodeValue::Int16(self.read_i16()?),
                     Some(DxfTagValueType::Int32) => CodeValue::Int32(self.read_i32()?),
                     Some(DxfTagValueType::Int64) => CodeValue::Int64(self.read_i64()?),
-                    Some(DxfTagValueType::Boolean) => CodeValue::Bool(self.read_u8()? != 0),
+                    Some(DxfTagValueType::Boolean) => match self.read_u8()? {
+                        0 => CodeValue::Bool(false),
+                        1 => CodeValue::Bool(true),
+                        other => {
+                            return Err(DxfError::InvalidBinary(format!(
+                                "invalid boolean byte {other} for group code {code} at byte offset {}",
+                                self.bytes_read
+                            )));
+                        }
+                    },
                     Some(DxfTagValueType::BinaryData) => {
                         CodeValue::Bytes(self.read_binary_chunk()?)
                     }

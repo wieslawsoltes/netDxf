@@ -41,6 +41,20 @@ impl Vector4 {
     }
 
     #[inline]
+    pub fn square_distance(u: Self, v: Self) -> f64 {
+        let dx = u.x - v.x;
+        let dy = u.y - v.y;
+        let dz = u.z - v.z;
+        let dw = u.w - v.w;
+        dx * dx + dy * dy + dz * dz + dw * dw
+    }
+
+    #[inline]
+    pub fn distance(u: Self, v: Self) -> f64 {
+        Self::square_distance(u, v).sqrt()
+    }
+
+    #[inline]
     pub fn modulus(self) -> f64 {
         self.modulus_squared().sqrt()
     }

@@ -194,7 +194,21 @@ impl DxfTableFormula {
                     }
                 }
                 match func {
-                    AggFunc::Sum => values.iter().copied().sum(),
+                    AggFunc::Sum => {
+                        // Neumaier compensated summation for exact cancellation (e.g. SUM(1e16, 1, -1e16) == 1).
+                        let mut sum = 0.0_f64;
+                        let mut comp = 0.0_f64;
+                        for &v in &values {
+                            let t = sum + v;
+                            if sum.abs() >= v.abs() {
+                                comp += (sum - t) + v;
+                            } else {
+                                comp += (v - t) + sum;
+                            }
+                            sum = t;
+                        }
+                        sum + comp
+                    }
                     AggFunc::Count => values.len() as f64,
                     AggFunc::Average => {
                         if values.is_empty() {
@@ -202,13 +216,24 @@ impl DxfTableFormula {
                                 "AVERAGE over empty range".to_string(),
                             ));
                         }
-                        // Overflow-safe mean using scaling by max magnitude
+                        // Overflow-safe compensated mean using scaling by max magnitude.
                         let max_abs = values.iter().map(|v| v.abs()).fold(0.0_f64, f64::max);
                         if max_abs == 0.0 {
                             0.0
                         } else {
-                            let scaled_sum: f64 = values.iter().map(|v| v / max_abs).sum();
-                            (scaled_sum / values.len() as f64) * max_abs
+                            let mut sum = 0.0_f64;
+                            let mut comp = 0.0_f64;
+                            for &v in &values {
+                                let s = v / max_abs;
+                                let t = sum + s;
+                                if sum.abs() >= s.abs() {
+                                    comp += (sum - t) + s;
+                                } else {
+                                    comp += (s - t) + sum;
+                                }
+                                sum = t;
+                            }
+                            ((sum + comp) / values.len() as f64) * max_abs
                         }
                     }
                     AggFunc::Min => values
@@ -377,7 +402,8 @@ impl<'a> FormulaParser<'a> {
     }
 
     fn parse_unary(&mut self) -> Result<Expr> {
-        match self.peek() {
+        self.enter()?;
+        let res = match self.peek() {
             Some(b'+') => {
                 self.pos += 1;
                 self.parse_unary()
@@ -387,7 +413,9 @@ impl<'a> FormulaParser<'a> {
                 Ok(Expr::UnaryNeg(Box::new(self.parse_unary()?)))
             }
             _ => self.parse_power(),
-        }
+        };
+        self.leave();
+        res
     }
 
     fn parse_power(&mut self) -> Result<Expr> {
@@ -416,7 +444,7 @@ impl<'a> FormulaParser<'a> {
                 Ok(expr)
             }
             Some(b) if b.is_ascii_digit() || b == b'.' => self.parse_number(),
-            Some(b) if b.is_ascii_alphabetic() => self.parse_ident_or_cell(),
+            Some(b) if b.is_ascii_alphabetic() || b == b'$' => self.parse_ident_or_cell(),
             _ => Err(DxfError::InvalidValue(
                 "Unexpected token in table formula".to_string(),
             )),
@@ -454,7 +482,9 @@ impl<'a> FormulaParser<'a> {
 
     fn parse_ident_or_cell(&mut self) -> Result<Expr> {
         let start = self.pos;
-        while self.pos < self.input.len() && self.input[self.pos].is_ascii_alphanumeric() {
+        while self.pos < self.input.len()
+            && (self.input[self.pos].is_ascii_alphanumeric() || self.input[self.pos] == b'$')
+        {
             self.pos += 1;
         }
         let ident = std::str::from_utf8(&self.input[start..self.pos]).unwrap_or("");
@@ -473,20 +503,23 @@ impl<'a> FormulaParser<'a> {
             };
             self.pos += 1; // consume '('
             let mut args = Vec::new();
-            if self.peek() != Some(b')') {
-                loop {
-                    let saved = self.pos;
-                    if let Some(range) = self.try_parse_range()? {
-                        args.push(range);
-                    } else {
-                        self.pos = saved;
-                        args.push(AggArg::Expr(self.parse_add_sub()?));
-                    }
-                    if self.peek() == Some(b',') {
-                        self.pos += 1;
-                    } else {
-                        break;
-                    }
+            if self.peek() == Some(b')') {
+                return Err(DxfError::InvalidValue(format!(
+                    "Function '{ident}' requires at least one argument"
+                )));
+            }
+            loop {
+                let saved = self.pos;
+                if let Some(range) = self.try_parse_range()? {
+                    args.push(range);
+                } else {
+                    self.pos = saved;
+                    args.push(AggArg::Expr(self.parse_add_sub()?));
+                }
+                if self.peek() == Some(b',') {
+                    self.pos += 1;
+                } else {
+                    break;
                 }
             }
             if self.peek() != Some(b')') {
@@ -510,7 +543,9 @@ impl<'a> FormulaParser<'a> {
     fn try_parse_range(&mut self) -> Result<Option<AggArg>> {
         self.skip_ws();
         let start = self.pos;
-        while self.pos < self.input.len() && self.input[self.pos].is_ascii_alphanumeric() {
+        while self.pos < self.input.len()
+            && (self.input[self.pos].is_ascii_alphanumeric() || self.input[self.pos] == b'$')
+        {
             self.pos += 1;
         }
         let first = std::str::from_utf8(&self.input[start..self.pos]).unwrap_or("");
@@ -525,7 +560,9 @@ impl<'a> FormulaParser<'a> {
         self.pos += 1; // consume ':'
         self.skip_ws();
         let start2 = self.pos;
-        while self.pos < self.input.len() && self.input[self.pos].is_ascii_alphanumeric() {
+        while self.pos < self.input.len()
+            && (self.input[self.pos].is_ascii_alphanumeric() || self.input[self.pos] == b'$')
+        {
             self.pos += 1;
         }
         let second = std::str::from_utf8(&self.input[start2..self.pos]).unwrap_or("");

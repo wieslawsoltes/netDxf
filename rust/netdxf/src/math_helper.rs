@@ -83,11 +83,16 @@ impl MathHelper {
         (number / round_to).round() * round_to
     }
 
-    /// AutoCAD Arbitrary Axis Algorithm: computes the right-handed OCS-to-WCS rotation matrix.
-    pub fn arbitrary_axis(z_axis: Vector3) -> Matrix3 {
-        let z = Vector3::normalize_finite_direction(z_axis).unwrap_or(Vector3::UNIT_Z);
+    /// AutoCAD Arbitrary Axis Algorithm: computes the right-handed OCS-to-WCS rotation matrix,
+    /// returning an error if `z_axis` is zero or non-finite.
+    pub fn try_arbitrary_axis(z_axis: Vector3) -> crate::Result<Matrix3> {
+        let z = Vector3::normalize_finite_direction(z_axis).ok_or_else(|| {
+            crate::DxfError::InvalidValue(
+                "z_axis must be a finite, non-zero direction vector".to_string(),
+            )
+        })?;
         if z.x == 0.0 && z.y == 0.0 && z.z == 1.0 {
-            return Matrix3::IDENTITY;
+            return Ok(Matrix3::IDENTITY);
         }
 
         let ax_raw = if z.x.abs() < (1.0 / 64.0) && z.y.abs() < (1.0 / 64.0) {
@@ -99,7 +104,13 @@ impl MathHelper {
         let ay = Vector3::normalize_finite_direction(Vector3::cross_product(z, ax))
             .unwrap_or(Vector3::UNIT_Y);
 
-        Matrix3::new(ax.x, ay.x, z.x, ax.y, ay.y, z.y, ax.z, ay.z, z.z)
+        Ok(Matrix3::new(ax.x, ay.x, z.x, ax.y, ay.y, z.y, ax.z, ay.z, z.z))
+    }
+
+    /// AutoCAD Arbitrary Axis Algorithm: computes the right-handed OCS-to-WCS rotation matrix.
+    /// Falls back to `Vector3::UNIT_Z` if `z_axis` is degenerate.
+    pub fn arbitrary_axis(z_axis: Vector3) -> Matrix3 {
+        Self::try_arbitrary_axis(z_axis).unwrap_or(Matrix3::IDENTITY)
     }
 
     #[inline]

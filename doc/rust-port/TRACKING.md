@@ -84,3 +84,45 @@ All 5 previously deferred subsystems have been implemented and verified:
   - Read ASCII (2.60 MB): **32.53 ms** (~80 MB/s)
   - Write Binary (2.15 MB): **3.19 ms** (~674 MB/s)
   - Read Binary (2.15 MB): **12.73 ms** (~169 MB/s)
+
+
+## Phase 3 — Upstream Conformance Test Parity & Cross-Interop Validation (Completed)
+
+Ported upstream C# `tests/netDxf.Conformance/*.cs` and `tests/shared/*.cs` test suites for all ported Rust subsystems, fixing every behavioral and wire-format parity gap uncovered:
+
+### Conformance Test Suites Added (`rust/netdxf/tests/`)
+| Rust Integration Test | Upstream C# Test Coverage | Tests |
+|---|---|---|
+| `conformance_math_color_xdata_tests.rs` | `ArbitraryAxisReviewTests`, `GVectorExtremesTests`, `GVectorSafetyTests`, `MatrixIdentityReviewTests`, `Vector4ComponentReviewTests`, `TrueColorWireReviewTests`, `TransparencyStoredTests`, `TransparencyBoundaryTests`, `XDataCloneTests` | 9 |
+| `conformance_header_tables_objects_tests.rs` | `HeaderCommentTests`, `HeaderProbeTests`, `CustomHeaderUnicodeTests`, `UcsBaseTests`, `LayerStateIdentityTests`, `GeoDataTests`, `SunTests`, `StoredSunStudyTests` | 6 |
+| `conformance_entities_and_splines_tests.rs` | `ArcAngleFidelityTests`, `Face3DEdgeVisibilityTests`, `MTextUnicodeChunkTests`, `SplineKnotInsertionTests`, `SplineSplitTests`, `SplineTrimTests`, `SplineDegreeElevationTests`, entity affine transforms, Hatch, DimensionBlock | 6 |
+| `conformance_acis_table_field_tests.rs` | `AcisSatTests`, `TableAverageCases`, `TableCalculationTests`, `TableCalculationDepthTests`, `StandardFieldEvaluatorTests`, `StoredTableTests` | 4 |
+| `conformance_codec_tests.rs` | `BinarySentinelTests`, `BinaryChunkTests`, `StrictBinaryValueTests`, `StrictTextValueTests`, `TextGroupCodeNulTests`, `TextHexTests`, `PortableDoubleCases` | 5 |
+| `examples/interop_check.rs` | Bidirectional `.NET` (`netDxf` C#) ↔ Rust (`netdxf`) ASCII & Binary DXF interop driver | Example |
+
+### Parity & Wire-Interop Fixes Uncovered by Conformance Tests
+1. **Binary DXF group codes `280..=289`**: Fixed `BinaryCodeValueReader` and `BinaryCodeValueWriter` to use 2-byte `i16` (matching AutoCAD R2000+ Binary DXF and C# `netDxf`), resolving stream alignment on real AutoCAD binary fixtures (`sample binary.dxf`).
+2. **Binary DXF comments (`999`)**: `DxfWriter` now suppresses group code `999` comments when writing Binary DXF (required by AutoCAD and C# `BinaryCodeValueReader`).
+3. **R2000 TrueColor fallback**: `DxfWriter` now suppresses group code `420` when saving `DxfVersion::AutoCad2000` (group `420` is R2004+).
+4. **Object handles & `MLEADERSTYLE` references**: `DxfDocument::assign_all_handles` now assigns handles to `table_styles`, `mleader_styles`, `raster_variables`, `geo_data`, `sun`, and `sun_studies`; `MLEADERSTYLE` emits `330` owner and `342` `TextStyle` handle so C# `DxfReader` validates cleanly.
+5. **Strict ASCII/Binary codec validation**:
+   - `TextCodeValueReader` preserves leading/trailing spaces in ordinary strings, trims ASCII-only whitespace (`' '`, `'\t'`) for numerics/handles/booleans, strictly rejects `i16` overflow (`32768`, `-32769`), non-`0`/`1` booleans, invalid handles, non-finite doubles, and NUL bytes.
+   - `BinaryCodeValueReader` strictly rejects unterminated strings at EOF, boolean bytes `2..=255`, invalid handles, and non-finite doubles.
+6. **Version probe (`DxfReader::check_version`)**: Strict section-name (`0 SECTION` → `2 HEADER`) and `9 $ACADVER` → `1 <ver>` matching, skips `999` comments, always restores caller stream position.
+7. **Custom header `Vector3` & `GEODATA` chunking**: `DxfReader` reconstructs custom `10`/`20`/`30` header vectors; `DxfWriter`/`DxfReader` chunk `GEODATA` `coordinate_system_definition` into `<= 255`-char `303` + `301` tags and roundtrip `305`/`306`/`307` observation tags.
+8. **Unicode `MText` chunking**: `DxfWriter` splits `MText` into group `3` + final group `1` respecting both the 250 UTF-8 byte budget and 250-char budget without splitting multi-byte codepoints.
+9. **Math & Spline edge cases**: Added `MathHelper::try_arbitrary_axis`, `Matrix3::is_identity_exact`, full `Matrix4` (`determinant`, `inverse`, `is_identity_exact`), `Vector4::distance`/`square_distance`, `GVector::length_robust`/`normalize`/`compute_extremes`/`orthonormalize`, `AciColor::to_packed_true_color`, `Spline` NaN guards and boundary-inclusive `trim`.
+10. **Table formula precision & syntax**: Added Neumaier compensated summation for `SUM`/`AVERAGE` (`SUM(1e16, 1, -1e16) == 1.0`, overflow-safe `AVERAGE(MAX, MAX)`), `$A$1` absolute refs, leading-zero row rejection (`A01`), unary recursion depth budget, and empty-argument rejection (`=SUM()`).
+
+### Verification Summary
+- `cargo clippy --manifest-path rust/Cargo.toml --all-targets -- -D warnings`: **0 warnings, 0 errors**
+- `cargo test --manifest-path rust/Cargo.toml`: **53 / 53 integration tests passed** across 10 test suites (including `sample ascii.dxf`, `sample binary.dxf`, and all upstream conformance DXF fixtures)
+- **Bidirectional `.NET` ↔ Rust interop**: Verified C# `netDxf` loads Rust-generated R2018 & R2010 ASCII + Binary DXF files (with Lines, Circles, Arcs, Unicode MText, Polylines, Splines, Blocks/Inserts, TrueColor Layers, XData binary chunks, and ACIS SAT `Solid3D`), and Rust `netdxf` loads C#-generated R2018 ASCII + Binary DXF files with exact fidelity.
+
+### Remaining Unported Upstream Modules (Extensible Roadmap)
+The crate and test layout cleanly mirror upstream `netDxf/` so these remaining specialized subsystems (and their corresponding conformance tests) can be ported incrementally without breaking existing public APIs:
+- `IO/DxfRawDocument` (`Raw*Tests`) — lossless raw tag-level DXF editor
+- `IO/DxfR12Codec` (`R12*Tests`) — legacy AutoCAD R12 DXF codec
+- `Objects/DxfStoredDimAssoc` — associative dimension object graph
+- `Tables/DxfCellStyleResolver` (`CellStyle*Tests`) — table cell style inheritance resolver
+- `Objects/DxfDataTable`, `DxfLayerIndex`, `DxfLayerFilter`, `DxfOutputSettings`, `DxfSectionSettings`

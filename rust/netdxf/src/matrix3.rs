@@ -65,7 +65,25 @@ impl Matrix3 {
 
     #[inline]
     pub fn is_identity(self) -> bool {
-        self.equals_with(Self::IDENTITY, MathHelper::DEFAULT_EPSILON)
+        self.is_identity_with(MathHelper::DEFAULT_EPSILON)
+    }
+
+    #[inline]
+    pub fn is_identity_with(self, threshold: f64) -> bool {
+        self.equals_with(Self::IDENTITY, threshold)
+    }
+
+    #[inline]
+    pub fn is_identity_exact(self) -> bool {
+        self.m11 == 1.0
+            && self.m12 == 0.0
+            && self.m13 == 0.0
+            && self.m21 == 0.0
+            && self.m22 == 1.0
+            && self.m23 == 0.0
+            && self.m31 == 0.0
+            && self.m32 == 0.0
+            && self.m33 == 1.0
     }
 
     #[inline]
@@ -163,6 +181,9 @@ impl Mul<Vector3> for Matrix3 {
     type Output = Vector3;
     #[inline]
     fn mul(self, v: Vector3) -> Vector3 {
+        if self.is_identity_exact() {
+            return v;
+        }
         Vector3 {
             x: self.m11 * v.x + self.m12 * v.y + self.m13 * v.z,
             y: self.m21 * v.x + self.m22 * v.y + self.m23 * v.z,

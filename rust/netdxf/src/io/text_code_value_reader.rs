@@ -59,61 +59,93 @@ impl<R: BufRead> TextCodeValueReader<R> {
         Ok(Some(cow.into_owned()))
     }
 
+    fn trim_ascii_ws(s: &str) -> &str {
+        s.trim_matches(|c| c == ' ' || c == '\t')
+    }
+
+    fn parse_handle(&self, code: i16, s: &str) -> Result<String> {
+        let trimmed = Self::trim_ascii_ws(s);
+        if trimmed.is_empty()
+            || trimmed.len() > 16
+            || !trimmed.bytes().all(|b| b.is_ascii_hexdigit())
+        {
+            return Err(DxfError::Parse {
+                line: self.line_number,
+                message: format!("invalid handle '{s}' for group code {code}"),
+            });
+        }
+        let stripped = trimmed.trim_start_matches('0');
+        if stripped.is_empty() {
+            Ok("0".to_string())
+        } else {
+            Ok(stripped.to_ascii_uppercase())
+        }
+    }
+
     fn parse_value(&self, code: i16, s: String) -> Result<CodeValue> {
         if code == 5 && self.code5_is_string {
             return Ok(CodeValue::String(s));
         }
         match DxfGroupCode::try_get_value_type(code) {
-            Some(DxfTagValueType::String) | Some(DxfTagValueType::Handle) | None => {
-                Ok(CodeValue::String(s.trim().to_string()))
-            }
+            Some(DxfTagValueType::String) | None => Ok(CodeValue::String(s)),
+            Some(DxfTagValueType::Handle) => Ok(CodeValue::String(self.parse_handle(code, &s)?)),
             Some(DxfTagValueType::Double) => {
-                let v = s.trim().parse::<f64>().map_err(|_| DxfError::Parse {
+                let trimmed = Self::trim_ascii_ws(&s);
+                let v = trimmed.parse::<f64>().map_err(|_| DxfError::Parse {
                     line: self.line_number,
-                    message: format!("invalid f64 value '{s}' for code {code}"),
+                    message: format!("invalid f64 value '{s}' for group code {code}"),
                 })?;
                 if !v.is_finite() {
                     return Err(DxfError::Parse {
                         line: self.line_number,
-                        message: format!("non-finite f64 value '{s}' for code {code}"),
+                        message: format!("non-finite f64 value '{s}' for group code {code}"),
                     });
                 }
                 Ok(CodeValue::Double(v))
             }
             Some(DxfTagValueType::Int16) => {
-                let trimmed = s.trim();
-                let v = trimmed
-                    .parse::<i16>()
-                    .or_else(|_| trimmed.parse::<i32>().map(|x| x as i16))
-                    .map_err(|_| DxfError::Parse {
-                        line: self.line_number,
-                        message: format!("invalid i16 value '{s}' for code {code}"),
-                    })?;
+                let trimmed = Self::trim_ascii_ws(&s);
+                let v = trimmed.parse::<i16>().map_err(|_| DxfError::Parse {
+                    line: self.line_number,
+                    message: format!("invalid i16 value '{s}' for group code {code}"),
+                })?;
                 Ok(CodeValue::Int16(v))
             }
             Some(DxfTagValueType::Int32) => {
-                let v = s.trim().parse::<i32>().map_err(|_| DxfError::Parse {
+                let trimmed = Self::trim_ascii_ws(&s);
+                let v = trimmed.parse::<i32>().map_err(|_| DxfError::Parse {
                     line: self.line_number,
-                    message: format!("invalid i32 value '{s}' for code {code}"),
+                    message: format!("invalid i32 value '{s}' for group code {code}"),
                 })?;
                 Ok(CodeValue::Int32(v))
             }
             Some(DxfTagValueType::Int64) => {
-                let v = s.trim().parse::<i64>().map_err(|_| DxfError::Parse {
+                let trimmed = Self::trim_ascii_ws(&s);
+                let v = trimmed.parse::<i64>().map_err(|_| DxfError::Parse {
                     line: self.line_number,
-                    message: format!("invalid i64 value '{s}' for code {code}"),
+                    message: format!("invalid i64 value '{s}' for group code {code}"),
                 })?;
                 Ok(CodeValue::Int64(v))
             }
             Some(DxfTagValueType::Boolean) => {
-                let trimmed = s.trim();
-                let v = trimmed.parse::<i16>().map(|n| n != 0).unwrap_or(false);
-                Ok(CodeValue::Bool(v))
+                let trimmed = Self::trim_ascii_ws(&s);
+                let n = trimmed.parse::<i16>().map_err(|_| DxfError::Parse {
+                    line: self.line_number,
+                    message: format!("invalid boolean value '{s}' for group code {code}"),
+                })?;
+                match n {
+                    0 => Ok(CodeValue::Bool(false)),
+                    1 => Ok(CodeValue::Bool(true)),
+                    _ => Err(DxfError::Parse {
+                        line: self.line_number,
+                        message: format!("out-of-range boolean value '{s}' for group code {code}"),
+                    }),
+                }
             }
             Some(DxfTagValueType::BinaryData) => {
                 let bytes = decode_hex(&s).ok_or_else(|| DxfError::Parse {
                     line: self.line_number,
-                    message: format!("invalid hex binary chunk for code {code}"),
+                    message: format!("invalid hex binary chunk for group code {code}"),
                 })?;
                 Ok(CodeValue::Bytes(bytes))
             }

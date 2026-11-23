@@ -7,7 +7,7 @@ use crate::dxf_object::DxfObject;
 use crate::dxf_object_code::DxfObjectCode;
 use crate::entities::*;
 use crate::error::Result;
-use crate::header::{HeaderVariableCode, HeaderVariableValue};
+use crate::header::{DxfVersion, HeaderVariableCode, HeaderVariableValue};
 use crate::io::binary_code_value_writer::BinaryCodeValueWriter;
 use crate::io::code_value_writer::ICodeValueWriter;
 use crate::io::text_code_value_writer::TextCodeValueWriter;
@@ -26,18 +26,25 @@ impl DxfWriter {
     pub fn write<W: Write>(doc: &DxfDocument, writer: W, is_binary: bool) -> Result<()> {
         if is_binary {
             let mut bw = BinaryCodeValueWriter::new(writer, false)?;
-            Self::write_document(doc, &mut bw)?;
+            Self::write_document(doc, &mut bw, true)?;
             bw.flush()
         } else {
             let mut tw = TextCodeValueWriter::new(writer);
-            Self::write_document(doc, &mut tw)?;
+            Self::write_document(doc, &mut tw, false)?;
             tw.flush()
         }
     }
 
-    fn write_document(doc: &DxfDocument, w: &mut dyn ICodeValueWriter) -> Result<()> {
-        for comment in &doc.comments {
-            w.write_str(999, comment)?;
+    fn write_document(
+        doc: &DxfDocument,
+        w: &mut dyn ICodeValueWriter,
+        is_binary: bool,
+    ) -> Result<()> {
+        // Binary DXF does not allow group code 999 comments.
+        if !is_binary {
+            for comment in &doc.comments {
+                w.write_str(999, comment)?;
+            }
         }
 
         Self::write_header(doc, w)?;
@@ -326,7 +333,9 @@ impl DxfWriter {
                 -layer.color.index.abs()
             };
             w.write_i16(62, color_idx)?;
-            if layer.color.use_true_color {
+            if layer.color.use_true_color
+                && doc.drawing_variables.acad_ver >= DxfVersion::AutoCad2004
+            {
                 w.write_i32(420, layer.color.to_true_color())?;
             }
             w.write_str(6, &layer.linetype)?;
@@ -501,12 +510,12 @@ impl DxfWriter {
     fn write_blocks(doc: &DxfDocument, w: &mut dyn ICodeValueWriter) -> Result<()> {
         Self::begin_section(w, DxfObjectCode::BLOCKS_SECTION)?;
         for blk in doc.blocks.iter() {
-            Self::write_block(blk, w)?;
+            Self::write_block(blk, doc.drawing_variables.acad_ver, w)?;
         }
         Self::end_section(w)
     }
 
-    fn write_block(blk: &Block, w: &mut dyn ICodeValueWriter) -> Result<()> {
+    fn write_block(blk: &Block, version: DxfVersion, w: &mut dyn ICodeValueWriter) -> Result<()> {
         let owner = blk.record.object.handle.as_deref().unwrap_or("0");
         w.write_str(0, DxfObjectCode::BEGIN_BLOCK)?;
         if let Some(h) = blk.handle() { w.write_str(5, h)?; }
@@ -526,7 +535,7 @@ impl DxfWriter {
         }
 
         for ent in &blk.entities {
-            Self::write_entity(ent, owner, w)?;
+            Self::write_entity(ent, owner, version, w)?;
         }
 
         for ad in blk.attribute_definitions.values() {
@@ -566,12 +575,17 @@ impl DxfWriter {
             .and_then(|b| b.record.object.handle.as_deref())
             .unwrap_or("1F");
         for ent in doc.entities.iter() {
-            Self::write_entity(ent, owner, w)?;
+            Self::write_entity(ent, owner, doc.drawing_variables.acad_ver, w)?;
         }
         Self::end_section(w)
     }
 
-    fn write_entity_common(c: &EntityCommon, owner: &str, w: &mut dyn ICodeValueWriter) -> Result<()> {
+    fn write_entity_common(
+        c: &EntityCommon,
+        owner: &str,
+        version: DxfVersion,
+        w: &mut dyn ICodeValueWriter,
+    ) -> Result<()> {
         if let Some(h) = c.handle() {
             w.write_str(5, h)?;
         }
@@ -584,7 +598,7 @@ impl DxfWriter {
         if !c.color.is_by_layer() {
             w.write_i16(62, c.color.index)?;
         }
-        if c.color.use_true_color {
+        if c.color.use_true_color && version >= DxfVersion::AutoCad2004 {
             w.write_i32(420, c.color.to_true_color())?;
         }
         if !MathHelper::is_one(c.linetype_scale) {
@@ -628,11 +642,16 @@ impl DxfWriter {
         Ok(())
     }
 
-    fn write_entity(ent: &EntityObject, owner: &str, w: &mut dyn ICodeValueWriter) -> Result<()> {
+    fn write_entity(
+        ent: &EntityObject,
+        owner: &str,
+        version: DxfVersion,
+        w: &mut dyn ICodeValueWriter,
+    ) -> Result<()> {
         match ent {
             EntityObject::Point(p) => {
                 w.write_str(0, DxfObjectCode::POINT)?;
-                Self::write_entity_common(&p.common, owner, w)?;
+                Self::write_entity_common(&p.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::POINT)?;
                 w.write_f64(10, p.position.x)?;
                 w.write_f64(20, p.position.y)?;
@@ -644,7 +663,7 @@ impl DxfWriter {
             }
             EntityObject::Line(l) => {
                 w.write_str(0, DxfObjectCode::LINE)?;
-                Self::write_entity_common(&l.common, owner, w)?;
+                Self::write_entity_common(&l.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::LINE)?;
                 w.write_f64(10, l.start_point.x)?;
                 w.write_f64(20, l.start_point.y)?;
@@ -658,7 +677,7 @@ impl DxfWriter {
             }
             EntityObject::Ray(r) => {
                 w.write_str(0, DxfObjectCode::RAY)?;
-                Self::write_entity_common(&r.common, owner, w)?;
+                Self::write_entity_common(&r.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::RAY)?;
                 w.write_f64(10, r.origin.x)?;
                 w.write_f64(20, r.origin.y)?;
@@ -670,7 +689,7 @@ impl DxfWriter {
             }
             EntityObject::XLine(x) => {
                 w.write_str(0, DxfObjectCode::XLINE)?;
-                Self::write_entity_common(&x.common, owner, w)?;
+                Self::write_entity_common(&x.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::XLINE)?;
                 w.write_f64(10, x.origin.x)?;
                 w.write_f64(20, x.origin.y)?;
@@ -682,7 +701,7 @@ impl DxfWriter {
             }
             EntityObject::Circle(c) => {
                 w.write_str(0, DxfObjectCode::CIRCLE)?;
-                Self::write_entity_common(&c.common, owner, w)?;
+                Self::write_entity_common(&c.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::CIRCLE)?;
                 let ocs = MathHelper::transform_3d(
                     c.center,
@@ -700,7 +719,7 @@ impl DxfWriter {
             }
             EntityObject::Arc(a) => {
                 w.write_str(0, DxfObjectCode::ARC)?;
-                Self::write_entity_common(&a.common, owner, w)?;
+                Self::write_entity_common(&a.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::CIRCLE)?;
                 let ocs = MathHelper::transform_3d(
                     a.center,
@@ -721,7 +740,7 @@ impl DxfWriter {
             }
             EntityObject::Ellipse(e) => {
                 w.write_str(0, DxfObjectCode::ELLIPSE)?;
-                Self::write_entity_common(&e.common, owner, w)?;
+                Self::write_entity_common(&e.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::ELLIPSE)?;
                 w.write_f64(10, e.center.x)?;
                 w.write_f64(20, e.center.y)?;
@@ -743,7 +762,7 @@ impl DxfWriter {
             }
             EntityObject::Solid(s) => {
                 w.write_str(0, DxfObjectCode::SOLID)?;
-                Self::write_entity_common(&s.common, owner, w)?;
+                Self::write_entity_common(&s.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::SOLID)?;
                 w.write_f64(10, s.first_vertex.x)?;
                 w.write_f64(20, s.first_vertex.y)?;
@@ -763,7 +782,7 @@ impl DxfWriter {
             }
             EntityObject::Trace(t) => {
                 w.write_str(0, DxfObjectCode::TRACE)?;
-                Self::write_entity_common(&t.common, owner, w)?;
+                Self::write_entity_common(&t.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::TRACE)?;
                 w.write_f64(10, t.first_vertex.x)?;
                 w.write_f64(20, t.first_vertex.y)?;
@@ -783,7 +802,7 @@ impl DxfWriter {
             }
             EntityObject::Face3D(f) => {
                 w.write_str(0, DxfObjectCode::FACE_3D)?;
-                Self::write_entity_common(&f.common, owner, w)?;
+                Self::write_entity_common(&f.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::FACE_3D)?;
                 w.write_f64(10, f.first_vertex.x)?;
                 w.write_f64(20, f.first_vertex.y)?;
@@ -802,7 +821,7 @@ impl DxfWriter {
             }
             EntityObject::Text(t) => {
                 w.write_str(0, DxfObjectCode::TEXT)?;
-                Self::write_entity_common(&t.common, owner, w)?;
+                Self::write_entity_common(&t.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::TEXT)?;
                 let ocs = MathHelper::transform_3d(
                     t.position,
@@ -835,7 +854,7 @@ impl DxfWriter {
             }
             EntityObject::MText(mt) => {
                 w.write_str(0, DxfObjectCode::MTEXT)?;
-                Self::write_entity_common(&mt.common, owner, w)?;
+                Self::write_entity_common(&mt.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::MTEXT)?;
                 w.write_f64(10, mt.position.x)?;
                 w.write_f64(20, mt.position.y)?;
@@ -844,19 +863,37 @@ impl DxfWriter {
                 w.write_f64(41, mt.rectangle_width)?;
                 w.write_i16(71, mt.attachment_point as i16)?;
                 w.write_i16(72, mt.drawing_direction as i16)?;
-                // Split long MText into 250-char code 3 chunks + final code 1
-                let chars: Vec<char> = mt.value.chars().collect();
-                if chars.len() <= 250 {
+                // Split long MText into code 3 chunks + final code 1, respecting both
+                // the 250 UTF-8 byte budget and 250-char budget without splitting codepoints.
+                if mt.value.len() <= 250 {
                     w.write_str(1, &mt.value)?;
                 } else {
-                    let mut idx = 0;
-                    while idx + 250 < chars.len() {
-                        let chunk: String = chars[idx..idx + 250].iter().collect();
-                        w.write_str(3, &chunk)?;
-                        idx += 250;
+                    let mut rest = mt.value.as_str();
+                    while rest.len() > 250 {
+                        let mut cut = 0;
+                        for (chars_in_chunk, (byte_idx, ch)) in rest.char_indices().enumerate() {
+                            let next_len = byte_idx + ch.len_utf8();
+                            if next_len > 250 || chars_in_chunk >= 250 {
+                                break;
+                            }
+                            cut = next_len;
+                        }
+                        if cut == 0 {
+                            // Single char > 250 bytes is impossible in UTF-8, safeguard anyway.
+                            cut = rest.chars().next().map_or(0, char::len_utf8);
+                        }
+                        let (chunk, tail) = rest.split_at(cut);
+                        if tail.is_empty() {
+                            w.write_str(1, chunk)?;
+                            rest = "";
+                            break;
+                        }
+                        w.write_str(3, chunk)?;
+                        rest = tail;
                     }
-                    let rest: String = chars[idx..].iter().collect();
-                    w.write_str(1, &rest)?;
+                    if !rest.is_empty() || mt.value.is_empty() {
+                        w.write_str(1, rest)?;
+                    }
                 }
                 w.write_str(7, &mt.style)?;
                 Self::write_normal(mt.common.normal, w)?;
@@ -867,7 +904,7 @@ impl DxfWriter {
             }
             EntityObject::Polyline2D(pl) => {
                 w.write_str(0, DxfObjectCode::LW_POLYLINE)?;
-                Self::write_entity_common(&pl.common, owner, w)?;
+                Self::write_entity_common(&pl.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::POLYLINE)?;
                 w.write_i32(90, pl.vertexes.len() as i32)?;
                 let flags = (if pl.is_closed { 1 } else { 0 })
@@ -887,7 +924,7 @@ impl DxfWriter {
             }
             EntityObject::Polyline3D(pl) => {
                 w.write_str(0, DxfObjectCode::POLYLINE)?;
-                Self::write_entity_common(&pl.common, owner, w)?;
+                Self::write_entity_common(&pl.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::POLYLINE_3D)?;
                 w.write_i16(66, 1)?;
                 w.write_f64(10, 0.0)?;
@@ -923,7 +960,7 @@ impl DxfWriter {
             }
             EntityObject::Spline(s) => {
                 w.write_str(0, DxfObjectCode::SPLINE)?;
-                Self::write_entity_common(&s.common, owner, w)?;
+                Self::write_entity_common(&s.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::SPLINE)?;
                 Self::write_normal(s.common.normal, w)?;
                 w.write_i16(70, s.flags.bits())?;
@@ -964,7 +1001,7 @@ impl DxfWriter {
             }
             EntityObject::Hatch(h) => {
                 w.write_str(0, DxfObjectCode::HATCH)?;
-                Self::write_entity_common(&h.common, owner, w)?;
+                Self::write_entity_common(&h.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::HATCH)?;
                 w.write_f64(10, 0.0)?;
                 w.write_f64(20, 0.0)?;
@@ -1041,7 +1078,7 @@ impl DxfWriter {
             }
             EntityObject::Insert(ins) => {
                 w.write_str(0, DxfObjectCode::INSERT)?;
-                Self::write_entity_common(&ins.common, owner, w)?;
+                Self::write_entity_common(&ins.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::INSERT)?;
                 if !ins.attributes.is_empty() {
                     w.write_i16(66, 1)?;
@@ -1094,7 +1131,7 @@ impl DxfWriter {
             }
             EntityObject::Dimension(d) => {
                 w.write_str(0, DxfObjectCode::DIMENSION)?;
-                Self::write_entity_common(&d.common, owner, w)?;
+                Self::write_entity_common(&d.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::DIMENSION)?;
                 if !d.block_name.is_empty() { w.write_str(2, &d.block_name)?; }
                 w.write_f64(10, d.definition_point.x)?;
@@ -1146,7 +1183,7 @@ impl DxfWriter {
             }
             EntityObject::Leader(l) => {
                 w.write_str(0, DxfObjectCode::LEADER)?;
-                Self::write_entity_common(&l.common, owner, w)?;
+                Self::write_entity_common(&l.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::LEADER)?;
                 w.write_str(3, &l.style)?;
                 w.write_i16(71, i16::from(l.show_arrowhead))?;
@@ -1166,7 +1203,7 @@ impl DxfWriter {
             }
             EntityObject::MLine(ml) => {
                 w.write_str(0, DxfObjectCode::MLINE)?;
-                Self::write_entity_common(&ml.common, owner, w)?;
+                Self::write_entity_common(&ml.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::MLINE)?;
                 w.write_str(2, &ml.style)?;
                 w.write_f64(40, ml.scale)?;
@@ -1188,7 +1225,7 @@ impl DxfWriter {
             }
             EntityObject::Mesh(m) => {
                 w.write_str(0, DxfObjectCode::MESH)?;
-                Self::write_entity_common(&m.common, owner, w)?;
+                Self::write_entity_common(&m.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::MESH)?;
                 w.write_i16(71, 2)?;
                 w.write_i16(72, m.subdivision_level as i16)?;
@@ -1212,7 +1249,7 @@ impl DxfWriter {
             }
             EntityObject::PolyfaceMesh(pf) => {
                 w.write_str(0, DxfObjectCode::POLYLINE)?;
-                Self::write_entity_common(&pf.common, owner, w)?;
+                Self::write_entity_common(&pf.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::POLYFACE_MESH)?;
                 w.write_i16(66, 1)?;
                 w.write_f64(10, 0.0)?;
@@ -1255,7 +1292,7 @@ impl DxfWriter {
             }
             EntityObject::PolygonMesh(pm) => {
                 w.write_str(0, DxfObjectCode::POLYLINE)?;
-                Self::write_entity_common(&pm.common, owner, w)?;
+                Self::write_entity_common(&pm.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::POLYGON_MESH)?;
                 w.write_i16(66, 1)?;
                 w.write_f64(10, 0.0)?;
@@ -1294,7 +1331,7 @@ impl DxfWriter {
             }
             EntityObject::Viewport(vp) => {
                 w.write_str(0, DxfObjectCode::VIEWPORT)?;
-                Self::write_entity_common(&vp.common, owner, w)?;
+                Self::write_entity_common(&vp.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::VIEWPORT)?;
                 w.write_f64(10, vp.center.x)?;
                 w.write_f64(20, vp.center.y)?;
@@ -1319,7 +1356,7 @@ impl DxfWriter {
             }
             EntityObject::Tolerance(t) => {
                 w.write_str(0, DxfObjectCode::TOLERANCE)?;
-                Self::write_entity_common(&t.common, owner, w)?;
+                Self::write_entity_common(&t.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::TOLERANCE)?;
                 w.write_str(3, &t.style)?;
                 w.write_f64(10, t.position.x)?;
@@ -1330,7 +1367,7 @@ impl DxfWriter {
             }
             EntityObject::Shape(s) => {
                 w.write_str(0, DxfObjectCode::SHAPE)?;
-                Self::write_entity_common(&s.common, owner, w)?;
+                Self::write_entity_common(&s.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::SHAPE)?;
                 w.write_f64(10, s.position.x)?;
                 w.write_f64(20, s.position.y)?;
@@ -1344,7 +1381,7 @@ impl DxfWriter {
             }
             EntityObject::Image(img) => {
                 w.write_str(0, DxfObjectCode::IMAGE)?;
-                Self::write_entity_common(&img.common, owner, w)?;
+                Self::write_entity_common(&img.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::RASTER_IMAGE)?;
                 w.write_f64(10, img.position.x)?;
                 w.write_f64(20, img.position.y)?;
@@ -1359,7 +1396,7 @@ impl DxfWriter {
             }
             EntityObject::Underlay(u) => {
                 w.write_str(0, u.underlay_type.entity_code())?;
-                Self::write_entity_common(&u.common, owner, w)?;
+                Self::write_entity_common(&u.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::UNDERLAY)?;
                 if let Some(h) = &u.definition_handle { w.write_str(340, h)?; }
                 w.write_f64(10, u.position.x)?;
@@ -1375,7 +1412,7 @@ impl DxfWriter {
             }
             EntityObject::Wipeout(wp) => {
                 w.write_str(0, DxfObjectCode::WIPEOUT)?;
-                Self::write_entity_common(&wp.common, owner, w)?;
+                Self::write_entity_common(&wp.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::WIPEOUT)?;
                 w.write_i16(71, wp.clipping_boundary.boundary_type as i16)?;
                 w.write_i32(91, wp.clipping_boundary.vertexes.len() as i32)?;
@@ -1387,7 +1424,7 @@ impl DxfWriter {
             }
             EntityObject::Helix(hx) => {
                 w.write_str(0, DxfObjectCode::HELIX)?;
-                Self::write_entity_common(&hx.common, owner, w)?;
+                Self::write_entity_common(&hx.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::HELIX)?;
                 w.write_f64(10, hx.axis_base_point.x)?;
                 w.write_f64(20, hx.axis_base_point.y)?;
@@ -1407,7 +1444,7 @@ impl DxfWriter {
             }
             EntityObject::Solid3D(s) => {
                 w.write_str(0, DxfObjectCode::SOLID_3D)?;
-                Self::write_entity_common(&s.common, owner, w)?;
+                Self::write_entity_common(&s.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::MODELER_GEOMETRY)?;
                 w.write_i16(70, s.acis.modeler_format_version)?;
                 for chunk in s.acis.encoded_sat_chunks() {
@@ -1421,7 +1458,7 @@ impl DxfWriter {
             }
             EntityObject::Body(b) => {
                 w.write_str(0, DxfObjectCode::BODY)?;
-                Self::write_entity_common(&b.common, owner, w)?;
+                Self::write_entity_common(&b.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::MODELER_GEOMETRY)?;
                 w.write_i16(70, b.acis.modeler_format_version)?;
                 for chunk in b.acis.encoded_sat_chunks() {
@@ -1431,7 +1468,7 @@ impl DxfWriter {
             }
             EntityObject::Region(r) => {
                 w.write_str(0, DxfObjectCode::REGION)?;
-                Self::write_entity_common(&r.common, owner, w)?;
+                Self::write_entity_common(&r.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::MODELER_GEOMETRY)?;
                 w.write_i16(70, r.acis.modeler_format_version)?;
                 for chunk in r.acis.encoded_sat_chunks() {
@@ -1441,7 +1478,7 @@ impl DxfWriter {
             }
             EntityObject::Table(t) => {
                 w.write_str(0, DxfObjectCode::ACAD_TABLE)?;
-                Self::write_entity_common(&t.common, owner, w)?;
+                Self::write_entity_common(&t.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::INSERT)?;
                 if !t.block_name.is_empty() { w.write_str(2, &t.block_name)?; }
                 w.write_f64(10, t.insertion_point.x)?;
@@ -1464,7 +1501,7 @@ impl DxfWriter {
             }
             EntityObject::MultiLeader(ml) => {
                 w.write_str(0, DxfObjectCode::MULTILEADER)?;
-                Self::write_entity_common(&ml.common, owner, w)?;
+                Self::write_entity_common(&ml.common, owner, version, w)?;
                 w.write_str(100, "AcDbMLeader")?;
                 if let Some(sh) = &ml.style_handle { w.write_str(340, sh)?; }
                 w.write_i16(172, ml.content_type as i16)?;
@@ -1501,7 +1538,7 @@ impl DxfWriter {
             }
             EntityObject::Light(l) => {
                 w.write_str(0, DxfObjectCode::LIGHT)?;
-                Self::write_entity_common(&l.common, owner, w)?;
+                Self::write_entity_common(&l.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::LIGHT)?;
                 w.write_str(1, &l.name)?;
                 w.write_i16(70, l.light_type as i16)?;
@@ -1525,7 +1562,7 @@ impl DxfWriter {
             }
             EntityObject::Ole2Frame(f) => {
                 w.write_str(0, DxfObjectCode::OLE2_FRAME)?;
-                Self::write_entity_common(&f.common, owner, w)?;
+                Self::write_entity_common(&f.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::OLE2_FRAME)?;
                 w.write_i16(70, f.ole_version)?;
                 w.write_str(3, &f.ole_client_type)?;
@@ -1545,7 +1582,7 @@ impl DxfWriter {
             }
             EntityObject::OleFrame(f) => {
                 w.write_str(0, DxfObjectCode::OLE_FRAME)?;
-                Self::write_entity_common(&f.common, owner, w)?;
+                Self::write_entity_common(&f.common, owner, version, w)?;
                 w.write_str(100, SubclassMarker::OLE_FRAME)?;
                 w.write_i16(70, f.ole_version)?;
                 w.write_i32(90, f.binary_data.len() as i32)?;
@@ -1556,7 +1593,7 @@ impl DxfWriter {
             }
             EntityObject::Section(s) => {
                 w.write_str(0, DxfObjectCode::BEGIN_SECTION)?;
-                Self::write_entity_common(&s.common, owner, w)?;
+                Self::write_entity_common(&s.common, owner, version, w)?;
                 w.write_str(100, "AcDbSection")?;
                 w.write_i32(90, s.state)?;
                 w.write_i32(91, s.flags)?;
@@ -1687,9 +1724,14 @@ impl DxfWriter {
         w.write_i16(72, doc.raster_variables.units as i16)?;
 
         // MLeaderStyles
+        let default_text_style_handle = doc
+            .text_styles
+            .get(TextStyle::DEFAULT_NAME)
+            .and_then(|s| s.handle());
         for ms in doc.mleader_styles.iter() {
             w.write_str(0, "MLEADERSTYLE")?;
             if let Some(h) = ms.handle() { w.write_str(5, h)?; }
+            w.write_str(330, "C")?;
             w.write_str(100, "AcDbMLeaderStyle")?;
             w.write_str(300, ms.name())?;
             w.write_i16(170, ms.content_type as i16)?;
@@ -1699,6 +1741,14 @@ impl DxfWriter {
             w.write_bool(291, ms.enable_dogleg)?;
             w.write_f64(43, ms.dogleg_length)?;
             w.write_f64(44, ms.arrow_size)?;
+            if let Some(ts_h) = doc
+                .text_styles
+                .get(&ms.text_style)
+                .and_then(|s| s.handle())
+                .or(default_text_style_handle)
+            {
+                w.write_str(342, ts_h)?;
+            }
             w.write_f64(45, ms.text_height)?;
             w.write_f64(142, ms.scale)?;
         }
@@ -1707,6 +1757,7 @@ impl DxfWriter {
         for ts in doc.table_styles.iter() {
             w.write_str(0, "TABLESTYLE")?;
             if let Some(h) = ts.handle() { w.write_str(5, h)?; }
+            w.write_str(330, "C")?;
             w.write_str(100, "AcDbTableStyle")?;
             w.write_str(3, ts.name())?;
             w.write_i16(70, ts.flow_direction)?;
@@ -1742,10 +1793,25 @@ impl DxfWriter {
             w.write_i32(95, geo.scale_estimation_method)?;
             w.write_f64(141, geo.user_scale_factor)?;
             if !geo.coordinate_system_definition.is_empty() {
-                w.write_str(301, &geo.coordinate_system_definition)?;
+                let chars: Vec<char> = geo.coordinate_system_definition.chars().collect();
+                let chunk_count = chars.len().div_ceil(255);
+                for (i, chunk) in chars.chunks(255).enumerate() {
+                    let s: String = chunk.iter().collect();
+                    let code = if i + 1 < chunk_count { 303 } else { 301 };
+                    w.write_str(code, &s)?;
+                }
             }
             if !geo.geo_rss_tag.is_empty() {
                 w.write_str(302, &geo.geo_rss_tag)?;
+            }
+            if !geo.observation_from_tag.is_empty() {
+                w.write_str(305, &geo.observation_from_tag)?;
+            }
+            if !geo.observation_to_tag.is_empty() {
+                w.write_str(306, &geo.observation_to_tag)?;
+            }
+            if !geo.observation_coverage_tag.is_empty() {
+                w.write_str(307, &geo.observation_coverage_tag)?;
             }
         }
 

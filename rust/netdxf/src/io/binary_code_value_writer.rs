@@ -56,11 +56,7 @@ impl<W: Write> ICodeValueWriter for BinaryCodeValueWriter<W> {
 
     fn write_i16(&mut self, code: i16, value: i16) -> Result<()> {
         self.write_code(code)?;
-        if (280..=289).contains(&code) {
-            self.writer.write_all(&[value as u8])?;
-        } else {
-            self.writer.write_all(&value.to_le_bytes())?;
-        }
+        self.writer.write_all(&value.to_le_bytes())?;
         Ok(())
     }
 
