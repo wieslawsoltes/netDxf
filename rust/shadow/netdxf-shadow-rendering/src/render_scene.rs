@@ -29,17 +29,27 @@ pub struct RenderStrokeGroup {
     pub argb: Option<u32>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct RenderItem {
     pub key: String,
     pub entity: ObjectId,
     pub layer: String,
+    pub insert_path: Vec<ObjectId>,
     pub paint: RenderPaint,
     pub contours: Vec<RenderContour>,
+    pub strokes: Vec<RenderContour>,
     pub regions: Vec<RenderRegion>,
     pub stroke_groups: Vec<RenderStrokeGroup>,
+    pub filled: bool,
+    pub is_presentation_only: bool,
     pub bounds: Bounds2,
     pub clip: Option<RenderClip>,
+    pub clips: Vec<RenderClip>,
+    pub image: Option<String>,
+    pub image_clip: Option<RenderClip>,
+    pub source_to_world: Affine3,
+    pub pattern_to_world: Affine3,
+    pub projection: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -51,20 +61,39 @@ pub struct RenderScene {
     pub bounds: Bounds2,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RenderCompileOptions {
     pub curve_tolerance: f64,
+    pub tolerance: f64,
     pub maximum_items: usize,
     pub background_argb: u32,
+    pub layout: Option<String>,
+    pub root_block: Option<String>,
+    pub root_entities: Vec<ObjectId>,
+    pub include_paper_viewports: bool,
+    pub paper_space: bool,
+    pub linetype_scale: f64,
+    pub linetype_alignment: bool,
+    pub model_annotation: Option<ModelAnnotationContext>,
+    pub viewport_overrides: BTreeMap<String, ViewportLayerOverride>,
 }
 
 impl Default for RenderCompileOptions {
     fn default() -> Self {
         Self {
             curve_tolerance: 0.05,
+            tolerance: 0.05,
             maximum_items: 1_000_000,
             background_argb: 0xFF18_1A1F,
+            layout: None,
+            root_block: None,
+            root_entities: Vec::new(),
+            include_paper_viewports: true,
+            paper_space: false,
+            linetype_scale: 1.0,
+            linetype_alignment: true,
+            model_annotation: None,
+            viewport_overrides: BTreeMap::new(),
         }
     }
 }
-

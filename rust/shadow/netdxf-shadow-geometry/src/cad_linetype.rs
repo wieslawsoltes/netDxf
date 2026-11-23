@@ -27,10 +27,52 @@ pub struct CadLinetypeDecoration {
     pub kind: CadLinetypeDecorationKind,
     pub content: String,
     pub resource: String,
+    pub big_font: String,
+    pub font_family: String,
+    pub shape_number: i16,
     pub rotation: CadLinetypeRotation,
     pub angle: f64,
     pub scale: f64,
     pub offset: Vec3,
+    pub style_height: f64,
+    pub width_factor: f64,
+    pub oblique_angle: f64,
+    pub is_backward: bool,
+    pub is_upside_down: bool,
+    pub is_vertical: bool,
+}
+
+impl CadLinetypeDecoration {
+    #[inline]
+    pub fn rotation_type(&self) -> CadLinetypeRotation {
+        self.rotation
+    }
+
+    pub fn create_text(
+        content: impl Into<String>,
+        resource: impl Into<String>,
+        scale: f64,
+        offset: Vec3,
+    ) -> Self {
+        Self {
+            kind: CadLinetypeDecorationKind::Text,
+            content: content.into(),
+            resource: resource.into(),
+            big_font: String::new(),
+            font_family: String::new(),
+            shape_number: 0,
+            rotation: CadLinetypeRotation::Upright,
+            angle: 0.0,
+            scale,
+            offset,
+            style_height: 0.0,
+            width_factor: 1.0,
+            oblique_angle: 0.0,
+            is_backward: false,
+            is_upside_down: false,
+            is_vertical: false,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -45,4 +87,3 @@ pub struct CadLinetype {
     pub scale: f64,
     pub normal: Vec3,
 }
-

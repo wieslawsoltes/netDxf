@@ -50,6 +50,7 @@ impl DraftingPlanner {
             command: DraftingCommand {
                 name: name.into(),
                 summary: String::new(),
+                ..Default::default()
             },
             patch: ShadowGraphPatch::new(snapshot.document_id.clone(), snapshot.revision, Vec::new()),
         }

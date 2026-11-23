@@ -261,11 +261,22 @@ impl TopologyGraph {
             .then_some(options.offset + node_items.len());
         let next_edge = (options.offset + edge_items.len() < self.edges.len())
             .then_some(options.offset + edge_items.len());
+        let (art_pts, bridges) = self.tarjan_articulation_and_bridges();
         GraphVisualization {
             node_count: self.nodes.len(),
             edge_count: self.edges.len(),
             component_count: forest.component_count,
             cycle_rank,
+            articulation_point_count: art_pts.len(),
+            bridge_count: bridges.len(),
+            dead_end_count: self.dead_ends().len(),
+            isolated_node_count: self.isolated().len(),
+            junction_count: self.junctions().len(),
+            diagnostic_count: self.diagnostics().len(),
+            total_length: self.length(),
+            node_limit: options.limit,
+            edge_limit: options.limit,
+            truncated: next_node.is_some() || next_edge.is_some(),
             nodes: GraphVisualizationPage {
                 total: self.nodes.len(),
                 offset: options.offset,
@@ -279,6 +290,171 @@ impl TopologyGraph {
                 next_offset: next_edge,
             },
         }
+    }
+
+    /// Total length of all edges in the topology graph.
+    pub fn length(&self) -> f64 {
+        self.edges.iter().map(|e| e.length).sum()
+    }
+
+    /// Cyclomatic number `E - V + C`.
+    pub fn cycle_rank(&self) -> usize {
+        let forest = self.spanning_forest();
+        self.edges
+            .len()
+            .saturating_sub(self.nodes.len())
+            .saturating_add(forest.component_count)
+    }
+
+    /// Returns connected components as lists of node IDs.
+    pub fn connected_components(&self) -> Vec<Vec<usize>> {
+        let n = self.nodes.len();
+        let mut visited = vec![false; n];
+        let mut comps = Vec::new();
+        for start in 0..n {
+            if visited[start] {
+                continue;
+            }
+            let mut comp = Vec::new();
+            let mut q = VecDeque::new();
+            visited[start] = true;
+            q.push_back(start);
+            while let Some(u) = q.pop_front() {
+                comp.push(u);
+                for &ei in &self.nodes[u].edges {
+                    let e = &self.edges[ei];
+                    let v = if e.a == u { e.b } else { e.a };
+                    if !visited[v] {
+                        visited[v] = true;
+                        q.push_back(v);
+                    }
+                }
+            }
+            comps.push(comp);
+        }
+        comps
+    }
+
+    /// Alias for `connected_components`.
+    pub fn components(&self) -> Vec<Vec<usize>> {
+        self.connected_components()
+    }
+
+    /// Nodes with degree 0.
+    pub fn isolated(&self) -> Vec<usize> {
+        self.nodes
+            .iter()
+            .filter(|n| n.edges.is_empty())
+            .map(|n| n.id)
+            .collect()
+    }
+
+    /// Nodes with degree 1.
+    pub fn dead_ends(&self) -> Vec<usize> {
+        self.nodes
+            .iter()
+            .filter(|n| n.edges.len() == 1)
+            .map(|n| n.id)
+            .collect()
+    }
+
+    /// Nodes with degree >= 3.
+    pub fn junctions(&self) -> Vec<usize> {
+        self.nodes
+            .iter()
+            .filter(|n| n.edges.len() >= 3)
+            .map(|n| n.id)
+            .collect()
+    }
+
+    /// Computes articulation points (cut vertices) and bridges (cut edges) via Tarjan's DFS algorithm.
+    fn tarjan_articulation_and_bridges(&self) -> (Vec<usize>, Vec<usize>) {
+        let n = self.nodes.len();
+        let mut disc = vec![0usize; n];
+        let mut low = vec![0usize; n];
+        let mut timer = 0usize;
+        let mut is_art = vec![false; n];
+        let mut bridges = Vec::new();
+
+        #[allow(clippy::too_many_arguments)]
+        fn dfs(
+            g: &TopologyGraph,
+            u: usize,
+            parent_edge: Option<usize>,
+            timer: &mut usize,
+            disc: &mut [usize],
+            low: &mut [usize],
+            is_art: &mut [bool],
+            bridges: &mut Vec<usize>,
+        ) {
+            *timer += 1;
+            disc[u] = *timer;
+            low[u] = *timer;
+            let mut children = 0usize;
+            for &ei in &g.nodes[u].edges {
+                if Some(ei) == parent_edge {
+                    continue;
+                }
+                let e = &g.edges[ei];
+                let v = if e.a == u { e.b } else { e.a };
+                if disc[v] == 0 {
+                    children += 1;
+                    dfs(g, v, Some(ei), timer, disc, low, is_art, bridges);
+                    low[u] = low[u].min(low[v]);
+                    if parent_edge.is_some() && low[v] >= disc[u] {
+                        is_art[u] = true;
+                    }
+                    if low[v] > disc[u] {
+                        bridges.push(ei);
+                    }
+                } else {
+                    low[u] = low[u].min(disc[v]);
+                }
+            }
+            if parent_edge.is_none() && children > 1 {
+                is_art[u] = true;
+            }
+        }
+
+        for u in 0..n {
+            if disc[u] == 0 {
+                dfs(self, u, None, &mut timer, &mut disc, &mut low, &mut is_art, &mut bridges);
+            }
+        }
+        let art_pts = is_art
+            .into_iter()
+            .enumerate()
+            .filter_map(|(i, b)| b.then_some(i))
+            .collect();
+        bridges.sort_unstable();
+        (art_pts, bridges)
+    }
+
+    /// Articulation points (cut vertices) of the graph.
+    pub fn articulation_points(&self) -> Vec<usize> {
+        self.tarjan_articulation_and_bridges().0
+    }
+
+    /// Bridges (cut edges) of the graph.
+    pub fn bridges(&self) -> Vec<usize> {
+        self.tarjan_articulation_and_bridges().1
+    }
+
+    /// Topological diagnostics (isolated nodes, self-loops, zero-length edges).
+    pub fn diagnostics(&self) -> Vec<String> {
+        let mut out = Vec::new();
+        for n in self.isolated() {
+            out.push(format!("isolated_node:{n}"));
+        }
+        for e in &self.edges {
+            if e.a == e.b {
+                out.push(format!("self_loop_edge:{}", e.id));
+            }
+            if e.length <= 1e-12 {
+                out.push(format!("zero_length_edge:{}", e.id));
+            }
+        }
+        out
     }
 }
 

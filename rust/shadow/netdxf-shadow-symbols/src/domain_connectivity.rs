@@ -22,12 +22,22 @@ impl Default for DomainConnectivityOptions {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DomainPortNode {
     pub id: usize,
+    pub key: String,
     pub entity: ObjectId,
     pub port_name: String,
+    pub port: String,
+    pub kind: String,
+    pub class: String,
+    pub module: Option<String>,
+    pub nominal_size: Option<String>,
     pub position: Vec3,
+    pub degree: usize,
+    pub component: usize,
+    pub open: bool,
+    pub passages_declared: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -51,9 +61,92 @@ pub struct DomainNetworkComponent {
     pub nodes: Vec<usize>,
 }
 
-pub struct DomainConnectivity;
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub struct DomainConnectivity {
+    pub document_id: String,
+    pub nodes: Vec<DomainPortNode>,
+    pub edges: Vec<DomainConnection>,
+    pub components: Vec<DomainNetworkComponent>,
+    pub issues: Vec<DomainConnectivityIssue>,
+    pub complete: bool,
+    pub declarations_complete: bool,
+    pub issues_complete: bool,
+}
 
 impl DomainConnectivity {
+    pub fn build(
+        document_id: impl Into<String>,
+        mut ports: Vec<DomainPortNode>,
+        options: &DomainConnectivityOptions,
+    ) -> Self {
+        let (edges, components) = Self::analyze(&ports, options);
+        for (comp_idx, comp) in components.iter().enumerate() {
+            for &ni in &comp.nodes {
+                if let Some(p) = ports.get_mut(ni) {
+                    p.component = comp_idx;
+                }
+            }
+        }
+        for e in &edges {
+            if let Some(p) = ports.get_mut(e.a) {
+                p.degree += 1;
+            }
+            if let Some(p) = ports.get_mut(e.b) {
+                p.degree += 1;
+            }
+        }
+        for p in &mut ports {
+            p.open = p.degree == 0;
+        }
+        Self {
+            document_id: document_id.into(),
+            nodes: ports,
+            edges,
+            components,
+            issues: Vec::new(),
+            complete: true,
+            declarations_complete: true,
+            issues_complete: true,
+        }
+    }
+
+    pub fn analyze_structure(&self) -> Vec<DomainNetworkComponent> {
+        self.components.clone()
+    }
+
+    pub fn analyze_isolation(&self, excluded_nodes: &[usize]) -> Vec<Vec<usize>> {
+        let n = self.nodes.len();
+        let mut adj = vec![Vec::new(); n];
+        for e in &self.edges {
+            if !excluded_nodes.contains(&e.a) && !excluded_nodes.contains(&e.b) {
+                adj[e.a].push(e.b);
+                adj[e.b].push(e.a);
+            }
+        }
+        let mut visited = vec![false; n];
+        let mut comps = Vec::new();
+        for start in 0..n {
+            if visited[start] || excluded_nodes.contains(&start) {
+                continue;
+            }
+            let mut stack = vec![start];
+            visited[start] = true;
+            let mut nodes = Vec::new();
+            while let Some(u) = stack.pop() {
+                nodes.push(u);
+                for &v in &adj[u] {
+                    if !visited[v] {
+                        visited[v] = true;
+                        stack.push(v);
+                    }
+                }
+            }
+            nodes.sort_unstable();
+            comps.push(nodes);
+        }
+        comps
+    }
+
     /// Connects port nodes within `options.tolerance` and computes connected network components.
     pub fn analyze(
         ports: &[DomainPortNode],

@@ -7,10 +7,22 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DraftingCommand {
     pub name: String,
     pub summary: String,
+    pub entities: Vec<ObjectId>,
+    pub points: Vec<Vec3>,
+    pub base_point: Option<Vec3>,
+    pub reference: Option<Vec3>,
+    pub secondary: Option<Vec3>,
+    pub layer: Option<String>,
+    pub closed: bool,
+    pub count: Option<usize>,
+    pub rotation: Option<f64>,
+    pub scale: Option<f64>,
+    pub width: Option<f64>,
+    pub text: Option<String>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -65,4 +77,3 @@ impl DraftingGuard {
         }
     }
 }
-

@@ -51,6 +51,14 @@ pub struct PerspectiveCamera {
 }
 
 impl PerspectiveCamera {
+    #[inline] pub fn center(self) -> Vec3 { self.target }
+    #[inline] pub fn eye_distance(self) -> f64 { Vec3::distance(self.eye, self.target) }
+    #[inline] pub fn maximum_depth(self) -> f64 { self.options.far_plane }
+    #[inline] pub fn near_distance_fraction(self) -> f64 {
+        let d = self.eye_distance().max(1e-9);
+        (self.options.near_plane / d).clamp(1e-6, 0.99)
+    }
+
     pub fn forward(self) -> Vec3 {
         (self.target - self.eye).normalized()
     }
@@ -61,6 +69,47 @@ impl PerspectiveCamera {
 
     pub fn camera_up(self) -> Vec3 {
         Vec3::cross(self.right(), self.forward()).normalized()
+    }
+
+    /// Transforms a world point into camera-target local coordinates `(right, up, depth)`.
+    pub fn model_to_target(self, world: Vec3) -> Vec3 {
+        let rel = world - self.target;
+        Vec3::new(
+            Vec3::dot(rel, self.right()),
+            Vec3::dot(rel, self.camera_up()),
+            Vec3::dot(rel, self.forward()),
+        )
+    }
+
+    /// Transforms a camera-target local point back into world coordinates.
+    pub fn target_to_model(self, local: Vec3) -> Vec3 {
+        self.target
+            + self.right() * local.x
+            + self.camera_up() * local.y
+            + self.forward() * local.z
+    }
+
+    pub fn try_project(self, world: Vec3, width: f64, height: f64) -> Option<Vec3> {
+        self.project_point(world, width, height)
+    }
+
+    pub fn ray(self, screen_x: f64, screen_y: f64, width: f64, height: f64) -> PickingRay {
+        self.unproject_ray(screen_x, screen_y, width, height)
+    }
+
+    /// Unprojects a screen coordinate `(screen_x, screen_y)` onto the plane perpendicular to the view at `target`.
+    pub fn unproject(self, screen_x: f64, screen_y: f64, width: f64, height: f64) -> Option<Vec3> {
+        let ray = self.unproject_ray(screen_x, screen_y, width, height);
+        let fwd = self.forward();
+        let denom = Vec3::dot(ray.direction, fwd);
+        if denom.abs() < 1e-12 {
+            return None;
+        }
+        let t = Vec3::dot(self.target - ray.origin, fwd) / denom;
+        if t <= 0.0 {
+            return None;
+        }
+        Some(ray.origin + ray.direction * t)
     }
 
     pub fn project_point(self, world: Vec3, width: f64, height: f64) -> Option<Vec3> {

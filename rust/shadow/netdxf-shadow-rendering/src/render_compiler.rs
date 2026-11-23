@@ -69,6 +69,7 @@ impl RenderCompiler {
                 stroke_groups: Vec::new(),
                 bounds: occ.bounds,
                 clip: None,
+                ..Default::default()
             });
             self.statistics.items_compiled += 1;
         }

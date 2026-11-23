@@ -254,18 +254,21 @@ fn editor_undo_redo_planar_geometry_symbols_mcp_and_ferroui() {
             entity: ObjectId::new("E1"),
             port_name: "OUT".into(),
             position: Vec3::xy(0.0, 0.0),
+            ..Default::default()
         },
         DomainPortNode {
             id: 1,
             entity: ObjectId::new("E2"),
             port_name: "IN".into(),
             position: Vec3::xy(0.01, 0.0),
+            ..Default::default()
         },
         DomainPortNode {
             id: 2,
             entity: ObjectId::new("E3"),
             port_name: "IN".into(),
             position: Vec3::xy(100.0, 0.0),
+            ..Default::default()
         },
     ];
     let (conns, comps) = DomainConnectivity::analyze(&ports, &DomainConnectivityOptions::default());

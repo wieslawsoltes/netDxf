@@ -46,7 +46,23 @@ pub struct RichTextLayoutResult {
     pub total_height: f64,
 }
 
-pub struct RichTextLayout;
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub struct RichTextLayout {
+    pub lines: Vec<RichTextLine>,
+    pub boxes: Vec<Bounds2>,
+    pub left: f64,
+    pub right: f64,
+    pub top: f64,
+    pub bottom: f64,
+    pub ascent: f64,
+    pub descent: f64,
+    pub baseline: f64,
+    pub cursor: Vec3,
+    pub end: Vec3,
+    pub has_content: bool,
+    pub has_tab: bool,
+    pub approximate_metrics: bool,
+}
 
 impl RichTextLayout {
     pub fn layout(
