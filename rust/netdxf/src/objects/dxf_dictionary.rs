@@ -33,6 +33,60 @@ impl DxfDictionary {
             entries: Vec::new(),
         }
     }
+
+    #[inline]
+    pub fn cloning(&self) -> DictionaryCloningFlags {
+        self.cloning_flags
+    }
+
+    #[inline]
+    pub fn count(&self) -> usize {
+        self.entries.len()
+    }
+
+    pub fn add(&mut self, name: impl Into<String>, target_handle: impl Into<String>) -> bool {
+        let key = name.into();
+        if self.contains(&key) {
+            return false;
+        }
+        self.entries.push(DxfDictionaryEntry {
+            name: key,
+            target_handle: target_handle.into(),
+        });
+        true
+    }
+
+    pub fn add_unresolved_soft_reference(
+        &mut self,
+        name: impl Into<String>,
+        target_handle: impl Into<String>,
+    ) -> bool {
+        self.add(name, target_handle)
+    }
+
+    pub fn contains(&self, name: &str) -> bool {
+        self.entries.iter().any(|e| e.name.eq_ignore_ascii_case(name))
+    }
+
+    pub fn try_get_value(&self, name: &str) -> Option<&str> {
+        self.entries
+            .iter()
+            .find(|e| e.name.eq_ignore_ascii_case(name))
+            .map(|e| e.target_handle.as_str())
+    }
+
+    pub fn remove(&mut self, name: &str) -> bool {
+        if let Some(idx) = self
+            .entries
+            .iter()
+            .position(|e| e.name.eq_ignore_ascii_case(name))
+        {
+            self.entries.remove(idx);
+            true
+        } else {
+            false
+        }
+    }
 }
 
 /// First-class DXF `ACDBDICTIONARYWDFLT` database object.

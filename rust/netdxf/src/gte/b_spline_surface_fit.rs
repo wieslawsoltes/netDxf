@@ -113,4 +113,41 @@ impl BSplineSurfaceFit {
     pub fn position(&self, u: f64, v: f64) -> Vector3 {
         self.surface.position(u, v)
     }
+
+    #[inline]
+    pub fn get_position(&self, u: f64, v: f64) -> Vector3 {
+        self.surface.position(u, v)
+    }
+
+    #[inline]
+    pub fn degree(&self, dim: usize) -> usize {
+        if dim == 0 {
+            self.surface.basis_u.degree
+        } else {
+            self.surface.basis_v.degree
+        }
+    }
+
+    #[inline]
+    pub fn num_controls(&self, dim: usize) -> usize {
+        if dim == 0 {
+            self.surface.basis_u.num_controls
+        } else {
+            self.surface.basis_v.num_controls
+        }
+    }
+
+    #[inline]
+    pub fn basis_function(&self, dim: usize) -> &BasisFunction {
+        if dim == 0 {
+            &self.surface.basis_u
+        } else {
+            &self.surface.basis_v
+        }
+    }
+
+    #[inline]
+    pub fn control_data(&self) -> &[Vector3] {
+        &self.surface.controls
+    }
 }

@@ -165,6 +165,21 @@ pub struct MLeaderContext {
     pub base_vertical: Vector3,
     pub normal_reversed: bool,
     pub nodes: Vec<MLeaderNode>,
+    pub text_left_attachment: i16,
+    pub text_right_attachment: i16,
+    pub text_alignment: i16,
+    pub block_connection_type: i16,
+    pub top_attachment: i16,
+    pub bottom_attachment: i16,
+}
+
+impl MLeaderContext {
+    #[inline] pub fn scale(&self) -> f64 { self.content_scale }
+    #[inline] pub fn plane_origin(&self) -> Vector3 { self.base_point }
+    #[inline] pub fn plane_x_axis(&self) -> Vector3 { self.base_direction }
+    #[inline] pub fn plane_y_axis(&self) -> Vector3 { self.base_vertical }
+    #[inline] pub fn plane_normal_reversed(&self) -> bool { self.normal_reversed }
+    #[inline] pub fn leaders(&self) -> &[MLeaderNode] { &self.nodes }
 }
 
 impl Default for MLeaderContext {
@@ -184,6 +199,12 @@ impl Default for MLeaderContext {
             base_vertical: Vector3::UNIT_Y,
             normal_reversed: false,
             nodes: Vec::new(),
+            text_left_attachment: 1,
+            text_right_attachment: 1,
+            text_alignment: 0,
+            block_connection_type: 0,
+            top_attachment: 9,
+            bottom_attachment: 9,
         }
     }
 }
@@ -199,14 +220,45 @@ pub struct MLeaderStyleProperties {
     pub second_segment_angle_constraint: f64,
     pub leader_line_type: i16,
     pub leader_line_color: AciColor,
+    pub leader_line_type_name: String,
     pub leader_line_weight: i32,
     pub enable_landing: bool,
     pub landing_gap: f64,
     pub enable_dogleg: bool,
     pub dogleg_length: f64,
+    pub arrow_head: Option<String>,
     pub arrow_size: f64,
+    pub default_text: String,
+    pub text_style: String,
+    pub text_left_attachment: i16,
+    pub text_right_attachment: i16,
+    pub text_top_attachment: i16,
+    pub text_bottom_attachment: i16,
+    pub text_attachment_direction: i16,
+    pub text_angle_type: i16,
+    pub text_alignment: i16,
+    pub text_color: AciColor,
     pub text_height: f64,
+    pub enable_frame_text: bool,
+    pub text_always_left_justify: bool,
+    pub align_space: f64,
+    pub block: Option<String>,
+    pub block_color: AciColor,
+    pub block_scale_x: f64,
+    pub block_scale_y: f64,
+    pub block_scale_z: f64,
+    pub enable_block_scale: bool,
+    pub block_rotation: f64,
+    pub enable_block_rotation: bool,
+    pub block_connection_type: i16,
     pub scale: f64,
+    pub break_size: f64,
+    pub extend_leader_to_text: bool,
+    pub is_annotative: bool,
+}
+
+impl MLeaderStyleProperties {
+    #[inline] pub fn arrow_head_size(&self) -> f64 { self.arrow_size }
 }
 
 impl Default for MLeaderStyleProperties {
@@ -220,14 +272,41 @@ impl Default for MLeaderStyleProperties {
             second_segment_angle_constraint: 0.0,
             leader_line_type: 1,
             leader_line_color: AciColor::BY_BLOCK,
+            leader_line_type_name: "ByBlock".to_string(),
             leader_line_weight: -2,
             enable_landing: true,
             landing_gap: 0.09,
             enable_dogleg: true,
             dogleg_length: 0.36,
+            arrow_head: None,
             arrow_size: 0.18,
+            default_text: String::new(),
+            text_style: "Standard".to_string(),
+            text_left_attachment: 1,
+            text_right_attachment: 1,
+            text_top_attachment: 9,
+            text_bottom_attachment: 9,
+            text_attachment_direction: 0,
+            text_angle_type: 1,
+            text_alignment: 0,
+            text_color: AciColor::BY_BLOCK,
             text_height: 0.18,
+            enable_frame_text: false,
+            text_always_left_justify: false,
+            align_space: 0.18,
+            block: None,
+            block_color: AciColor::BY_BLOCK,
+            block_scale_x: 1.0,
+            block_scale_y: 1.0,
+            block_scale_z: 1.0,
+            enable_block_scale: true,
+            block_rotation: 0.0,
+            enable_block_rotation: true,
+            block_connection_type: 0,
             scale: 1.0,
+            break_size: 0.125,
+            extend_leader_to_text: false,
+            is_annotative: false,
         }
     }
 }
@@ -244,6 +323,35 @@ pub struct MLeaderProperties {
     pub block_connection_type: i16,
     pub enable_frame_text: bool,
     pub is_annotative: bool,
+    pub arrow_heads: Vec<MLeaderArrowHead>,
+    pub block_attributes: Vec<MLeaderBlockAttribute>,
+}
+
+impl MLeaderProperties {
+    #[inline] pub fn content_type(&self) -> MLeaderContentType { self.style_properties.content_type }
+    #[inline] pub fn arrow_head(&self) -> Option<&str> { self.style_properties.arrow_head.as_deref() }
+    #[inline] pub fn arrow_head_size(&self) -> f64 { self.style_properties.arrow_size }
+    #[inline] pub fn block(&self) -> Option<&str> { self.style_properties.block.as_deref() }
+    #[inline] pub fn block_color(&self) -> AciColor { self.style_properties.block_color }
+    #[inline] pub fn block_rotation(&self) -> f64 { self.style_properties.block_rotation }
+    #[inline] pub fn block_scale(&self) -> Vector3 {
+        Vector3::new(
+            self.style_properties.block_scale_x,
+            self.style_properties.block_scale_y,
+            self.style_properties.block_scale_z,
+        )
+    }
+    #[inline] pub fn dogleg_length(&self) -> f64 { self.style_properties.dogleg_length }
+    #[inline] pub fn enable_dogleg(&self) -> bool { self.style_properties.enable_dogleg }
+    #[inline] pub fn enable_landing(&self) -> bool { self.style_properties.enable_landing }
+    #[inline] pub fn landing_gap(&self) -> f64 { self.style_properties.landing_gap }
+    #[inline] pub fn leader_line_color(&self) -> AciColor { self.style_properties.leader_line_color }
+    #[inline] pub fn leader_line_type(&self) -> i16 { self.style_properties.leader_line_type }
+    #[inline] pub fn leader_line_weight(&self) -> i32 { self.style_properties.leader_line_weight }
+    #[inline] pub fn scale(&self) -> f64 { self.style_properties.scale }
+    #[inline] pub fn text_color(&self) -> AciColor { self.style_properties.text_color }
+    #[inline] pub fn text_height(&self) -> f64 { self.style_properties.text_height }
+    #[inline] pub fn text_style(&self) -> &str { &self.style_properties.text_style }
 }
 
 /// Complete structured data container for a [`MultiLeader`](crate::entities::MultiLeader).

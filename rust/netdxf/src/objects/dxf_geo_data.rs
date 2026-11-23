@@ -19,11 +19,38 @@ pub struct DxfGeoData {
     pub north_direction: Vector2,
     pub scale_estimation_method: i32,
     pub user_scale_factor: f64,
+    pub sea_level_correction: bool,
+    pub coordinate_projection_radius: f64,
     pub coordinate_system_definition: String,
     pub geo_rss_tag: String,
     pub observation_from_tag: String,
     pub observation_to_tag: String,
     pub observation_coverage_tag: String,
+    pub mesh_points: Vec<DxfGeoMeshPoint>,
+    pub mesh_faces: Vec<DxfGeoMeshFace>,
+}
+
+impl DxfGeoData {
+    #[inline] pub fn host_block(&self) -> Option<&str> { self.host_block_handle.as_deref() }
+    #[inline] pub fn coordinate_type(&self) -> DxfGeoCoordinateType {
+        match self.design_coordinates_type {
+            1 => DxfGeoCoordinateType::LocalGrid,
+            2 => DxfGeoCoordinateType::ProjectedGrid,
+            3 => DxfGeoCoordinateType::Geographic,
+            _ => DxfGeoCoordinateType::Unknown,
+        }
+    }
+    #[inline] pub fn scale_estimation(&self) -> DxfGeoScaleEstimation {
+        match self.scale_estimation_method {
+            2 => DxfGeoScaleEstimation::UserScale,
+            3 => DxfGeoScaleEstimation::GridScale,
+            4 => DxfGeoScaleEstimation::Prismoidal,
+            _ => DxfGeoScaleEstimation::None,
+        }
+    }
+    #[inline] pub fn observation_from(&self) -> &str { &self.observation_from_tag }
+    #[inline] pub fn observation_to(&self) -> &str { &self.observation_to_tag }
+    #[inline] pub fn observation_coverage(&self) -> &str { &self.observation_coverage_tag }
 }
 
 impl Default for DxfGeoData {
@@ -43,11 +70,15 @@ impl Default for DxfGeoData {
             north_direction: Vector2::UNIT_Y,
             scale_estimation_method: 1,
             user_scale_factor: 1.0,
+            sea_level_correction: false,
+            coordinate_projection_radius: 0.0,
             coordinate_system_definition: String::new(),
             geo_rss_tag: String::new(),
             observation_from_tag: String::new(),
             observation_to_tag: String::new(),
             observation_coverage_tag: String::new(),
+            mesh_points: Vec::new(),
+            mesh_faces: Vec::new(),
         }
     }
 }

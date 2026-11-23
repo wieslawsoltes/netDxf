@@ -37,6 +37,22 @@ impl Default for DxfSun {
     }
 }
 
+impl DxfSun {
+    #[inline] pub fn enabled(&self) -> bool { self.status }
+    #[inline] pub fn shadows_enabled(&self) -> bool { self.shadows }
+    #[inline] pub fn daylight_saving_time(&self) -> bool { self.daylight_savings }
+    #[inline] pub fn color_index(&self) -> i16 { self.color.index }
+    #[inline] pub fn true_color(&self) -> Option<i32> {
+        self.color.use_true_color.then(|| {
+            ((i32::from(self.color.r)) << 16)
+                | ((i32::from(self.color.g)) << 8)
+                | i32::from(self.color.b)
+        })
+    }
+    #[inline] pub fn stored_version(&self) -> i32 { self.version }
+    #[inline] pub fn stored_time(&self) -> (i32, i32) { (self.julian_day, self.time_milliseconds) }
+}
+
 /// Represents a DXF `SUNSTUDY` object (`netDxf.Objects.DxfStoredSunStudy`).
 #[derive(Clone, Debug, PartialEq)]
 pub struct DxfStoredSunStudy {
@@ -53,10 +69,42 @@ pub struct DxfStoredSunStudy {
     pub start_time_seconds: i32,
     pub end_time_seconds: i32,
     pub interval_seconds: i32,
+    pub raw_hour_flags: Vec<i32>,
+    pub page_setup: Option<String>,
     pub lock_view_viewport: bool,
     pub shade_plot_type: i16,
     pub viewports_per_page: i32,
     pub spacing_between_viewports: f64,
+    pub source_version: Option<crate::header::DxfVersion>,
+    pub references: Vec<String>,
+}
+
+impl DxfStoredSunStudy {
+    #[inline] pub fn date_count(&self) -> usize { self.julian_dates.len() }
+    #[inline] pub fn end_time(&self) -> i32 { self.end_time_seconds }
+    #[inline] pub fn interval(&self) -> i32 { self.interval_seconds }
+
+    pub fn select_dates(&mut self, dates: impl IntoIterator<Item = (i32, i32)>) {
+        self.select_dates_from_calendar = true;
+        self.julian_dates = dates.into_iter().collect();
+    }
+
+    pub fn select_date_range(
+        &mut self,
+        start_julian_day: i32,
+        end_julian_day: i32,
+        start_time_seconds: i32,
+        end_time_seconds: i32,
+        interval_seconds: i32,
+    ) {
+        self.select_dates_from_calendar = false;
+        self.start_time_seconds = start_time_seconds;
+        self.end_time_seconds = end_time_seconds;
+        self.interval_seconds = interval_seconds.max(60);
+        self.julian_dates = (start_julian_day..=end_julian_day)
+            .map(|d| (d, start_time_seconds * 1000))
+            .collect();
+    }
 }
 
 impl Default for DxfStoredSunStudy {
@@ -75,10 +123,14 @@ impl Default for DxfStoredSunStudy {
             start_time_seconds: 28_800,
             end_time_seconds: 61_200,
             interval_seconds: 3_600,
+            raw_hour_flags: Vec::new(),
+            page_setup: None,
             lock_view_viewport: false,
             shade_plot_type: 0,
             viewports_per_page: 1,
             spacing_between_viewports: 0.0,
+            source_version: None,
+            references: Vec::new(),
         }
     }
 }

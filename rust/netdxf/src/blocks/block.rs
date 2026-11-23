@@ -28,6 +28,40 @@ pub struct Block {
 impl Block {
     pub const MODEL_SPACE_NAME: &'static str = "*Model_Space";
     pub const PAPER_SPACE_NAME: &'static str = "*Paper_Space";
+    pub const DEFAULT_MODEL_SPACE_NAME: &'static str = "*Model_Space";
+    pub const DEFAULT_PAPER_SPACE_NAME: &'static str = "*Paper_Space";
+
+    pub fn create(
+        name: impl Into<String>,
+        entities: impl IntoIterator<Item = EntityObject>,
+        attribute_definitions: impl IntoIterator<Item = AttributeDefinition>,
+    ) -> Result<Self> {
+        let mut blk = Self::new(name)?;
+        for e in entities {
+            blk.add_entity(e);
+        }
+        for a in attribute_definitions {
+            blk.add_attribute_definition(a);
+        }
+        Ok(blk)
+    }
+
+    pub fn create_anonymous(name: impl Into<String>) -> Self {
+        let raw = name.into();
+        let anon_name = if raw.starts_with('*') {
+            raw
+        } else {
+            format!("*{raw}")
+        };
+        let mut blk = Self::new_unchecked(anon_name, false);
+        blk.flags |= BlockTypeFlags::ANONYMOUS_BLOCK;
+        blk
+    }
+
+    #[inline]
+    pub fn end_record(&self) -> &EndBlock {
+        &self.end
+    }
 
     pub fn new(name: impl Into<String>) -> Result<Self> {
         let table = TableObjectData::new(name, DxfObjectCode::BLOCK, true)?;

@@ -117,6 +117,21 @@ impl StoredTable {
         }
     }
 
+    #[inline] pub fn position(&self) -> Vector3 { self.insertion_point }
+    #[inline] pub fn normal(&self) -> Vector3 { self.common.normal }
+    #[inline] pub fn display_block(&self) -> &str { &self.block_name }
+    pub fn replace_display_block(&mut self, block_name: impl Into<String>) {
+        self.block_name = block_name.into();
+    }
+    #[inline] pub fn grid(&self) -> (usize, usize) { (self.row_count, self.column_count) }
+    #[inline] pub fn backing_literal_values_agree(&self) -> bool {
+        self.cells.iter().all(|c| match &c.value {
+            TableCellValue::Text(s) => s == &c.text,
+            TableCellValue::Empty => c.text.is_empty(),
+            _ => true,
+        })
+    }
+
     /// Evaluates all formula cells in this table and updates their display text.
     pub fn recalculate(&mut self) -> Result<()> {
         let rows = self.row_count;

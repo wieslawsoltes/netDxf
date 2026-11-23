@@ -1,9 +1,12 @@
+use crate::blocks::Block;
 use crate::bounding_rectangle::BoundingRectangle;
 use crate::dxf_object_code::DxfObjectCode;
 use crate::entities::attribute::Attribute;
-use crate::entities::entity_object::EntityCommon;
+use crate::entities::entity_object::{EntityCommon, EntityObject};
 use crate::entities::entity_type::EntityType;
+use crate::math_helper::MathHelper;
 use crate::matrix3::Matrix3;
+use crate::units::DrawingUnits;
 use crate::vector3::Vector3;
 
 /// Represents a DXF `INSERT` (block reference) entity.
@@ -23,6 +26,8 @@ pub struct Insert {
 }
 
 impl Insert {
+    pub const DEFAULT_INS_UNITS: DrawingUnits = DrawingUnits::Unitless;
+
     pub fn new(block_name: impl Into<String>) -> Self {
         Self {
             common: EntityCommon::new(EntityType::Insert, DxfObjectCode::INSERT),
@@ -42,6 +47,71 @@ impl Insert {
         let mut ins = Self::new(block_name);
         ins.position = position;
         ins
+    }
+
+    /// Creates an `Insert` for `block` and populates `attributes` from the block's `attribute_definitions`.
+    pub fn create_with_attributes(block: &Block, position: Vector3) -> Self {
+        let mut ins = Self::with_position(block.table.name.clone(), position);
+        ins.sync_attributes(block);
+        ins
+    }
+
+    #[inline]
+    pub fn block(&self) -> &str {
+        &self.block_name
+    }
+
+    /// Synchronizes `attributes` against `block.attribute_definitions`, preserving existing values by tag.
+    pub fn sync_attributes(&mut self, block: &Block) {
+        let existing = std::mem::take(&mut self.attributes);
+        for attdef in block.attribute_definitions.values() {
+            if let Some(prev) = existing
+                .iter()
+                .find(|a| a.tag.eq_ignore_ascii_case(&attdef.tag))
+            {
+                self.attributes.push(prev.clone());
+            } else {
+                let mut attr = Attribute::new(attdef.tag.clone(), attdef.value.clone());
+                attr.position = attdef.position + self.position;
+                attr.height = attdef.height;
+                attr.rotation = attdef.rotation + self.rotation;
+                attr.style = attdef.style.clone();
+                attr.layer = attdef.layer.clone();
+                attr.color = attdef.color;
+                self.attributes.push(attr);
+            }
+        }
+    }
+
+    /// Explodes this `Insert` against its `Block` definition into world-space entities
+    /// (including `row_count x column_count` MINSERT grid instances).
+    pub fn explode(&self, block: &Block) -> Vec<EntityObject> {
+        let ocs_to_wcs = MathHelper::arbitrary_axis(self.common.normal);
+        let rot = Matrix3::rotation_z(self.rotation * MathHelper::DEG_TO_RAD);
+        let scale = Matrix3::scale(self.scale.x, self.scale.y, self.scale.z);
+        let lin = ocs_to_wcs * rot * scale;
+
+        let rows = self.row_count.max(1) as usize;
+        let cols = self.column_count.max(1) as usize;
+        let mut out = Vec::with_capacity(block.entities.len() * rows * cols);
+
+        for r in 0..rows {
+            for c in 0..cols {
+                let grid_local = Vector3::new(
+                    c as f64 * self.column_spacing,
+                    r as f64 * self.row_spacing,
+                    0.0,
+                );
+                let grid_offset = ocs_to_wcs * (rot * grid_local);
+                let translation = self.position + grid_offset - (lin * block.origin);
+                for ent in &block.entities {
+                    let mut cloned = ent.clone();
+                    cloned.transform_by(lin, translation);
+                    out.push(cloned);
+                }
+            }
+        }
+        out
     }
 
     pub fn transform_by(&mut self, transformation: Matrix3, translation: Vector3) {
