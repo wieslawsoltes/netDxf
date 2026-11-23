@@ -6,6 +6,7 @@ pub struct DxfSectionSettings {
     pub object: DxfObject,
     pub current_section_type: i32,
     pub generation_settings_count: i32,
+    pub type_settings: Vec<DxfSectionTypeSettings>,
 }
 
 impl Default for DxfSectionSettings {
@@ -14,7 +15,27 @@ impl Default for DxfSectionSettings {
             object: DxfObject::new("SECTIONSETTINGS"),
             current_section_type: 1,
             generation_settings_count: 0,
+            type_settings: Vec::new(),
         }
+    }
+}
+
+impl DxfSectionSettings {
+    pub const MAXIMUM_GEOMETRY_SETTINGS: usize = 64;
+    pub const MAXIMUM_SOURCE_REFERENCES: usize = 16_384;
+    pub const MAXIMUM_TYPE_SETTINGS: usize = 16;
+
+    pub fn section_type(&self) -> i32 {
+        self.current_section_type
+    }
+
+    pub fn type_settings(&self) -> &[DxfSectionTypeSettings] {
+        &self.type_settings
+    }
+
+    pub fn set_type_settings(&mut self, settings: Vec<DxfSectionTypeSettings>) {
+        self.generation_settings_count = settings.len() as i32;
+        self.type_settings = settings;
     }
 }
 
@@ -63,12 +84,22 @@ impl Default for DxfOutputSettings {
 pub struct DxfSectionGeometrySettings {
     pub section_type: i32,
     pub geometry_type: i32,
+    pub geometry_value: i32,
+    pub flags: i32,
     pub visible: bool,
+    pub color_code: i32,
+    pub color_index: i16,
     pub layer: String,
+    pub layer_name: String,
     pub linetype: String,
+    pub linetype_name: String,
     pub linetype_scale: f64,
     pub lineweight: i16,
+    pub face_transparency: i32,
+    pub edge_transparency: i32,
     pub hatch_pattern: String,
+    pub hatch_pattern_name: String,
+    pub hatch_pattern_type: i32,
     pub hatch_angle: f64,
     pub hatch_scale: f64,
     pub hatch_spacing: f64,

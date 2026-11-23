@@ -23,6 +23,7 @@ pub struct DxfOpaqueEntity {
     pub common: EntityCommon,
     pub entity_name: String,
     pub raw_tags: Vec<DxfTag>,
+    pub source_version: Option<crate::header::DxfVersion>,
 }
 
 impl DxfOpaqueEntity {
@@ -34,6 +35,38 @@ impl DxfOpaqueEntity {
             common,
             entity_name: name,
             raw_tags,
+            source_version: None,
+        }
+    }
+
+    pub fn normal(&self) -> crate::vector3::Vector3 {
+        self.common.normal
+    }
+
+    pub fn source_handle(&self) -> Option<&str> {
+        self.common.object.handle.as_deref()
+    }
+
+    pub fn source_tags(&self) -> &[DxfTag] {
+        &self.raw_tags
+    }
+
+    pub fn references(&self) -> Vec<&str> {
+        self.raw_tags
+            .iter()
+            .filter(|t| matches!(t.code, 330..=369 | 390..=399 | 480..=481))
+            .map(|t| t.value.as_str())
+            .collect()
+    }
+
+    pub fn transform_by(
+        &mut self,
+        transformation: crate::matrix3::Matrix3,
+        _translation: crate::vector3::Vector3,
+    ) {
+        let new_normal = crate::vector3::Vector3::normalize(transformation * self.common.normal);
+        if !crate::vector3::Vector3::is_nan(new_normal) {
+            self.common.normal = new_normal;
         }
     }
 }

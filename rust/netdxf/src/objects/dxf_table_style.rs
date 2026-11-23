@@ -17,6 +17,13 @@ pub struct DxfTableStyle {
     pub text_height: f64,
     pub text_color: AciColor,
     pub grid_color: AciColor,
+    pub header: DxfTableStyleHeader,
+    pub rows: Vec<DxfTableStyleRow>,
+    pub cell_style_map: Option<String>,
+    pub stored_cell_style_map: Option<String>,
+    pub source_version: Option<crate::header::DxfVersion>,
+    pub references: Vec<String>,
+    pub tags: Vec<(i32, String)>,
 }
 
 impl DxfTableStyle {
@@ -44,6 +51,22 @@ impl DxfTableStyle {
             text_height: 0.18,
             text_color: AciColor::BY_BLOCK,
             grid_color: AciColor::BY_BLOCK,
+            header: DxfTableStyleHeader::default(),
+            rows: Vec::new(),
+            cell_style_map: None,
+            stored_cell_style_map: None,
+            source_version: None,
+            references: Vec::new(),
+            tags: Vec::new(),
+        }
+    }
+
+    pub fn replace_style(&mut self, index: usize, row: DxfTableStyleRow) -> bool {
+        if let Some(slot) = self.rows.get_mut(index) {
+            *slot = row;
+            true
+        } else {
+            false
         }
     }
 }
@@ -212,6 +235,35 @@ pub struct DxfStoredTableContentValue {
     pub string_value: Option<String>,
     pub point_value: Option<crate::vector3::Vector3>,
     pub formatting: DxfStoredTableContentValueFormatting,
+    pub formatted_text: String,
+    pub payload_index: usize,
+    pub stored_format_flags: i32,
+    pub stored_unit_type: i32,
+    pub tags: Vec<(i32, String)>,
+}
+
+impl DxfStoredTableContentValue {
+    pub fn format_string(&self) -> &str {
+        &self.formatting.format_string
+    }
+
+    pub fn value(&self) -> Option<String> {
+        if let Some(s) = &self.string_value {
+            Some(s.clone())
+        } else if let Some(d) = self.double_value {
+            Some(d.to_string())
+        } else {
+            self.integer_value.map(|i| i.to_string())
+        }
+    }
+
+    pub fn with_value(mut self, text: impl Into<String>) -> Self {
+        let s = text.into();
+        self.kind = DxfStoredTableContentValueKind::String;
+        self.string_value = Some(s.clone());
+        self.formatted_text = s;
+        self
+    }
 }
 
 /// Mutable edit payload for [`DxfStoredTableContentValue`].
@@ -223,7 +275,24 @@ pub struct DxfTableContentCell {
     pub row: usize,
     pub column: usize,
     pub cell_style_id: Option<i32>,
+    pub declared_content_count: usize,
+    pub format: Option<String>,
     pub value: Option<DxfStoredTableContentValue>,
+    pub contents: Vec<DxfStoredTableContentValue>,
+}
+
+impl DxfTableContentCell {
+    pub fn address(&self) -> (usize, usize) {
+        (self.row, self.column)
+    }
+
+    pub fn style_id(&self) -> Option<i32> {
+        self.cell_style_id
+    }
+
+    pub fn has_complete_scalar_content(&self) -> bool {
+        self.value.is_some() || !self.contents.is_empty()
+    }
 }
 
 /// Raw `AcDbFormattedTableData` / `AcDbTableContent` subclass wrapper.
