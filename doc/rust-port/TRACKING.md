@@ -90,15 +90,20 @@ All 5 previously deferred subsystems have been implemented and verified:
 
 Ported upstream C# `tests/netDxf.Conformance/*.cs` and `tests/shared/*.cs` test suites for all ported Rust subsystems, fixing every behavioral and wire-format parity gap uncovered:
 
-### Conformance Test Suites Added (`rust/netdxf/tests/`)
-| Rust Integration Test | Upstream C# Test Coverage | Tests |
-|---|---|---|
-| `conformance_math_color_xdata_tests.rs` | `ArbitraryAxisReviewTests`, `GVectorExtremesTests`, `GVectorSafetyTests`, `MatrixIdentityReviewTests`, `Vector4ComponentReviewTests`, `TrueColorWireReviewTests`, `TransparencyStoredTests`, `TransparencyBoundaryTests`, `XDataCloneTests` | 9 |
-| `conformance_header_tables_objects_tests.rs` | `HeaderCommentTests`, `HeaderProbeTests`, `CustomHeaderUnicodeTests`, `UcsBaseTests`, `LayerStateIdentityTests`, `GeoDataTests`, `SunTests`, `StoredSunStudyTests` | 6 |
-| `conformance_entities_and_splines_tests.rs` | `ArcAngleFidelityTests`, `Face3DEdgeVisibilityTests`, `MTextUnicodeChunkTests`, `SplineKnotInsertionTests`, `SplineSplitTests`, `SplineTrimTests`, `SplineDegreeElevationTests`, entity affine transforms, Hatch, DimensionBlock | 6 |
-| `conformance_acis_table_field_tests.rs` | `AcisSatTests`, `TableAverageCases`, `TableCalculationTests`, `TableCalculationDepthTests`, `StandardFieldEvaluatorTests`, `StoredTableTests` | 4 |
-| `conformance_codec_tests.rs` | `BinarySentinelTests`, `BinaryChunkTests`, `StrictBinaryValueTests`, `StrictTextValueTests`, `TextGroupCodeNulTests`, `TextHexTests`, `PortableDoubleCases` | 5 |
-| `examples/interop_check.rs` | Bidirectional `.NET` (`netDxf` C#) ↔ Rust (`netdxf`) ASCII & Binary DXF interop driver | Example |
+### Conformance Test Suites Organized 1:1 on Disk (`rust/netdxf/tests/`)
+Mirrors upstream `tests/netDxf.Conformance/*.cs` and `tests/shared/*.cs` using the same `snake_case` 1:1 file-system rule as `rust/netdxf/src/`:
+- **Entrypoint**: `rust/netdxf/tests/conformance.rs` (36 tests in a single fast Cargo test binary)
+- **`rust/netdxf/tests/netdxf_conformance/`** (← `tests/netDxf.Conformance/`):
+  - Math, Color, Transparency, XData: `arbitrary_axis_review_tests.rs`, `g_vector_extremes_tests.rs`, `matrix_identity_review_tests.rs`, `vector4_component_review_tests.rs`, `true_color_wire_review_tests.rs`, `transparency_stored_tests.rs`, `x_data_clone_tests.rs`
+  - Header, Tables, Objects: `header_comment_tests.rs`, `header_probe_tests.rs`, `custom_header_unicode_tests.rs`, `ucs_base_tests.rs`, `geo_data_tests.rs`, `sun_tests.rs`
+  - Entities & Splines: `arc_angle_fidelity_tests.rs`, `face3d_edge_visibility_tests.rs`, `m_text_unicode_chunk_tests.rs`, `entity_affine_tests.rs`, `hatch_and_dimension_tests.rs`, `spline_knot_insertion_tests.rs`, `spline_split_tests.rs`, `spline_trim_tests.rs`, `spline_degree_elevation_tests.rs`, `spline_reversal_tests.rs`
+  - ACIS SAT, Tables, Fields: `acis_sat_tests.rs`, `table_calculation_tests.rs`, `standard_field_evaluator_tests.rs`
+  - ASCII & Binary Codecs: `binary_sentinel_tests.rs`, `binary_chunk_tests.rs`, `strict_binary_value_tests.rs`, `strict_text_value_tests.rs`, `text_hex_tests.rs`
+  - Shared helpers: `helpers.rs`
+- **`rust/netdxf/tests/shared/`** (← `tests/shared/`):
+  - `portable_double_cases.rs` (← `PortableDoubleCases.cs`)
+  - `table_average_cases.rs` (← `TableAverageCases.cs`)
+- **`rust/netdxf/examples/interop_check.rs`**: Bidirectional `.NET` (`netDxf` C#) ↔ Rust (`netdxf`) ASCII & Binary DXF interop driver.
 
 ### Parity & Wire-Interop Fixes Uncovered by Conformance Tests
 1. **Binary DXF group codes `280..=289`**: Fixed `BinaryCodeValueReader` and `BinaryCodeValueWriter` to use 2-byte `i16` (matching AutoCAD R2000+ Binary DXF and C# `netDxf`), resolving stream alignment on real AutoCAD binary fixtures (`sample binary.dxf`).
@@ -116,7 +121,7 @@ Ported upstream C# `tests/netDxf.Conformance/*.cs` and `tests/shared/*.cs` test 
 
 ### Verification Summary
 - `cargo clippy --manifest-path rust/Cargo.toml --all-targets -- -D warnings`: **0 warnings, 0 errors**
-- `cargo test --manifest-path rust/Cargo.toml`: **53 / 53 integration tests passed** across 10 test suites (including `sample ascii.dxf`, `sample binary.dxf`, and all upstream conformance DXF fixtures)
+- `cargo test --manifest-path rust/Cargo.toml`: **59 / 59 integration tests passed** (36 in `conformance.rs` + 23 across core/fixture/advanced suites, including `sample ascii.dxf`, `sample binary.dxf`, and all upstream conformance DXF fixtures)
 - **Bidirectional `.NET` ↔ Rust interop**: Verified C# `netDxf` loads Rust-generated R2018 & R2010 ASCII + Binary DXF files (with Lines, Circles, Arcs, Unicode MText, Polylines, Splines, Blocks/Inserts, TrueColor Layers, XData binary chunks, and ACIS SAT `Solid3D`), and Rust `netdxf` loads C#-generated R2018 ASCII + Binary DXF files with exact fidelity.
 
 ### Remaining Unported Upstream Modules (Extensible Roadmap)
