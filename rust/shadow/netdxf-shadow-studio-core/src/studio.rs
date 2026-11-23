@@ -50,6 +50,11 @@ pub struct CadAttributeRequest {
 pub struct CadBlockCreateRequest {
     pub name: String,
     pub origin: Vec3,
+    pub base_point: Vec3,
+    pub description: String,
+    pub disposition: String,
+    pub layer: String,
+    pub revision: i64,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -66,6 +71,12 @@ pub struct CadBlockFinishRequest {
 pub struct CadBlockLibraryOperation {
     pub action: String,
     pub block: String,
+    pub source_name: String,
+    pub name: String,
+    pub library_id: Option<String>,
+    pub block_conflict: String,
+    pub resource_conflict: String,
+    pub content_base64: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -604,6 +615,11 @@ pub struct BranchDeleteRequest {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct MergePreviewRequest {
     pub source_branch: String,
+    pub branch_id: String,
+    pub choice: String,
+    pub document_id: String,
+    pub incoming_revision: i64,
+    pub target_revision: i64,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -1605,6 +1621,215 @@ impl Studio {
 
     pub fn merge_apply(&self, request: &MergeApplyRequest) -> bool {
         !request.source_branch.is_empty()
+    }
+
+    #[inline]
+    pub fn cad_revision(&self) -> i64 {
+        self.current_snapshot().revision
+    }
+
+    #[inline]
+    pub fn cad_stamp(&self) -> (String, i64) {
+        let snap = self.current_snapshot();
+        (snap.document_id.clone(), snap.revision)
+    }
+
+    pub fn cad_state(&self) -> Value {
+        let snap = self.current_snapshot();
+        serde_json::json!({
+            "documentId": snap.document_id,
+            "revision": snap.revision,
+            "layers": self.layers(),
+            "blocks": self.blocks(),
+            "selectedEntities": self.selection,
+        })
+    }
+
+    pub fn state(&self) -> Value {
+        let snap = self.current_snapshot();
+        serde_json::json!({
+            "documentId": snap.document_id,
+            "revision": snap.revision,
+            "objects": snap.objects.len(),
+            "entities": snap.entity_ids.len(),
+            "layouts": self.layouts(),
+        })
+    }
+
+    pub fn inspect(&self, id: &ObjectId) -> Option<Value> {
+        let snap = self.current_snapshot();
+        let obj = snap.objects.get(id)?;
+        Some(serde_json::json!({
+            "documentId": snap.document_id,
+            "revision": snap.revision,
+            "id": id.as_str(),
+            "type": obj.type_name,
+            "propertyCount": obj.properties.len(),
+        }))
+    }
+
+    pub fn pick(&mut self, request: &PickRequest) -> Vec<ObjectId> {
+        let cands = self.cad_selection_candidates(&CadSelectionCandidatesRequest {
+            point: request.point,
+            tolerance: request.tolerance,
+        });
+        self.selection = cands.into_iter().map(|c| c.entity).collect();
+        self.selection.clone()
+    }
+
+    pub fn translate(&mut self, request: &MoveRequest) -> usize {
+        self.cad_transform(&TransformRequest {
+            entities: request.ids.clone(),
+            delta: request.delta,
+        })
+    }
+
+    pub fn history(&self, operation: &str, revision: i64) -> Value {
+        serde_json::json!({ "operation": operation, "revision": revision })
+    }
+
+    pub fn set_layout(&self, request: &LayoutRequest) -> Value {
+        serde_json::json!({ "layout": request.layout })
+    }
+
+    pub fn delete(&mut self, _revision: i64) -> usize {
+        let snap = self.current_snapshot();
+        let changes: Vec<netdxf_shadow::ShadowObjectChange> = self
+            .selection
+            .iter()
+            .filter_map(|id| {
+                snap.objects.get(id).map(|obj| netdxf_shadow::ShadowObjectChange {
+                    id: id.clone(),
+                    before: Some((**obj).clone()),
+                    after: None,
+                })
+            })
+            .collect();
+        let count = changes.len();
+        if count > 0 {
+            let patch = netdxf_shadow::ShadowGraphPatch::new(
+                snap.document_id.clone(),
+                snap.revision,
+                changes,
+            );
+            let _ = netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch);
+            self.selection.clear();
+        }
+        count
+    }
+
+    pub fn retain(&self, revision: i64) -> Value {
+        serde_json::json!({ "retainedRevision": revision })
+    }
+
+    pub fn load(&mut self, bytes: &[u8]) -> Result<(), netdxf::DxfError> {
+        let doc = netdxf::DxfDocument::load_from_bytes(bytes)?;
+        self.session = ShadowSession::from_document(
+            &doc,
+            self.document_id.clone(),
+            ShadowCaptureOptions::default(),
+        );
+        self.selection.clear();
+        Ok(())
+    }
+
+    pub fn save(&self) -> Result<Vec<u8>, netdxf::DxfError> {
+        self.export_dxf_bytes(false)
+    }
+
+    pub fn cad_select(&mut self, request: &CadSelectionRequest) -> Vec<ObjectId> {
+        self.select(request)
+    }
+
+    pub fn cad_property(&mut self, request: &PropertyRequest) -> bool {
+        self.set_property(request)
+    }
+
+    pub fn cad_render(&mut self, layout: &str) -> RenderScene {
+        self.compile_render_scene(layout)
+    }
+
+    pub fn cad_render_pixels(&mut self, layout: &str) -> RenderScene {
+        self.compile_render_scene(layout)
+    }
+
+    pub fn cad_modules(&self) -> Value {
+        serde_json::json!({ "modules": ["pid", "electrical", "piping"] })
+    }
+
+    pub fn cad_set_module(&mut self, request: &CadModuleToggleRequest) -> bool {
+        self.cad_module_toggle(request)
+    }
+
+    pub fn cad_module_symbols(&self, request: &CadModuleCatalogRequest) -> Value {
+        self.cad_module_catalog(request)
+    }
+
+    pub fn cad_run_module(&mut self, request: &CadModuleExecuteRequest) -> Value {
+        self.cad_module_execute(request)
+    }
+
+    pub fn cad_module_connectivity(
+        &self,
+        request: &CadModuleConnectivityRequest,
+    ) -> CadModuleConnectivityResult {
+        self.cad_connectivity_module(request)
+    }
+
+    pub fn cad_module_schedule(
+        &self,
+        request: &CadModuleScheduleRequest,
+    ) -> CadModuleScheduleResult {
+        self.cad_schedule_module(request)
+    }
+
+    pub fn cad_open_block_library(&self, name: &str, bytes: &[u8]) -> Value {
+        serde_json::json!({ "name": name, "byteLength": bytes.len() })
+    }
+
+    pub fn cad_layer_isolation(&mut self, request: &CadLayerIsolationRequest) -> usize {
+        self.cad_isolate_layers(request)
+    }
+
+    pub fn cad_layer_state_details(&self, name: &str) -> CadLayerStatePreview {
+        self.cad_layer_state_preview(&CadLayerStatePreviewRequest {
+            name: name.to_string(),
+        })
+    }
+
+    pub fn cad_layer_state_import(&mut self, request: &CadLayerStateImportRequest) -> bool {
+        self.cad_import_layer_state(request)
+    }
+
+    pub fn cad_read_attributes(&self, insert_id: &ObjectId) -> Value {
+        let snap = self.current_snapshot();
+        serde_json::json!({
+            "insertId": insert_id.as_str(),
+            "exists": snap.objects.contains_key(insert_id),
+        })
+    }
+
+    pub fn cad_read_attribute_definitions(&self, block_name: &str) -> Value {
+        serde_json::json!({ "block": block_name, "definitions": [] })
+    }
+
+    pub fn cad_synchronize_attributes(&self, block_name: &str) -> CadAttributeSyncSummary {
+        CadAttributeSyncSummary {
+            block_name: block_name.to_string(),
+            ..Default::default()
+        }
+    }
+
+    pub fn cad_read_hatch_pattern(&self, name: &str) -> Value {
+        serde_json::json!({ "pattern": name })
+    }
+
+    pub fn cad_undo(&mut self) -> Value {
+        self.history("undo", self.cad_revision())
+    }
+
+    pub fn cad_redo(&mut self) -> Value {
+        self.history("redo", self.cad_revision())
     }
 }
 

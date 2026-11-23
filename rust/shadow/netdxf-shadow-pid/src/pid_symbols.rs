@@ -40,6 +40,7 @@ impl PidSymbols {
                     },
                 ],
                 attributes: Vec::new(),
+                ..Default::default()
             },
             SymbolDefinition {
                 id: "pid.valve.gate".into(),
@@ -72,6 +73,7 @@ impl PidSymbols {
                     },
                 ],
                 attributes: Vec::new(),
+                ..Default::default()
             },
         ]
     }

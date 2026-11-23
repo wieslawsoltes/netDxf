@@ -255,6 +255,10 @@ impl TopologyGraph {
                 start: self.nodes[e.a].position,
                 end: self.nodes[e.b].position,
                 length: e.length,
+                entity: Some(e.entity.clone()),
+                root_entity: Some(e.entity.clone()),
+                occurrence: e.occurrence.clone(),
+                ..Default::default()
             })
             .collect();
         let next_node = (options.offset + node_items.len() < self.nodes.len())

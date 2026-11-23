@@ -168,6 +168,7 @@ fn shadow_studio_hub_agents_acp_hosting_mcp_and_symbols() {
         properties: BTreeMap::new(),
         passages: Vec::new(),
         references: Vec::new(),
+        ..Default::default()
     };
     assert!(DomainMetadata::validate(&rec).is_empty());
     let encoded = DomainMetadata::write(&rec).expect("encode");

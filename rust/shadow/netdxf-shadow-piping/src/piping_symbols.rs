@@ -40,6 +40,7 @@ impl PipingSymbols {
                     },
                 ],
                 attributes: Vec::new(),
+                ..Default::default()
             },
             SymbolDefinition {
                 id: "piping.flange".into(),
@@ -61,6 +62,7 @@ impl PipingSymbols {
                     },
                 ],
                 attributes: Vec::new(),
+                ..Default::default()
             },
         ]
     }

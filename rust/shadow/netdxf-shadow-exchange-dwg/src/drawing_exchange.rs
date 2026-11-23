@@ -60,6 +60,40 @@ impl DrawingExchange {
         Self { limits }
     }
 
+    #[inline]
+    pub fn provider(&self) -> &'static str {
+        "netdxf"
+    }
+
+    pub fn read(&self, data: &[u8]) -> Result<DxfDocument, DrawingExchangeException> {
+        self.load_dxf(data)
+    }
+
+    pub fn write(
+        &self,
+        doc: &mut DxfDocument,
+        encoding: DrawingEncoding,
+        version: Option<DxfVersion>,
+    ) -> Result<DrawingExchangeResult, DrawingExchangeException> {
+        self.export_dxf(doc, encoding, version)
+    }
+
+    pub fn read_byte(data: &[u8], offset: usize) -> Option<u8> {
+        data.get(offset).copied()
+    }
+
+    pub fn write_byte(buf: &mut Vec<u8>, byte: u8) {
+        buf.push(byte);
+    }
+
+    pub fn seek(offset: usize, len: usize) -> usize {
+        offset.min(len)
+    }
+
+    pub fn set_length(buf: &mut Vec<u8>, new_len: usize) {
+        buf.resize(new_len, 0);
+    }
+
     pub fn detect_encoding(data: &[u8]) -> DrawingEncoding {
         if data.starts_with(b"AC10") && !data.starts_with(b"AutoCAD Binary DXF") {
             DrawingEncoding::Dwg

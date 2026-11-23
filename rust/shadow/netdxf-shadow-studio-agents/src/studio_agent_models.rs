@@ -177,4 +177,46 @@ impl StudioAgentController {
     pub fn close_mcp_session(&mut self) {
         self.companion_connected = false;
     }
+
+    pub fn read(&self, path: &str) -> Option<&str> {
+        self.workspace_files.get(path).map(String::as_str)
+    }
+
+    pub fn write(&mut self, path: impl Into<String>, content: impl Into<String>) {
+        self.workspace_files.insert(path.into(), content.into());
+    }
+
+    pub fn unpin(&mut self, key: &str) -> bool {
+        self.workspace_files.remove(&format!(".pins/{key}")).is_some()
+    }
+
+    pub fn reset(&mut self) {
+        self.cancelled = false;
+        self.pending_approvals.clear();
+        self.workspace_files.clear();
+    }
+
+    pub fn session(&self) -> Option<&str> {
+        self.config.document_id.as_deref()
+    }
+
+    pub fn set(&mut self, config: StudioAgentConfiguration) {
+        self.config = config;
+    }
+
+    pub fn set_document(&mut self, document_id: impl Into<String>) {
+        self.config.document_id = Some(document_id.into());
+    }
+
+    pub fn start(&mut self, prompt: &str) -> Value {
+        self.execute(prompt)
+    }
+
+    pub fn stop(&mut self) {
+        self.cancel();
+    }
+
+    pub fn status(&self) -> Value {
+        self.poll(0)
+    }
 }

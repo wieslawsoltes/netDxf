@@ -23,6 +23,7 @@ impl SymbolAuthoring {
             strokes: Vec::new(),
             ports: Vec::new(),
             attributes: Vec::new(),
+            ..Default::default()
         }
     }
 }

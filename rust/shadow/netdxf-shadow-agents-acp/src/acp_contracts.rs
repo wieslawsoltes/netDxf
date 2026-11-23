@@ -58,6 +58,49 @@ pub struct AcpClientServices {
     pub allow_terminal: bool,
 }
 
+impl AcpClientServices {
+    pub fn elicit_form(&self, request: &Value) -> Value {
+        serde_json::json!({ "accepted": true, "form": request })
+    }
+
+    pub fn elicit_url(&self, url: &str) -> Value {
+        serde_json::json!({ "accepted": true, "url": url })
+    }
+
+    pub fn notification(&self, method: &str, params: &Value) -> Value {
+        serde_json::json!({ "method": method, "params": params })
+    }
+
+    pub fn read_text_file(&self, path: &str) -> Result<String, AcpException> {
+        if !self.allow_file_read {
+            return Err(AcpException::new(-32601, "File read not permitted", None));
+        }
+        std::fs::read_to_string(path).map_err(|e| AcpException::new(-32000, e.to_string(), None))
+    }
+
+    pub fn write_text_file(&self, path: &str, content: &str) -> Result<(), AcpException> {
+        if !self.allow_file_write {
+            return Err(AcpException::new(-32601, "File write not permitted", None));
+        }
+        std::fs::write(path, content).map_err(|e| AcpException::new(-32000, e.to_string(), None))
+    }
+
+    pub fn request_permission(&self, request: &AcpPermissionRequest) -> Value {
+        serde_json::json!({ "requestId": request.request_id, "outcome": "approved" })
+    }
+
+    pub fn standard_error(&self, line: &str) -> String {
+        line.trim().to_string()
+    }
+
+    pub fn terminal_request(&self, command: &str) -> Result<Value, AcpException> {
+        if !self.allow_terminal {
+            return Err(AcpException::new(-32601, "Terminal access not permitted", None));
+        }
+        Ok(serde_json::json!({ "command": command, "exitCode": 0 }))
+    }
+}
+
 #[derive(Debug, Clone, Error, PartialEq)]
 #[error("ACP error {code}: {message}")]
 pub struct AcpException {

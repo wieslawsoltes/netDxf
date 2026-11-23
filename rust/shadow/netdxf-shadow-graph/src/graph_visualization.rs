@@ -50,7 +50,7 @@ pub struct GraphVisualizationNode {
     pub component: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct GraphVisualizationEdge {
     pub id: usize,
     pub a: usize,
@@ -58,6 +58,12 @@ pub struct GraphVisualizationEdge {
     pub start: Vec3,
     pub end: Vec3,
     pub length: f64,
+    pub component: usize,
+    pub bridge: bool,
+    pub entity: Option<ObjectId>,
+    pub root_entity: Option<ObjectId>,
+    pub occurrence: String,
+    pub insert_path: Vec<ObjectId>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

@@ -40,6 +40,7 @@ impl ElectricalSymbols {
                     },
                 ],
                 attributes: Vec::new(),
+                ..Default::default()
             },
             SymbolDefinition {
                 id: "elec.breaker".into(),
@@ -67,6 +68,7 @@ impl ElectricalSymbols {
                     },
                 ],
                 attributes: Vec::new(),
+                ..Default::default()
             },
         ]
     }

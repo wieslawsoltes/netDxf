@@ -394,8 +394,8 @@ fn remaining_shadow_services_end_to_end_verification() {
 
     // 5. DomainConnectivityIsolation & DomainConnectivityStructure
     let conns = vec![
-        DomainConnection { id: 0, a: 0, b: 1, distance: 0.0 },
-        DomainConnection { id: 1, a: 1, b: 2, distance: 0.0 },
+        DomainConnection { id: 0, a: 0, b: 1, distance: 0.0, ..Default::default() },
+        DomainConnection { id: 1, a: 1, b: 2, distance: 0.0, ..Default::default() },
     ];
     let iso = DomainConnectivityIsolation::assess(3, &conns, 0, &[1], &DomainIsolationOptions::default());
     assert!(iso.isolated);

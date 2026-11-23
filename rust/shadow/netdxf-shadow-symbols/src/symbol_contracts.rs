@@ -47,14 +47,21 @@ pub struct SymbolPort {
     pub medium: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct SymbolDefinition {
     pub id: String,
     pub name: String,
     pub domain: String,
     pub category: String,
+    pub description: String,
+    pub version: String,
+    pub units: String,
+    pub base_point: Vec3,
+    pub standards: Vec<String>,
     pub strokes: Vec<SymbolStroke>,
+    pub geometry: Vec<SymbolStroke>,
     pub ports: Vec<SymbolPort>,
+    pub passages: Vec<DomainPassage>,
     pub attributes: Vec<SymbolAttribute>,
 }
 
@@ -80,13 +87,19 @@ pub struct DomainReference {
     pub target: ObjectId,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DomainRecord {
     pub id: ObjectId,
+    pub key: String,
     pub domain: String,
+    pub module: String,
+    pub class: String,
     pub symbol_id: String,
+    pub symbol_version: String,
+    pub schema_version: u32,
     pub tag: String,
     pub properties: BTreeMap<String, String>,
+    pub ports: Vec<SymbolPort>,
     pub passages: Vec<DomainPassage>,
     pub references: Vec<DomainReference>,
 }

@@ -75,4 +75,66 @@ impl CodexAppServerClient {
         }
         Ok(response.get("result").cloned().unwrap_or(Value::Null))
     }
+
+    pub fn start(&mut self) -> Result<(), CodexRpcException> {
+        self.connection_error = None;
+        Ok(())
+    }
+
+    pub fn initialize(&mut self) -> Result<Value, CodexRpcException> {
+        Ok(self.build_initialize_request())
+    }
+
+    pub fn call(&mut self, method: &str, params: Value) -> Result<Value, CodexRpcException> {
+        Ok(self.build_rpc_request(method, params))
+    }
+
+    pub fn list_models(&mut self) -> Result<Value, CodexRpcException> {
+        Ok(self.build_list_models_request())
+    }
+
+    pub fn begin_chat_gpt_login(&mut self) -> Result<Value, CodexRpcException> {
+        Ok(self.build_begin_chat_gpt_login_request())
+    }
+
+    pub fn cancel_login(&mut self, login_id: &str) -> Result<Value, CodexRpcException> {
+        Ok(self.build_cancel_login_request(login_id))
+    }
+
+    pub fn logout(&mut self) -> Result<Value, CodexRpcException> {
+        Ok(self.build_rpc_request("account/logout", json!({})))
+    }
+
+    pub fn start_thread(&mut self, params: Value) -> Result<Value, CodexRpcException> {
+        Ok(self.build_rpc_request("thread/start", params))
+    }
+
+    pub fn start_turn(&mut self, thread_id: &str, params: Value) -> Result<Value, CodexRpcException> {
+        Ok(self.build_rpc_request("turn/start", json!({ "threadId": thread_id, "input": params })))
+    }
+
+    pub fn compact_thread(&mut self, thread_id: &str) -> Result<Value, CodexRpcException> {
+        Ok(self.build_compact_thread_request(thread_id))
+    }
+
+    pub fn interrupt_turn(&mut self, thread_id: &str, turn_id: &str) -> Result<Value, CodexRpcException> {
+        Ok(self.build_interrupt_turn_request(thread_id, turn_id))
+    }
+
+    pub fn respond(&self, id: u64, result: Value) -> Value {
+        json!({ "jsonrpc": "2.0", "id": id, "result": result })
+    }
+
+    pub fn respond_error(&self, id: u64, code: i32, message: &str) -> Value {
+        json!({ "jsonrpc": "2.0", "id": id, "error": { "code": code, "message": message } })
+    }
+
+    pub fn notification(&self, method: &str, params: Value) -> Value {
+        json!({ "jsonrpc": "2.0", "method": method, "params": params })
+    }
+
+    #[inline]
+    pub fn completion(&self) -> bool {
+        self.connection_error.is_none()
+    }
 }

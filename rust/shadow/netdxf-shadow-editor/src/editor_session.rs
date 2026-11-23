@@ -28,7 +28,15 @@ pub struct ShadowPreviewSummary {
     pub changes: Vec<ShadowPreviewChange>,
 }
 
-pub struct ShadowEditPreview;
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct ShadowEditPreview {
+    pub description: String,
+    pub target: Option<ObjectId>,
+    pub patch: Option<ShadowGraphPatch>,
+    pub proposed: Option<Arc<ShadowSnapshot>>,
+    pub summary: ShadowPreviewSummary,
+    pub validation: Vec<String>,
+}
 
 impl ShadowEditPreview {
     pub fn summarize(patch: &ShadowGraphPatch, options: &ShadowPreviewOptions) -> ShadowPreviewSummary {

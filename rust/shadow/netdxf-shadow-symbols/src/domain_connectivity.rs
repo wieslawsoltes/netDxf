@@ -40,12 +40,18 @@ pub struct DomainPortNode {
     pub passages_declared: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DomainConnection {
     pub id: usize,
     pub a: usize,
     pub b: usize,
+    pub source: usize,
+    pub target: usize,
     pub distance: f64,
+    pub span: f64,
+    pub kind: String,
+    pub direction: String,
+    pub reciprocal: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -182,7 +188,13 @@ impl DomainConnectivity {
                         id: cid,
                         a: i,
                         b: j,
+                        source: i,
+                        target: j,
                         distance: d,
+                        span: d,
+                        kind: "spatial".to_string(),
+                        direction: "bidirectional".to_string(),
+                        reciprocal: true,
                     });
                     adj[i].push(j);
                     adj[j].push(i);
@@ -294,9 +306,14 @@ pub struct DomainCriticalConnection {
     pub is_bridge: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct DomainLoopStep {
+    pub id: usize,
+    pub step: usize,
+    pub r#loop: usize,
     pub node: usize,
+    pub source: usize,
+    pub target: usize,
     pub connection: usize,
 }
 
