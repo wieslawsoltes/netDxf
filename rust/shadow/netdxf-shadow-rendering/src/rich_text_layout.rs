@@ -37,6 +37,12 @@ pub struct RichTextLine {
     pub rules: Vec<TextRule>,
     pub width: f64,
     pub height: f64,
+    pub left: f64,
+    pub right: f64,
+    pub baseline: f64,
+    pub line: usize,
+    pub paragraph: usize,
+    pub is_paragraph_end: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

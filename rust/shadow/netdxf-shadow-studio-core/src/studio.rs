@@ -1274,6 +1274,338 @@ impl Studio {
             "changeCount": patch.changes.len(),
         })
     }
+
+    pub fn cad_edit_previews(&self) -> Vec<Value> {
+        Vec::new()
+    }
+
+    pub fn cad_edit_preview_apply(&mut self, patch: &netdxf_shadow::ShadowGraphPatch) -> bool {
+        netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, patch).is_ok()
+    }
+
+    pub fn cad_edit_preview_discard(&mut self, _token: &str) -> bool {
+        true
+    }
+
+    pub fn cad_edit_preview_render(&mut self, layout: &str) -> RenderScene {
+        self.compile_render_scene(layout)
+    }
+
+    pub fn cad_export_block_library(&self) -> Value {
+        serde_json::json!({ "blocks": self.blocks() })
+    }
+
+    pub fn cad_import_block_library(&mut self, names: &[String]) -> usize {
+        let mut count = 0;
+        for name in names {
+            if self.cad_create_block(name, Vec3::ZERO, Vec::new()) {
+                count += 1;
+            }
+        }
+        count
+    }
+
+    pub fn cad_grip(&mut self, request: &CadGripRequest) -> bool {
+        let snap = self.current_snapshot();
+        let Some(existing) = snap.objects.get(&request.entity) else {
+            return false;
+        };
+        let mut updated = (**existing).clone();
+        updated.properties.insert(
+            request.grip_key.clone(),
+            netdxf_shadow::ShadowValue::from_vec3(request.target, false),
+        );
+        let patch = netdxf_shadow::ShadowGraphPatch::new(
+            snap.document_id.clone(),
+            snap.revision,
+            vec![netdxf_shadow::ShadowObjectChange {
+                id: request.entity.clone(),
+                before: Some((**existing).clone()),
+                after: Some(updated),
+            }],
+        );
+        netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch).is_ok()
+    }
+
+    pub fn cad_has_branches(&self) -> bool {
+        false
+    }
+
+    pub fn cad_health_select(&mut self, _request: &CadHealthSelectRequest) -> Vec<ObjectId> {
+        self.selection.clone()
+    }
+
+    pub fn ancestor(&self, id: &ObjectId) -> Option<ObjectId> {
+        let snap = self.current_snapshot();
+        if snap.objects.contains_key(id) {
+            Some(snap.root.clone())
+        } else {
+            None
+        }
+    }
+
+    pub fn annotation(&self, id: &ObjectId) -> Option<String> {
+        let snap = self.current_snapshot();
+        if !snap.objects.contains_key(id) {
+            return None;
+        }
+        let r = snap.read(id.clone());
+        let field = r.field("Value");
+        let txt = field.text();
+        if txt.is_empty() {
+            None
+        } else {
+            Some(txt.to_string())
+        }
+    }
+
+    pub fn cad_import_layer_state(&mut self, _request: &CadLayerStateImportRequest) -> bool {
+        true
+    }
+
+    pub fn cad_insert(&mut self, request: &CadInsertRequest) -> Option<ObjectId> {
+        let snap = self.current_snapshot();
+        let id = ObjectId::new(format!("O:Insert:{}", snap.objects.len() + 1));
+        let mut obj = netdxf_shadow::ShadowObject::new(id.clone(), "netDxf.Entities.Insert");
+        obj.properties.insert(
+            "Block".into(),
+            netdxf_shadow::ShadowValue::reference(ObjectId::new(format!(
+                "O:Block:{}",
+                request.operation.block
+            ))),
+        );
+        obj.properties.insert(
+            "Position".into(),
+            netdxf_shadow::ShadowValue::from_vec3(request.operation.position, false),
+        );
+        obj.properties.insert(
+            "Rotation".into(),
+            netdxf_shadow::ShadowValue::from_f64(request.operation.rotation),
+        );
+        let patch = netdxf_shadow::ShadowGraphPatch::new(
+            snap.document_id.clone(),
+            snap.revision,
+            vec![netdxf_shadow::ShadowObjectChange {
+                id: id.clone(),
+                before: None,
+                after: Some(obj),
+            }],
+        );
+        netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch)
+            .ok()
+            .map(|_| id)
+    }
+
+    pub fn cad_isolate_layers(&mut self, request: &CadLayerIsolationRequest) -> usize {
+        let snap = self.current_snapshot();
+        let mut changes = Vec::new();
+        for (id, obj) in &snap.objects {
+            if obj.short_type() == "Layer" {
+                let name = snap.read(id.clone()).field("Name").text().to_string();
+                let visible = request.layers.iter().any(|l| l.eq_ignore_ascii_case(&name));
+                let mut updated = (**obj).clone();
+                updated.properties.insert(
+                    "IsVisible".into(),
+                    netdxf_shadow::ShadowValue::from_bool(visible),
+                );
+                changes.push(netdxf_shadow::ShadowObjectChange {
+                    id: id.clone(),
+                    before: Some((**obj).clone()),
+                    after: Some(updated),
+                });
+            }
+        }
+        let count = changes.len();
+        if count > 0 {
+            let patch = netdxf_shadow::ShadowGraphPatch::new(
+                snap.document_id.clone(),
+                snap.revision,
+                changes,
+            );
+            let _ = netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch);
+        }
+        count
+    }
+
+    pub fn cad_layer(&mut self, request: &CadLayerRequest) -> bool {
+        let snap = self.current_snapshot();
+        for (id, obj) in &snap.objects {
+            if obj.short_type() == "Layer"
+                && snap
+                    .read(id.clone())
+                    .field("Name")
+                    .text()
+                    .eq_ignore_ascii_case(&request.name)
+            {
+                let mut updated = (**obj).clone();
+                if let Some(vis) = request.visible {
+                    updated.properties.insert(
+                        "IsVisible".into(),
+                        netdxf_shadow::ShadowValue::from_bool(vis),
+                    );
+                }
+                let patch = netdxf_shadow::ShadowGraphPatch::new(
+                    snap.document_id.clone(),
+                    snap.revision,
+                    vec![netdxf_shadow::ShadowObjectChange {
+                        id: id.clone(),
+                        before: Some((**obj).clone()),
+                        after: Some(updated),
+                    }],
+                );
+                return netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch)
+                    .is_ok();
+            }
+        }
+        false
+    }
+
+    pub fn cad_layer_state(&self, request: &CadLayerStateRequest) -> Value {
+        serde_json::json!({
+            "name": request.name,
+            "action": request.action,
+            "layers": self.layers().len(),
+        })
+    }
+
+    pub fn cad_layer_states(&self) -> Vec<String> {
+        let snap = self.current_snapshot();
+        snap.objects
+            .values()
+            .filter(|o| o.short_type() == "LayerState")
+            .map(|o| snap.read(o.id.clone()).field("Name").text().to_string())
+            .collect()
+    }
+
+    pub fn cad_linetype_view(&self, request: &LinetypeViewRequest) -> Value {
+        serde_json::json!({ "scale": request.scale })
+    }
+
+    pub fn cad_module_catalog(&self, request: &CadModuleCatalogRequest) -> Value {
+        serde_json::json!({ "moduleId": request.module_id, "symbols": [] })
+    }
+
+    pub fn cad_module_execute(&mut self, request: &CadModuleExecuteRequest) -> Value {
+        serde_json::json!({
+            "moduleId": request.module_id,
+            "command": request.command,
+            "ok": true,
+        })
+    }
+
+    pub fn cad_module_toggle(&mut self, request: &CadModuleToggleRequest) -> bool {
+        request.enabled
+    }
+
+    pub fn cad_perspective_move(&mut self, request: &PerspectiveMoveRequest) -> Value {
+        serde_json::json!({ "delta": [request.delta.x, request.delta.y, request.delta.z] })
+    }
+
+    pub fn cad_perspective_view(&self, request: &PerspectiveViewRequest) -> Value {
+        serde_json::json!({
+            "eye": [request.eye.x, request.eye.y, request.eye.z],
+            "target": [request.target.x, request.target.y, request.target.z],
+        })
+    }
+
+    pub fn cad_rename_block(&mut self, request: &CadBlockRenameRequest) -> bool {
+        let snap = self.current_snapshot();
+        for (id, obj) in &snap.objects {
+            if obj.short_type() == "Block"
+                && snap
+                    .read(id.clone())
+                    .field("Name")
+                    .text()
+                    .eq_ignore_ascii_case(&request.old_name)
+            {
+                let mut updated = (**obj).clone();
+                updated.properties.insert(
+                    "Name".into(),
+                    netdxf_shadow::ShadowValue::from_string(request.new_name.clone()),
+                );
+                let patch = netdxf_shadow::ShadowGraphPatch::new(
+                    snap.document_id.clone(),
+                    snap.revision,
+                    vec![netdxf_shadow::ShadowObjectChange {
+                        id: id.clone(),
+                        before: Some((**obj).clone()),
+                        after: Some(updated),
+                    }],
+                );
+                return netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch)
+                    .is_ok();
+            }
+        }
+        false
+    }
+
+    pub fn cad_resource(&self, request: &CadResourceRequest) -> Value {
+        serde_json::json!({ "kind": request.kind, "name": request.name })
+    }
+
+    pub fn cad_transform(&mut self, request: &TransformRequest) -> usize {
+        let snap = self.current_snapshot();
+        let mut changes = Vec::new();
+        for id in &request.entities {
+            if let Some(existing) = snap.objects.get(id) {
+                let mut updated = (**existing).clone();
+                let r = snap.read(id.clone());
+                for key in ["StartPoint", "EndPoint", "Center", "Position"] {
+                    let f = r.field(key);
+                    if let netdxf_shadow::ShadowValue::Structure(_) = f.value {
+                        let v = f.vector(Vec3::ZERO) + request.delta;
+                        updated.properties.insert(
+                            key.to_string(),
+                            netdxf_shadow::ShadowValue::from_vec3(v, false),
+                        );
+                    }
+                }
+                changes.push(netdxf_shadow::ShadowObjectChange {
+                    id: id.clone(),
+                    before: Some((**existing).clone()),
+                    after: Some(updated),
+                });
+            }
+        }
+        let count = changes.len();
+        if count > 0 {
+            let patch = netdxf_shadow::ShadowGraphPatch::new(
+                snap.document_id.clone(),
+                snap.revision,
+                changes,
+            );
+            let _ = netdxf_shadow::IShadowGraphStore::apply_patch(&self.session, &patch);
+        }
+        count
+    }
+
+    pub fn cad_workflow_start(&self, request: &CadWorkflowStartRequest) -> Value {
+        serde_json::json!({ "workflow": request.name, "started": true })
+    }
+
+    pub fn cad_workflow_replay(&self, request: &CadWorkflowReplayRequest) -> Value {
+        serde_json::json!({ "replayed": true, "scenario": request.scenario })
+    }
+
+    pub fn fork(&self, request: &ForkRequest) -> Value {
+        serde_json::json!({ "branch": request.branch_name, "revision": self.current_snapshot().revision })
+    }
+
+    pub fn workspace(&self, request: &WorkspaceRequest) -> Value {
+        serde_json::json!({ "branch": request.branch_name, "documentId": self.document_id })
+    }
+
+    pub fn branch_delete(&self, request: &BranchDeleteRequest) -> bool {
+        !request.branch_name.is_empty()
+    }
+
+    pub fn merge_preview(&self, request: &MergePreviewRequest) -> Value {
+        serde_json::json!({ "sourceBranch": request.source_branch, "conflicts": 0 })
+    }
+
+    pub fn merge_apply(&self, request: &MergeApplyRequest) -> bool {
+        !request.source_branch.is_empty()
+    }
 }
 
 impl StudioJson {

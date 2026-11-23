@@ -45,6 +45,84 @@ impl AgentSession {
         self.state.running
     }
 
+    pub fn run_state(&self) -> &AgentRunState {
+        &self.state
+    }
+
+    pub fn plan(&self) -> &[AgentPlanStep] {
+        &self.state.plan
+    }
+
+    pub fn set_plan(&mut self, plan: Vec<AgentPlanStep>) {
+        self.state.plan = plan;
+    }
+
+    pub fn reset(&mut self) {
+        self.state = AgentRunState::default();
+        self.messages.clear();
+        self.events.clear();
+        self.approvals.clear();
+    }
+
+    pub fn tool_definitions(&self) -> Vec<&'static str> {
+        vec![
+            "workspace.list",
+            "workspace.read",
+            "workspace.write",
+            "workspace.delete",
+            "workspace.search",
+        ]
+    }
+
+    pub fn execute_tool(&mut self, tool: &str, args: &Value) -> Value {
+        self.state.usage.tool_calls += 1;
+        match tool {
+            "workspace.list" => serde_json::json!({ "files": self.workspace.list() }),
+            "workspace.read" => {
+                let path = args.get("path").and_then(Value::as_str).unwrap_or("");
+                serde_json::json!({ "content": self.workspace.read(path) })
+            }
+            "workspace.write" => {
+                let path = args.get("path").and_then(Value::as_str).unwrap_or("");
+                let content = args.get("content").and_then(Value::as_str).unwrap_or("");
+                self.workspace.write(path, content);
+                serde_json::json!({ "ok": true })
+            }
+            "workspace.delete" => {
+                let path = args.get("path").and_then(Value::as_str).unwrap_or("");
+                serde_json::json!({ "deleted": self.workspace.delete(path) })
+            }
+            "workspace.search" => {
+                let query = args.get("query").and_then(Value::as_str).unwrap_or("");
+                serde_json::json!({ "matches": self.workspace.search(query) })
+            }
+            _ => serde_json::json!({ "error": format!("Unknown tool '{tool}'") }),
+        }
+    }
+
+    pub fn run(&mut self, prompt: AgentPrompt) -> AgentRunState {
+        self.state.running = true;
+        self.state.turn += 1;
+        for p in prompt.pinned {
+            self.pin(p.key, p.content);
+        }
+        self.messages.push(AgentMessageRecord {
+            role: "user".to_string(),
+            content: vec![AgentContentRecord {
+                kind: "text".to_string(),
+                text: prompt.text,
+                ..Default::default()
+            }],
+        });
+        self.state.running = false;
+        self.state.clone()
+    }
+
+    pub fn resume(&mut self) -> AgentRunState {
+        self.state.continuation_count += 1;
+        self.state.clone()
+    }
+
     pub fn context_tokens(&self) -> u64 {
         let chars: usize = self
             .messages

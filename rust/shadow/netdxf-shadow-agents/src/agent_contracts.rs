@@ -29,17 +29,25 @@ pub enum AgentRunMode {
 pub struct AgentOptions {
     pub permission_mode: AgentPermissionMode,
     pub run_mode: AgentRunMode,
+    pub mode: AgentRunMode,
+    pub model: Option<String>,
     pub max_turns: usize,
     pub max_output_tokens: usize,
     pub max_retries: usize,
     pub max_no_progress_turns: usize,
     pub max_parallel_read_tools: usize,
+    pub max_tool_calls_per_turn: usize,
+    pub max_tool_result_characters: usize,
     pub context_window_tokens: usize,
     pub compaction_threshold: f64,
     pub inference_timeout_secs: u64,
+    pub inference_timeout: u64,
     pub approval_timeout_secs: u64,
+    pub approval_timeout: u64,
+    pub tool_timeout: u64,
     pub instructions: Option<String>,
     pub default_instructions: String,
+    pub success_criteria: Option<String>,
 }
 
 impl Default for AgentOptions {
@@ -47,17 +55,25 @@ impl Default for AgentOptions {
         Self {
             permission_mode: AgentPermissionMode::ReadOnly,
             run_mode: AgentRunMode::Interactive,
+            mode: AgentRunMode::Interactive,
+            model: None,
             max_turns: 32,
             max_output_tokens: 8_192,
             max_retries: 3,
             max_no_progress_turns: 5,
             max_parallel_read_tools: 4,
+            max_tool_calls_per_turn: 16,
+            max_tool_result_characters: 32_768,
             context_window_tokens: 128_000,
             compaction_threshold: 0.85,
             inference_timeout_secs: 120,
+            inference_timeout: 120,
             approval_timeout_secs: 300,
+            approval_timeout: 300,
+            tool_timeout: 60,
             instructions: None,
             default_instructions: String::new(),
+            success_criteria: None,
         }
     }
 }
