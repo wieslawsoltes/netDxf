@@ -112,10 +112,57 @@ impl DomainConnectivity {
     }
 
     pub fn trace(&self, start: usize) -> DomainConnectivityWalk {
+        let n = self.nodes.len();
+        if start >= n {
+            return DomainConnectivityWalk {
+                source: start,
+                status: "out_of_range".into(),
+                complete: true,
+                scope_complete: true,
+                ..Default::default()
+            };
+        }
+        let mut adj: Vec<Vec<(usize, usize)>> = vec![Vec::new(); n];
+        for e in &self.edges {
+            if e.a < n && e.b < n {
+                adj[e.a].push((e.b, e.id));
+                adj[e.b].push((e.a, e.id));
+            }
+        }
+        let mut visited = vec![false; n];
+        let mut queue = std::collections::VecDeque::new();
+        let mut visits = Vec::new();
+        let mut examined_edges = 0usize;
+
+        visited[start] = true;
+        queue.push_back((start, 0usize, None));
+
+        while let Some((u, depth, conn)) = queue.pop_front() {
+            visits.push(DomainPortVisit {
+                id: u,
+                node: u,
+                depth,
+                connection: conn,
+                ..Default::default()
+            });
+            for &(v, eid) in &adj[u] {
+                examined_edges += 1;
+                if !visited[v] {
+                    visited[v] = true;
+                    queue.push_back((v, depth + 1, Some(eid)));
+                }
+            }
+        }
+
         DomainConnectivityWalk {
             source: start,
+            direction: "bidirectional".into(),
+            status: "complete".into(),
             complete: true,
             scope_complete: true,
+            examined_edges,
+            path: visits.clone(),
+            visits,
             ..Default::default()
         }
     }
