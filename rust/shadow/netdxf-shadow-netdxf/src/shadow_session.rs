@@ -410,6 +410,11 @@ impl ShadowSession {
                 entity.common_mut().layer = layer;
                 updated += 1;
             }
+            let visible = r.field("IsVisible").boolean(entity.common().is_visible);
+            if entity.common().is_visible != visible {
+                entity.common_mut().is_visible = visible;
+                updated += 1;
+            }
             match entity {
                 EntityObject::Line(l) => {
                     let s = r.field("StartPoint").vector(to_v3(l.start_point));
@@ -425,16 +430,95 @@ impl ShadowSession {
                         c.radius = rad;
                     }
                 }
+                EntityObject::Arc(a) => {
+                    let ctr = r.field("Center").vector(to_v3(a.center));
+                    a.center = Vector3::new(ctr.x, ctr.y, ctr.z);
+                    let rad = r.field("Radius").number(a.radius);
+                    if rad > 0.0 {
+                        a.radius = rad;
+                    }
+                    a.start_angle = r.field("StartAngle").number(a.start_angle);
+                    a.end_angle = r.field("EndAngle").number(a.end_angle);
+                }
+                EntityObject::Ellipse(e) => {
+                    let ctr = r.field("Center").vector(to_v3(e.center));
+                    e.center = Vector3::new(ctr.x, ctr.y, ctr.z);
+                    e.major_axis = r.field("MajorAxis").number(e.major_axis);
+                    e.minor_axis = r.field("MinorAxis").number(e.minor_axis);
+                    e.rotation = r.field("Rotation").number(e.rotation);
+                    e.start_angle = r.field("StartAngle").number(e.start_angle);
+                    e.end_angle = r.field("EndAngle").number(e.end_angle);
+                }
+                EntityObject::Point(p) => {
+                    let pos = r.field("Position").vector(to_v3(p.position));
+                    p.position = Vector3::new(pos.x, pos.y, pos.z);
+                }
                 EntityObject::Text(t) => {
                     let txt = r.field("Value").text().to_string();
                     if !txt.is_empty() {
                         t.value = txt;
                     }
+                    let pos = r.field("Position").vector(to_v3(t.position));
+                    t.position = Vector3::new(pos.x, pos.y, pos.z);
+                    t.height = r.field("Height").number(t.height);
+                    t.rotation = r.field("Rotation").number(t.rotation);
+                }
+                EntityObject::MText(m) => {
+                    let txt = r.field("Value").text().to_string();
+                    if !txt.is_empty() {
+                        m.value = txt;
+                    }
+                    let pos = r.field("Position").vector(to_v3(m.position));
+                    m.position = Vector3::new(pos.x, pos.y, pos.z);
+                    m.height = r.field("Height").number(m.height);
+                    m.rotation = r.field("Rotation").number(m.rotation);
+                }
+                EntityObject::Insert(ins) => {
+                    let pos = r.field("Position").vector(to_v3(ins.position));
+                    ins.position = Vector3::new(pos.x, pos.y, pos.z);
+                    let sc = r.field("Scale").vector(to_v3(ins.scale));
+                    ins.scale = Vector3::new(sc.x, sc.y, sc.z);
+                    ins.rotation = r.field("Rotation").number(ins.rotation);
                 }
                 _ => {}
             }
         }
         updated
+    }
+
+    pub fn source_validation(&self) -> ShadowSourceValidationMode {
+        self.validation_mode
+    }
+
+    pub fn resolve(&self, id: &ObjectId) -> Option<Arc<ShadowObject>> {
+        self.current().objects.get(id).cloned()
+    }
+
+    pub fn refresh(&self, doc: &DxfDocument) -> ShadowResult<Arc<ShadowSnapshot>> {
+        let cur = self.current();
+        let next = Self::capture(doc, cur.document_id.clone(), self.capture_options);
+        let patch = ShadowGraphPatch::between(&cur, &next)?;
+        self.store.apply_patch(&patch)
+    }
+
+    pub fn refresh_properties(&self, doc: &DxfDocument) -> ShadowResult<Arc<ShadowSnapshot>> {
+        self.refresh(doc)
+    }
+
+    pub fn mutate_source<F>(&self, doc: &mut DxfDocument, mutator: F) -> ShadowResult<Arc<ShadowSnapshot>>
+    where
+        F: FnOnce(&mut DxfDocument),
+    {
+        mutator(doc);
+        self.refresh(doc)
+    }
+
+    pub fn convert(value: &ShadowValue) -> Option<String> {
+        match value {
+            ShadowValue::Atom(a) => Some(a.text.clone()),
+            ShadowValue::Reference(r) => Some(r.id.as_str().to_string()),
+            _ => None,
+        }
     }
 }
 

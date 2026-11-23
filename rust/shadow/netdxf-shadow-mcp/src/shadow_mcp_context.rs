@@ -28,5 +28,69 @@ impl Default for ShadowMcpIdentity {
 
 pub struct ShadowMcpContext {
     pub snapshot: Arc<ShadowSnapshot>,
+    pub identity: ShadowMcpIdentity,
+}
+
+impl ShadowMcpContext {
+    pub fn new(snapshot: Arc<ShadowSnapshot>) -> Self {
+        Self {
+            snapshot,
+            identity: ShadowMcpIdentity::default(),
+        }
+    }
+
+    pub fn document_summary(&self) -> Value {
+        serde_json::json!({
+            "documentId": self.snapshot.document_id,
+            "revision": self.snapshot.revision,
+            "objectCount": self.snapshot.objects.len(),
+            "entityCount": self.snapshot.entity_ids.len(),
+        })
+    }
+
+    pub fn list_entities(&self, limit: usize) -> Value {
+        let items: Vec<Value> = self
+            .snapshot
+            .entity_ids
+            .iter()
+            .take(limit)
+            .filter_map(|id| self.snapshot.objects.get(id))
+            .map(|o| {
+                let reader = self.snapshot.read(o.id.clone());
+                let layer_field = reader.field("Layer");
+                let layer = layer_field.text();
+                serde_json::json!({
+                    "id": o.id.as_str(),
+                    "type": o.type_name,
+                    "layer": if layer.is_empty() { "0" } else { layer },
+                })
+            })
+            .collect();
+        serde_json::json!({ "entities": items, "total": self.snapshot.entity_ids.len() })
+    }
+
+    pub fn capture_reference(&self, id: &ObjectId) -> Option<DrawingObjectReference> {
+        let obj = self.snapshot.objects.get(id)?;
+        let reader = self.snapshot.read(id.clone());
+        Some(DrawingObjectReference {
+            document_id: self.snapshot.document_id.clone(),
+            revision: self.snapshot.revision,
+            view_version: 0,
+            layout: "Model".to_string(),
+            id: id.clone(),
+            object_id: id.clone(),
+            definition_object_id: None,
+            handle: reader.field("Handle").text().to_string(),
+            type_name: obj.type_name.clone(),
+            r#type: obj.short_type().to_string(),
+            occurrence_key: id.as_str().to_string(),
+            insert_path: Vec::new(),
+        })
+    }
+
+    pub fn validate_reference(&self, reference: &DrawingObjectReference) -> bool {
+        self.snapshot.document_id == reference.document_id
+            && self.snapshot.objects.contains_key(&reference.object_id)
+    }
 }
 

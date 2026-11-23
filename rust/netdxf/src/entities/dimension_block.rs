@@ -1,5 +1,5 @@
 use crate::blocks::{Block, BlockTypeFlags};
-use crate::entities::{Dimension, DimensionType, Line, MText, MTextAttachmentPoint, Point, Solid};
+use crate::entities::{Arc, Dimension, DimensionType, Line, MText, MTextAttachmentPoint, Point, Solid};
 use crate::math_helper::MathHelper;
 use crate::tables::DimensionStyle;
 use crate::vector2::Vector2;
@@ -8,6 +8,34 @@ use crate::vector2::Vector2;
 pub struct DimensionBlock;
 
 impl DimensionBlock {
+    pub fn build_linear(dim: &Dimension, style: &DimensionStyle, block_name: impl Into<String>) -> Block {
+        Self::build(dim, style, block_name)
+    }
+
+    pub fn build_aligned(dim: &Dimension, style: &DimensionStyle, block_name: impl Into<String>) -> Block {
+        Self::build(dim, style, block_name)
+    }
+
+    pub fn build_radial(dim: &Dimension, style: &DimensionStyle, block_name: impl Into<String>) -> Block {
+        Self::build(dim, style, block_name)
+    }
+
+    pub fn build_diametric(dim: &Dimension, style: &DimensionStyle, block_name: impl Into<String>) -> Block {
+        Self::build(dim, style, block_name)
+    }
+
+    pub fn build_angular2_line(dim: &Dimension, style: &DimensionStyle, block_name: impl Into<String>) -> Block {
+        Self::build(dim, style, block_name)
+    }
+
+    pub fn build_angular3_point(dim: &Dimension, style: &DimensionStyle, block_name: impl Into<String>) -> Block {
+        Self::build(dim, style, block_name)
+    }
+
+    pub fn build_ordinate(dim: &Dimension, style: &DimensionStyle, block_name: impl Into<String>) -> Block {
+        Self::build(dim, style, block_name)
+    }
+
     /// Builds a complete anonymous dimension block containing defpoints, extension lines,
     /// dimension line, arrowheads, center marks, and formatted dimension text.
     pub fn build(dim: &Dimension, style: &DimensionStyle, block_name: impl Into<String>) -> Block {
@@ -130,6 +158,89 @@ impl DimensionBlock {
                 };
                 let mut mtext = MText::new(text_str, text_pos.to_vector3(dim.elevation), text_height);
                 mtext.attachment_point = MTextAttachmentPoint::MiddleCenter;
+                mtext.style = style.text_style.clone();
+                mtext.common.color = style.text_color;
+                block.add_entity(mtext);
+            }
+            DimensionType::Angular | DimensionType::Angular3Point => {
+                let center = dim.definition_point.to_vector2();
+                let p1 = dim.first_reference_point.to_vector2();
+                let p2 = dim.second_reference_point.to_vector2();
+                let arc_pt = dim.arc_definition_point.to_vector2();
+                Self::add_defpoint(&mut block, center);
+                Self::add_defpoint(&mut block, p1);
+                Self::add_defpoint(&mut block, p2);
+                Self::add_defpoint(&mut block, arc_pt);
+
+                let radius = Vector2::distance(center, arc_pt)
+                    .max(Vector2::distance(center, p1) * 0.5)
+                    .max(f64::EPSILON);
+                let a1 = Vector2::angle(p1 - center);
+                let a2 = Vector2::angle(p2 - center);
+                let start_deg = MathHelper::normalize_angle(a1 * MathHelper::RAD_TO_DEG);
+                let end_deg = MathHelper::normalize_angle(a2 * MathHelper::RAD_TO_DEG);
+
+                let arc_start = center + Vector2::new(a1.cos(), a1.sin()) * radius;
+                let arc_end = center + Vector2::new(a2.cos(), a2.sin()) * radius;
+                if !style.ext_line1_off {
+                    Self::add_extension_line(&mut block, p1, arc_start, ext_offset, ext_extend, style);
+                }
+                if !style.ext_line2_off {
+                    Self::add_extension_line(&mut block, p2, arc_end, ext_offset, ext_extend, style);
+                }
+                let mut dim_arc = Arc::new(center.to_vector3(dim.elevation), radius, start_deg, end_deg);
+                dim_arc.common.color = style.dim_line_color;
+                dim_arc.common.linetype = style.dim_line_linetype.clone();
+                dim_arc.common.lineweight = style.dim_line_lineweight;
+                block.add_entity(dim_arc);
+
+                if arrow_len > 0.0 {
+                    let t1 = Vector2::new(-a1.sin(), a1.cos());
+                    let t2 = Vector2::new(a2.sin(), -a2.cos());
+                    Self::add_arrowhead(&mut block, arc_start, t1, arrow_len, style);
+                    Self::add_arrowhead(&mut block, arc_end, t2, arrow_len, style);
+                }
+
+                let sweep = MathHelper::normalize_angle(end_deg - start_deg);
+                let mid_rad = (start_deg + sweep * 0.5) * MathHelper::DEG_TO_RAD;
+                let text_pos = center
+                    + Vector2::new(mid_rad.cos(), mid_rad.sin())
+                        * (radius + style.text_offset * scale + text_height * 0.5);
+                let text_str = match &dim.user_text {
+                    Some(ut) if !ut.is_empty() && ut != "<>" => ut.clone(),
+                    _ => format!("{}°", Self::format_measurement(dim, style)),
+                };
+                let mut mtext = MText::new(text_str, text_pos.to_vector3(dim.elevation), text_height);
+                mtext.attachment_point = MTextAttachmentPoint::MiddleCenter;
+                mtext.style = style.text_style.clone();
+                mtext.common.color = style.text_color;
+                block.add_entity(mtext);
+            }
+            DimensionType::Ordinate => {
+                let feature = dim.first_reference_point.to_vector2();
+                let leader_end = dim.second_reference_point.to_vector2();
+                Self::add_defpoint(&mut block, dim.definition_point.to_vector2());
+                Self::add_defpoint(&mut block, feature);
+                Self::add_defpoint(&mut block, leader_end);
+
+                let dogleg = Vector2::new(
+                    (feature.x + leader_end.x) * 0.5,
+                    feature.y + (leader_end.y - feature.y) * 0.5,
+                );
+                let mut l1 = Line::new_2d(feature, dogleg);
+                l1.common.color = style.ext_line_color;
+                let mut l2 = Line::new_2d(dogleg, leader_end);
+                l2.common.color = style.ext_line_color;
+                block.add_entity(l1);
+                block.add_entity(l2);
+
+                let text_str = Self::format_measurement(dim, style);
+                let mut mtext = MText::new(
+                    text_str,
+                    leader_end.to_vector3(dim.elevation),
+                    text_height,
+                );
+                mtext.attachment_point = MTextAttachmentPoint::MiddleLeft;
                 mtext.style = style.text_style.clone();
                 mtext.common.color = style.text_color;
                 block.add_entity(mtext);

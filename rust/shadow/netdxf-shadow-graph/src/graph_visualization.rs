@@ -9,10 +9,18 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct GraphVisualizationOptions {
     pub offset: usize,
     pub limit: usize,
+    pub node_offset: usize,
+    pub node_limit: usize,
+    pub edge_offset: usize,
+    pub edge_limit: usize,
+    pub component: Option<usize>,
+    pub entity: Option<String>,
+    pub root_entity: Option<String>,
+    pub occurrence: Option<String>,
 }
 
 impl Default for GraphVisualizationOptions {
@@ -20,6 +28,14 @@ impl Default for GraphVisualizationOptions {
         Self {
             offset: 0,
             limit: 1_000,
+            node_offset: 0,
+            node_limit: 1_000,
+            edge_offset: 0,
+            edge_limit: 1_000,
+            component: None,
+            entity: None,
+            root_entity: None,
+            occurrence: None,
         }
     }
 }

@@ -268,6 +268,48 @@ pub struct HatchGradientPattern {
     pub centered: bool,
 }
 
+impl HatchGradientPattern {
+    pub fn single_color_gradient(
+        color: AciColor,
+        tint: f64,
+        gradient_type: HatchGradientPatternType,
+    ) -> Self {
+        Self {
+            gradient_type,
+            color1: color,
+            color2: color,
+            single_color: true,
+            tint: tint.clamp(0.0, 1.0),
+            angle: 0.0,
+            centered: true,
+        }
+    }
+
+    pub fn two_color_gradient(
+        color1: AciColor,
+        color2: AciColor,
+        gradient_type: HatchGradientPatternType,
+    ) -> Self {
+        Self {
+            gradient_type,
+            color1,
+            color2,
+            single_color: false,
+            tint: 1.0,
+            angle: 0.0,
+            centered: true,
+        }
+    }
+
+    pub fn color1_aci_index(&self) -> i16 {
+        self.color1.index
+    }
+
+    pub fn color2_aci_index(&self) -> i16 {
+        self.color2.index
+    }
+}
+
 /// An edge in a `HatchBoundaryPath`.
 #[derive(Clone, Debug, PartialEq)]
 pub enum HatchBoundaryPathEdge {

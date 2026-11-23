@@ -10,7 +10,15 @@ pub struct DxfStoredField {
     pub object: DxfObject,
     pub evaluator_id: String,
     pub field_code: String,
+    pub format_string: String,
     pub evaluated_text: String,
+    pub evaluation_status: DxfFieldResultStatus,
+    pub evaluation_error_code: i32,
+    pub evaluation_error_message: String,
+    pub value: DxfFieldDataValue,
+    pub filing_option: i32,
+    pub evaluation_option: i32,
+    pub object_ids: Vec<String>,
     pub children: Vec<DxfStoredField>,
 }
 
@@ -20,9 +28,23 @@ impl DxfStoredField {
             object: DxfObject::new("FIELD"),
             evaluator_id: evaluator_id.into(),
             field_code: field_code.into(),
+            format_string: String::new(),
             evaluated_text: String::new(),
+            evaluation_status: DxfFieldResultStatus::Success,
+            evaluation_error_code: 0,
+            evaluation_error_message: String::new(),
+            value: DxfFieldDataValue::Empty,
+            filing_option: 0,
+            evaluation_option: 0,
+            object_ids: Vec::new(),
             children: Vec::new(),
         }
+    }
+
+    pub fn apply_result(&mut self, result: &DxfFieldResultEdit) {
+        self.evaluation_status = result.status;
+        self.evaluated_text = result.formatted_text.clone();
+        self.value = result.value.clone();
     }
 }
 
@@ -31,6 +53,12 @@ impl DxfStoredField {
 pub enum DxfFieldResult {
     Text(String),
     Number(f64),
+    Failure {
+        status: DxfFieldResultStatus,
+        error_code: i32,
+        error_message: String,
+        cached_value: Option<String>,
+    },
 }
 
 impl DxfFieldResult {
@@ -38,6 +66,67 @@ impl DxfFieldResult {
         match self {
             Self::Text(s) => s.clone(),
             Self::Number(v) => format!("{v}"),
+            Self::Failure { cached_value, .. } => cached_value.clone().unwrap_or_default(),
+        }
+    }
+
+    pub fn status(&self) -> DxfFieldResultStatus {
+        match self {
+            Self::Text(_) | Self::Number(_) => DxfFieldResultStatus::Success,
+            Self::Failure { status, .. } => *status,
+        }
+    }
+
+    pub fn formatted_text(&self) -> String {
+        self.to_display_string()
+    }
+
+    pub fn value_display_text(&self) -> String {
+        self.to_display_string()
+    }
+
+    pub fn error_code(&self) -> i32 {
+        match self {
+            Self::Failure { error_code, .. } => *error_code,
+            _ => 0,
+        }
+    }
+
+    pub fn error_message(&self) -> &str {
+        match self {
+            Self::Failure { error_message, .. } => error_message.as_str(),
+            _ => "",
+        }
+    }
+
+    pub fn retains_cached_value(&self) -> bool {
+        matches!(self, Self::Failure { cached_value: Some(_), .. })
+    }
+
+    pub fn failure(
+        status: DxfFieldResultStatus,
+        error_code: i32,
+        error_message: impl Into<String>,
+    ) -> Self {
+        Self::Failure {
+            status,
+            error_code,
+            error_message: error_message.into(),
+            cached_value: None,
+        }
+    }
+
+    pub fn failure_with_value(
+        status: DxfFieldResultStatus,
+        error_code: i32,
+        error_message: impl Into<String>,
+        cached_value: impl Into<String>,
+    ) -> Self {
+        Self::Failure {
+            status,
+            error_code,
+            error_message: error_message.into(),
+            cached_value: Some(cached_value.into()),
         }
     }
 }

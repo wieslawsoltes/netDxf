@@ -269,5 +269,106 @@ impl EditorSession {
     ) -> ShadowResult<Arc<ShadowSnapshot>> {
         self.apply_batch(label, batch)
     }
+
+    pub fn snapshot(&self) -> Arc<ShadowSnapshot> {
+        self.current()
+    }
+
+    pub fn undo_descriptions(&self) -> Vec<String> {
+        self.history.iter().map(|e| e.label.clone()).collect()
+    }
+
+    pub fn toggle_selection(&mut self, id: ObjectId) {
+        if let Some(pos) = self.selection.iter().position(|x| x == &id) {
+            self.selection.remove(pos);
+        } else {
+            self.selection.push(id);
+        }
+    }
+
+    pub fn set_property(
+        &mut self,
+        id: &ObjectId,
+        property: impl Into<String>,
+        value: ShadowValue,
+    ) -> ShadowResult<Arc<ShadowSnapshot>> {
+        let cur = self.store.current();
+        let prop = property.into();
+        let existing = cur.objects.get(id).ok_or_else(|| {
+            netdxf_shadow::ShadowConflictException::InvalidArgument(format!(
+                "Unknown object '{}'",
+                id.as_str()
+            ))
+        })?;
+        let mut updated = (**existing).clone();
+        updated.properties.insert(prop.clone(), value);
+        let patch = ShadowGraphPatch::new(
+            cur.document_id.clone(),
+            cur.revision,
+            vec![netdxf_shadow::ShadowObjectChange {
+                id: id.clone(),
+                before: Some((**existing).clone()),
+                after: Some(updated),
+            }],
+        );
+        self.apply_patch(format!("Set {}.{}", existing.type_name, prop), &patch)
+    }
+
+    pub fn translate(&mut self, delta: Vec3) -> ShadowResult<Arc<ShadowSnapshot>> {
+        let cur = self.store.current();
+        let mut edits = Vec::new();
+        for id in &self.selection {
+            if cur.objects.contains_key(id) {
+                let reader = cur.read(id.clone());
+                for key in ["StartPoint", "EndPoint", "Center", "Position", "Location"] {
+                    let field = reader.field(key);
+                    if let ShadowValue::Structure(_) = field.value {
+                        let v = field.vector(Vec3::ZERO);
+                        edits.push(netdxf_shadow::ShadowPropertyEdit {
+                            object: id.clone(),
+                            property: key.to_string(),
+                            before: field.value.clone(),
+                            after: ShadowValue::from_vec3(v + delta, false),
+                        });
+                    }
+                }
+            }
+        }
+        let batch = ShadowEditBatch::create(&cur, edits);
+        self.apply_batch("Translate selection", &batch)
+    }
+
+    pub fn translate_perspective(&mut self, delta: Vec3) -> ShadowResult<Arc<ShadowSnapshot>> {
+        self.translate(delta)
+    }
+
+    pub fn transform(&mut self, matrix: &Affine3) -> ShadowResult<Arc<ShadowSnapshot>> {
+        let cur = self.store.current();
+        let mut edits = Vec::new();
+        for id in &self.selection {
+            if cur.objects.contains_key(id) {
+                let reader = cur.read(id.clone());
+                for key in ["StartPoint", "EndPoint", "Center", "Position", "Location"] {
+                    let field = reader.field(key);
+                    if let ShadowValue::Structure(_) = field.value {
+                        let v = field.vector(Vec3::ZERO);
+                        edits.push(netdxf_shadow::ShadowPropertyEdit {
+                            object: id.clone(),
+                            property: key.to_string(),
+                            before: field.value.clone(),
+                            after: ShadowValue::from_vec3(matrix.point(v), false),
+                        });
+                    }
+                }
+            }
+        }
+        let batch = ShadowEditBatch::create(&cur, edits);
+        self.apply_batch("Transform selection", &batch)
+    }
+
+    pub fn synchronize_source(&mut self) -> Arc<ShadowSnapshot> {
+        self.reset_history();
+        self.store.current()
+    }
 }
 

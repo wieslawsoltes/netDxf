@@ -83,6 +83,57 @@ impl SkiaRenderBackend {
     }
 
     fn rasterize_rgba8(&self, scene: &RenderScene, frame: &RenderFrame) -> Vec<u8> {
+        #[cfg(feature = "skia-native")]
+        {
+            if let Some(bytes) = self.rasterize_with_skia_native(scene, frame) {
+                return bytes;
+            }
+        }
+        self.rasterize_software_rgba8(scene, frame)
+    }
+
+    #[cfg(feature = "skia-native")]
+    fn rasterize_with_skia_native(&self, scene: &RenderScene, frame: &RenderFrame) -> Option<Vec<u8>> {
+        use skia_safe::{surfaces, Color, ColorType, ImageInfo, Paint, PaintStyle, Path, AlphaType};
+        let w = (frame.viewport.width.max(1.0) as i32).min(4096);
+        let h = (frame.viewport.height.max(1.0) as i32).min(4096);
+        let info = ImageInfo::new((w, h), ColorType::RGBA8888, AlphaType::Premul, None);
+        let mut surface = surfaces::raster(&info, None, None)?;
+        let canvas = surface.canvas();
+        canvas.clear(Color::new(frame.background_argb));
+        for item in &scene.items {
+            let mut paint = Paint::default();
+            paint.set_anti_alias(true);
+            paint.set_color(Color::new(item.paint.argb));
+            paint.set_style(PaintStyle::Stroke);
+            paint.set_stroke_width(item.paint.lineweight.max(0.5) as f32);
+            for c in &item.contours {
+                if c.points.len() < 2 {
+                    continue;
+                }
+                let mut path = Path::new();
+                let s0 = frame.viewport.world_to_screen(c.points[0]);
+                path.move_to((s0.x as f32, s0.y as f32));
+                for &p in &c.points[1..] {
+                    let s = frame.viewport.world_to_screen(p);
+                    path.line_to((s.x as f32, s.y as f32));
+                }
+                if c.closed {
+                    path.close();
+                }
+                canvas.draw_path(&path, &paint);
+            }
+        }
+        let mut pixels = vec![0u8; (w as usize) * (h as usize) * 4];
+        let row_bytes = (w as usize) * 4;
+        if surface.read_pixels(&info, &mut pixels, row_bytes, (0, 0)) {
+            Some(pixels)
+        } else {
+            None
+        }
+    }
+
+    fn rasterize_software_rgba8(&self, scene: &RenderScene, frame: &RenderFrame) -> Vec<u8> {
         let w = (frame.viewport.width.max(1.0) as usize).min(4096);
         let h = (frame.viewport.height.max(1.0) as usize).min(4096);
         let a = ((frame.background_argb >> 24) & 0xFF) as u8;

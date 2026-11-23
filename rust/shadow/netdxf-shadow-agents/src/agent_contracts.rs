@@ -88,6 +88,27 @@ pub struct AgentPollResult {
 pub struct AgentUsage {
     pub input_tokens: u64,
     pub output_tokens: u64,
+    pub cached_input_tokens: u64,
+    pub reasoning_tokens: u64,
+    pub total_tokens: u64,
+    pub requests: u64,
+    pub turns: u64,
+    pub tool_calls: u64,
+}
+
+impl AgentUsage {
+    pub fn add(&self, other: Self) -> Self {
+        Self {
+            input_tokens: self.input_tokens + other.input_tokens,
+            output_tokens: self.output_tokens + other.output_tokens,
+            cached_input_tokens: self.cached_input_tokens + other.cached_input_tokens,
+            reasoning_tokens: self.reasoning_tokens + other.reasoning_tokens,
+            total_tokens: self.total_tokens + other.total_tokens,
+            requests: self.requests + other.requests,
+            turns: self.turns + other.turns,
+            tool_calls: self.tool_calls + other.tool_calls,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

@@ -124,7 +124,11 @@ fn graph_shortest_path_cycle_basis_and_visualization() {
     let sp = graph.shortest_path(0, 2).unwrap();
     assert!((sp.length - 20.0).abs() < 1e-6);
 
-    let viz = graph.visualize(&GraphVisualizationOptions { offset: 0, limit: 2 });
+    let viz = graph.visualize(&GraphVisualizationOptions {
+        offset: 0,
+        limit: 2,
+        ..Default::default()
+    });
     assert_eq!(viz.cycle_rank, 1);
     assert_eq!(viz.nodes.items.len(), 2);
     assert_eq!(viz.nodes.next_offset, Some(2));

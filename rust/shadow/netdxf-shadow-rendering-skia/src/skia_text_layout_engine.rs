@@ -10,6 +10,14 @@ pub struct SkiaTextCacheStatistics {
     pub hits: i64,
     pub misses: i64,
     pub entries: usize,
+    pub cached_runs: usize,
+    pub cached_layouts: usize,
+    pub cached_units: usize,
+    pub cached_layout_units: usize,
+    pub shape_hits: i64,
+    pub shape_compilations: i64,
+    pub layout_compilations: i64,
+    pub shared_layout_hits: i64,
 }
 
 type RunCacheKey = (String, String, u64, bool, bool);
@@ -19,6 +27,8 @@ type RunCacheKey = (String, String, u64, bool, bool);
 pub struct SkiaTextLayoutEngine {
     hits: AtomicI64,
     misses: AtomicI64,
+    layout_compilations: AtomicI64,
+    shared_layout_hits: AtomicI64,
     cache: RwLock<HashMap<RunCacheKey, TextRunMetrics>>,
 }
 
@@ -29,10 +39,20 @@ impl SkiaTextLayoutEngine {
 
     pub fn statistics(&self) -> SkiaTextCacheStatistics {
         let entries = self.cache.read().map(|c| c.len()).unwrap_or(0);
+        let hits = self.hits.load(Ordering::Relaxed);
+        let misses = self.misses.load(Ordering::Relaxed);
         SkiaTextCacheStatistics {
-            hits: self.hits.load(Ordering::Relaxed),
-            misses: self.misses.load(Ordering::Relaxed),
+            hits,
+            misses,
             entries,
+            cached_runs: entries,
+            cached_layouts: entries,
+            cached_units: entries,
+            cached_layout_units: entries,
+            shape_hits: hits,
+            shape_compilations: misses,
+            layout_compilations: self.layout_compilations.load(Ordering::Relaxed),
+            shared_layout_hits: self.shared_layout_hits.load(Ordering::Relaxed),
         }
     }
 
@@ -42,6 +62,8 @@ impl SkiaTextLayoutEngine {
         }
         self.hits.store(0, Ordering::Relaxed);
         self.misses.store(0, Ordering::Relaxed);
+        self.layout_compilations.store(0, Ordering::Relaxed);
+        self.shared_layout_hits.store(0, Ordering::Relaxed);
     }
 }
 

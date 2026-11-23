@@ -68,6 +68,68 @@ impl FerroStudioApp {
         netdxf_shadow_rendering::RenderHitTesting::hit_test(&render_scene, world, world_tol)
     }
 
+    pub fn from_dxf_bytes(document_id: impl Into<String>, bytes: &[u8]) -> Result<Self, String> {
+        let studio = Studio::from_dxf_bytes(document_id, bytes).map_err(|e| e.to_string())?;
+        Ok(Self {
+            studio,
+            viewport: Viewport::default(),
+            background_argb: 0xFF18_1A1F,
+            active_panels: vec![
+                FerroStudioPanel::Viewport,
+                FerroStudioPanel::Layers,
+                FerroStudioPanel::Properties,
+                FerroStudioPanel::AgentChat,
+            ],
+            backend: SkiaRenderBackend::new(),
+        })
+    }
+
+    pub fn export_dxf_bytes(&self) -> Result<Vec<u8>, String> {
+        self.studio.export_dxf_bytes(false).map_err(|e| e.to_string())
+    }
+
+    pub fn toggle_panel(&mut self, panel: FerroStudioPanel) {
+        if let Some(pos) = self.active_panels.iter().position(|p| *p == panel) {
+            self.active_panels.remove(pos);
+        } else {
+            self.active_panels.push(panel);
+        }
+    }
+
+    pub fn layers(&self) -> Vec<String> {
+        self.studio.layers()
+    }
+
+    pub fn blocks(&self) -> Vec<String> {
+        self.studio.blocks()
+    }
+
+    pub fn layouts(&self) -> Vec<String> {
+        self.studio.layouts()
+    }
+
+    pub fn select(&mut self, ids: Vec<netdxf_shadow::ObjectId>) {
+        self.studio.selection = ids;
+    }
+
+    pub fn clear_selection(&mut self) {
+        self.studio.selection.clear();
+    }
+
+    pub fn current_snapshot(&self) -> std::sync::Arc<netdxf_shadow::ShadowSnapshot> {
+        self.studio.current_snapshot()
+    }
+
+    pub fn render_svg(&mut self, layout: &str) -> String {
+        let scene = self.studio.compile_render_scene(layout);
+        let frame = RenderFrame {
+            viewport: self.viewport,
+            background_argb: self.background_argb,
+            device_pixel_ratio: 1.0,
+        };
+        self.backend.render_svg(&scene, &frame)
+    }
+
     pub fn render_viewport(&mut self, layout: &str) -> Result<RenderImage, String> {
         let scene = self.studio.compile_render_scene(layout);
         let frame = RenderFrame {
