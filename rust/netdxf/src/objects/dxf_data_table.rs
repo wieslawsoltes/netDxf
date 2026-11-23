@@ -44,3 +44,23 @@ impl Default for DxfDataTable {
         }
     }
 }
+
+/// Cell data type discriminator for [`DxfDataTable`] columns (DXF group 92).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[repr(i32)]
+pub enum DxfDataCellType {
+    Integer = 1,
+    Double = 2,
+    String = 3,
+    Point = 4,
+    ObjectId = 5,
+    HardOwner = 6,
+    SoftOwner = 7,
+    HardPointer = 8,
+    SoftPointer = 9,
+    Boolean = 10,
+    Vector = 11,
+}
+
+/// Upstream C# `netDxf.Objects.DxfDataColumn` alias.
+pub type DxfDataColumn = DxfDataTableColumn;

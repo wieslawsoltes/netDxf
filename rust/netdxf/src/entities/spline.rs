@@ -456,3 +456,12 @@ impl Spline {
         true
     }
 }
+
+/// One-sided limit direction for spline derivative evaluation at knots.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+pub enum SplineParameterSide {
+    #[default]
+    Automatic = 0,
+    Left = 1,
+    Right = 2,
+}

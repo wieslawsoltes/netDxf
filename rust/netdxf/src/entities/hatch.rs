@@ -220,3 +220,23 @@ impl Hatch {
         }
     }
 }
+
+/// Hatch boundary path edge type discriminator (DXF group 72).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum EdgeType {
+    Polyline = 0,
+    Line = 1,
+    Arc = 2,
+    Ellipse = 3,
+    Spline = 4,
+}
+
+/// Alias matching upstream nested `HatchBoundaryPath.Edge`.
+pub type Edge = HatchBoundaryPathEdge;
+
+/// Polyline boundary path edge matching upstream nested `HatchBoundaryPath.Polyline`.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct Polyline {
+    pub vertexes: Vec<crate::vector3::Vector3>,
+    pub is_closed: bool,
+}

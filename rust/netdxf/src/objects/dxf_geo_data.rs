@@ -51,3 +51,42 @@ impl Default for DxfGeoData {
         }
     }
 }
+
+/// Coordinate system type stored in [`DxfGeoData`] (DXF group 70).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+#[repr(i32)]
+pub enum DxfGeoCoordinateType {
+    #[default]
+    Unknown = 0,
+    LocalGrid = 1,
+    ProjectedGrid = 2,
+    Geographic = 3,
+}
+
+/// Scale estimation method stored in [`DxfGeoData`] (DXF group 95).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+#[repr(i32)]
+pub enum DxfGeoScaleEstimation {
+    #[default]
+    None = 1,
+    UserScale = 2,
+    GridScale = 3,
+    Prismoidal = 4,
+}
+
+/// Single mesh vertex pair (source -> target) in [`DxfGeoData`].
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
+pub struct DxfGeoMeshPoint {
+    pub source_x: f64,
+    pub source_y: f64,
+    pub target_x: f64,
+    pub target_y: f64,
+}
+
+/// Triangular face index triple in [`DxfGeoData`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub struct DxfGeoMeshFace {
+    pub index1: i32,
+    pub index2: i32,
+    pub index3: i32,
+}

@@ -346,3 +346,14 @@ impl_from_entity! {
     XLine => XLine,
     Opaque => DxfOpaqueEntity,
 }
+
+/// Entity shadow casting/receiving mode (DXF group 284).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+#[repr(i16)]
+pub enum EntityShadowMode {
+    #[default]
+    CastAndReceive = 0,
+    Cast = 1,
+    Receive = 2,
+    Ignore = 3,
+}

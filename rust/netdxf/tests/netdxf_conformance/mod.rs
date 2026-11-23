@@ -37,6 +37,7 @@ mod table_calculation_tests;
 mod value_format_tests;
 
 // ASCII, binary, raw, and R12 codecs
+mod api_parity_ported_tests;
 mod binary_chunk_tests;
 mod binary_sentinel_tests;
 mod r12_codec_tests;

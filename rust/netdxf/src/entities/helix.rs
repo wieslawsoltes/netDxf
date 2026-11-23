@@ -33,3 +33,13 @@ impl Helix {
         }
     }
 }
+
+/// Helix geometric constraint mode (DXF group 280).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+#[repr(i16)]
+pub enum HelixConstraint {
+    TurnHeight = 0,
+    #[default]
+    Turns = 1,
+    Height = 2,
+}

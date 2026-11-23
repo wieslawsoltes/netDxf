@@ -1,7 +1,7 @@
 use crate::io::dxf_tag::DxfTag;
 
 /// A single `(0, NAME)` DXF record inside a `DxfRawSection` (`netDxf.IO.DxfRawRecord`).
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct DxfRawRecord {
     pub name: String,
     pub start_tag_index: usize,

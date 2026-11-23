@@ -36,3 +36,6 @@ impl RootBisection {
         Some(0.5 * (t0 + t1))
     }
 }
+
+/// Upstream C# `netDxf.GTE.RootsBisection` alias.
+pub type RootsBisection = RootBisection;

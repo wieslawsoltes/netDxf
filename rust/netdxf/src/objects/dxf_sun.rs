@@ -82,3 +82,13 @@ impl Default for DxfStoredSunStudy {
         }
     }
 }
+
+/// Shadow rendering mode for [`DxfSun`] (DXF group 70).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+#[repr(i32)]
+pub enum DxfSunShadowType {
+    #[default]
+    RayTraced = 0,
+    ShadowMaps = 1,
+    AreaSampled = 2,
+}

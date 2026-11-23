@@ -15,6 +15,7 @@ pub mod clipping_boundary_type;
 pub mod collections;
 pub mod coordinate_system;
 pub mod dxf_class;
+pub mod dxf_dimension_picture_options;
 pub mod dxf_document;
 pub mod dxf_object;
 pub mod dxf_object_code;
@@ -50,11 +51,13 @@ pub use clipping_boundary::ClippingBoundary;
 pub use clipping_boundary_type::ClippingBoundaryType;
 pub use coordinate_system::CoordinateSystem;
 pub use dxf_class::DxfClass;
+pub use dxf_dimension_picture_options::DxfDimensionPictureOptions;
 pub use dxf_document::DxfDocument;
 pub use dxf_object::DxfObject;
 pub use dxf_object_code::DxfObjectCode;
 pub use dxf_version_compatibility_report::{
-    DxfVersionCompatibilityIssue, DxfVersionCompatibilityReport,
+    DxfVersionCompatibilityDiagnostic, DxfVersionCompatibilityIssue, DxfVersionCompatibilityKind,
+    DxfVersionCompatibilityReport,
 };
 pub use error::{DxfError, Result};
 pub use lineweight::Lineweight;

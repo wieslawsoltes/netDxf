@@ -96,3 +96,42 @@ impl DxfStandardFieldEvaluator {
         }
     }
 }
+
+/// Evaluation status code for a DXF `FIELD` object (group 92).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+#[repr(i32)]
+pub enum DxfFieldResultStatus {
+    #[default]
+    Success = 2,
+    EvaluatorNotFound = 4,
+    SyntaxError = 8,
+    InvalidCode = 16,
+    InvalidContext = 32,
+    OtherError = 64,
+}
+
+/// Typed data value carried by a DXF `FIELD` evaluation result.
+#[derive(Debug, Clone, PartialEq)]
+pub enum DxfFieldDataValue {
+    Empty,
+    Integer(i32),
+    Double(f64),
+    String(String),
+    Point3D(crate::vector3::Vector3),
+}
+
+/// Input parameters passed to a field evaluator.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct DxfFieldEvaluationInput {
+    pub field_code: String,
+    pub format_string: String,
+    pub evaluator_id: String,
+}
+
+/// Mutable edit payload for updating a stored `FIELD` result.
+#[derive(Debug, Clone, PartialEq)]
+pub struct DxfFieldResultEdit {
+    pub status: DxfFieldResultStatus,
+    pub formatted_text: String,
+    pub value: DxfFieldDataValue,
+}

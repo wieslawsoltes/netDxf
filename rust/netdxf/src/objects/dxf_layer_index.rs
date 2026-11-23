@@ -33,3 +33,11 @@ impl Default for DxfLayerFilter {
         }
     }
 }
+
+/// Single layer entry inside a [`DxfLayerIndex`].
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DxfLayerIndexEntry {
+    pub layer_name: String,
+    pub id_buffer_handle: String,
+    pub entity_count: i32,
+}

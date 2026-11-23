@@ -65,3 +65,22 @@ impl Light {
         }
     }
 }
+
+/// Distance attenuation type for a `Light` entity (DXF group 72).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+#[repr(i32)]
+pub enum LightAttenuationType {
+    #[default]
+    None = 0,
+    InverseLinear = 1,
+    InverseSquare = 2,
+}
+
+/// Shadow type for a `Light` entity (DXF group 73).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+#[repr(i32)]
+pub enum LightShadowType {
+    #[default]
+    RayTraced = 0,
+    ShadowMap = 1,
+}

@@ -48,3 +48,6 @@ impl Default for DxfStoredDimAssoc {
         }
     }
 }
+
+/// Upstream C# `netDxf.Objects.DxfStoredDimAssocPoint` alias.
+pub type DxfStoredDimAssocPoint = DimAssocOsnapPointRef;

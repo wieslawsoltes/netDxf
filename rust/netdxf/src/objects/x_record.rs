@@ -25,3 +25,6 @@ impl Default for XRecord {
         Self::new()
     }
 }
+
+/// Upstream C# `netDxf.Objects.DxfXRecord` alias.
+pub type DxfXRecord = XRecord;

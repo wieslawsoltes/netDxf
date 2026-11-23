@@ -57,3 +57,30 @@ impl Default for DxfOutputSettings {
         }
     }
 }
+
+/// Per-geometry-category visual settings inside [`DxfSectionTypeSettings`].
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct DxfSectionGeometrySettings {
+    pub section_type: i32,
+    pub geometry_type: i32,
+    pub visible: bool,
+    pub layer: String,
+    pub linetype: String,
+    pub linetype_scale: f64,
+    pub lineweight: i16,
+    pub hatch_pattern: String,
+    pub hatch_angle: f64,
+    pub hatch_scale: f64,
+    pub hatch_spacing: f64,
+}
+
+/// Per-section-type settings inside [`DxfSectionSettings`].
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct DxfSectionTypeSettings {
+    pub section_type: i32,
+    pub is_generation_option: bool,
+    pub source_objects: Vec<String>,
+    pub destination_block_handle: Option<String>,
+    pub destination_file_name: String,
+    pub geometry_settings: Vec<DxfSectionGeometrySettings>,
+}

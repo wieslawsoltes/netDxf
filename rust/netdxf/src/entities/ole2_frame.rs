@@ -48,3 +48,28 @@ impl OleFrame {
         }
     }
 }
+
+/// OLE object relationship type (DXF group 71).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+#[repr(i16)]
+pub enum OleObjectType {
+    Link = 1,
+    #[default]
+    Embedded = 2,
+    Static = 3,
+}
+
+bitflags::bitflags! {
+    /// Presence bitmask for optional informational metadata fields on `Ole2Frame`.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+    pub struct Ole2FrameMetadataFields: i32 {
+        const NONE = 0;
+        const OLE_VERSION = 1;
+        const DESCRIPTION = 2;
+        const UPPER_LEFT_CORNER = 4;
+        const LOWER_RIGHT_CORNER = 8;
+        const OBJECT_TYPE = 16;
+        const TILE_MODE = 32;
+        const ALL = 1 | 2 | 4 | 8 | 16 | 32;
+    }
+}
