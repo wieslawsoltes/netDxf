@@ -270,6 +270,14 @@ pub struct CadLayerStateExport {
 pub struct CadLayerStatePreview {
     pub name: String,
     pub affected_layers: usize,
+    pub layer_count: usize,
+    pub current_layer: String,
+    pub restore_mask: i32,
+    pub replaces_existing: bool,
+    pub conflicts: Vec<String>,
+    pub notice: Option<String>,
+    pub revision: i64,
+    pub token: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -282,10 +290,17 @@ pub struct CadModuleConnectivityRequest {
     pub module_id: String,
     pub module: String,
     pub layout: Option<String>,
+    pub operation: Option<String>,
+    pub graph_key: Option<String>,
+    pub workspace_id: Option<String>,
+    pub revision: Option<i64>,
     pub direction: Option<String>,
     pub source: Option<String>,
     pub target: Option<String>,
     pub tolerance: Option<f64>,
+    pub limit: Option<usize>,
+    pub maximum_depth: Option<usize>,
+    pub maximum_visits: Option<usize>,
     pub node_offset: usize,
     pub edge_offset: usize,
     pub component_offset: usize,
@@ -295,10 +310,18 @@ pub struct CadModuleConnectivityRequest {
     pub assessment_offset: usize,
     pub before_visit_offset: usize,
     pub after_visit_offset: usize,
+    pub exclusion_offset: usize,
+    pub loop_offset: usize,
+    pub loop_step_offset: usize,
+    pub port_structure_offset: usize,
+    pub scope_offset: usize,
+    pub walk_offset: usize,
     pub excluded_ports: Vec<String>,
     pub excluded_connections: Vec<usize>,
     pub include_structure: bool,
     pub include_isolation: bool,
+    pub options: Value,
+    pub isolation_options: Value,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -325,20 +348,35 @@ pub struct CadConnectivityWalkSummary {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleConnectivityResult {
     pub document_id: String,
+    pub workspace_id: Option<String>,
+    pub revision: i64,
+    pub view_version: i64,
     pub module: String,
     pub layout: String,
+    pub operation: Option<String>,
+    pub graph_key: Option<String>,
     pub nodes: usize,
     pub connections: usize,
     pub edges: usize,
     pub components: usize,
     pub issues: usize,
+    pub issues_complete: bool,
     pub complete: bool,
     pub declarations_complete: bool,
+    pub scan_complete: bool,
+    pub records_scanned: usize,
+    pub objects_visited: usize,
     pub condensation: usize,
     pub critical_connections: usize,
     pub assessments: usize,
     pub before_visits: usize,
     pub after_visits: usize,
+    pub exclusions: usize,
+    pub loops: usize,
+    pub loop_steps: usize,
+    pub port_structures: usize,
+    pub limitations: Vec<String>,
+    pub options: Value,
     pub walk: Option<CadConnectivityWalkSummary>,
     pub structure: Option<CadConnectivityStructureSummary>,
     pub isolation: Option<CadConnectivityIsolationSummary>,
@@ -348,16 +386,38 @@ pub struct CadModuleConnectivityResult {
 pub struct CadConnectivityStructureSummary {
     pub components: usize,
     pub bridges: usize,
+    pub scope_complete: bool,
+    pub loop_search_complete: bool,
+    pub loop_limit_reached: bool,
+    pub proof_limit_reached: bool,
+    pub search_limit_reached: bool,
+    pub search_work: usize,
+    pub options: Value,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadConnectivityIsolationSummary {
     pub isolated: bool,
+    pub source: Option<String>,
+    pub target: Option<String>,
+    pub direction: Option<String>,
+    pub before: usize,
+    pub after: usize,
+    pub scope_complete: bool,
+    pub options: Value,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleScheduleRequest {
     pub module_id: String,
+    pub module: String,
+    pub schedule_key: Option<String>,
+    pub revision: Option<i64>,
+    pub limit: Option<usize>,
+    pub row_offset: usize,
+    pub group_offset: usize,
+    pub issue_offset: usize,
+    pub options: Value,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -369,6 +429,10 @@ pub struct CadSchedulePage {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleScheduleResult {
     pub document_id: String,
+    pub workspace_id: Option<String>,
+    pub revision: i64,
+    pub view_version: i64,
+    pub schedule_key: Option<String>,
     pub module: String,
     pub layout: String,
     pub drawing_units: String,
@@ -377,8 +441,11 @@ pub struct CadModuleScheduleResult {
     pub issues: usize,
     pub invalid_records: usize,
     pub objects_visited: usize,
+    pub records_scanned: usize,
+    pub scan_complete: bool,
     pub complete: bool,
     pub limitations: Vec<String>,
+    pub options: Value,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
@@ -467,6 +534,13 @@ pub struct CadSelectionCandidate {
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadSelectionCandidatesResult {
+    pub document_id: String,
+    pub workspace_id: Option<String>,
+    pub layout: String,
+    pub revision: i64,
+    pub view_version: i64,
+    pub change_version: i64,
+    pub truncated: bool,
     pub candidates: Vec<CadSelectionCandidate>,
 }
 
@@ -940,9 +1014,15 @@ impl Studio {
         &self,
         request: &CadLayerStatePreviewRequest,
     ) -> CadLayerStatePreview {
+        let count = self.layers().len();
         CadLayerStatePreview {
             name: request.name.clone(),
-            affected_layers: self.layers().len(),
+            affected_layers: count,
+            layer_count: count,
+            current_layer: "0".to_string(),
+            restore_mask: 2047,
+            revision: self.current_snapshot().revision,
+            ..Default::default()
         }
     }
 

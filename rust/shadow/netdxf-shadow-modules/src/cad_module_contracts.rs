@@ -40,12 +40,19 @@ pub struct CadModulePort {
     pub offset: Vec3,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct CadModuleSymbol {
     pub id: String,
+    pub symbol_id: String,
     pub name: String,
+    pub description: String,
+    pub version: String,
+    pub units: String,
     pub category: String,
+    pub base_point: Vec3,
+    pub standards: Vec<String>,
     pub ports: Vec<CadModulePort>,
+    pub attributes: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]

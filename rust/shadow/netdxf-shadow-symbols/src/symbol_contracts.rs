@@ -25,11 +25,18 @@ pub struct SymbolStroke {
     pub text: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct SymbolAttribute {
+    pub id: String,
+    pub name: String,
     pub tag: String,
     pub prompt: String,
+    pub default: String,
     pub default_value: String,
+    pub position: Vec3,
+    pub height: f64,
+    pub required: bool,
+    pub visible: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

@@ -25,8 +25,14 @@ pub struct AgentCodeChange {
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct AgentCodeResult {
     pub exit_code: i32,
+    pub result: Option<String>,
     pub stdout: String,
+    pub standard_output: String,
     pub stderr: String,
+    pub standard_error: String,
+    pub elapsed_milliseconds: u64,
+    pub timed_out: bool,
+    pub truncated: bool,
     pub changes: Vec<AgentCodeChange>,
 }
 
